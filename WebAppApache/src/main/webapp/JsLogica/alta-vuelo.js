@@ -155,7 +155,7 @@ function mostrarMensajeExito() {
                         </div>
                         <div class="modal-footer justify-content-center">
                             <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continuar</button>
-                            <a href="alta-vuelo.html" class="btn btn-outline-primary">Crear Otro Vuelo</a>
+                            <a href="/alta-vuelo.jsp" class="btn btn-outline-primary">Crear Otro Vuelo</a>
                         </div>
                     </div>
                 </div>

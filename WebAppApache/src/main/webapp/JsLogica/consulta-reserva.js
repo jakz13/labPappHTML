@@ -180,6 +180,126 @@ function configurarEventListeners() {
     });
 }
 
+function actualizarPasos(tipoUsuario, pasoActual) {
+    const pasos = tipoUsuario === 'cliente' ?
+        ['stepCliente', 'sectionCliente'] :
+        ['stepAerolinea', 'sectionAerolinea'];
+
+    const [stepPrefix, sectionPrefix] = pasos;
+
+    // Actualizar steps
+    for (let i = 1; i <= 4; i++) {
+        const stepElement = document.getElementById(`${stepPrefix}${i}`);
+        const sectionElement = document.getElementById(`${sectionPrefix}${i}`);
+
+        if (stepElement) {
+            if (i < pasoActual) {
+                stepElement.classList.add('completed');
+                stepElement.classList.remove('active');
+            } else if (i === pasoActual) {
+                stepElement.classList.add('active');
+                stepElement.classList.remove('completed');
+            } else {
+                stepElement.classList.remove('active', 'completed');
+            }
+        }
+
+        if (sectionElement) {
+            if (i === pasoActual) {
+                sectionElement.classList.add('active');
+            } else {
+                sectionElement.classList.remove('active');
+            }
+        }
+    }
+
+    // Actualizar estado de botones
+    actualizarBotones(tipoUsuario, pasoActual);
+}
+
+function actualizarBotones(tipoUsuario, pasoActual) {
+    if (tipoUsuario === 'cliente') {
+        // Actualizar botones del cliente
+        const btn1 = document.getElementById('btnCliente1');
+        const btn2 = document.getElementById('btnCliente2');
+        const btn3 = document.getElementById('btnCliente3');
+
+        switch(pasoActual) {
+            case 1:
+                btn1.disabled = !document.getElementById('aerolineaCliente').value;
+                break;
+            case 2:
+                btn2.disabled = !document.getElementById('rutaCliente').value;
+                break;
+            case 3:
+                btn3.disabled = !document.getElementById('vueloCliente').value;
+                break;
+        }
+    } else {
+        // Actualizar botones de aerolínea
+        const btn1 = document.getElementById('btnAerolinea1');
+        const btn2 = document.getElementById('btnAerolinea2');
+        const btn3 = document.getElementById('btnAerolinea3');
+
+        switch(pasoActual) {
+            case 1:
+                btn1.disabled = !document.getElementById('rutaAerolinea').value;
+                break;
+            case 2:
+                btn2.disabled = !document.getElementById('vueloAerolinea').value;
+                break;
+            case 3:
+                btn3.disabled = !reservaSeleccionada;
+                break;
+        }
+    }
+}
+
+// También necesitamos inicializar correctamente los pasos al cargar
+function inicializarPasos() {
+    // Inicializar pasos del cliente
+    actualizarPasos('cliente', 1);
+
+    // Inicializar pasos de aerolínea (aunque estén ocultos)
+    actualizarPasos('aerolinea', 1);
+}
+
+// Modificar la función inicializarConsultaReserva para incluir la inicialización de pasos
+function inicializarConsultaReserva() {
+    cargarDatosIniciales();
+    configurarEventListeners();
+    inicializarPasos(); // Agregar esta línea
+}
+
+// Y modificar la función cambiarTipoUsuario para que use la versión correcta
+function cambiarTipoUsuario() {
+    tipoUsuario = tipoUsuario === 'cliente' ? 'aerolinea' : 'cliente';
+
+    document.getElementById('flujoCliente').style.display = tipoUsuario === 'cliente' ? 'block' : 'none';
+    document.getElementById('flujoAerolinea').style.display = tipoUsuario === 'aerolinea' ? 'block' : 'none';
+
+    document.getElementById('tipoUsuarioTexto').textContent = tipoUsuario === 'cliente' ? 'Cliente' : 'Aerolínea';
+    document.getElementById('tipoAlternativo').textContent = tipoUsuario === 'cliente' ? 'Aerolínea' : 'Cliente';
+    document.getElementById('nombreUsuario').textContent = tipoUsuario === 'cliente' ? 'María González' : 'ZulyFly Airlines';
+
+    // Reiniciar ambos flujos correctamente
+    if (tipoUsuario === 'cliente') {
+        actualizarPasos('cliente', 1);
+        document.getElementById('formCliente').reset();
+        document.getElementById('btnCliente1').disabled = true;
+        document.getElementById('reservaClienteDetalle').innerHTML = '';
+    } else {
+        actualizarPasos('aerolinea', 1);
+        document.getElementById('formAerolinea').reset();
+        document.getElementById('btnAerolinea1').disabled = true;
+        reservaSeleccionada = null;
+        document.getElementById('listaReservasAerolinea').innerHTML = '';
+        document.getElementById('reservaAerolineaDetalle').innerHTML = '';
+    }
+}
+
+// Eliminar la función duplicada cambiarTipoUsuario que está al final del archivo
+
 // Funciones para Cliente
 function siguientePasoCliente(paso) {
     // Validar que se puedan avanzar los pasos
@@ -309,7 +429,7 @@ function mostrarReservaCliente(aerolinea, ruta, vuelo) {
                 <div class="alert alert-warning text-center">
                     <h5 class="text-warning">No tiene reserva en este vuelo</h5>
                     <p class="text-light">No se encontró una reserva a su nombre para el vuelo seleccionado.</p>
-                    <a href="reserva-vuelo.html" class="btn btn-primary mt-2">Realizar Reserva</a>
+                    <a href="/reserva-vuelo.jsp" class="btn btn-primary mt-2">Realizar Reserva</a>
                 </div>
             `;
         }

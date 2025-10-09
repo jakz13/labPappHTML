@@ -56,7 +56,7 @@
                         Aerolíneas
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="aerolineasDropdown">
-                        <li><a class="dropdown-item active" href="alta-ruta.html"><i class="bi bi-signpost"></i> Alta de Ruta</a></li>
+                        <li><a class="dropdown-item active" href="alta-ruta.jsp"><i class="bi bi-signpost"></i> Alta de Ruta</a></li>
                         <li><a class="dropdown-item" href="consulta-ruta.jsp"><i class="bi bi-map"></i> Consulta de Ruta</a></li>
                         <li><a class="dropdown-item" href="alta-vuelo.jsp"><i class="bi bi-airplane"></i> Alta de Vuelo</a></li>
                     </ul>

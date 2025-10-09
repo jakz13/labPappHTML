@@ -1143,11 +1143,11 @@ button, .btn, .dropdown-item, .ruta-item, .paquete-card,
 }
 /* Estilo para selects deshabilitados en modo oscuro */
 .form-select:disabled {
-  background-color: #3a3a3a !important; /* gris oscuro */
-  color: #bdbdbd !important;            /* texto gris claro */
-  border-color: #555 !important;
-  cursor: not-allowed;
-  opacity: 1; /* evita que se vea muy transparente */
+    background-color: #3a3a3a !important; /* gris oscuro */
+    color: #bdbdbd !important;            /* texto gris claro */
+    border-color: #555 !important;
+    cursor: not-allowed;
+    opacity: 1; /* evita que se vea muy transparente */
 }
 
 
@@ -1418,7 +1418,7 @@ button, .btn, .dropdown-item, .ruta-item, .paquete-card,
 
 /* ===== ESTILOS ESPECÍFICOS PARA MODIFICAR USUARIO ===== */
 
-/* Para modificar-usuario.jsp, las secciones deben mostrarse siempre */
+/* Para modificar-usuario.html, las secciones deben mostrarse siempre */
 .modificar-usuario .form-section {
     display: block !important;
     opacity: 1 !important;

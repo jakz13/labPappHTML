@@ -282,7 +282,7 @@ function consultarVuelos() {
                     </div>
                     <div class="modal-footer justify-content-center">
                         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <a href="consulta-vuelo.html" class="btn btn-primary">Continuar</a>
+                        <a href="/consulta-vuelo.jsp" class="btn btn-primary">Continuar</a>
                     </div>
                 </div>
             </div>

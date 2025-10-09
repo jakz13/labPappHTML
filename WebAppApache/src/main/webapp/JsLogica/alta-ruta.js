@@ -79,7 +79,7 @@ function mostrarMensajeExito() {
                     </div>
                     <div class="modal-footer justify-content-center">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continuar</button>
-                        <a href="consulta-ruta.html" class="btn btn-outline-primary">Ver Rutas</a>
+                        <a href="/consulta-ruta.jsp" class="btn btn-outline-primary">Ver Rutas</a>
                     </div>
                 </div>
             </div>
