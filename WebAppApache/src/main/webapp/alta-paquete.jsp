@@ -46,7 +46,7 @@
                     <ul class="dropdown-menu" aria-labelledby="paquetesDropdown">
                         <li><a class="dropdown-item" href="consulta-paquete.jsp"><i class="bi bi-box-seam"></i> Consulta de Paquete</a></li>
                         <li><a class="dropdown-item" href="compra-paquete.jsp"><i class="bi bi-cart-check"></i> Compra de Paquete</a></li>
-                        <li><a class="dropdown-item active" href="alta-paquete.html"><i class="bi bi-plus-square"></i> Alta de Paquete</a></li>
+                        <li><a class="dropdown-item active" href="alta-paquete.jsp"><i class="bi bi-plus-square"></i> Alta de Paquete</a></li>
                     </ul>
                 </li>
 
@@ -358,7 +358,7 @@
 <div id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<script src="js/JsLogica/session-manager.js"></script>
-<script src="js/JsLogica/alta-paquete.js"></script>
+<script src="JsLogica/session-manager.js"></script>
+<script src="JsLogica/alta-paquete.js"></script>
 </body>
 </html>

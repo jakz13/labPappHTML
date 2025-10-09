@@ -17,7 +17,6 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('categoriaSelect').addEventListener('change', cargarRutasDisponibles);
 });
 
-// Datos de ejemplo
 const paquetesExistentes = [
     {
         id: 1,
@@ -105,6 +104,25 @@ const rutasDisponibles = [
 // Variables globales
 let paqueteSeleccionado = null;
 let rutaSeleccionada = null;
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    // Establecer fecha actual como fecha de alta por defecto
+    document.getElementById('fechaAlta').valueAsDate = new Date();
+
+    // Cargar lista de paquetes para la pestaña de agregar rutas
+    cargarPaquetesDisponibles();
+
+    // Cargar rutas disponibles
+    cargarRutasDisponibles();
+
+    // Inicializar validación de formularios
+    inicializarValidacionFormularios();
+
+    // Configurar filtros para rutas
+    document.getElementById('aerolineaSelect').addEventListener('change', cargarRutasDisponibles);
+    document.getElementById('categoriaSelect').addEventListener('change', cargarRutasDisponibles);
+});
 
 function inicializarValidacionFormularios() {
     const formCrearPaquete = document.getElementById('formCrearPaquete');
