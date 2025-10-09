@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Probar Servlets</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; }
+        button { padding: 10px; margin: 5px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+    </style>
+</head>
+<body>
+<h1>✅ Servlets Compilados Correctamente</h1>
+
+<h2>Probar Verificar Email</h2>
+<input type="email" id="emailInput" value="test@test.com" placeholder="Ingresa email">
+<button onclick="verificarEmail()">Verificar Email</button>
+<div id="emailResult" class="result"></div>
+
+<h2>Probar Alta Usuario</h2>
+<button onclick="altaUsuarioCliente()">Alta Cliente Test</button>
+<button onclick="altaUsuarioAerolinea()">Alta Aerolínea Test</button>
+<div id="altaResult" class="result"></div>
+
+<script>
+    function verificarEmail() {
+        const email = document.getElementById('emailInput').value;
+        const result = document.getElementById('emailResult');
+
+        result.innerHTML = '⏳ Verificando...';
+        result.className = 'result';
+
+        fetch('verificarEmail?email=' + encodeURIComponent(email))
+            .then(response => response.json())
+            .then(data => {
+                result.innerHTML = `📧 <strong>${email}</strong> - Disponible: ${data.disponible}`;
+                result.className = data.disponible ? 'result success' : 'result error';
+            })
+            .catch(error => {
+                result.innerHTML = '❌ Error: ' + error;
+                result.className = 'result error';
+            });
+    }
+
+    function altaUsuarioCliente() {
+        const formData = new FormData();
+        formData.append('nickname', 'cliente_test');
+        formData.append('nombre', 'Juan Pérez');
+        formData.append('email', 'cliente@test.com');
+        formData.append('password', '123456');
+        formData.append('tipoUsuario', 'cliente');
+        formData.append('apellido', 'Pérez');
+        formData.append('fechaNacimiento', '1990-01-01');
+        formData.append('nacionalidad', 'Uruguaya');
+        formData.append('tipoDocumento', 'cedula');
+        formData.append('numeroDocumento', '12345678');
+
+        enviarAltaUsuario(formData, 'Cliente');
+    }
+
+    function altaUsuarioAerolinea() {
+        const formData = new FormData();
+        formData.append('nickname', 'aerolinea_test');
+        formData.append('nombre', 'Aerolínea Test');
+        formData.append('email', 'aerolinea@test.com');
+        formData.append('password', '123456');
+        formData.append('tipoUsuario', 'aerolinea');
+        formData.append('descripcionAerolinea', 'Aerolínea de prueba para el sistema');
+        formData.append('sitioWeb', 'https://aerolineatest.com');
+
+        enviarAltaUsuario(formData, 'Aerolínea');
+    }
+
+    function enviarAltaUsuario(formData, tipo) {
+        const result = document.getElementById('altaResult');
+
+        result.innerHTML = `⏳ Registrando ${tipo}...`;
+        result.className = 'result';
+
+        fetch('altaUsuario', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    result.innerHTML = `✅ ${tipo} registrado exitosamente: ${data.message}`;
+                    result.className = 'result success';
+                } else {
+                    result.innerHTML = `❌ Error al registrar ${tipo}: ${data.error}`;
+                    result.className = 'result error';
+                }
+            })
+            .catch(error => {
+                result.innerHTML = `❌ Error de conexión: ${error}`;
+                result.className = 'result error';
+            });
+    }
+
+    // Probar automáticamente al cargar la página
+    window.onload = function() {
+        console.log("Página cargada - servlets listos para probar");
+    };
+</script>
+</body>
+</html>

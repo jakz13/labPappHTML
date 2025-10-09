@@ -15,6 +15,10 @@
           <root url="file://$MODULE_DIR$/WebAppApache/web" relative="/" />
           <root url="file://$MODULE_DIR$/WebAppApache/src/main/webapp" relative="/" />
         </webroots>
+        <sourceRoots>
+          <root url="file://$MODULE_DIR$/WebAppApache/src/main/java" />
+          <root url="file://$MODULE_DIR$/WebAppApache/src/main/resources" />
+        </sourceRoots>
       </configuration>
     </facet>
   </component>
