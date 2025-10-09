@@ -1,3 +1,18 @@
+package com.example.webappapache;
+
+import Logica.Fabrica;
+import Logica.ISistema;
+import Logica.TipoDoc;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.time.LocalDate;
+
 @WebServlet("/altaUsuario")
 public class AltaUsuarioServlet extends HttpServlet {
     private static final long serialVersionUID = 1L;
@@ -19,7 +34,8 @@ public class AltaUsuarioServlet extends HttpServlet {
             String imagen = request.getParameter("imagen"); // Base64 o URL
 
             // Obtener instancia de la fachada
-            IFachada fachada = Fachada.getInstancia();
+            Fabrica fabrica = Fabrica.getInstance();
+            ISistema sistema = fabrica.getISistema();
 
             if ("cliente".equals(tipoUsuario)) {
                 // Registrar cliente
@@ -34,7 +50,7 @@ public class AltaUsuarioServlet extends HttpServlet {
                 TipoDoc tipoDoc = TipoDoc.valueOf(tipoDocStr.toUpperCase());
 
                 // Llamar a tu método existente
-                fachada.altaCliente(nickname, nombre, apellido, email, fechaNac,
+                sistema.altaCliente(nickname, nombre, apellido, email, fechaNac,
                         nacionalidad, tipoDoc, numDoc);
 
             } else if ("aerolinea".equals(tipoUsuario)) {
@@ -43,7 +59,7 @@ public class AltaUsuarioServlet extends HttpServlet {
                 String sitioWeb = request.getParameter("sitioWeb");
 
                 // Necesitarías implementar este método en tu fachada
-                fachada.altaAerolinea(nickname, nombre, email, descripcion, sitioWeb);
+                sistema.altaAerolinea(nickname, nombre, email, descripcion, sitioWeb);
             }
 
             // Éxito

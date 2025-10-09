@@ -1,3 +1,6 @@
+// AL INICIO DEL ARCHIVO - Agrega esta línea
+const BASE_URL = '/labPappHTML';
+
 // Navegación entre pasos
 function nextStep(step) {
     if (step === 2 && !validateStep1()) return;
@@ -188,7 +191,7 @@ function validateEmail(email) {
     return re.test(email);
 }
 
-// Verificar email único
+// Verificar email único - CORREGIDO
 document.getElementById('email').addEventListener('blur', function() {
     const email = this.value;
     if (email && validateEmail(email)) {
@@ -197,7 +200,7 @@ document.getElementById('email').addEventListener('blur', function() {
 });
 
 function verificarEmailUnico(email) {
-    fetch('verificarEmail?email=' + encodeURIComponent(email))
+    fetch(`${BASE_URL}/verificarEmail?email=${encodeURIComponent(email)}`)
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error en la respuesta del servidor');
@@ -224,7 +227,7 @@ function verificarEmailUnico(email) {
         });
 }
 
-// Envío del formulario - VERSIÓN ACTUALIZADA
+// Envío del formulario - CORREGIDO
 document.getElementById('formRegistroUsuario').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -275,18 +278,24 @@ function enviarRegistroAlServidor() {
     submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Registrando...';
     submitBtn.disabled = true;
 
-    // Enviar al servidor
-    fetch('altaUsuario', {
+    // DEBUG: Mostrar datos que se envían
+    console.log('Enviando datos a:', `${BASE_URL}/altaUsuario`);
+    console.log('Datos:', Object.fromEntries(formData));
+
+    // Enviar al servidor - CORREGIDO
+    fetch(`${BASE_URL}/altaUsuario`, {
         method: 'POST',
         body: formData
     })
         .then(response => {
+            console.log('Respuesta recibida - Status:', response.status);
             if (!response.ok) {
                 throw new Error('Error en la respuesta del servidor: ' + response.status);
             }
             return response.json();
         })
         .then(data => {
+            console.log('Datos recibidos:', data);
             if (data.success) {
                 // Éxito
                 const successModal = new bootstrap.Modal(document.getElementById('successModal'));
@@ -370,7 +379,7 @@ document.getElementById('imagenUsuario').addEventListener('change', function(e) 
     }
 });
 
-// Validar edad mínima (18 años) - Ya existe en tu código
+// Validar edad mínima (18 años)
 document.getElementById('fechaNacimiento').max = new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0];
 
 // Inicialización cuando el DOM está listo
@@ -456,4 +465,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     `;
     document.head.appendChild(style);
+
+    console.log('BASE_URL configurada:', BASE_URL);
 });
