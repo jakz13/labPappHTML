@@ -120,10 +120,8 @@ let tipoUsuario = 'cliente'; // 'cliente' o 'aerolinea'
 let reservaSeleccionada = null;
 
 function inicializarConsultaReserva() {
-    console.log('Inicializando consulta de reserva...');
     cargarDatosIniciales();
     configurarEventListeners();
-    inicializarPasos();
 }
 
 function cargarDatosIniciales() {
@@ -132,36 +130,18 @@ function cargarDatosIniciales() {
 }
 
 function configurarEventListeners() {
-    console.log('Configurando event listeners...');
-
     // Cliente
     document.getElementById('aerolineaCliente').addEventListener('change', function() {
         const aerolinea = this.value;
-        console.log('Aerolínea seleccionada:', aerolinea);
-        console.log('Datos disponibles para esta aerolínea:', datos.aerolineas[aerolinea]);
-
         cargarRutasCliente(aerolinea);
         document.getElementById('btnCliente1').disabled = !aerolinea;
-
-        // Limpiar pasos siguientes
-        document.getElementById('rutaCliente').innerHTML = '<option value="">Seleccione una ruta...</option>';
-        document.getElementById('vueloCliente').innerHTML = '<option value="">Seleccione un vuelo...</option>';
-        document.getElementById('btnCliente2').disabled = true;
-        document.getElementById('btnCliente3').disabled = true;
     });
 
     document.getElementById('rutaCliente').addEventListener('change', function() {
         const aerolinea = document.getElementById('aerolineaCliente').value;
         const ruta = this.value;
-        console.log('Ruta seleccionada:', ruta);
-        console.log('Datos disponibles para esta ruta:', datos.aerolineas[aerolinea]?.rutas[ruta]);
-
         cargarVuelosCliente(aerolinea, ruta);
         document.getElementById('btnCliente2').disabled = !ruta;
-
-        // Limpiar paso siguiente
-        document.getElementById('vueloCliente').innerHTML = '<option value="">Seleccione un vuelo...</option>';
-        document.getElementById('btnCliente3').disabled = true;
     });
 
     document.getElementById('vueloCliente').addEventListener('change', function() {
@@ -173,12 +153,6 @@ function configurarEventListeners() {
         const ruta = this.value;
         cargarVuelosAerolinea(ruta);
         document.getElementById('btnAerolinea1').disabled = !ruta;
-
-        // Limpiar pasos siguientes
-        document.getElementById('vueloAerolinea').innerHTML = '<option value="">Seleccione un vuelo...</option>';
-        document.getElementById('btnAerolinea2').disabled = true;
-        document.getElementById('btnAerolinea3').disabled = true;
-        document.getElementById('listaReservasAerolinea').innerHTML = '';
     });
 
     document.getElementById('vueloAerolinea').addEventListener('change', function() {
@@ -186,111 +160,48 @@ function configurarEventListeners() {
         const vuelo = this.value;
         cargarReservasAerolinea(ruta, vuelo);
         document.getElementById('btnAerolinea2').disabled = !vuelo;
-        document.getElementById('btnAerolinea3').disabled = true; // Se habilita cuando se selecciona reserva
     });
 }
 
 // Funciones para Cliente
 function siguientePasoCliente(paso) {
-    console.log('Siguiente paso cliente:', paso);
-
-    // Validar que se puedan avanzar los pasos
-    if (paso > 1) {
-        const pasoAnteriorValido = validarPasoAnteriorCliente(paso);
-        if (!pasoAnteriorValido) {
-            mostrarMensajeError('Complete los campos requeridos antes de continuar');
-            return;
-        }
-    }
-
     if (paso === 4) {
         const aerolinea = document.getElementById('aerolineaCliente').value;
         const ruta = document.getElementById('rutaCliente').value;
         const vuelo = document.getElementById('vueloCliente').value;
-
-        if (!aerolinea || !ruta || !vuelo) {
-            mostrarMensajeError('Seleccione aerolínea, ruta y vuelo para consultar la reserva');
-            return;
-        }
-
         mostrarReservaCliente(aerolinea, ruta, vuelo);
     }
 
     actualizarPasos('cliente', paso);
 }
 
-function siguientePasoAerolinea(paso) {
-    // Validar que se puedan avanzar los pasos
-    if (paso > 1) {
-        const pasoAnteriorValido = validarPasoAnteriorAerolinea(paso);
-        if (!pasoAnteriorValido) {
-            mostrarMensajeError('Complete los campos requeridos antes de continuar');
-            return;
-        }
-    }
-
-    if (paso === 4) {
-        if (!reservaSeleccionada) {
-            mostrarMensajeError('Seleccione una reserva para ver los detalles');
-            return;
-        }
-        mostrarReservaAerolinea();
-    }
-
-    actualizarPasos('aerolinea', paso);
-}
-
 function cargarRutasCliente(aerolinea) {
-    console.log('Cargando rutas para aerolínea:', aerolinea);
-
     const select = document.getElementById('rutaCliente');
     select.innerHTML = '<option value="">Seleccione una ruta...</option>';
 
     if (aerolinea && datos.aerolineas[aerolinea]) {
-        console.log('Aerolínea encontrada en datos:', datos.aerolineas[aerolinea]);
-        console.log('Rutas disponibles:', Object.keys(datos.aerolineas[aerolinea].rutas));
-
         Object.keys(datos.aerolineas[aerolinea].rutas).forEach(rutaId => {
             const ruta = datos.aerolineas[aerolinea].rutas[rutaId];
-            console.log('Agregando ruta:', rutaId, '-', ruta.nombre);
-
             const option = document.createElement('option');
             option.value = rutaId;
             option.textContent = `${rutaId} - ${ruta.nombre}`;
             select.appendChild(option);
         });
-
-        console.log('Total de rutas agregadas:', select.options.length - 1);
-    } else {
-        console.log('Aerolínea NO encontrada en datos o datos vacíos');
-        console.log('Aerolínea buscada:', aerolinea);
-        console.log('Datos disponibles:', datos.aerolineas);
     }
 }
 
 function cargarVuelosCliente(aerolinea, ruta) {
-    console.log('Cargando vuelos para aerolínea:', aerolinea, 'ruta:', ruta);
-
     const select = document.getElementById('vueloCliente');
     select.innerHTML = '<option value="">Seleccione un vuelo...</option>';
 
     if (aerolinea && ruta && datos.aerolineas[aerolinea].rutas[ruta]) {
-        console.log('Ruta encontrada en datos:', datos.aerolineas[aerolinea].rutas[ruta]);
-        console.log('Vuelos disponibles:', Object.keys(datos.aerolineas[aerolinea].rutas[ruta].vuelos));
-
         Object.keys(datos.aerolineas[aerolinea].rutas[ruta].vuelos).forEach(vueloId => {
             const vuelo = datos.aerolineas[aerolinea].rutas[ruta].vuelos[vueloId];
-            console.log('Agregando vuelo:', vueloId, '-', vuelo.fecha);
-
             const option = document.createElement('option');
             option.value = vueloId;
             option.textContent = `${vueloId} - ${vuelo.fecha}`;
             select.appendChild(option);
         });
-
-        console.log('Total de vuelos agregados:', select.options.length - 1);
-    } else {
-        console.log('Ruta NO encontrada en datos o datos vacíos');
     }
 }
 
@@ -345,37 +256,20 @@ function mostrarReservaCliente(aerolinea, ruta, vuelo) {
                 <div class="alert alert-warning text-center">
                     <h5 class="text-warning">No tiene reserva en este vuelo</h5>
                     <p class="text-light">No se encontró una reserva a su nombre para el vuelo seleccionado.</p>
-                    <a href="/reserva-vuelo.jsp" class="btn btn-primary mt-2">Realizar Reserva</a>
+                    <a href="reserva-vuelo.html" class="btn btn-primary mt-2">Realizar Reserva</a>
                 </div>
             `;
         }
     }
 }
 
-function validarPasoAnteriorCliente(pasoActual) {
-    switch(pasoActual) {
-        case 2:
-            return document.getElementById('aerolineaCliente').value !== '';
-        case 3:
-            return document.getElementById('rutaCliente').value !== '';
-        case 4:
-            return document.getElementById('vueloCliente').value !== '';
-        default:
-            return true;
+// Funciones para Aerolínea
+function siguientePasoAerolinea(paso) {
+    if (paso === 4 && reservaSeleccionada) {
+        mostrarReservaAerolinea();
     }
-}
 
-function validarPasoAnteriorAerolinea(pasoActual) {
-    switch(pasoActual) {
-        case 2:
-            return document.getElementById('rutaAerolinea').value !== '';
-        case 3:
-            return document.getElementById('vueloAerolinea').value !== '';
-        case 4:
-            return reservaSeleccionada !== null;
-        default:
-            return true;
-    }
+    actualizarPasos('aerolinea', paso);
 }
 
 function cargarRutasAerolinea() {
@@ -459,9 +353,6 @@ function seleccionarReservaAerolinea(index) {
             card.classList.remove('selected');
         });
         event.currentTarget.classList.add('selected');
-
-        // Habilitar botón de ver detalles
-        document.getElementById('btnAerolinea3').disabled = false;
     }
 }
 
@@ -504,88 +395,31 @@ function mostrarReservaAerolinea() {
     }
 }
 
-// Funciones para manejar los pasos y navegación
-function actualizarPasos(tipoUsuario, pasoActual) {
-    const pasos = tipoUsuario === 'cliente' ?
-        ['stepCliente', 'sectionCliente'] :
-        ['stepAerolinea', 'sectionAerolinea'];
+// Funciones generales
+function actualizarPasos(tipo, pasoActivo) {
+    const prefix = tipo === 'cliente' ? 'Cliente' : 'Aerolinea';
 
-    const [stepPrefix, sectionPrefix] = pasos;
+    // Ocultar todas las secciones
+    document.querySelectorAll(`#flujo${prefix} .form-section`).forEach(section => {
+        section.classList.remove('active');
+    });
 
-    // Actualizar steps
-    for (let i = 1; i <= 4; i++) {
-        const stepElement = document.getElementById(`${stepPrefix}${i}`);
-        const sectionElement = document.getElementById(`${sectionPrefix}${i}`);
+    // Mostrar sección activa
+    document.getElementById(`section${prefix}${pasoActivo}`).classList.add('active');
 
-        if (stepElement) {
-            if (i < pasoActual) {
-                stepElement.classList.add('completed');
-                stepElement.classList.remove('active');
-            } else if (i === pasoActual) {
-                stepElement.classList.add('active');
-                stepElement.classList.remove('completed');
-            } else {
-                stepElement.classList.remove('active', 'completed');
-            }
-        }
+    // Actualizar indicadores de paso
+    document.querySelectorAll(`#flujo${prefix} .step`).forEach(step => {
+        step.classList.remove('active', 'completed');
+    });
 
-        if (sectionElement) {
-            if (i === pasoActual) {
-                sectionElement.classList.add('active');
-            } else {
-                sectionElement.classList.remove('active');
-            }
+    for (let i = 1; i <= pasoActivo; i++) {
+        const stepEl = document.getElementById(`step${prefix}${i}`);
+        if (i === pasoActivo) {
+            stepEl.classList.add('active');
+        } else {
+            stepEl.classList.add('completed');
         }
     }
-
-    // Actualizar estado de botones
-    actualizarBotones(tipoUsuario, pasoActual);
-}
-
-function actualizarBotones(tipoUsuario, pasoActual) {
-    if (tipoUsuario === 'cliente') {
-        // Actualizar botones del cliente
-        const btn1 = document.getElementById('btnCliente1');
-        const btn2 = document.getElementById('btnCliente2');
-        const btn3 = document.getElementById('btnCliente3');
-
-        switch(pasoActual) {
-            case 1:
-                btn1.disabled = !document.getElementById('aerolineaCliente').value;
-                break;
-            case 2:
-                btn2.disabled = !document.getElementById('rutaCliente').value;
-                break;
-            case 3:
-                btn3.disabled = !document.getElementById('vueloCliente').value;
-                break;
-        }
-    } else {
-        // Actualizar botones de aerolínea
-        const btn1 = document.getElementById('btnAerolinea1');
-        const btn2 = document.getElementById('btnAerolinea2');
-        const btn3 = document.getElementById('btnAerolinea3');
-
-        switch(pasoActual) {
-            case 1:
-                btn1.disabled = !document.getElementById('rutaAerolinea').value;
-                break;
-            case 2:
-                btn2.disabled = !document.getElementById('vueloAerolinea').value;
-                break;
-            case 3:
-                btn3.disabled = !reservaSeleccionada;
-                break;
-        }
-    }
-}
-
-function inicializarPasos() {
-    // Inicializar pasos del cliente
-    actualizarPasos('cliente', 1);
-
-    // Inicializar pasos de aerolínea (aunque estén ocultos)
-    actualizarPasos('aerolinea', 1);
 }
 
 function cambiarTipoUsuario() {
@@ -598,35 +432,19 @@ function cambiarTipoUsuario() {
     document.getElementById('tipoAlternativo').textContent = tipoUsuario === 'cliente' ? 'Aerolínea' : 'Cliente';
     document.getElementById('nombreUsuario').textContent = tipoUsuario === 'cliente' ? 'María González' : 'ZulyFly Airlines';
 
-    // Reiniciar ambos flujos correctamente
-    if (tipoUsuario === 'cliente') {
-        actualizarPasos('cliente', 1);
-        document.getElementById('formCliente').reset();
-        document.getElementById('btnCliente1').disabled = true;
-        document.getElementById('reservaClienteDetalle').innerHTML = '';
-    } else {
-        actualizarPasos('aerolinea', 1);
-        document.getElementById('formAerolinea').reset();
-        document.getElementById('btnAerolinea1').disabled = true;
-        reservaSeleccionada = null;
-        document.getElementById('listaReservasAerolinea').innerHTML = '';
-        document.getElementById('reservaAerolineaDetalle').innerHTML = '';
-    }
+    // Reiniciar ambos flujos
+    siguientePasoCliente(1);
+    siguientePasoAerolinea(1);
 }
 
 function nuevaConsulta() {
     if (tipoUsuario === 'cliente') {
-        actualizarPasos('cliente', 1);
+        siguientePasoCliente(1);
         document.getElementById('formCliente').reset();
-        document.getElementById('btnCliente1').disabled = true;
-        document.getElementById('reservaClienteDetalle').innerHTML = '';
     } else {
-        actualizarPasos('aerolinea', 1);
+        siguientePasoAerolinea(1);
         document.getElementById('formAerolinea').reset();
-        document.getElementById('btnAerolinea1').disabled = true;
         reservaSeleccionada = null;
-        document.getElementById('listaReservasAerolinea').innerHTML = '';
-        document.getElementById('reservaAerolineaDetalle').innerHTML = '';
     }
 }
 
