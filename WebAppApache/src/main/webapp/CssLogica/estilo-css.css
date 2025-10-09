@@ -37,7 +37,38 @@ body {
     padding-top: 80px;
     margin: 0;
 }
+/* Asegurar que los steps tengan los estilos correctos */
+.step.active .step-number {
+    background-color: var(--color-accent) !important;
+    color: white !important;
+    border-color: var(--color-accent) !important;
+}
 
+.step.completed .step-number {
+    background-color: var(--color-success) !important;
+    color: white !important;
+    border-color: var(--color-success) !important;
+}
+
+.step.active .step-label {
+    color: var(--color-accent) !important;
+}
+
+.step.completed .step-label {
+    color: var(--color-success) !important;
+}
+
+/* Asegurar que las secciones del formulario se muestren/oculten correctamente */
+.form-section {
+    display: none;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.form-section.active {
+    display: block;
+    opacity: 1;
+}
 /* Navbar moderna */
 .navbar {
     background-color: rgba(18, 18, 18, 0.95) !important;
