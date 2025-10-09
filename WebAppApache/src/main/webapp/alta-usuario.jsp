@@ -301,7 +301,7 @@
                 </form>
             </div>
             <div class="modal-footer">
-                <p class="text-center w-100">¿No tienes cuenta? <a href="alta-usuario.html">Regístrate aquí</a></p>
+                <p class="text-center w-100">¿No tienes cuenta? <a href="alta-usuario.jsp">Regístrate aquí</a></p>
             </div>
         </div>
     </div>

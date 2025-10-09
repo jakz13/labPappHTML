@@ -1,108 +1,191 @@
-// Validación del formulario
 document.addEventListener('DOMContentLoaded', function() {
-    const formulario = document.getElementById('formAltaRuta');
-
-    formulario.addEventListener('submit', function(event) {
-        event.preventDefault();
-
-        if (this.checkValidity()) {
-            // Aquí iría la lógica para enviar los datos al servidor
-            const datosRuta = {
-                nombre: document.getElementById('nombreRuta').value,
-                descripcionCorta: document.getElementById('descripcionCorta').value,
-                descripcion: document.getElementById('descripcion').value,
-                hora: document.getElementById('hora').value,
-                costoTurista: document.getElementById('costoTurista').value,
-                costoEjecutivo: document.getElementById('costoEjecutivo').value,
-                costoEquipaje: document.getElementById('costoEquipaje').value,
-                origen: document.getElementById('origen').value,
-                destino: document.getElementById('destino').value,
-                categorias: Array.from(document.getElementById('categorias').selectedOptions).map(option => option.value)
-            };
-
-            console.log('Datos de la ruta a guardar:', datosRuta);
-
-            // Simular envío exitoso
-            mostrarMensajeExito();
-            this.reset();
-            this.classList.remove('was-validated');
-        } else {
-            event.stopPropagation();
-        }
-
-        this.classList.add('was-validated');
-    });
-
-    // Validación en tiempo real para campos requeridos
-    const camposRequeridos = formulario.querySelectorAll('[required]');
-    camposRequeridos.forEach(campo => {
-        campo.addEventListener('input', function() {
-            if (this.value.trim()) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            } else {
-                this.classList.remove('is-valid');
-                this.classList.add('is-invalid');
-            }
-        });
-    });
-
-    // Validación para select múltiple
-    const selectCategorias = document.getElementById('categorias');
-    selectCategorias.addEventListener('change', function() {
-        if (this.selectedOptions.length > 0) {
-            this.classList.remove('is-invalid');
-            this.classList.add('is-valid');
-        } else {
-            this.classList.remove('is-valid');
-            this.classList.add('is-invalid');
-        }
-    });
+    // Verificar que el usuario sea una aerolínea logueada
+    verificarSesionAerolinea();
 });
 
-function mostrarMensajeExito() {
-    // Crear modal de éxito dinámicamente
-    const modalHTML = `
-        <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-success text-white">
-                        <h5 class="modal-title" id="successModalLabel">¡Ruta Creada Exitosamente!</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="mb-3">
-                            <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
-                        </div>
-                        <h5>Ruta de Vuelo Registrada</h5>
-                        <p>La ruta ha sido creada exitosamente y será revisada por el administrador.</p>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continuar</button>
-                        <a href="consulta-ruta.html" class="btn btn-outline-primary">Ver Rutas</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
-
-    // Agregar modal al documento si no existe
-    if (!document.getElementById('successModal')) {
-        document.body.insertAdjacentHTML('beforeend', modalHTML);
+function verificarSesionAerolinea() {
+    // Verificar si hay una sesión de aerolínea activa
+    const usuarioSesion = sessionManager.getCurrentUser(); // Asumiendo que tienes un session manager
+    if (!usuarioSesion || usuarioSesion.tipo !== 'aerolinea') {
+        mostrarError('Debe iniciar sesión como aerolínea para crear rutas');
+        // Redirigir al login o página principal
+        setTimeout(() => {
+            window.location.href = 'PaginaPrincipal.jsp';
+        }, 3000);
+        return;
     }
-
-    // Mostrar modal
-    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-    successModal.show();
 }
 
-// Mejorar la experiencia del select múltiple
-document.addEventListener('DOMContentLoaded', function() {
-    const selectCategorias = document.getElementById('categorias');
+// Envío del formulario - VERSIÓN CORREGIDA
+document.getElementById('formAltaRuta').addEventListener('submit', function(event) {
+    event.preventDefault();
 
-    // Agregar texto de ayuda
-    const ayudaTexto = document.createElement('div');
-    ayudaTexto.className = 'form-text text-light mt-1';
-    ayudaTexto.textContent = 'Mantenga Ctrl (Cmd en Mac) para seleccionar múltiples categorías';
-    selectCategorias.parentNode.appendChild(ayudaTexto);
+    if (this.checkValidity()) {
+        enviarRutaAlServidor();
+    } else {
+        event.stopPropagation();
+    }
+
+    this.classList.add('was-validated');
+});
+
+function enviarRutaAlServidor() {
+    const formData = new FormData();
+
+    // Obtener la aerolínea de la sesión
+    const usuarioSesion = sessionManager.getCurrentUser();
+    if (!usuarioSesion || usuarioSesion.tipo !== 'aerolinea') {
+        mostrarError('No hay una aerolínea logueada');
+        return;
+    }
+
+    const nombreAerolinea = usuarioSesion.nickname; // O el campo que tenga el nickname
+
+    // Agregar datos del formulario
+    formData.append('nombreRuta', document.getElementById('nombreRuta').value);
+    formData.append('descripcionCorta', document.getElementById('descripcionCorta').value);
+    formData.append('descripcion', document.getElementById('descripcion').value);
+    formData.append('aerolinea', nombreAerolinea); // ← Usar la aerolínea de la sesión
+    formData.append('origen', document.getElementById('origen').value);
+    formData.append('destino', document.getElementById('destino').value);
+    formData.append('hora', document.getElementById('hora').value);
+    formData.append('costoTurista', document.getElementById('costoTurista').value);
+    formData.append('costoEjecutivo', document.getElementById('costoEjecutivo').value);
+    formData.append('costoEquipaje', document.getElementById('costoEquipaje').value);
+
+    // Agregar categorías seleccionadas
+    const categoriasSelect = document.getElementById('categorias');
+    const categoriasSeleccionadas = Array.from(categoriasSelect.selectedOptions).map(option => option.value);
+    categoriasSeleccionadas.forEach(categoria => {
+        formData.append('categorias', categoria);
+    });
+
+    // Agregar imagen si existe
+    const imagenInput = document.getElementById('imagenRuta');
+    if (imagenInput.files.length > 0) {
+        formData.append('imagenRuta', imagenInput.files[0]);
+    }
+
+    // Mostrar loading
+    const submitBtn = document.querySelector('#formAltaRuta button[type="submit"]');
+    const originalText = submitBtn.innerHTML;
+    submitBtn.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Creando ruta...';
+    submitBtn.disabled = true;
+
+    // Enviar al servidor
+    fetch('altaRuta', {
+        method: 'POST',
+        body: formData
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                mostrarExito(data.message || 'Ruta creada exitosamente. Estado: Ingresada - Esperando confirmación del administrador.');
+                // Limpiar formulario después de éxito
+                document.getElementById('formAltaRuta').reset();
+                document.getElementById('formAltaRuta').classList.remove('was-validated');
+            } else {
+                mostrarError(data.error || 'Error al crear la ruta');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarError('Error de conexión con el servidor');
+        })
+        .finally(() => {
+            // Restaurar botón
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        });
+}
+
+function mostrarExito(mensaje) {
+    // Crear alerta de éxito
+    const alerta = document.createElement('div');
+    alerta.className = 'alert alert-success alert-dismissible fade show';
+    alerta.innerHTML = `
+        <strong>Éxito:</strong> ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    // Insertar antes del formulario
+    const form = document.getElementById('formAltaRuta');
+    form.parentNode.insertBefore(alerta, form);
+
+    // Scroll al mensaje
+    alerta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+
+    // Auto-eliminar después de 5 segundos
+    setTimeout(() => {
+        if (alerta.parentNode) {
+            alerta.remove();
+        }
+    }, 5000);
+}
+
+function mostrarError(mensaje) {
+    // Limpiar errores anteriores
+    const erroresAnteriores = document.querySelectorAll('.alert-danger');
+    erroresAnteriores.forEach(error => error.remove());
+
+    // Crear alerta de error
+    const alerta = document.createElement('div');
+    alerta.className = 'alert alert-danger alert-dismissible fade show';
+    alerta.innerHTML = `
+        <strong>Error:</strong> ${mensaje}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    `;
+
+    // Insertar antes del formulario
+    const form = document.getElementById('formAltaRuta');
+    form.parentNode.insertBefore(alerta, form);
+
+    // Scroll al error
+    alerta.scrollIntoView({ behavior: 'smooth', block: 'center' });
+}
+
+// Validación de imagen
+document.getElementById('imagenRuta').addEventListener('change', function(e) {
+    const file = e.target.files[0];
+    if (file) {
+        // Validar tamaño (2MB)
+        if (file.size > 2 * 1024 * 1024) {
+            mostrarError('La imagen debe ser menor a 2MB');
+            this.value = '';
+            return;
+        }
+
+        // Validar tipo
+        if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+            mostrarError('Solo se permiten imágenes JPG y PNG');
+            this.value = '';
+            return;
+        }
+
+        // Mostrar preview de la imagen
+        const reader = new FileReader();
+        reader.onload = function(e) {
+            let preview = document.getElementById('imagenPreview');
+            if (!preview) {
+                preview = document.createElement('img');
+                preview.id = 'imagenPreview';
+                preview.className = 'mt-2 rounded d-none';
+                preview.style.maxWidth = '200px';
+                preview.style.maxHeight = '150px';
+                document.getElementById('imagenRuta').parentNode.appendChild(preview);
+            }
+            preview.src = e.target.result;
+            preview.classList.remove('d-none');
+        };
+        reader.readAsDataURL(file);
+    }
+});
+
+// Validación personalizada para múltiple select
+document.getElementById('categorias').addEventListener('change', function() {
+    if (this.selectedOptions.length === 0) {
+        this.classList.add('is-invalid');
+    } else {
+        this.classList.remove('is-invalid');
+    }
 });

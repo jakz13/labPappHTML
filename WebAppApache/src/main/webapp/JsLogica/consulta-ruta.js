@@ -1,97 +1,49 @@
-// Datos de ejemplo de rutas
-const rutasDisponibles = [
-    {
-        id: "ZL1502",
-        nombre: "Montevideo - Rio de Janeiro",
-        descripcionCorta: "Vuelo directo a las playas de Brasil",
-        descripcionCompleta: "Disfrute de un vuelo directo desde Montevideo hasta la maravillosa ciudad de Rio de Janeiro. Con una duración de apenas 2 horas y 30 minutos, llegará listo para explorar las famosas playas de Copacabana e Ipanema, el Cristo Redentor y el Pan de Azúcar. Incluye servicio de comidas y bebidas a bordo.",
-        aerolinea: "ZulyFly",
-        origen: "Montevideo, Uruguay (MVD)",
-        destino: "Rio de Janeiro, Brasil (GIG)",
-        hora: "07:15",
-        costoTurista: 320,
-        costoEjecutivo: 550,
-        costoEquipaje: 25,
-        categorias: ["Internacionales", "América", "Cortos"],
-        estado: "Confirmada",
-        fechaAlta: "15/01/2024",
-        imagen: "https://via.placeholder.com/600x400/3498db/ffffff?text=Montevideo-Rio+de+Janeiro",
-        vuelos: [
-            { id: "ZL1502001", fecha: "25/10/2024", disponible: true },
-            { id: "ZL1502002", fecha: "26/10/2024", disponible: true },
-            { id: "ZL1502003", fecha: "27/10/2024", disponible: false }
-        ]
-    },
-    {
-        id: "IB6012",
-        nombre: "Montevideo - Madrid",
-        descripcionCorta: "Conexión directa con Europa",
-        descripcionCompleta: "Vuele directamente desde Montevideo hasta Madrid en nuestro servicio premium. Disfrute de entretenimiento a bordo en todos los asientos, comidas gourmet y servicio de primera clase. Perfecto para viajes de negocios o placer.",
-        aerolinea: "Iberia",
-        origen: "Montevideo, Uruguay (MVD)",
-        destino: "Madrid, España (MAD)",
-        hora: "22:00",
-        costoTurista: 750,
-        costoEjecutivo: 1200,
-        costoEquipaje: 30,
-        categorias: ["Internacionales", "Europa"],
-        estado: "Confirmada",
-        fechaAlta: "10/02/2024",
-        imagen: "https://via.placeholder.com/600x400/8e44ad/ffffff?text=Montevideo-Madrid",
-        vuelos: [
-            { id: "IB6012201", fecha: "28/10/2024", disponible: true },
-            { id: "IB6012202", fecha: "29/10/2024", disponible: true }
-        ]
-    },
-    {
-        id: "CN804",
-        nombre: "Ciudad de Panamá - Nueva York",
-        descripcionCorta: "De Centroamérica a la gran manzana",
-        descripcionCompleta: "Conecte desde Ciudad de Panamá hasta Nueva York en este vuelo internacional. Copa Airlines ofrece un servicio excepcional con comidas, bebidas y entretenimiento a bordo para hacer su viaje más placentero.",
-        aerolinea: "Copa Airlines",
-        origen: "Ciudad de Panamá, Panamá (PTY)",
-        destino: "Nueva York, USA (JFK)",
-        hora: "08:30",
-        costoTurista: 520,
-        costoEjecutivo: 850,
-        costoEquipaje: 35,
-        categorias: ["Internacionales", "América"],
-        estado: "Confirmada",
-        fechaAlta: "05/03/2024",
-        imagen: "https://via.placeholder.com/600x400/e74c3c/ffffff?text=Panamá-Nueva+York",
-        vuelos: [
-            { id: "CN804101", fecha: "30/10/2024", disponible: true }
-        ]
-    },
-    {
-        id: "AR2050",
-        nombre: "Buenos Aires - Santiago",
-        descripcionCorta: "Cruzando la cordillera de los Andes",
-        descripcionCompleta: "Experimente la majestuosidad de los Andes en este vuelo entre Buenos Aires y Santiago. Disfrute de vistas panorámicas de la cordillera mientras cruza hacia Chile.",
-        aerolinea: "Aerolíneas Argentinas",
-        origen: "Buenos Aires, Argentina (EZE)",
-        destino: "Santiago, Chile (SCL)",
-        hora: "14:30",
-        costoTurista: 280,
-        costoEjecutivo: 480,
-        costoEquipaje: 30,
-        categorias: ["Internacionales", "América", "Cortos"],
-        estado: "Confirmada",
-        fechaAlta: "20/01/2024",
-        imagen: "https://via.placeholder.com/600x400/2ecc71/ffffff?text=Bs+As-Santiago",
-        vuelos: [
-            { id: "AR205001", fecha: "01/11/2024", disponible: true },
-            { id: "AR205002", fecha: "02/11/2024", disponible: true }
-        ]
-    }
-];
+// Reemplazar tu array estático por una función que obtenga datos del servidor
+let rutasDisponibles = [];
 
 // Cargar rutas al iniciar la página
 document.addEventListener('DOMContentLoaded', function() {
-    cargarRutas(rutasDisponibles);
+    cargarRutasDelServidor();
 });
 
-function cargarRutas(rutas) {
+function cargarRutasDelServidor(filtros = {}) {
+    const container = document.getElementById('listaRutas');
+    container.innerHTML = '<div class="col-12 text-center py-4"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Cargando rutas...</p></div>';
+
+    // Construir URL con parámetros de filtro
+    let url = '/tu-app/consultarRutas';
+    const params = new URLSearchParams();
+
+    if (filtros.aerolinea) params.append('aerolinea', filtros.aerolinea);
+    if (filtros.categoria) params.append('categoria', filtros.categoria);
+
+    if (params.toString()) {
+        url += '?' + params.toString();
+    }
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error en la respuesta del servidor');
+            }
+            return response.json();
+        })
+        .then(rutas => {
+            rutasDisponibles = rutas;
+            mostrarRutas(rutas);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            container.innerHTML = `
+                <div class="col-12 text-center py-4">
+                    <p class="text-danger">Error al cargar las rutas: ${error.message}</p>
+                    <button class="btn btn-outline-primary" onclick="cargarRutasDelServidor()">Reintentar</button>
+                </div>
+            `;
+        });
+}
+
+function mostrarRutas(rutas) {
     const container = document.getElementById('listaRutas');
     container.innerHTML = '';
 
@@ -109,7 +61,8 @@ function cargarRutas(rutas) {
         const rutaHTML = `
             <div class="col-md-6">
                 <div class="card ruta-card h-100" onclick="mostrarDetallesRuta('${ruta.id}')">
-                    <img src="${ruta.imagen}" class="ruta-image" alt="${ruta.nombre}">
+                    <img src="${ruta.imagen || 'https://via.placeholder.com/600x400/6c757d/ffffff?text=Sin+Imagen'}" 
+                         class="ruta-image" alt="${ruta.nombre}">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h6 class="card-title">${ruta.nombre}</h6>
@@ -136,7 +89,7 @@ function mostrarDetallesRuta(rutaId) {
 
     if (!ruta) return;
 
-    // Actualizar información de la ruta
+    // Actualizar información de la ruta (igual que antes)
     document.getElementById('rutaNombre').textContent = ruta.nombre;
     document.getElementById('rutaDescripcionCorta').textContent = ruta.descripcionCorta;
     document.getElementById('rutaDescripcion').textContent = ruta.descripcionCompleta;
@@ -150,28 +103,32 @@ function mostrarDetallesRuta(rutaId) {
     document.getElementById('costoTurista').textContent = ruta.costoTurista;
     document.getElementById('costoEjecutivo').textContent = ruta.costoEjecutivo;
     document.getElementById('costoEquipaje').textContent = ruta.costoEquipaje;
-    document.getElementById('imagenRuta').src = ruta.imagen;
+    document.getElementById('imagenRuta').src = ruta.imagen || 'https://via.placeholder.com/600x400/6c757d/ffffff?text=Sin+Imagen';
 
     // Cargar vuelos asociados
     const vuelosContainer = document.getElementById('vuelosAsociados');
     vuelosContainer.innerHTML = '';
 
-    ruta.vuelos.forEach(vuelo => {
-        const vueloHTML = `
-            <div class="col-md-4">
-                <div class="card ${vuelo.disponible ? 'border-success' : 'border-secondary'}">
-                    <div class="card-body text-center">
-                        <h6 class="card-title">${vuelo.id}</h6>
-                        <p class="mb-1">${vuelo.fecha}</p>
-                        <span class="badge ${vuelo.disponible ? 'bg-success' : 'bg-secondary'}">
-                            ${vuelo.disponible ? 'Disponible' : 'Completo'}
-                        </span>
+    if (ruta.vuelos && ruta.vuelos.length > 0) {
+        ruta.vuelos.forEach(vuelo => {
+            const vueloHTML = `
+                <div class="col-md-4">
+                    <div class="card ${vuelo.disponible ? 'border-success' : 'border-secondary'}">
+                        <div class="card-body text-center">
+                            <h6 class="card-title">${vuelo.id}</h6>
+                            <p class="mb-1">${vuelo.fecha}</p>
+                            <span class="badge ${vuelo.disponible ? 'bg-success' : 'bg-secondary'}">
+                                ${vuelo.disponible ? 'Disponible' : 'Completo'}
+                            </span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        `;
-        vuelosContainer.innerHTML += vueloHTML;
-    });
+            `;
+            vuelosContainer.innerHTML += vueloHTML;
+        });
+    } else {
+        vuelosContainer.innerHTML = '<div class="col-12 text-center"><p class="text-muted">No hay vuelos disponibles para esta ruta</p></div>';
+    }
 
     // Mostrar sección de información
     document.getElementById('infoRuta').style.display = 'block';
@@ -189,35 +146,18 @@ function mostrarDetallesRuta(rutaId) {
 function filtrarRutas() {
     const aerolineaFiltro = document.getElementById('aerolinea').value;
     const categoriaFiltro = document.getElementById('categoria').value;
-    const estadoFiltro = document.getElementById('estado').value;
 
-    let rutasFiltradas = rutasDisponibles.filter(ruta => {
-        const coincideAerolinea = !aerolineaFiltro ||
-            ruta.aerolinea.toLowerCase().includes(aerolineaFiltro.toLowerCase());
-        const coincideCategoria = !categoriaFiltro ||
-            ruta.categorias.some(cat => cat.toLowerCase().includes(categoriaFiltro.toLowerCase()));
-        const coincideEstado = estadoFiltro === 'todas' || ruta.estado === 'Confirmada';
+    const filtros = {};
+    if (aerolineaFiltro) filtros.aerolinea = aerolineaFiltro;
+    if (categoriaFiltro) filtros.categoria = categoriaFiltro;
 
-        return coincideAerolinea && coincideCategoria && coincideEstado;
-    });
-
-    cargarRutas(rutasFiltradas);
+    cargarRutasDelServidor(filtros);
     document.getElementById('infoRuta').style.display = 'none';
 }
 
 function limpiarFiltros() {
     document.getElementById('aerolinea').value = '';
     document.getElementById('categoria').value = '';
-    document.getElementById('estado').value = 'confirmada';
-    cargarRutas(rutasDisponibles);
+    cargarRutasDelServidor();
     document.getElementById('infoRuta').style.display = 'none';
 }
-
-// Mejorar la experiencia de usuario
-document.addEventListener('DOMContentLoaded', function() {
-    // Agregar tooltips si es necesario
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
