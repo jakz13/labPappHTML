@@ -77,9 +77,12 @@
 
             <div class="user-actions">
                 <span class="user-info" id="userInfo">
-                    <i class="bi bi-person-gear"></i> Administrador
+                    <i class="bi bi-person-circle"></i> Invitado
                 </span>
-                <button class="btn btn-outline-primary" id="logoutBtn">Cerrar Sesión</button>
+                <button class="btn btn-outline-primary d-none" id="loginBtn" data-bs-toggle="modal" data-bs-target="#loginModal">
+                    Iniciar Sesión
+                </button>
+                <button class="btn btn-primary" id="logoutBtn">Cerrar Sesión</button>
             </div>
         </div>
     </div>
@@ -103,11 +106,7 @@
                                 <label for="aerolinea" class="form-label">Aerolínea *</label>
                                 <select class="form-select" id="aerolinea" required>
                                     <option value="">Seleccione aerolínea...</option>
-                                    <option value="iberia">Iberia</option>
-                                    <option value="zulyfly">ZulyFly</option>
-                                    <option value="copa">Copa Airlines</option>
-                                    <option value="american">American Airlines</option>
-                                    <option value="aerolineas">Aerolíneas Argentinas</option>
+                                    <!-- Las opciones se llenan dinámicamente por JS -->
                                 </select>
                                 <div class="invalid-feedback">Por favor seleccione una aerolínea.</div>
                             </div>
@@ -129,7 +128,6 @@
                                 </select>
                                 <div class="invalid-feedback">Por favor seleccione un vuelo.</div>
                             </div>
-                        </div>
 
                         <!-- Botones de acción -->
                         <div class="d-flex gap-2 mt-4">
