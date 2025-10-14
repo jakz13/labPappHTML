@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Reserva de Vuelo - Juan Viajes</title>
+    <!-- Bootstrap -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+    <link rel="stylesheet" href="CssLogica/estilo-css.css">
+</head>
+<body class="bg-dark">
+<header>
+    <%@ include file="navbar.jsp"%>
+</header>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            <div class="card shadow-lg">
+                <div class="card-header">
+                    <h4 class="mb-0">Reserva de Vuelo</h4>
+                    <p class="mb-0 mt-2 small">Complete los datos para realizar su reserva</p>
+                </div>
+                <div class="card-body p-4">
+
+                    <!-- Indicador de pasos -->
+                    <div class="step-indicator">
+                        <div class="step-line"></div>
+                        <div class="step active" id="step1">
+                            <div class="step-number">1</div>
+                            <div class="step-label">Seleccionar Vuelo</div>
+                        </div>
+                        <div class="step" id="step2">
+                            <div class="step-number">2</div>
+                            <div class="step-label">Datos de Reserva</div>
+                        </div>
+                        <div class="step" id="step3">
+                            <div class="step-number">3</div>
+                            <div class="step-label">Confirmación</div>
+                        </div>
+                    </div>
+
+                    <form id="formReservaVuelo" novalidate>
+                        <!-- Paso 1: Selección de Vuelo -->
+                        <div class="form-section active" id="section1">
+                            <h5 class="text-primary mb-4">Seleccionar Vuelo</h5>
+
+                            <div class="row g-3">
+                                <!-- Selección de Aerolínea -->
+                                <div class="col-md-4">
+                                    <label for="aerolinea" class="form-label">Aerolínea *</label>
+                                    <select class="form-select" id="aerolinea" required>
+                                        </select>
+                                    <div class="invalid-feedback">Por favor seleccione una aerolínea.</div>
+                                </div>
+
+                                <!-- Selección de Ruta -->
+                                <div class="col-md-4">
+                                    <label for="rutaVuelo" class="form-label">Ruta de Vuelo *</label>
+                                    <select class="form-select" id="rutaVuelo" required disabled>
+                                        <option value="">Primero seleccione aerolínea</option>
+                                    </select>
+                                    <div class="invalid-feedback">Por favor seleccione una ruta.</div>
+                                </div>
+
+                                <!-- Selección de Vuelo -->
+                                <div class="col-md-4">
+                                    <label for="vuelo" class="form-label">Vuelo *</label>
+                                    <select class="form-select" id="vuelo" required disabled>
+                                        <option value="">Primero seleccione ruta</option>
+                                    </select>
+                                    <div class="invalid-feedback">Por favor seleccione un vuelo.</div>
+                                </div>
+                            </div>
+
+                            <!-- Información del Vuelo Seleccionado -->
+                            <div id="infoVuelo" class="mt-4" style="display: none;">
+                                <div class="card border-primary">
+                                    <div class="card-body">
+                                        <div class="row">
+                                            <div class="col-md-4">
+                                                <img id="imagenVueloDetalle" src="" alt="Imagen del vuelo" class="img-fluid flight-image w-100">
+                                            </div>
+                                            <div class="col-md-8">
+                                                <h5 id="nombreVueloDetalle" class="text-primary"></h5>
+                                                <div class="row">
+                                                    <div class="col-6">
+                                                        <p class="mb-1 text-light"><strong>Aerolínea:</strong> <span id="aerolineaDetalle"></span></p>
+                                                        <p class="mb-1 text-light"><strong>Ruta:</strong> <span id="rutaDetalle"></span></p>
+                                                        <p class="mb-1 text-light"><strong>Fecha:</strong> <span id="fechaVueloDetalle"></span></p>
+                                                    </div>
+                                                    <div class="col-6">
+                                                        <p class="mb-1 text-light"><strong>Duración:</strong> <span id="duracionVueloDetalle"></span></p>
+                                                        <p class="mb-1 text-light"><strong>Salida:</strong> <span id="horaSalidaDetalle"></span></p>
+                                                        <p class="mb-1 text-light"><strong>Llegada:</strong> <span id="horaLlegadaDetalle"></span></p>
+                                                    </div>
+                                                </div>
+                                                <div class="mt-3">
+                                                    <p class="mb-1 text-light"><strong>Disponibilidad:</strong>
+                                                        <span class="badge bg-success" id="asientosTuristaDetalle"></span> turista |
+                                                        <span class="badge bg-info" id="asientosEjecutivoDetalle"></span> ejecutivo
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <div></div>
+                                <button type="button" class="btn btn-primary" onclick="nextStep(2)" id="btnSiguiente1" disabled>
+                                    Siguiente <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Paso 2: Datos de Reserva -->
+                        <div class="form-section" id="section2">
+                            <h5 class="text-primary mb-4">Datos de la Reserva</h5>
+
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <label for="tipoAsiento" class="form-label">Tipo de Asiento *</label>
+                                    <select class="form-select" id="tipoAsiento" required>
+                                        <option value="">Seleccione tipo...</option>
+                                        <option value="turista">Turista</option>
+                                        <option value="ejecutivo">Ejecutivo</option>
+                                    </select>
+                                    <div class="invalid-feedback">Por favor seleccione un tipo de asiento.</div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="cantidadPasajes" class="form-label">Cantidad de Pasajes *</label>
+                                    <input type="number" class="form-control" id="cantidadPasajes" min="1" max="10" value="1" required>
+                                    <div class="invalid-feedback">Por favor ingrese la cantidad de pasajes.</div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label for="equipajeExtra" class="form-label">Equipaje Extra</label>
+                                    <input type="number" class="form-control" id="equipajeExtra" min="0" max="5" value="0">
+                                </div>
+                            </div>
+
+                            <!-- Datos de Pasajeros -->
+                            <div id="pasajerosDiv" class="mt-4" style="display: none;">
+                                <h6 class="mb-3 text-light">Datos de los Pasajeros</h6>
+                                <div id="pasajerosContainer"></div>
+                            </div>
+
+                            <!-- Forma de Pago -->
+                            <div class="mt-4">
+                                <label for="formaPago" class="form-label">Forma de Pago *</label>
+                                <select class="form-select" id="formaPago" required>
+                                    <option value="">Seleccione forma de pago...</option>
+                                    <option value="general">Pago General</option>
+                                    <option value="paquete">Pago con Paquete</option>
+                                </select>
+                                <div class="invalid-feedback">Por favor seleccione una forma de pago.</div>
+
+                                <!-- Selección de Paquete -->
+                                <div id="selectorPaquete" class="mt-3" style="display: none;">
+                                    <label class="form-label">Seleccionar Paquete</label>
+                                    <select class="form-select" id="paqueteSelect">
+                                        <option value="">Seleccione un paquete...</option>
+                                        <option value="sudamerica">Paquete Sudamérica (3 rutas disponibles)</option>
+                                        <option value="europa">Paquete Europa (2 rutas disponibles)</option>
+                                    </select>
+                                    <div class="form-text">Solo se muestran paquetes vigentes con rutas disponibles</div>
+                                </div>
+                            </div>
+
+                            <!-- Resumen de Costos -->
+                            <div id="resumenCostos" class="mt-4 p-3 border rounded" style="display: none;">
+                                <h6 class="mb-3 text-light">Resumen de Costos</h6>
+                                <div class="costo-item">
+                                    <span class="text-light">Pasajes:</span>
+                                    <span id="costoPasajes" class="text-light">$0</span>
+                                </div>
+                                <div class="costo-item">
+                                    <span class="text-light">Equipaje extra:</span>
+                                    <span id="costoEquipaje" class="text-light">$0</span>
+                                </div>
+                                <div class="costo-item">
+                                    <span class="text-light">Descuento por paquete:</span>
+                                    <span id="descuentoPaquete" class="text-success">$0</span>
+                                </div>
+                                <div class="costo-total">
+                                    <span class="text-light">TOTAL:</span>
+                                    <span id="costoTotal" class="text-success">$0</span>
+                                </div>
+                            </div>
+
+                            <div class="d-flex justify-content-between mt-4">
+                                <button type="button" class="btn btn-secondary" onclick="prevStep(1)">
+                                    <i class="bi bi-arrow-left"></i> Anterior
+                                </button>
+                                <button type="button" class="btn btn-primary" onclick="nextStep(3)" id="btnSiguiente2" disabled>
+                                    Siguiente <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Paso 3: Confirmación -->
+                        <div class="form-section" id="section3">
+                            <h5 class="text-primary mb-4">Confirmar Reserva</h5>
+
+                            <div class="alert alert-info">
+                                <h6>Resumen de su Reserva</h6>
+                                <div id="resumenReserva"></div>
+                            </div>
+
+                            <div class="form-check mb-4">
+                                <input class="form-check-input" type="checkbox" id="confirmarReserva" required>
+                                <label class="form-check-label" for="confirmarReserva">
+                                    Confirmo que los datos ingresados son correctos y acepto los términos y condiciones *
+                                </label>
+                                <div class="invalid-feedback">Debe confirmar la reserva para continuar.</div>
+                            </div>
+
+                            <div class="d-flex justify-content-between">
+                                <button type="button" class="btn btn-secondary" onclick="prevStep(2)">
+                                    <i class="bi bi-arrow-left"></i> Anterior
+                                </button>
+                                <button type="submit" class="btn btn-success">
+                                    <i class="bi bi-check-lg"></i> Confirmar Reserva
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de éxito -->
+<div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-success text-white">
+                <h5 class="modal-title" id="successModalLabel">¡Reserva Confirmada!</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body text-center">
+                <div class="mb-3">
+                    <i class="bi bi-check-circle-fill text-success" style="font-size: 3rem;"></i>
+                </div>
+                <h5 class="text-light">Reserva realizada con éxito</h5>
+                <p class="text-light">Su reserva ha sido confirmada y está ahora en nuestro sistema.</p>
+                <p class="text-light"><strong>Código de reserva:</strong> <span id="codigoReserva" class="text-primary">RES-2024-001</span></p>
+            </div>
+            <div class="modal-footer justify-content-center">
+                <a href="PaginaPrincipal.jsp" class="btn btn-primary">Ir al Inicio</a>
+                <button type="button" class="btn btn-outline-primary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Container para mensajes toast -->
+<div id="toastContainer"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script src="JsLogica/session-manager.js"></script>
+<script src="JsLogica/reserva-vuelo.js"></script>
+</body>
+</html>
