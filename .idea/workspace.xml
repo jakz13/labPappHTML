@@ -4,113 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="8db0f2a3-5ab9-444e-b4ab-9be35fe68e37" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaRutaServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaUsuarioServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaVueloServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarCategoriasServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarRutasServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/UsuarioServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/VerificarEmailServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-usuario.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaRutaServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaUsuarioServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaVueloServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCategoriasServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/UsuarioServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarEmailServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/angus-activation-2.0.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/antlr4-runtime-4.13.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/byte-buddy-1.14.11.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/checker-qual-3.42.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/classmate-1.5.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/hibernate-commons-annotations-6.0.6.Final.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/hibernate-core-6.4.4.Final.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/istack-commons-runtime-4.1.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.activation-2.0.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.activation-api-2.1.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.el-api-4.0.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.inject-api-2.0.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.persistence-api-3.1.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.servlet.jsp.jstl-2.0.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.servlet.jsp.jstl-api-2.0.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.transaction-api-2.0.1.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.xml.bind-api-3.0.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jandex-3.1.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jaxb-core-4.0.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jaxb-runtime-4.0.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jboss-logging-3.5.0.Final.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/postgresql-42.7.3.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/txw2-4.0.2.jar" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/web.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache/META-INF/MANIFEST.MF" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaRutaServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaUsuarioServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaVueloServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarCategoriasServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/UsuarioServlet.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarEmailServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/PMDPlugin.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/artifacts/labPappHTML_war_exploded.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/checkstyle-idea.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/jsLibraryMappings.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/labPappHTML.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/webContexts.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/WebAppApache.iml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-ruta.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-ruta.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-usuario.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-vuelo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/web.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-ruta.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-ruta.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-usuario.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-vuelo.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/test-servlets.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/CssLogica/estilo-css.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/CssLogica/estilo-css.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/alta-paquete.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-paquete.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/alta-ruta.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-ruta.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/alta-usuario.js" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/alta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-vuelo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/compra-paquete.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/compra-paquete.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/consulta-paquete.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-paquete.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/consulta-reserva.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-reserva.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/consulta-ruta.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-ruta.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/consulta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-usuario.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/consulta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-vuelo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/modificar-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/modificar-usuario.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/reserva-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/reserva-vuelo.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/PaginaPrincipal.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/PaginaPrincipal.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/alta-paquete.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-paquete.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/alta-ruta.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-ruta.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/alta-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-usuario.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/alta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-vuelo.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/compra-paquete.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/compra-paquete.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/consulta-paquete.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-paquete.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/consulta-reserva.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-reserva.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/consulta-ruta.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-ruta.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/consulta-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-usuario.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/consulta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-vuelo.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/index.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/index.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/modificar-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/modificar-usuario.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/out/artifacts/WebAppApache_war_exploded/reserva-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/reserva-vuelo.jsp" afterDir="false" />
+    <list default="true" id="9a09d346-2880-4c5b-91eb-ea13930054ee" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.ask2agent.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/copilot.data.migration.edit.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -147,11 +47,14 @@
   </component>
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
     "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "git-widget-placeholder": "jr",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Curbe/IdeaProjects/labPappHTML",
+    "last_opened_file_path": "C:/Users/Curbe/IdeaProjects/labPappHTML/WebAppApache",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
@@ -164,6 +67,11 @@
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Curbe\IdeaProjects\labPappHTML\WebAppApache" />
+    </key>
+  </component>
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
@@ -174,17 +82,29 @@
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="8db0f2a3-5ab9-444e-b4ab-9be35fe68e37" name="Changes" comment="" />
+      <changelist id="9a09d346-2880-4c5b-91eb-ea13930054ee" name="Changes" comment="" />
       <created>1760139833984</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1760139833984</updated>
       <workItem from="1760139835216" duration="1052000" />
       <workItem from="1760377436551" duration="317000" />
+      <workItem from="1760444955142" duration="366000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="3" />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
   </component>
 </project>
