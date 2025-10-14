@@ -79,7 +79,7 @@ public class AltaUsuarioServlet extends HttpServlet {
                 return;
             }
 
-            // Si todo OK
+
             out.print("{\"success\": true}");
 
         } catch (IllegalArgumentException e) {
