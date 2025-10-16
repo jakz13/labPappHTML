@@ -35,6 +35,8 @@ public class AltaUsuarioServlet extends HttpServlet {
                 String nacionalidad = request.getParameter("nacionalidad");
                 String tipoDocumento = request.getParameter("tipoDocumento");
                 String numeroDocumento = request.getParameter("numeroDocumento");
+                String imagenPerfil = request.getParameter("imagenPerfil"); // No se usa en lógica actual
+                String Password = request.getParameter("password");
 
                 // Validar campos obligatorios
                 if (nickname == null || nombre == null || email == null || apellido == null ||
@@ -61,18 +63,18 @@ public class AltaUsuarioServlet extends HttpServlet {
                 }
 
                 // Alta cliente
-                sistema.altaCliente(nickname, nombre, apellido, email, fechaNac, nacionalidad, tipoDoc, numeroDocumento);
+                sistema.altaCliente(nickname, nombre, apellido, email, fechaNac, nacionalidad, tipoDoc, numeroDocumento, Password);
 
             } else if ("aerolinea".equals(tipoUsuario)) {
                 String descripcion = request.getParameter("descripcionAerolinea");
                 String sitioWeb = request.getParameter("sitioWeb");
-
+                String Password = request.getParameter("password");
                 if (nickname == null || nombre == null || email == null || descripcion == null) {
                     out.print("{\"success\": false, \"error\": \"Faltan datos obligatorios\"}");
                     return;
                 }
 
-                sistema.altaAerolinea(nickname, nombre, descripcion, email, sitioWeb);
+                sistema.altaAerolinea(nickname, nombre, descripcion, email, sitioWeb, Password);
 
             } else {
                 out.print("{\"success\": false, \"error\": \"Tipo de usuario inválido\"}");

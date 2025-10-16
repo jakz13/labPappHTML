@@ -39,6 +39,7 @@ public class AltaRutaServlet extends HttpServlet {
             // Obtener la aerolínea (ajusta si es por sesión)
             DtAerolinea aerolinea = sistema.obtenerAerolinea(nombreAerolinea);
 
+            // Ajuste: la firma de ISistema espera (nombre, descripcionCorta, aerolinea, origen, destino, hora, fechaAlta, costoTurista, costoEjecutivo, costoEquipajeExtra, categorias)
             sistema.altaRutaVuelo(
                     nombre, descripcion, descripcionCorta, aerolinea, ciudadOrigen, ciudadDestino, hora,
                     fechaAlta, costoTurista, costoEjecutivo, costoEquipajeExtra, categorias

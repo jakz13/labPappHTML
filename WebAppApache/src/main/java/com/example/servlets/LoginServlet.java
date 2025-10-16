@@ -42,6 +42,13 @@ public class LoginServlet extends HttpServlet {
                 System.out.println("Cliente disponible: " + c.getNickname());
                 if (c.getNickname().equalsIgnoreCase(user)) {
                     try {
+                    if (sistema.verificarLogin(c.getEmail(), password)) {
+                        System.out.println("Contraseña verificada para cliente: " + c.getNickname());
+                    } else {
+                        System.out.println("Contraseña incorrecta para cliente: " + c.getNickname());
+                        continue; // Saltar a la siguiente iteración si la contraseña no coincide
+                    }
+
                         cliente = sistema.verInfoCliente(c.getNickname());
                         System.out.println("Cliente encontrado: " + c.getNickname());
                         break;

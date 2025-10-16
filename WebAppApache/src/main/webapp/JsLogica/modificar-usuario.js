@@ -1,8 +1,12 @@
 // Variables globales
 let imagenActual = "https://via.placeholder.com/150/3498db/ffffff?text=MG";
+let usuarioActual = null;
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
+    // Cargar datos del usuario
+    cargarDatosUsuario();
+
     // Configurar validación de contraseña
     configurarValidacionPassword();
 
@@ -12,6 +16,73 @@ document.addEventListener('DOMContentLoaded', function() {
     // Configurar validación de formulario
     configurarValidacionFormulario();
 });
+
+function cargarDatosUsuario() {
+    fetch('api/usuario/actual', {
+        credentials: 'include'
+    })
+        .then(res => {
+            if (!res.ok) throw new Error('Error al cargar datos del usuario');
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                usuarioActual = data;
+                llenarFormulario(data);
+            } else {
+                throw new Error(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarMensajeError('No se pudieron cargar los datos del usuario: ' + error.message);
+        });
+}
+
+function llenarFormulario(usuario) {
+    // Datos básicos (no editables)
+    document.getElementById('nickname').value = usuario.nickname || '';
+    document.getElementById('correo').value = usuario.email || '';
+
+    // Actualizar información del header
+    const headerInfo = document.querySelector('.alert-custom');
+    if (headerInfo) {
+        const nombreCompleto = usuario.nombre + (usuario.apellido ? ' ' + usuario.apellido : '');
+        headerInfo.querySelector('h6').textContent = nombreCompleto;
+        headerInfo.querySelector('p').textContent =
+            (usuario.tipo === 'cliente' ? 'Cliente' : 'Aerolínea') +
+            ' | Registrado: ' + (usuario.fechaRegistro ? formatFecha(usuario.fechaRegistro) : 'Fecha no disponible');
+    }
+
+    // Mostrar campos según el tipo de usuario
+    if (usuario.tipo === 'cliente') {
+        document.getElementById('clienteFields').style.display = 'block';
+        document.getElementById('aerolineaFields').style.display = 'none';
+
+        // Llenar campos de cliente
+        document.getElementById('nombre').value = usuario.nombre || '';
+        document.getElementById('apellido').value = usuario.apellido || '';
+        document.getElementById('fechaNacimiento').value = usuario.fechaNacimiento || '';
+        document.getElementById('nacionalidad').value = usuario.nacionalidad || '';
+        document.getElementById('tipoDoc').value = usuario.tipoDocumento || '';
+        document.getElementById('numDoc').value = usuario.numeroDocumento || '';
+
+    } else if (usuario.tipo === 'aerolinea') {
+        document.getElementById('clienteFields').style.display = 'none';
+        document.getElementById('aerolineaFields').style.display = 'block';
+
+        // Llenar campos de aerolínea
+        document.getElementById('nombre').value = usuario.nombre || '';
+        document.getElementById('descripcion').value = usuario.descripcion || '';
+        document.getElementById('sitioWeb').value = usuario.sitioWeb || '';
+    }
+}
+
+function formatFecha(fechaStr) {
+    if (!fechaStr) return '';
+    const fecha = new Date(fechaStr);
+    return fecha.toLocaleDateString('es-ES');
+}
 
 function configurarValidacionPassword() {
     const passwordInput = document.getElementById('password');
@@ -29,10 +100,12 @@ function configurarValidacionPassword() {
         if (password.match(/[^a-zA-Z\d]/)) strength += 25;
 
         // Actualizar barra de fortaleza
-        strengthBar.style.width = strength + '%';
-        strengthBar.style.backgroundColor =
-            strength < 50 ? '#dc3545' :
-                strength < 75 ? '#ffc107' : '#28a745';
+        if (strengthBar) {
+            strengthBar.style.width = strength + '%';
+            strengthBar.style.backgroundColor =
+                strength < 50 ? '#dc3545' :
+                    strength < 75 ? '#ffc107' : '#28a745';
+        }
 
         // Validar confirmación
         validarConfirmacionPassword();
@@ -104,26 +177,11 @@ function configurarValidacionFormulario() {
         }
 
         if (this.checkValidity()) {
-            // Simular guardado exitoso
-            const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionModal'));
-            confirmacionModal.show();
-
-            // Aquí iría la lógica para enviar al servidor
-            console.log('Datos a guardar:', {
-                nombre: document.getElementById('nombre').value,
-                apellido: document.getElementById('apellido').value,
-                fechaNacimiento: document.getElementById('fechaNacimiento').value,
-                nacionalidad: document.getElementById('nacionalidad').value,
-                tipoDocumento: document.getElementById('tipoDoc').value,
-                numeroDocumento: document.getElementById('numDoc').value,
-                password: password || '*** NO CAMBIADA ***',
-                imagen: imagenActual !== 'https://via.placeholder.com/150/3498db/ffffff?text=MG' ? 'NUEVA_IMAGEN' : 'MISMA_IMAGEN'
-            });
+            guardarCambios();
         } else {
             event.stopPropagation();
+            this.classList.add('was-validated');
         }
-
-        this.classList.add('was-validated');
     });
 
     // Validación en tiempo real para campos requeridos
@@ -141,12 +199,83 @@ function configurarValidacionFormulario() {
     });
 }
 
-// Cambiar entre tipos de usuario (aunque en la práctica no se debería poder cambiar)
-document.getElementById('tipoUsuario')?.addEventListener('change', function() {
-    const esCliente = this.value === 'cliente';
-    document.getElementById('clienteFields').style.display = esCliente ? 'block' : 'none';
-    document.getElementById('aerolineaFields').style.display = esCliente ? 'none' : 'block';
-});
+function guardarCambios() {
+    const datos = {
+        nombre: document.getElementById('nombre').value
+    };
+
+    // Agregar campos según el tipo de usuario
+    if (usuarioActual.tipo === 'cliente') {
+        datos.apellido = document.getElementById('apellido').value;
+        datos.fechaNacimiento = document.getElementById('fechaNacimiento').value;
+        datos.nacionalidad = document.getElementById('nacionalidad').value;
+        datos.tipoDocumento = document.getElementById('tipoDoc').value;
+        datos.numeroDocumento = document.getElementById('numDoc').value;
+    } else if (usuarioActual.tipo === 'aerolinea') {
+        datos.descripcion = document.getElementById('descripcion').value;
+        datos.sitioWeb = document.getElementById('sitioWeb').value;
+    }
+
+    // Agregar password si se cambió
+    const password = document.getElementById('password').value;
+    if (password) {
+        datos.password = password;
+    }
+
+    console.log('Enviando datos:', datos);
+
+    fetch('api/usuario/actualizar', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(datos),
+        credentials: 'include'
+    })
+        .then(res => {
+            if (!res.ok) throw new Error('Error al actualizar datos');
+            return res.json();
+        })
+        .then(data => {
+            if (data.success) {
+                const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionModal'));
+                confirmacionModal.show();
+            } else {
+                throw new Error(data.error);
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarMensajeError('No se pudieron guardar los cambios: ' + error.message);
+        });
+}
+
+function mostrarMensajeError(mensaje) {
+    const toastHTML = `
+        <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>${mensaje}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+    const toastContainer = document.getElementById('toastContainer') || (() => {
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed top-0 end-0 p-3';
+        container.style.zIndex = '1060';
+        document.body.appendChild(container);
+        return container;
+    })();
+
+    toastContainer.innerHTML = toastHTML;
+    const toastElement = toastContainer.querySelector('.toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}
 
 // Prevenir que usuarios cambien su tipo (solo para demostración)
 const tipoUsuarioSelect = document.getElementById('tipoUsuario');
