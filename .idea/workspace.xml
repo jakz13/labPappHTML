@@ -9,37 +9,124 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="fxg">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/MiProyectoSwing.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/maven_wrapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/web/WEB-INF/web.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="registro">
+      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtAerolinea.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCategoria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCiudad.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCliente.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtItemPaquete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtPaquete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtPasajero.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtReserva.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtRutaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtUsuario.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Aerolinea.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Categoria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Ciudad.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Cliente.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/CompraPaqLogica.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Fabrica.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ISistema.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ItemPaquete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorAerolinea.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCategoria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCiudad.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCliente.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorPaquete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorRutaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Paquete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Pasajero.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/PasswordManager.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Reserva.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/RutaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Sistema.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/TipoAsiento.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/TipoDoc.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Usuario.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Vuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/IntentoDiseño.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/IntentoDiseño.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/Main.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AceptarRuta.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AceptarRuta.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AgregarRutaVuelo.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AgregarRutaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaAereolinea.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaAereolinea.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCategoria.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCategoria.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCiudad.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCiudad.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaPaquete.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaPaquete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaVuelo.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/CompraPaquete.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/CompraPaquete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaPaquete.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaPaquete.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaRutaVuelo.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaRutaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaVuelo.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/EligeUsuario.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/EligeUsuario.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/InicioSesion.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/InicioSesion.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosAereolinea.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosAereolinea.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosCliente.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosCliente.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/NuevaRutaVuelo.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/NuevaRutaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ReservaVuelo.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ReservaVuelo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/VerUsuarios.form" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/VerUsuarios.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CheckSessionServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CheckSessionServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LoginServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LogoutServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LogoutServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/RegistrarReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/RegistrarReservaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/session-manager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/PaginaPrincipal.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/PaginaPrincipal.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaRutaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaRutaServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaRutaServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaUsuarioServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaVueloServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CheckSessionServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CheckSessionServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCategoriasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCategoriasServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LogoutServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LogoutServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservaVueloServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/UsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/UsuarioServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerInfoVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerInfoVueloServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarEmailServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarEmailServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache/META-INF/MANIFEST.MF" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaRutaServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaUsuarioServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaVueloServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CheckSessionServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CheckSessionServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarAerolineasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarAerolineasServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarCategoriasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarCategoriasServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LogoutServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LogoutServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservaVueloServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/UsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/UsuarioServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerInfoVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerInfoVueloServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarEmailServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarEmailServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -99,6 +186,7 @@
   <component name="PropertiesComponent"><![CDATA[{
   "keyToString": {
     "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Application.Main.executor": "Run",
     "ModuleVcsDetector.initialDetectionPerformed": "true",
     "RunOnceActivity.ShowReadmeOnStart": "true",
     "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
@@ -109,13 +197,13 @@
     "git-widget-placeholder": "junior",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp/WEB-INF/lib",
+    "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/java",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Artifacts",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.30358785",
     "settings.editor.selected.configurable": "preferences.applicationServers",
@@ -124,13 +212,14 @@
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp\WEB-INF\lib" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\target" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat" />
-      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\gui" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp" />
@@ -149,17 +238,19 @@
       </map>
     </option>
   </component>
-  <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
+  <component name="RunManager" selected="Application.Main">
+    <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
+      <option name="MAIN_CLASS_NAME" value="Presentacion.gui.Main" />
       <module name="WebAppApache" />
+      <extension name="coverage">
+        <pattern>
+          <option name="PATTERN" value="Presentacion.gui.*" />
+          <option name="ENABLED" value="true" />
+        </pattern>
+      </extension>
       <method v="2">
         <option name="Make" enabled="true" />
       </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="WebAppApache" />
-      <option name="filePath" />
-      <method v="2" />
     </configuration>
     <configuration name="Tomcat 11.0.11" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 11.0.11" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
       <option name="UPDATING_POLICY" value="restart-server" />
@@ -248,6 +339,11 @@
         </option>
       </method>
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Application.Main" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SharedIndexes">
     <attachedChunks>
@@ -273,7 +369,8 @@
       <workItem from="1760400110377" duration="12091000" />
       <workItem from="1760447957679" duration="9649000" />
       <workItem from="1760457663446" duration="4396000" />
-      <workItem from="1760479760639" duration="7519000" />
+      <workItem from="1760479760639" duration="17289000" />
+      <workItem from="1760585006030" duration="632000" />
     </task>
     <task id="LOCAL-00001" summary="fxg">
       <option name="closed" value="true" />
@@ -299,7 +396,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760457895232</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="registro">
+      <option name="closed" value="true" />
+      <created>1760573654482</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1760573654482</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -330,6 +435,7 @@
   </component>
   <component name="VcsManagerConfiguration">
     <MESSAGE value="fxg" />
-    <option name="LAST_COMMIT_MESSAGE" value="fxg" />
+    <MESSAGE value="registro" />
+    <option name="LAST_COMMIT_MESSAGE" value="registro" />
   </component>
 </project>

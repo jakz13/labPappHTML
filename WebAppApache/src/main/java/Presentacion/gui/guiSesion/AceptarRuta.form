@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="Presentacion.gui.guiSesion.AceptarRuta">
+  <grid id="27dc6" binding="panel1" default-binding="true" layout-manager="BorderLayout" hgap="0" vgap="0">
+    <constraints>
+      <xy x="396" y="20" width="457" height="400"/>
+    </constraints>
+    <properties/>
+    <border type="none"/>
+    <children>
+      <grid id="f12fa" layout-manager="BorderLayout" hgap="0" vgap="0">
+        <constraints border-constraint="Center"/>
+        <properties>
+          <background color="-2700033"/>
+        </properties>
+        <border type="none"/>
+        <children>
+          <grid id="36792" layout-manager="GridBagLayout">
+            <constraints border-constraint="Center"/>
+            <properties>
+              <background color="-2700033"/>
+            </properties>
+            <border type="none"/>
+            <children>
+              <component id="323de" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="1" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <font name="Segoe UI Black" size="16"/>
+                  <horizontalAlignment value="0"/>
+                  <text value="RUTAS DE VUELO INGRESADAS:"/>
+                </properties>
+              </component>
+              <component id="d3406" class="javax.swing.JLabel">
+                <constraints>
+                  <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="0" fill="0" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <font name="Segoe UI Black" size="16"/>
+                  <horizontalAlignment value="0"/>
+                  <text value="AEROLINEA QUE PUBLICA LA RUTA DE VUELO:"/>
+                </properties>
+              </component>
+              <component id="5b5b2" class="javax.swing.JComboBox" binding="comboBoxAerolineas">
+                <constraints>
+                  <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="98419" class="javax.swing.JComboBox" binding="comboBoxRutas">
+                <constraints>
+                  <grid row="1" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="1.0" weighty="0.0"/>
+                </constraints>
+                <properties/>
+              </component>
+              <component id="471a3" class="javax.swing.JTextArea" binding="infoRutaTextArea">
+                <constraints>
+                  <grid row="2" column="0" row-span="1" col-span="2" vsize-policy="6" hsize-policy="6" anchor="0" fill="3" indent="0" use-parent-layout="false">
+                    <preferred-size width="150" height="50"/>
+                  </grid>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <background color="-2700033"/>
+                </properties>
+              </component>
+              <grid id="1d027" layout-manager="GridLayoutManager" row-count="1" column-count="3" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+                <margin top="0" left="0" bottom="0" right="0"/>
+                <constraints>
+                  <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+                  <gridbag weightx="0.0" weighty="0.0"/>
+                </constraints>
+                <properties>
+                  <background color="-2700033"/>
+                </properties>
+                <border type="none"/>
+                <children>
+                  <component id="c3fab" class="javax.swing.JButton" binding="aceptarButton">
+                    <constraints>
+                      <grid row="0" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="ACEPTAR"/>
+                    </properties>
+                  </component>
+                  <component id="5f047" class="javax.swing.JButton" binding="rechazarButton">
+                    <constraints>
+                      <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="RECHAZAR"/>
+                    </properties>
+                  </component>
+                  <component id="a6563" class="javax.swing.JButton" binding="cancelarButton">
+                    <constraints>
+                      <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+                    </constraints>
+                    <properties>
+                      <text value="CANCELAR"/>
+                    </properties>
+                  </component>
+                </children>
+              </grid>
+            </children>
+          </grid>
+        </children>
+      </grid>
+    </children>
+  </grid>
+</form>

@@ -24,6 +24,7 @@ public class AltaRutaServlet extends HttpServlet {
             sistema.cargarDesdeBd();
 
             String nombre = request.getParameter("nombre");
+            String descripcionCorta = request.getParameter("descripcionCorta");
             String descripcion = request.getParameter("descripcion");
             String nombreAerolinea = "coso"; // Puedes ajustar si es fijo o por sesión
             String ciudadOrigen = request.getParameter("origen");
@@ -39,7 +40,7 @@ public class AltaRutaServlet extends HttpServlet {
             DtAerolinea aerolinea = sistema.obtenerAerolinea(nombreAerolinea);
 
             sistema.altaRutaVuelo(
-                    nombre, descripcion, aerolinea, ciudadOrigen, ciudadDestino, hora,
+                    nombre, descripcion, descripcionCorta, aerolinea, ciudadOrigen, ciudadDestino, hora,
                     fechaAlta, costoTurista, costoEjecutivo, costoEquipajeExtra, categorias
             );
 
