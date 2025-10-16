@@ -9,7 +9,9 @@ import java.io.*;
 public class LogoutServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         HttpSession session = request.getSession(false);
-        if (session != null) session.invalidate();
+        if (session != null) {
+            session.invalidate();
+        }
         response.setContentType("application/json");
         response.getWriter().print("{\"success\":true}");
     }

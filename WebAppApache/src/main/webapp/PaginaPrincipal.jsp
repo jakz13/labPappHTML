@@ -185,33 +185,7 @@
     </div>
 </main>
 
-<!-- Modal para inicio de sesión -->
-<div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="loginModalLabel">Iniciar Sesión</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
-            <div class="modal-body">
-                <form id="loginForm">
-                    <div class="mb-3">
-                        <label for="loginEmail" class="form-label">Email o Nickname</label>
-                        <input type="text" class="form-control" id="loginEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="loginPassword" class="form-label">Contraseña</label>
-                        <input type="password" class="form-control" id="loginPassword" required>
-                    </div>
-                    <button type="submit" class="btn btn-primary w-100">Iniciar Sesión</button>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <p class="text-center w-100">¿No tienes cuenta? <a href="alta-usuario.jsp" class="text-accent">Regístrate aquí</a></p>
-            </div>
-        </div>
-    </div>
-</div>
+
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="JsLogica/session-manager.js"></script>

@@ -27,7 +27,7 @@ public class RegistrarReservaServlet extends HttpServlet {
             String line;
             while ((line = reader.readLine()) != null) sb.append(line);
             String body = sb.toString();
-
+            System.out.println("=== comienza reserva ===");
             JSONObject obj = new JSONObject(body);
 
             String vuelo = obj.getString("vuelo");
@@ -43,7 +43,9 @@ public class RegistrarReservaServlet extends HttpServlet {
                 out.print("{\"success\":false, \"error\":\"Usuario no autenticado\"}");
                 return;
             }
+            System.out.println("encontrando en la sesion");
 
+            System.out.println(nicknameCliente+"encontrado en la sesion");
             // Pasajeros (opcional)
             List<Pasajero> pasajeros = new ArrayList<>();
             if (obj.has("pasajeros")) {
@@ -55,6 +57,7 @@ public class RegistrarReservaServlet extends HttpServlet {
                     ));
                 }
             }
+            System.out.println("Pasajeros procesados: " + pasajeros.size());
 
             TipoAsiento tipoAsiento = tipoAsientoStr.equalsIgnoreCase("ejecutivo") ? TipoAsiento.EJECUTIVO : TipoAsiento.TURISTA;
             LocalDate fechaReserva = LocalDate.now();
@@ -65,7 +68,7 @@ public class RegistrarReservaServlet extends HttpServlet {
             sistema.crearYRegistrarReserva(
                     nicknameCliente, vuelo, fechaReserva, costo, tipoAsiento, cantidadPasajes, equipajeExtra, pasajeros
             );
-
+            System.out.println("=== FIN PROCESO DE COMPRA ===");
             out.print("{\"success\":true, \"codigoReserva\":\"RES-" + System.currentTimeMillis() + "\"}");
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
