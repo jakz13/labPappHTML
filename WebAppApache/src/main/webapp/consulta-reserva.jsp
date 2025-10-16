@@ -30,17 +30,14 @@
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <i class="bi bi-person-check"></i>
-                                <strong id="tipoUsuarioTexto" class="text-light">Cliente</strong> -
-                                <span id="nombreUsuario" class="text-light">María González</span>
+                                <strong id="tipoUsuarioTexto" class="text-light">Cargando...</strong> -
+                                <span id="nombreUsuario" class="text-light">Cargando...</span>
                             </div>
-                            <button class="btn btn-outline-primary btn-sm" onclick="cambiarTipoUsuario()">
-                                Cambiar a <span id="tipoAlternativo">Aerolínea</span>
-                            </button>
                         </div>
                     </div>
 
                     <!-- Flujo para Cliente -->
-                    <div id="flujoCliente">
+                    <div id="flujoCliente" style="display: none;">
                         <div class="step-indicator">
                             <div class="step-line"></div>
                             <div class="step active" id="stepCliente1">
@@ -69,11 +66,7 @@
                                 <div class="mb-3">
                                     <label for="aerolineaCliente" class="form-label">Aerolínea</label>
                                     <select class="form-select" id="aerolineaCliente">
-                                        <option value="">Seleccione una aerolínea...</option>
-                                        <option value="zulyfly">ZulyFly</option>
-                                        <option value="iberia">Iberia</option>
-                                        <option value="copa">Copa Airlines</option>
-                                        <option value="american">American Airlines</option>
+                                        <option value="">Cargando aerolíneas...</option>
                                     </select>
                                 </div>
 
@@ -92,7 +85,7 @@
                                 <div class="mb-3">
                                     <label for="rutaCliente" class="form-label">Ruta de Vuelo</label>
                                     <select class="form-select" id="rutaCliente">
-                                        <option value="">Seleccione una ruta...</option>
+                                        <option value="">Seleccione una aerolínea primero...</option>
                                     </select>
                                 </div>
 
@@ -113,7 +106,7 @@
                                 <div class="mb-3">
                                     <label for="vueloCliente" class="form-label">Vuelo</label>
                                     <select class="form-select" id="vueloCliente">
-                                        <option value="">Seleccione un vuelo...</option>
+                                        <option value="">Seleccione una ruta primero...</option>
                                     </select>
                                 </div>
 
@@ -132,7 +125,10 @@
                                 <h5 class="text-primary mb-4">Detalles de la Reserva</h5>
 
                                 <div id="reservaClienteDetalle">
-                                    <!-- La información de la reserva se cargará aquí -->
+                                    <div class="text-center text-muted">
+                                        <i class="bi bi-search" style="font-size: 3rem;"></i>
+                                        <p class="mt-2">Seleccione un vuelo para consultar su reserva</p>
+                                    </div>
                                 </div>
 
                                 <div class="d-flex justify-content-between mt-4">
@@ -177,7 +173,7 @@
                                 <div class="mb-3">
                                     <label for="rutaAerolinea" class="form-label">Ruta de Vuelo</label>
                                     <select class="form-select" id="rutaAerolinea">
-                                        <option value="">Seleccione una ruta...</option>
+                                        <option value="">Cargando rutas...</option>
                                     </select>
                                 </div>
 
@@ -196,7 +192,7 @@
                                 <div class="mb-3">
                                     <label for="vueloAerolinea" class="form-label">Vuelo</label>
                                     <select class="form-select" id="vueloAerolinea">
-                                        <option value="">Seleccione un vuelo...</option>
+                                        <option value="">Seleccione una ruta primero...</option>
                                     </select>
                                 </div>
 
@@ -215,7 +211,10 @@
                                 <h5 class="text-primary mb-4">Seleccionar Reserva</h5>
 
                                 <div id="listaReservasAerolinea" class="row g-3">
-                                    <!-- Las reservas se cargarán dinámicamente -->
+                                    <div class="col-12 text-center text-muted">
+                                        <i class="bi bi-receipt" style="font-size: 3rem;"></i>
+                                        <p class="mt-2">Seleccione un vuelo para ver las reservas</p>
+                                    </div>
                                 </div>
 
                                 <div class="d-flex justify-content-between mt-4">
@@ -233,7 +232,10 @@
                                 <h5 class="text-primary mb-4">Detalles de la Reserva</h5>
 
                                 <div id="reservaAerolineaDetalle">
-                                    <!-- La información de la reserva se cargará aquí -->
+                                    <div class="text-center text-muted">
+                                        <i class="bi bi-person-check" style="font-size: 3rem;"></i>
+                                        <p class="mt-2">Seleccione una reserva para ver los detalles</p>
+                                    </div>
                                 </div>
 
                                 <div class="d-flex justify-content-between mt-4">
@@ -246,6 +248,15 @@
                                 </div>
                             </div>
                         </form>
+                    </div>
+
+                    <!-- Mensaje para usuarios no autenticados -->
+                    <div id="flujoNoAutenticado" style="display: none;">
+                        <div class="alert alert-warning text-center">
+                            <h5 class="text-warning">Acceso Restringido</h5>
+                            <p class="text-dark">Debe iniciar sesión para consultar reservas de vuelo.</p>
+                            <a href="login.jsp" class="btn btn-primary">Iniciar Sesión</a>
+                        </div>
                     </div>
 
                 </div>

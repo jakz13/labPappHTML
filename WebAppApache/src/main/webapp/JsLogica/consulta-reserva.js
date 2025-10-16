@@ -1,334 +1,338 @@
-// Validación del formulario y funcionalidad
+// Variables globales
+let tipoUsuario = null;
+let usuarioInfo = null;
+let reservaSeleccionada = null;
+let datosAerolineas = [];
+let datosRutas = [];
+let datosVuelos = [];
+
+// Inicialización
 document.addEventListener('DOMContentLoaded', function() {
-    // Inicializar funcionalidad
+    console.log('Inicializando consulta de reserva...');
     inicializarConsultaReserva();
 });
 
-// Datos de ejemplo
-const datos = {
-    aerolineas: {
-        'zulyfly': {
-            nombre: 'ZulyFly Airlines',
-            rutas: {
-                'ZL1502': {
-                    nombre: 'Montevideo - Rio de Janeiro',
-                    vuelos: {
-                        'ZL1502001': {
-                            fecha: '25/10/2024',
-                            reservas: [
-                                {
-                                    id: 'RES-2024-ZL001',
-                                    cliente: 'María González',
-                                    pasajeros: ['María González', 'Carlos Rodríguez'],
-                                    tipoAsiento: 'Ejecutivo',
-                                    cantidadPasajes: 2,
-                                    equipajeExtra: 1,
-                                    costoTotal: 1100,
-                                    fechaReserva: '15/10/2024',
-                                    estado: 'Confirmada'
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        'iberia': {
-            nombre: 'Iberia',
-            rutas: {
-                'IB6012': {
-                    nombre: 'Montevideo - Madrid',
-                    vuelos: {
-                        'IB6012201': {
-                            fecha: '28/10/2024',
-                            reservas: [
-                                {
-                                    id: 'RES-2024-IB001',
-                                    cliente: 'María González',
-                                    pasajeros: ['María González'],
-                                    tipoAsiento: 'Turista',
-                                    cantidadPasajes: 1,
-                                    equipajeExtra: 0,
-                                    costoTotal: 750,
-                                    fechaReserva: '10/10/2024',
-                                    estado: 'Confirmada'
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        'copa': {
-            nombre: 'Copa Airlines',
-            rutas: {
-                'CN804': {
-                    nombre: 'Ciudad de Panamá - Nueva York',
-                    vuelos: {
-                        'CN804101': {
-                            fecha: '30/10/2024',
-                            reservas: [
-                                {
-                                    id: 'RES-2024-CN001',
-                                    cliente: 'María González',
-                                    pasajeros: ['María González', 'Ana López', 'Pedro Martínez'],
-                                    tipoAsiento: 'Turista',
-                                    cantidadPasajes: 3,
-                                    equipajeExtra: 2,
-                                    costoTotal: 1200,
-                                    fechaReserva: '12/10/2024',
-                                    estado: 'Confirmada'
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        },
-        'american': {
-            nombre: 'American Airlines',
-            rutas: {
-                'AA904': {
-                    nombre: 'Miami - Cancún',
-                    vuelos: {
-                        'AA904301': {
-                            fecha: '01/11/2024',
-                            reservas: [
-                                {
-                                    id: 'RES-2024-AA001',
-                                    cliente: 'María González',
-                                    pasajeros: ['María González'],
-                                    tipoAsiento: 'Ejecutivo',
-                                    cantidadPasajes: 1,
-                                    equipajeExtra: 1,
-                                    costoTotal: 650,
-                                    fechaReserva: '18/10/2024',
-                                    estado: 'Pendiente'
-                                }
-                            ]
-                        }
-                    }
-                }
-            }
-        }
-    },
-    aerolineaActual: 'zulyfly' // Para cuando el usuario es aerolínea
-};
+async function inicializarConsultaReserva() {
+    // Esperar a que session-manager se inicialice
+    await new Promise(resolve => setTimeout(resolve, 500));
 
-// Variables globales
-let tipoUsuario = 'cliente'; // 'cliente' o 'aerolinea'
-let reservaSeleccionada = null;
+    const estadoSesion = await verificarSesion();
 
-function inicializarConsultaReserva() {
-    cargarDatosIniciales();
-    configurarEventListeners();
+    if (estadoSesion && estadoSesion.authenticated) {
+        usuarioInfo = estadoSesion;
+        determinarTipoUsuario(estadoSesion);
+        await cargarAerolineas();
+        configurarEventListeners();
+    } else {
+        mostrarFlujoNoAutenticado();
+    }
 }
 
-function cargarDatosIniciales() {
-    // Cargar rutas para aerolínea
-    cargarRutasAerolinea();
+// Función para verificar sesión
+function verificarSesion() {
+    return new Promise((resolve) => {
+        fetch('api/check-session', {
+            credentials: 'include'
+        })
+            .then(res => res.json())
+            .then(data => {
+                console.log('Estado de sesión en consulta-reserva:', data);
+                resolve(data);
+            })
+            .catch(error => {
+                console.error('Error verificando sesión:', error);
+                resolve({ authenticated: false });
+            });
+    });
 }
 
+// Determinar tipo de usuario basado en la sesión
+function determinarTipoUsuario(estadoSesion) {
+    // Usar el tipo que viene del servlet check-session
+    tipoUsuario = estadoSesion.tipo; // 'cliente' o 'aerolinea'
+
+    console.log('Tipo de usuario determinado:', tipoUsuario);
+
+    // Actualizar UI
+    document.getElementById('tipoUsuarioTexto').textContent = tipoUsuario === 'aerolinea' ? 'Aerolínea' : 'Cliente';
+    document.getElementById('nombreUsuario').textContent = estadoSesion.nickname || 'Usuario';
+
+    // Mostrar el flujo correspondiente
+    if (tipoUsuario === 'cliente') {
+        document.getElementById('flujoCliente').style.display = 'block';
+        document.getElementById('flujoAerolinea').style.display = 'none';
+        document.getElementById('flujoNoAutenticado').style.display = 'none';
+    } else if (tipoUsuario === 'aerolinea') {
+        document.getElementById('flujoCliente').style.display = 'none';
+        document.getElementById('flujoAerolinea').style.display = 'block';
+        document.getElementById('flujoNoAutenticado').style.display = 'none';
+    } else {
+        mostrarFlujoNoAutenticado();
+    }
+}
+
+function mostrarFlujoNoAutenticado() {
+    document.getElementById('flujoCliente').style.display = 'none';
+    document.getElementById('flujoAerolinea').style.display = 'none';
+    document.getElementById('flujoNoAutenticado').style.display = 'block';
+    document.getElementById('tipoUsuarioTexto').textContent = 'No autenticado';
+    document.getElementById('nombreUsuario').textContent = 'Invitado';
+}
+
+// Cargar aerolíneas desde backend
+function cargarAerolineas() {
+    return new Promise((resolve, reject) => {
+        fetch('api/aerolineas')
+            .then(res => {
+                if (!res.ok) {
+                    throw new Error(`HTTP error! status: ${res.status}`);
+                }
+                return res.json();
+            })
+            .then(data => {
+                datosAerolineas = data;
+                console.log('Aerolíneas cargadas:', datosAerolineas);
+
+                if (tipoUsuario === 'cliente') {
+                    const selectCliente = document.getElementById('aerolineaCliente');
+                    selectCliente.innerHTML = '<option value="">Seleccione aerolínea...</option>';
+                    data.forEach(a => {
+                        selectCliente.innerHTML += `<option value="${a.nickname}">${a.nombre}</option>`;
+                    });
+                } else {
+                    // Para aerolínea, cargar rutas de la aerolínea del usuario
+                    const aerolineaUsuario = usuarioInfo.nickname;
+                    if (aerolineaUsuario) {
+                        cargarRutasAerolinea(aerolineaUsuario);
+                    }
+                }
+                resolve();
+            })
+            .catch(err => {
+                console.error("Error al cargar aerolíneas:", err);
+                mostrarMensajeError('Error al cargar las aerolíneas');
+
+                if (tipoUsuario === 'cliente') {
+                    document.getElementById('aerolineaCliente').innerHTML = '<option value="">Error al cargar aerolíneas</option>';
+                }
+                reject(err);
+            });
+    });
+}
+
+// Configuración de event listeners
 function configurarEventListeners() {
-    // Cliente
-    document.getElementById('aerolineaCliente').addEventListener('change', function() {
-        const aerolinea = this.value;
-        cargarRutasCliente(aerolinea);
-        document.getElementById('btnCliente1').disabled = !aerolinea;
-    });
+    if (tipoUsuario === 'cliente') {
+        // Event listeners para cliente
+        document.getElementById('aerolineaCliente').addEventListener('change', function() {
+            const aerolinea = this.value;
+            cargarRutasCliente(aerolinea);
+            document.getElementById('btnCliente1').disabled = !aerolinea;
+        });
 
-    document.getElementById('rutaCliente').addEventListener('change', function() {
-        const aerolinea = document.getElementById('aerolineaCliente').value;
-        const ruta = this.value;
-        cargarVuelosCliente(aerolinea, ruta);
-        document.getElementById('btnCliente2').disabled = !ruta;
-    });
+        document.getElementById('rutaCliente').addEventListener('change', function() {
+            const aerolinea = document.getElementById('aerolineaCliente').value;
+            const ruta = this.value;
+            cargarVuelosCliente(aerolinea, ruta);
+            document.getElementById('btnCliente2').disabled = !ruta;
+        });
 
-    document.getElementById('vueloCliente').addEventListener('change', function() {
-        document.getElementById('btnCliente3').disabled = !this.value;
-    });
+        document.getElementById('vueloCliente').addEventListener('change', function() {
+            document.getElementById('btnCliente3').disabled = !this.value;
+        });
+    } else {
+        // Event listeners para aerolínea
+        document.getElementById('rutaAerolinea').addEventListener('change', function() {
+            const ruta = this.value;
+            cargarVuelosAerolinea(ruta);
+            document.getElementById('btnAerolinea1').disabled = !ruta;
+        });
 
-    // Aerolínea
-    document.getElementById('rutaAerolinea').addEventListener('change', function() {
-        const ruta = this.value;
-        cargarVuelosAerolinea(ruta);
-        document.getElementById('btnAerolinea1').disabled = !ruta;
-    });
-
-    document.getElementById('vueloAerolinea').addEventListener('change', function() {
-        const ruta = document.getElementById('rutaAerolinea').value;
-        const vuelo = this.value;
-        cargarReservasAerolinea(ruta, vuelo);
-        document.getElementById('btnAerolinea2').disabled = !vuelo;
-    });
-}
-
-// Funciones para Cliente
-function siguientePasoCliente(paso) {
-    if (paso === 4) {
-        const aerolinea = document.getElementById('aerolineaCliente').value;
-        const ruta = document.getElementById('rutaCliente').value;
-        const vuelo = document.getElementById('vueloCliente').value;
-        mostrarReservaCliente(aerolinea, ruta, vuelo);
-    }
-
-    actualizarPasos('cliente', paso);
-}
-
-function cargarRutasCliente(aerolinea) {
-    const select = document.getElementById('rutaCliente');
-    select.innerHTML = '<option value="">Seleccione una ruta...</option>';
-
-    if (aerolinea && datos.aerolineas[aerolinea]) {
-        Object.keys(datos.aerolineas[aerolinea].rutas).forEach(rutaId => {
-            const ruta = datos.aerolineas[aerolinea].rutas[rutaId];
-            const option = document.createElement('option');
-            option.value = rutaId;
-            option.textContent = `${rutaId} - ${ruta.nombre}`;
-            select.appendChild(option);
+        document.getElementById('vueloAerolinea').addEventListener('change', function() {
+            const vuelo = this.value;
+            cargarReservasAerolinea(vuelo);
+            document.getElementById('btnAerolinea2').disabled = !vuelo;
         });
     }
 }
 
-function cargarVuelosCliente(aerolinea, ruta) {
-    const select = document.getElementById('vueloCliente');
-    select.innerHTML = '<option value="">Seleccione un vuelo...</option>';
+// ========== FUNCIONES PARA CARGAR DATOS ==========
 
-    if (aerolinea && ruta && datos.aerolineas[aerolinea].rutas[ruta]) {
-        Object.keys(datos.aerolineas[aerolinea].rutas[ruta].vuelos).forEach(vueloId => {
-            const vuelo = datos.aerolineas[aerolinea].rutas[ruta].vuelos[vueloId];
-            const option = document.createElement('option');
-            option.value = vueloId;
-            option.textContent = `${vueloId} - ${vuelo.fecha}`;
-            select.appendChild(option);
-        });
-    }
-}
+// Cargar rutas para cliente
+async function cargarRutasCliente(aerolineaNickname) {
+    try {
+        const select = document.getElementById('rutaCliente');
+        select.innerHTML = '<option value="">Cargando rutas...</option>';
 
-function mostrarReservaCliente(aerolinea, ruta, vuelo) {
-    const container = document.getElementById('reservaClienteDetalle');
+        const response = await fetch('api/rutas?aerolinea=' + encodeURIComponent(aerolineaNickname));
 
-    if (aerolinea && ruta && vuelo && datos.aerolineas[aerolinea].rutas[ruta].vuelos[vuelo]) {
-        const vueloData = datos.aerolineas[aerolinea].rutas[ruta].vuelos[vuelo];
-        const reserva = vueloData.reservas.find(r => r.cliente === 'María González');
-
-        if (reserva) {
-            const estadoBadge = reserva.estado === 'Confirmada' ? 'bg-success' : 'bg-warning';
-
-            container.innerHTML = `
-                <div class="card border-success">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5 class="text-success">Reserva ${reserva.estado}</h5>
-                                <p class="mb-1 text-light"><strong>Código:</strong> ${reserva.id}</p>
-                                <p class="mb-1 text-light"><strong>Vuelo:</strong> ${vuelo} - ${datos.aerolineas[aerolinea].rutas[ruta].nombre}</p>
-                                <p class="mb-1 text-light"><strong>Fecha:</strong> ${vueloData.fecha}</p>
-                                <p class="mb-1 text-light"><strong>Aerolínea:</strong> ${datos.aerolineas[aerolinea].nombre}</p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-1 text-light"><strong>Estado:</strong> <span class="badge ${estadoBadge}">${reserva.estado}</span></p>
-                                <p class="mb-1 text-light"><strong>Fecha Reserva:</strong> ${reserva.fechaReserva}</p>
-                                <p class="mb-1 text-light"><strong>Tipo Asiento:</strong> ${reserva.tipoAsiento}</p>
-                                <p class="mb-1 text-light"><strong>Costo Total:</strong> $${reserva.costoTotal}</p>
-                            </div>
-                        </div>
-
-                        <div class="mt-4">
-                            <h6 class="text-light">Pasajeros</h6>
-                            ${reserva.pasajeros.map(pasajero => `
-                                <div class="pasajero-item">
-                                    <i class="bi bi-person"></i> ${pasajero}
-                                </div>
-                            `).join('')}
-                        </div>
-
-                        <div class="mt-4">
-                            <h6 class="text-light">Detalles Adicionales</h6>
-                            <p class="mb-1 text-light"><strong>Cantidad de Pasajes:</strong> ${reserva.cantidadPasajes}</p>
-                            <p class="mb-1 text-light"><strong>Equipaje Extra:</strong> ${reserva.equipajeExtra}</p>
-                        </div>
-                    </div>
-                </div>
-            `;
-        } else {
-            container.innerHTML = `
-                <div class="alert alert-warning text-center">
-                    <h5 class="text-warning">No tiene reserva en este vuelo</h5>
-                    <p class="text-light">No se encontró una reserva a su nombre para el vuelo seleccionado.</p>
-                    <a href="reserva-vuelo.html" class="btn btn-primary mt-2">Realizar Reserva</a>
-                </div>
-            `;
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
-    }
-}
 
-// Funciones para Aerolínea
-function siguientePasoAerolinea(paso) {
-    if (paso === 4 && reservaSeleccionada) {
-        mostrarReservaAerolinea();
-    }
+        datosRutas = await response.json();
 
-    actualizarPasos('aerolinea', paso);
-}
+        select.innerHTML = '<option value="">Seleccione ruta...</option>';
 
-function cargarRutasAerolinea() {
-    const select = document.getElementById('rutaAerolinea');
-    select.innerHTML = '<option value="">Seleccione una ruta...</option>';
+        if (datosRutas.length === 0) {
+            select.innerHTML = '<option value="">No hay rutas disponibles</option>';
+            return;
+        }
 
-    const aerolinea = datos.aerolineaActual;
-    if (datos.aerolineas[aerolinea]) {
-        Object.keys(datos.aerolineas[aerolinea].rutas).forEach(rutaId => {
-            const ruta = datos.aerolineas[aerolinea].rutas[rutaId];
+        datosRutas.forEach(ruta => {
             const option = document.createElement('option');
-            option.value = rutaId;
-            option.textContent = `${rutaId} - ${ruta.nombre}`;
+            option.value = ruta.nombre;
+            option.textContent = ruta.nombre + (ruta.descripcion ? ` - ${ruta.descripcion}` : '');
             select.appendChild(option);
         });
+
+    } catch (error) {
+        console.error('Error cargando rutas:', error);
+        const select = document.getElementById('rutaCliente');
+        select.innerHTML = '<option value="">Error al cargar rutas</option>';
+        mostrarMensajeError('Error al cargar las rutas');
     }
 }
 
-function cargarVuelosAerolinea(ruta) {
-    const select = document.getElementById('vueloAerolinea');
-    select.innerHTML = '<option value="">Seleccione un vuelo...</option>';
+// Cargar rutas para aerolínea
+async function cargarRutasAerolinea(aerolineaNickname) {
+    try {
+        const select = document.getElementById('rutaAerolinea');
+        select.innerHTML = '<option value="">Cargando rutas...</option>';
 
-    const aerolinea = datos.aerolineaActual;
-    if (ruta && datos.aerolineas[aerolinea].rutas[ruta]) {
-        Object.keys(datos.aerolineas[aerolinea].rutas[ruta].vuelos).forEach(vueloId => {
-            const vuelo = datos.aerolineas[aerolinea].rutas[ruta].vuelos[vueloId];
+        const response = await fetch('api/rutas?aerolinea=' + encodeURIComponent(aerolineaNickname));
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        datosRutas = await response.json();
+
+        select.innerHTML = '<option value="">Seleccione ruta...</option>';
+
+        if (datosRutas.length === 0) {
+            select.innerHTML = '<option value="">No hay rutas disponibles</option>';
+            return;
+        }
+
+        datosRutas.forEach(ruta => {
             const option = document.createElement('option');
-            option.value = vueloId;
-            option.textContent = `${vueloId} - ${vuelo.fecha} (${vuelo.reservas.length} reservas)`;
+            option.value = ruta.nombre;
+            option.textContent = ruta.nombre + (ruta.descripcion ? ` - ${ruta.descripcion}` : '');
             select.appendChild(option);
         });
+
+    } catch (error) {
+        console.error('Error cargando rutas para aerolínea:', error);
+        const select = document.getElementById('rutaAerolinea');
+        select.innerHTML = '<option value="">Error al cargar rutas</option>';
     }
 }
 
-function cargarReservasAerolinea(ruta, vuelo) {
-    const container = document.getElementById('listaReservasAerolinea');
-    container.innerHTML = '';
+// Cargar vuelos para cliente
+async function cargarVuelosCliente(aerolinea, ruta) {
+    try {
+        const select = document.getElementById('vueloCliente');
+        select.innerHTML = '<option value="">Cargando vuelos...</option>';
 
-    const aerolinea = datos.aerolineaActual;
-    if (ruta && vuelo && datos.aerolineas[aerolinea].rutas[ruta].vuelos[vuelo]) {
-        const reservas = datos.aerolineas[aerolinea].rutas[ruta].vuelos[vuelo].reservas;
+        const response = await fetch('api/vuelos?ruta=' + encodeURIComponent(ruta));
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        datosVuelos = await response.json();
+
+        select.innerHTML = '<option value="">Seleccione vuelo...</option>';
+
+        if (datosVuelos.length === 0) {
+            select.innerHTML = '<option value="">No hay vuelos disponibles</option>';
+            return;
+        }
+
+        datosVuelos.forEach(vuelo => {
+            const option = document.createElement('option');
+            option.value = vuelo.nombre;
+            option.textContent = vuelo.nombre;
+            select.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error('Error cargando vuelos:', error);
+        const select = document.getElementById('vueloCliente');
+        select.innerHTML = '<option value="">Error al cargar vuelos</option>';
+        mostrarMensajeError('Error al cargar los vuelos');
+    }
+}
+
+// Cargar vuelos para aerolínea
+async function cargarVuelosAerolinea(ruta) {
+    try {
+        const select = document.getElementById('vueloAerolinea');
+        select.innerHTML = '<option value="">Cargando vuelos...</option>';
+
+        const response = await fetch('api/vuelos?ruta=' + encodeURIComponent(ruta));
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        datosVuelos = await response.json();
+
+        select.innerHTML = '<option value="">Seleccione vuelo...</option>';
+
+        if (datosVuelos.length === 0) {
+            select.innerHTML = '<option value="">No hay vuelos disponibles</option>';
+            return;
+        }
+
+        datosVuelos.forEach(vuelo => {
+            const option = document.createElement('option');
+            option.value = vuelo.nombre;
+            option.textContent = vuelo.nombre;
+            select.appendChild(option);
+        });
+
+    } catch (error) {
+        console.error('Error cargando vuelos para aerolínea:', error);
+        const select = document.getElementById('vueloAerolinea');
+        select.innerHTML = '<option value="">Error al cargar vuelos</option>';
+    }
+}
+
+// Cargar reservas para aerolínea
+async function cargarReservasAerolinea(vueloNombre) {
+    try {
+        const container = document.getElementById('listaReservasAerolinea');
+        container.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Cargando reservas...</p></div>';
+
+        const response = await fetch('api/reservas-vuelo?nombreVuelo=' + encodeURIComponent(vueloNombre));
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const reservas = await response.json();
+        container.innerHTML = '';
 
         if (reservas.length === 0) {
-            container.innerHTML = '<div class="col-12"><p class="text-muted text-center">No hay reservas para este vuelo.</p></div>';
+            container.innerHTML = '<div class="col-12"><div class="alert alert-info text-center">No hay reservas para este vuelo.</div></div>';
+            document.getElementById('btnAerolinea3').disabled = true;
             return;
         }
 
         reservas.forEach((reserva, index) => {
-            const estadoBadge = reserva.estado === 'Confirmada' ? 'bg-success' : 'bg-warning';
+            const estadoBadge = 'bg-success';
 
             const reservaHTML = `
                 <div class="col-md-6">
-                    <div class="reserva-card" onclick="seleccionarReservaAerolinea(${index})">
+                    <div class="card reserva-card mb-3" onclick="seleccionarReservaAerolinea('${reserva.id}')">
                         <div class="card-body">
-                            <h6 class="card-title text-light">${reserva.id}</h6>
-                            <p class="card-text mb-1 text-light">Cliente: ${reserva.cliente}</p>
-                            <p class="card-text mb-1 text-light">Pasajeros: ${reserva.pasajeros.length}</p>
-                            <p class="card-text mb-1 text-light">Asiento: ${reserva.tipoAsiento}</p>
-                            <span class="badge ${estadoBadge}">${reserva.estado}</span>
+                            <h6 class="card-title text-dark">${reserva.id}</h6>
+                            <p class="card-text mb-1 text-dark">Cliente: ${reserva.clienteNombre}</p>
+                            <p class="card-text mb-1 text-dark">Pasajeros: ${reserva.cantidadPasajes}</p>
+                            <p class="card-text mb-1 text-dark">Asiento: ${reserva.tipoAsiento}</p>
+                            <span class="badge ${estadoBadge}">Confirmada</span>
                         </div>
                     </div>
                 </div>
@@ -337,65 +341,32 @@ function cargarReservasAerolinea(ruta, vuelo) {
         });
 
         document.getElementById('btnAerolinea3').disabled = false;
+
+    } catch (error) {
+        console.error('Error cargando reservas:', error);
+        const container = document.getElementById('listaReservasAerolinea');
+        container.innerHTML = '<div class="col-12"><div class="alert alert-danger text-center">Error al cargar las reservas</div></div>';
+        mostrarMensajeError('Error al cargar las reservas: ' + error.message);
     }
 }
 
-function seleccionarReservaAerolinea(index) {
-    const ruta = document.getElementById('rutaAerolinea').value;
-    const vuelo = document.getElementById('vueloAerolinea').value;
-    const aerolinea = datos.aerolineaActual;
+// ========== FUNCIONES DE NAVEGACIÓN ==========
 
-    if (ruta && vuelo && datos.aerolineas[aerolinea].rutas[ruta].vuelos[vuelo]) {
-        reservaSeleccionada = datos.aerolineas[aerolinea].rutas[ruta].vuelos[vuelo].reservas[index];
-
-        // Remover selección anterior y marcar actual
-        document.querySelectorAll('#flujoAerolinea .reserva-card').forEach(card => {
-            card.classList.remove('selected');
-        });
-        event.currentTarget.classList.add('selected');
+function siguientePasoCliente(paso) {
+    if (paso === 4) {
+        const vuelo = document.getElementById('vueloCliente').value;
+        mostrarReservaCliente(vuelo);
     }
+    actualizarPasos('cliente', paso);
 }
 
-function mostrarReservaAerolinea() {
-    const container = document.getElementById('reservaAerolineaDetalle');
-
-    if (reservaSeleccionada) {
-        const estadoBadge = reservaSeleccionada.estado === 'Confirmada' ? 'bg-success' : 'bg-warning';
-
-        container.innerHTML = `
-            <div class="card border-primary">
-                <div class="card-body">
-                    <div class="row">
-                        <div class="col-md-6">
-                            <h5 class="text-primary">Detalles de la Reserva</h5>
-                            <p class="mb-1 text-light"><strong>Código:</strong> ${reservaSeleccionada.id}</p>
-                            <p class="mb-1 text-light"><strong>Cliente:</strong> ${reservaSeleccionada.cliente}</p>
-                            <p class="mb-1 text-light"><strong>Fecha Reserva:</strong> ${reservaSeleccionada.fechaReserva}</p>
-                            <p class="mb-1"><strong>Estado:</strong> <span class="badge ${estadoBadge}">${reservaSeleccionada.estado}</span></p>
-                        </div>
-                        <div class="col-md-6">
-                            <p class="mb-1 text-light"><strong>Tipo Asiento:</strong> ${reservaSeleccionada.tipoAsiento}</p>
-                            <p class="mb-1 text-light"><strong>Cantidad Pasajes:</strong> ${reservaSeleccionada.cantidadPasajes}</p>
-                            <p class="mb-1 text-light"><strong>Equipaje Extra:</strong> ${reservaSeleccionada.equipajeExtra}</p>
-                            <p class="mb-1 text-light"><strong>Costo Total:</strong> $${reservaSeleccionada.costoTotal}</p>
-                        </div>
-                    </div>
-
-                    <div class="mt-4">
-                        <h6 class="text-light">Lista de Pasajeros</h6>
-                        ${reservaSeleccionada.pasajeros.map(pasajero => `
-                            <div class="pasajero-item">
-                                <i class="bi bi-person"></i> <strong class="text-light">${pasajero}</strong>
-                            </div>
-                        `).join('')}
-                    </div>
-                </div>
-            </div>
-        `;
+function siguientePasoAerolinea(paso) {
+    if (paso === 4 && reservaSeleccionada) {
+        mostrarReservaAerolinea();
     }
+    actualizarPasos('aerolinea', paso);
 }
 
-// Funciones generales
 function actualizarPasos(tipo, pasoActivo) {
     const prefix = tipo === 'cliente' ? 'Cliente' : 'Aerolinea';
 
@@ -422,19 +393,129 @@ function actualizarPasos(tipo, pasoActivo) {
     }
 }
 
-function cambiarTipoUsuario() {
-    tipoUsuario = tipoUsuario === 'cliente' ? 'aerolinea' : 'cliente';
+function seleccionarReservaAerolinea(reservaId) {
+    reservaSeleccionada = reservaId;
 
-    document.getElementById('flujoCliente').style.display = tipoUsuario === 'cliente' ? 'block' : 'none';
-    document.getElementById('flujoAerolinea').style.display = tipoUsuario === 'aerolinea' ? 'block' : 'none';
+    // Remover selección anterior y marcar actual
+    document.querySelectorAll('#flujoAerolinea .reserva-card').forEach(card => {
+        card.classList.remove('border-primary', 'bg-light');
+    });
+    event.currentTarget.classList.add('border-primary', 'bg-light');
 
-    document.getElementById('tipoUsuarioTexto').textContent = tipoUsuario === 'cliente' ? 'Cliente' : 'Aerolínea';
-    document.getElementById('tipoAlternativo').textContent = tipoUsuario === 'cliente' ? 'Aerolínea' : 'Cliente';
-    document.getElementById('nombreUsuario').textContent = tipoUsuario === 'cliente' ? 'María González' : 'ZulyFly Airlines';
+    document.getElementById('btnAerolinea3').disabled = false;
+}
 
-    // Reiniciar ambos flujos
-    siguientePasoCliente(1);
-    siguientePasoAerolinea(1);
+// ========== FUNCIONES DE MOSTRAR RESULTADOS ==========
+
+async function mostrarReservaCliente(vueloNombre) {
+    const container = document.getElementById('reservaClienteDetalle');
+    container.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Buscando reserva...</p></div>';
+
+    try {
+        // Buscar reserva del cliente en este vuelo
+        const responseReserva = await fetch('api/reserva-cliente?vuelo=' + encodeURIComponent(vueloNombre));
+
+        if (responseReserva.ok) {
+            const reserva = await responseReserva.json();
+
+            const estadoBadge = 'bg-success';
+            const aerolineaSelect = document.getElementById('aerolineaCliente');
+            const aerolineaNombre = aerolineaSelect.options[aerolineaSelect.selectedIndex].text;
+
+            container.innerHTML = `
+                <div class="card border-success">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-success">Reserva Confirmada</h5>
+                                <p class="mb-1 text-dark"><strong>Código:</strong> ${reserva.id}</p>
+                                <p class="mb-1 text-dark"><strong>Vuelo:</strong> ${vueloNombre}</p>
+                                <p class="mb-1 text-dark"><strong>Aerolínea:</strong> ${aerolineaNombre}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 text-dark"><strong>Estado:</strong> <span class="badge ${estadoBadge}">Confirmada</span></p>
+                                <p class="mb-1 text-dark"><strong>Fecha Reserva:</strong> ${reserva.fechaReserva}</p>
+                                <p class="mb-1 text-dark"><strong>Tipo Asiento:</strong> ${reserva.tipoAsiento}</p>
+                                <p class="mb-1 text-dark"><strong>Costo Total:</strong> $${reserva.costoTotal}</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-4">
+                            <h6 class="text-dark">Detalles Adicionales</h6>
+                            <p class="mb-1 text-dark"><strong>Cantidad de Pasajes:</strong> ${reserva.cantidadPasajes}</p>
+                            <p class="mb-1 text-dark"><strong>Equipaje Extra:</strong> ${reserva.equipajeExtra}</p>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            // No tiene reserva en este vuelo
+            container.innerHTML = `
+                <div class="alert alert-warning text-center">
+                    <h5 class="text-warning">No tiene reserva en este vuelo</h5>
+                    <p class="text-dark">No se encontró una reserva a su nombre para el vuelo seleccionado.</p>
+                </div>
+            `;
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = `
+            <div class="alert alert-warning text-center">
+                <h5 class="text-warning">No se pudo cargar la reserva</h5>
+                <p class="text-dark">Error al obtener la información de la reserva.</p>
+            </div>
+        `;
+    }
+}
+
+async function mostrarReservaAerolinea() {
+    const container = document.getElementById('reservaAerolineaDetalle');
+    container.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Cargando detalles...</p></div>';
+
+    if (!reservaSeleccionada) {
+        container.innerHTML = '<div class="alert alert-warning">Seleccione una reserva primero</div>';
+        return;
+    }
+
+    try {
+        // Obtener detalles completos de la reserva
+        const response = await fetch('api/reserva-detalle?id=' + encodeURIComponent(reservaSeleccionada));
+
+        if (response.ok) {
+            const reserva = await response.json();
+
+            const estadoBadge = 'bg-success';
+
+            container.innerHTML = `
+                <div class="card border-primary">
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="text-primary">Detalles de la Reserva</h5>
+                                <p class="mb-1 text-dark"><strong>Código:</strong> ${reserva.id}</p>
+                                <p class="mb-1 text-dark"><strong>Cliente:</strong> ${reserva.clienteNombre}</p>
+                                <p class="mb-1 text-dark"><strong>Fecha Reserva:</strong> ${reserva.fechaReserva}</p>
+                                <p class="mb-1"><strong>Estado:</strong> <span class="badge ${estadoBadge}">Confirmada</span></p>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="mb-1 text-dark"><strong>Tipo Asiento:</strong> ${reserva.tipoAsiento}</p>
+                                <p class="mb-1 text-dark"><strong>Cantidad Pasajes:</strong> ${reserva.cantidadPasajes}</p>
+                                <p class="mb-1 text-dark"><strong>Equipaje Extra:</strong> ${reserva.equipajeExtra}</p>
+                                <p class="mb-1 text-dark"><strong>Costo Total:</strong> $${reserva.costoTotal}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        } else {
+            container.innerHTML = '<div class="alert alert-danger">Error al cargar los detalles de la reserva</div>';
+        }
+
+    } catch (error) {
+        console.error('Error:', error);
+        container.innerHTML = '<div class="alert alert-danger">Error al cargar los detalles de la reserva</div>';
+    }
 }
 
 function nuevaConsulta() {
@@ -445,10 +526,14 @@ function nuevaConsulta() {
         siguientePasoAerolinea(1);
         document.getElementById('formAerolinea').reset();
         reservaSeleccionada = null;
+
+        // Limpiar selección de reservas
+        document.querySelectorAll('#flujoAerolinea .reserva-card').forEach(card => {
+            card.classList.remove('border-primary', 'bg-light');
+        });
     }
 }
 
-// Función para mostrar mensaje de error
 function mostrarMensajeError(mensaje) {
     const toastHTML = `
         <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -461,15 +546,7 @@ function mostrarMensajeError(mensaje) {
         </div>
     `;
 
-    const toastContainer = document.getElementById('toastContainer') || (() => {
-        const container = document.createElement('div');
-        container.id = 'toastContainer';
-        container.className = 'toast-container position-fixed top-0 end-0 p-3';
-        container.style.zIndex = '1060';
-        document.body.appendChild(container);
-        return container;
-    })();
-
+    const toastContainer = document.getElementById('toastContainer');
     toastContainer.innerHTML = toastHTML;
     const toastElement = toastContainer.querySelector('.toast');
     const toast = new bootstrap.Toast(toastElement);

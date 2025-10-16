@@ -1,5 +1,6 @@
 // Variables globales
 let vueloSeleccionado = null;
+let usuarioInfo = null;
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
@@ -96,6 +97,9 @@ function configurarEventListeners() {
                     document.getElementById('asientosEjecutivoDetalle').textContent = data.asientosEjecutivo !== undefined ? data.asientosEjecutivo : '-';
                     document.getElementById('estadoVueloDetalle').textContent = data.estado || 'Confirmado';
 
+                    // Verificar permisos del usuario y mostrar secciones correspondientes
+                    verificarPermisosUsuario(vuelo, document.getElementById('aerolinea').value);
+
                     // Mostrar resultados
                     resultadoConsulta.style.display = 'block';
                     resultadoConsulta.classList.add('fade-in');
@@ -131,6 +135,114 @@ function configurarEventListeners() {
     });
 }
 
+// Verificar permisos del usuario para el vuelo
+function verificarPermisosUsuario(nombreVuelo, aerolineaSeleccionada) {
+    fetch(`api/verificar-permisos-vuelo?nombreVuelo=${encodeURIComponent(nombreVuelo)}&aerolinea=${encodeURIComponent(aerolineaSeleccionada)}`)
+        .then(res => res.json())
+        .then(data => {
+            usuarioInfo = data;
+            mostrarSeccionesUsuario(data, nombreVuelo);
+        })
+        .catch(err => {
+            console.error("Error verificando permisos:", err);
+            // Por defecto, mostrar como usuario no autenticado
+            usuarioInfo = { autenticado: false };
+            mostrarSeccionesUsuario({ autenticado: false }, nombreVuelo);
+        });
+}
+
+// Mostrar secciones según el tipo de usuario
+function mostrarSeccionesUsuario(usuarioData, nombreVuelo) {
+    const infoAerolinea = document.getElementById('infoAerolinea');
+    const infoCliente = document.getElementById('infoCliente');
+    const btnReservar = document.getElementById('btnReservar');
+
+    // Ocultar todas las secciones primero
+    infoAerolinea.style.display = 'none';
+    infoCliente.style.display = 'none';
+    btnReservar.style.display = 'none';
+
+    if (usuarioData.autenticado) {
+        if (usuarioData.esAerolineaDueña) {
+            // Es la aerolínea que publicó el vuelo - mostrar gestión de reservas
+            infoAerolinea.style.display = 'block';
+            cargarReservasVuelo(nombreVuelo);
+        } else if (usuarioData.tieneReservaCliente) {
+            // Es un cliente con reserva en este vuelo
+            infoCliente.style.display = 'block';
+        } else {
+            // Usuario autenticado pero sin reserva - mostrar opción de reserva
+            btnReservar.style.display = 'block';
+        }
+    } else {
+        // Usuario no autenticado - mostrar opción de reserva
+        btnReservar.style.display = 'block';
+    }
+}
+
+// Cargar reservas del vuelo (para aerolíneas)
+function cargarReservasVuelo(nombreVuelo) {
+    fetch(`api/reservas-vuelo?nombreVuelo=${encodeURIComponent(nombreVuelo)}`)
+        .then(res => res.json())
+        .then(reservas => {
+            const totalReservas = document.getElementById('totalReservas');
+            totalReservas.textContent = reservas.length;
+
+            // Actualizar el botón para mostrar detalles
+            const btnVerReservas = infoAerolinea.querySelector('button');
+            btnVerReservas.onclick = function() {
+                mostrarDetallesReservas(reservas);
+            };
+        })
+        .catch(err => {
+            console.error("Error cargando reservas:", err);
+            document.getElementById('totalReservas').textContent = '0';
+        });
+}
+
+// Mostrar modal con detalles de reservas
+function mostrarDetallesReservas(reservas) {
+    // Crear contenido para el modal
+    let contenido = `
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>ID Reserva</th>
+                        <th>Cliente</th>
+                        <th>Tipo Asiento</th>
+                        <th>Cantidad</th>
+                        <th>Costo</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    reservas.forEach(reserva => {
+        contenido += `
+            <tr>
+                <td>${reserva.id}</td>
+                <td>${reserva.cliente}</td>
+                <td>${reserva.tipoAsiento}</td>
+                <td>${reserva.cantidadPasajes}</td>
+                <td>$${reserva.costo}</td>
+            </tr>
+        `;
+    });
+
+    contenido += `
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3">
+            <strong>Total de reservas:</strong> ${reservas.length}
+        </div>
+    `;
+
+    // Mostrar modal (puedes usar Bootstrap modal o crear uno simple)
+    alert(`Detalles de Reservas:\n\n${contenido.replace(/<[^>]*>/g, '')}`);
+}
+
 function inicializarValidacion() {
     const form = document.getElementById('formConsultaVuelo');
     const camposRequeridos = form.querySelectorAll('[required]');
@@ -162,6 +274,7 @@ function limpiarFormulario() {
     vueloSelect.disabled = true;
     resultadoConsulta.style.display = 'none';
     vueloSeleccionado = null;
+    usuarioInfo = null;
 
     // Limpiar validación visual
     const campos = form.querySelectorAll('.is-valid, .is-invalid');

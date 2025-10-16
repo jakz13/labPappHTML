@@ -130,7 +130,7 @@
                                         <i class="bi bi-building"></i> Gestión de Reservas - Panel Aerolínea
                                     </h6>
                                     <p class="mb-2 text-light">Este vuelo tiene <strong id="totalReservas" class="text-warning">0</strong> reservas confirmadas.</p>
-                                    <button class="btn btn-sm btn-outline-warning">
+                                    <button class="btn btn-sm btn-outline-warning" onclick="mostrarDetallesReservasModal()">
                                         <i class="bi bi-list-ul"></i> Ver Detalles de Reservas
                                     </button>
                                 </div>
@@ -141,7 +141,7 @@
                                         <i class="bi bi-person-check"></i> Tu Reserva Confirmada
                                     </h6>
                                     <p class="mb-2 text-light">Ya tienes una reserva confirmada para este vuelo.</p>
-                                    <button class="btn btn-sm btn-outline-success">
+                                    <button class="btn btn-sm btn-outline-success" onclick="verMiReserva()">
                                         <i class="bi bi-ticket-perforated"></i> Ver Mi Reserva
                                     </button>
                                 </div>
