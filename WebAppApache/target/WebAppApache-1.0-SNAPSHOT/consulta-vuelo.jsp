@@ -33,11 +33,7 @@
                                 <label for="aerolinea" class="form-label">Aerolínea *</label>
                                 <select class="form-select" id="aerolinea" required>
                                     <option value="">Seleccione aerolínea...</option>
-                                    <option value="iberia">Iberia</option>
-                                    <option value="zulyfly">ZulyFly</option>
-                                    <option value="copa">Copa Airlines</option>
-                                    <option value="american">American Airlines</option>
-                                    <option value="aerolineas">Aerolíneas Argentinas</option>
+                                    <!-- Las opciones se cargan dinámicamente -->
                                 </select>
                                 <div class="invalid-feedback">Por favor seleccione una aerolínea.</div>
                             </div>
@@ -83,19 +79,21 @@
                         <div class="row">
                             <!-- Imagen del vuelo -->
                             <div class="col-md-6 mb-4">
-                                <img id="imagenVueloDetalle" src="" alt="Imagen del vuelo" class="img-fluid flight-image w-100">
+                                <img id="imagenVueloDetalle" src="" alt="Imagen del vuelo" class="img-fluid flight-image w-100 rounded">
                             </div>
 
                             <!-- Información principal -->
                             <div class="col-md-6">
-                                <div class="info-card p-3 mb-3">
-                                    <h4 id="nombreVueloDetalle" class="text-primary"></h4>
+                                <div class="info-card p-3 mb-3 bg-dark border rounded">
+                                    <h4 id="nombreVueloDetalle" class="text-primary mb-3"></h4>
                                     <div class="row">
                                         <div class="col-6">
-                                            <strong>Aerolínea:</strong> <span id="aerolineaDetalle"></span>
+                                            <strong class="text-light">Aerolínea:</strong>
+                                            <span id="aerolineaDetalle" class="text-light"></span>
                                         </div>
                                         <div class="col-6">
-                                            <strong>Ruta:</strong> <span id="rutaDetalle"></span>
+                                            <strong class="text-light">Ruta:</strong>
+                                            <span id="rutaDetalle" class="text-light"></span>
                                         </div>
                                     </div>
                                 </div>
@@ -103,7 +101,7 @@
                                 <!-- Detalles del vuelo -->
                                 <div class="row g-3">
                                     <div class="col-md-6">
-                                        <div class="card h-100">
+                                        <div class="card h-100 bg-secondary border-light">
                                             <div class="card-body">
                                                 <h6 class="card-title text-light">Información del Vuelo</h6>
                                                 <p class="mb-1 text-light"><strong>Fecha:</strong> <span id="fechaVueloDetalle"></span></p>
@@ -115,29 +113,37 @@
                                     </div>
 
                                     <div class="col-md-6">
-                                        <div class="card h-100">
+                                        <div class="card h-100 bg-secondary border-light">
                                             <div class="card-body">
                                                 <h6 class="card-title text-light">Disponibilidad</h6>
                                                 <p class="mb-1 text-light"><strong>Turista:</strong> <span id="asientosTuristaDetalle"></span> asientos</p>
                                                 <p class="mb-1 text-light"><strong>Ejecutivo:</strong> <span id="asientosEjecutivoDetalle"></span> asientos</p>
-                                                <p class="mb-1"><strong>Estado:</strong> <span id="estadoVueloDetalle" class="badge bg-success"></span></p>
+                                                <p class="mb-1 text-light"><strong>Estado:</strong> <span id="estadoVueloDetalle" class="badge bg-success"></span></p>
                                             </div>
                                         </div>
                                     </div>
                                 </div>
 
                                 <!-- Información para aerolíneas (reservas) -->
-                                <div id="infoAerolinea" class="reserva-section p-3 mt-3" style="display: none;">
-                                    <h6 class="text-light">Reservas del Vuelo</h6>
-                                    <p class="mb-2 text-light">Este vuelo tiene <strong id="totalReservas">0</strong> reservas confirmadas.</p>
-                                    <button class="btn btn-sm btn-outline-primary">Ver Detalles de Reservas</button>
+                                <div id="infoAerolinea" class="reserva-section p-3 mt-3 bg-dark border rounded" style="display: none;">
+                                    <h6 class="text-warning mb-3">
+                                        <i class="bi bi-building"></i> Gestión de Reservas - Panel Aerolínea
+                                    </h6>
+                                    <p class="mb-2 text-light">Este vuelo tiene <strong id="totalReservas" class="text-warning">0</strong> reservas confirmadas.</p>
+                                    <button class="btn btn-sm btn-outline-warning">
+                                        <i class="bi bi-list-ul"></i> Ver Detalles de Reservas
+                                    </button>
                                 </div>
 
                                 <!-- Información para clientes (mi reserva) -->
-                                <div id="infoCliente" class="reserva-section p-3 mt-3" style="display: none;">
-                                    <h6 class="text-light">Tu Reserva</h6>
+                                <div id="infoCliente" class="reserva-section p-3 mt-3 bg-dark border rounded" style="display: none;">
+                                    <h6 class="text-success mb-3">
+                                        <i class="bi bi-person-check"></i> Tu Reserva Confirmada
+                                    </h6>
                                     <p class="mb-2 text-light">Ya tienes una reserva confirmada para este vuelo.</p>
-                                    <button class="btn btn-sm btn-outline-success">Ver Mi Reserva</button>
+                                    <button class="btn btn-sm btn-outline-success">
+                                        <i class="bi bi-ticket-perforated"></i> Ver Mi Reserva
+                                    </button>
                                 </div>
 
                                 <!-- Acciones -->

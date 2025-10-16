@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
-      <artifact name="WebAppApache:war exploded" />
+      <artifact name="WebAppApache (1):war exploded" />
     </artifacts-to-build>
   </component>
   <component name="AutoImportSettings">
@@ -10,36 +10,24 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="fxg">
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/MiProyectoSwing.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/lib.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/libraries/maven_wrapper.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/web/WEB-INF/web.xml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/WebAppApache (1).iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/DetalleVueloCompletoServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/VerificarUsuarioServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/compiler.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CheckSessionServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CheckSessionServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LoginServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LogoutServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LogoutServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/RegistrarReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/RegistrarReservaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/session-manager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/PaginaPrincipal.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/PaginaPrincipal.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CheckSessionServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CheckSessionServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LogoutServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LogoutServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-vuelo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-vuelo.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-vuelo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/META-INF/MANIFEST.MF" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache/META-INF/MANIFEST.MF" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CheckSessionServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CheckSessionServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LogoutServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LogoutServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/mvnw" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-vuelo.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pom.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -57,7 +45,7 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="junior" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -68,12 +56,12 @@
     &quot;assignee&quot;: &quot;jakz13&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings">{
-  &quot;selectedUrlAndAccountId&quot;: {
-    &quot;url&quot;: &quot;https://github.com/jakz13/labPappHTML&quot;,
-    &quot;accountId&quot;: &quot;01f832ff-b1f7-4722-8427-e88b1bf7ac21&quot;
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "https://github.com/jakz13/labPappHTML.git",
+    "accountId": "13491f6f-ba38-4870-a8e4-be4d44bbd259"
   }
-}</component>
+}]]></component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -105,8 +93,8 @@
     "RunOnceActivity.git.unshallow": "true",
     "SHARE_PROJECT_CONFIGURATION_FILES": "true",
     "SHELLCHECK.PATH": "C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe",
+    "Tomcat Server.Tomcat .executor": "Run",
     "Tomcat Server.Tomcat 11.0.11.executor": "Run",
-    "git-widget-placeholder": "junior",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
     "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp/WEB-INF/lib",
@@ -115,7 +103,7 @@
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Artifacts",
+    "project.structure.last.edited": "Modules",
     "project.structure.proportion": "0.15",
     "project.structure.side.proportion": "0.30358785",
     "settings.editor.selected.configurable": "preferences.applicationServers",
@@ -142,7 +130,7 @@
         <entry key="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory">
           <value>
             <map>
-              <entry key="Tomcat 11.0.11" value="STOPPED" />
+              <entry key="Tomcat " value="STOPPED" />
             </map>
           </value>
         </entry>
@@ -150,28 +138,18 @@
     </option>
   </component>
   <component name="RunManager">
-    <configuration default="true" type="JetRunConfigurationType">
-      <module name="WebAppApache" />
-      <method v="2">
-        <option name="Make" enabled="true" />
-      </method>
-    </configuration>
-    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
-      <module name="WebAppApache" />
-      <option name="filePath" />
-      <method v="2" />
-    </configuration>
-    <configuration name="Tomcat 11.0.11" type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat 11.0.11" ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
+    <configuration name="Tomcat " type="#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory" factoryName="Local" APPLICATION_SERVER_NAME="Tomcat " ALTERNATIVE_JRE_ENABLED="false" nameIsGenerated="true">
       <option name="UPDATING_POLICY" value="restart-server" />
       <deployment>
-        <artifact name="WebAppApache:war exploded">
+        <artifact name="WebAppApache (1):war exploded">
           <settings>
-            <option name="CONTEXT_PATH" value="/WebAppApache_war_exploded" />
+            <option name="CONTEXT_PATH" value="/WebAppApache__1__war_exploded" />
           </settings>
         </artifact>
       </deployment>
       <server-settings>
-        <option name="BASE_DIRECTORY_NAME" value="dbba3c89-5013-40db-8e5a-f39be74e2917" />
+        <option name="BASE_DIRECTORY_NAME" value="dc32c809-da9d-4e64-bdff-4f167586c251" />
+        <option name="HTTP_PORT" value="8083" />
       </server-settings>
       <predefined_log_file enabled="true" id="Tomcat" />
       <predefined_log_file enabled="true" id="Tomcat Catalina" />
@@ -179,7 +157,7 @@
       <predefined_log_file id="Tomcat Host Manager" />
       <predefined_log_file id="Tomcat Localhost Access" />
       <RunnerSettings RunnerId="Debug">
-        <option name="DEBUG_PORT" value="62806" />
+        <option name="DEBUG_PORT" value="62671" />
       </RunnerSettings>
       <ConfigurationWrapper VM_VAR="JAVA_OPTS" RunnerId="Cover">
         <option name="USE_ENV_VARIABLES" value="true" />
@@ -244,7 +222,7 @@
       <method v="2">
         <option name="Make" enabled="true" />
         <option name="BuildArtifacts" enabled="true">
-          <artifact name="WebAppApache:war exploded" />
+          <artifact name="WebAppApache (1):war exploded" />
         </option>
       </method>
     </configuration>
@@ -252,8 +230,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
-        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
+        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
       </set>
     </attachedChunks>
   </component>
@@ -274,6 +252,7 @@
       <workItem from="1760447957679" duration="9649000" />
       <workItem from="1760457663446" duration="4396000" />
       <workItem from="1760479760639" duration="7519000" />
+      <workItem from="1760576765334" duration="2727000" />
     </task>
     <task id="LOCAL-00001" summary="fxg">
       <option name="closed" value="true" />
