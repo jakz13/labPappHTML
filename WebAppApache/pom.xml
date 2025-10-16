@@ -23,6 +23,20 @@
             <version>20240303</version>
         </dependency>
 
+        <!-- Jakarta Persistence API (JPA annotations and EntityManager) -->
+        <dependency>
+            <groupId>jakarta.persistence</groupId>
+            <artifactId>jakarta.persistence-api</artifactId>
+            <version>3.1.0</version>
+        </dependency>
+
+        <!-- Jakarta Transactions API (if used) -->
+        <dependency>
+            <groupId>jakarta.transaction</groupId>
+            <artifactId>jakarta.transaction-api</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+
         <!-- JSTL para JSP -->
         <dependency>
             <groupId>jakarta.servlet.jsp.jstl</groupId>
@@ -52,6 +66,8 @@
                     <target>16</target>
                 </configuration>
             </plugin>
+            <!-- add the extra source directory where your Logica/DataTypes live -->
+
         </plugins>
     </build>
 </project>

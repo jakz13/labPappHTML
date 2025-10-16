@@ -10,123 +10,318 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="registro">
-      <change afterPath="$PROJECT_DIR$/.idea/uiDesigner.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtAerolinea.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCategoria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCiudad.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCliente.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtItemPaquete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtPaquete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtPasajero.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtReserva.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtRutaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtUsuario.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Aerolinea.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Categoria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Ciudad.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Cliente.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/CompraPaqLogica.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Fabrica.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ISistema.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ItemPaquete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorAerolinea.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCategoria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCiudad.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCliente.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorPaquete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorRutaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Paquete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Pasajero.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/PasswordManager.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Reserva.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/RutaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Sistema.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/TipoAsiento.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/TipoDoc.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Usuario.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Vuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/IntentoDiseño.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/IntentoDiseño.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/Main.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AceptarRuta.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AceptarRuta.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AgregarRutaVuelo.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AgregarRutaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaAereolinea.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaAereolinea.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCategoria.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCategoria.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCiudad.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCiudad.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaPaquete.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaPaquete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaVuelo.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/CompraPaquete.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/CompraPaquete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaPaquete.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaPaquete.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaRutaVuelo.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaRutaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaVuelo.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/EligeUsuario.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/EligeUsuario.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/InicioSesion.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/InicioSesion.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosAereolinea.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosAereolinea.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosCliente.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosCliente.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/NuevaRutaVuelo.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/NuevaRutaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ReservaVuelo.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ReservaVuelo.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/VerUsuarios.form" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/VerUsuarios.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/encodings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/encodings.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/pom.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaRutaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaRutaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtAerolinea.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCategoria.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCiudad.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtCliente.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtItemPaquete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtPaquete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtPasajero.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtReserva.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtRutaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtUsuario.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/DataTypes/DtVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Aerolinea.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Categoria.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Ciudad.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Cliente.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/CompraPaqLogica.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Fabrica.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ISistema.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ItemPaquete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorAerolinea.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCategoria.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCiudad.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorCliente.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorPaquete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorRutaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/ManejadorVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Paquete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Pasajero.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/PasswordManager.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Reserva.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/RutaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Sistema.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/TipoAsiento.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/TipoDoc.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Usuario.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Logica/Vuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/IntentoDiseño.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/IntentoDiseño.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/Main.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/gui/fondo.png" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AceptarRuta.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AceptarRuta.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AgregarRutaVuelo.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AgregarRutaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaAereolinea.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaAereolinea.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCategoria.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCategoria.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCiudad.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaCiudad.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaPaquete.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaPaquete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaVuelo.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/AltaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/CompraPaquete.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/CompraPaquete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaPaquete.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaPaquete.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaRutaVuelo.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaRutaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaVuelo.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ConsultaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/EligeUsuario.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/EligeUsuario.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/InicioSesion.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/InicioSesion.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosAereolinea.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosAereolinea.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosCliente.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ModificarDatosCliente.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/NuevaRutaVuelo.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/NuevaRutaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ReservaVuelo.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/ReservaVuelo.java" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/VerUsuarios.form" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/Presentacion/gui/guiSesion/VerUsuarios.java" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaRutaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaUsuarioServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaVueloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CheckSessionServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CheckSessionServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCategoriasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCategoriasServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LogoutServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LogoutServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservaVueloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/UsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/UsuarioServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerInfoVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerInfoVueloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarEmailServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarEmailServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtAerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtCategoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtCiudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtItemPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtPasajero.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtReserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtUsuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/DataTypes/DtVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Aerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Categoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Ciudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Cliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/CompraPaqLogica.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Fabrica.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ISistema.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ItemPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ManejadorAerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ManejadorCategoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ManejadorCiudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ManejadorCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ManejadorPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ManejadorRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/ManejadorVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Paquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Pasajero.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/PasswordManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Reserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/RutaVuelo$EstadoRuta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/RutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Sistema.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/TipoAsiento.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/TipoDoc.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Usuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Logica/Vuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$10$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$11$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$11.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$12$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$12.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$13$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$13.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$14$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$14.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$15$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$15.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$16$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$16.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$17$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$17.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$3$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$4$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$5$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$6$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$7$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$8$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$9$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/IntentoDiseño.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AceptarRuta$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AceptarRuta$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AceptarRuta$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AceptarRuta$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AceptarRuta$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AceptarRuta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AgregarRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaAereolinea$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaAereolinea$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaAereolinea$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaAereolinea$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaAereolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaCategoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaCiudad$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaCiudad$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaCiudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaVuelo$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaVuelo$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/AltaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/CompraPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ConsultaPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ConsultaRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ConsultaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/EligeUsuario$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/EligeUsuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/InicioSesion$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/InicioSesion$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/InicioSesion$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/InicioSesion$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/InicioSesion$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/InicioSesion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ModificarDatosAereolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ModificarDatosCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/NuevaRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ReservaVuelo$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ReservaVuelo$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ReservaVuelo$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/ReservaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/Presentacion/gui/guiSesion/VerUsuarios.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaRutaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaUsuarioServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaVueloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CheckSessionServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CheckSessionServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarAerolineasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarAerolineasServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarCategoriasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarCategoriasServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LogoutServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LogoutServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservaVueloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/UsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/UsuarioServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerInfoVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerInfoVueloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarEmailServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarEmailServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtAerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtCategoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtCiudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtItemPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtPasajero.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtReserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtUsuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/DataTypes/DtVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Aerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Categoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Ciudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Cliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/CompraPaqLogica.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Fabrica.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ISistema.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ItemPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ManejadorAerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ManejadorCategoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ManejadorCiudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ManejadorCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ManejadorPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ManejadorRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/ManejadorVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Paquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Pasajero.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/PasswordManager.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Reserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/RutaVuelo$EstadoRuta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/RutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Sistema.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/TipoAsiento.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/TipoDoc.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Usuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Logica/Vuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$1$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$10$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$10.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$11$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$11.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$12$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$12.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$13$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$13.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$14$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$14.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$15$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$15.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$16$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$16.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$17$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$17.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$2$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$3$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$4$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$5$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$6$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$6.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$7$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$7.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$8$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$8.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$9$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño$9.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/IntentoDiseño.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AceptarRuta$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AceptarRuta$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AceptarRuta$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AceptarRuta$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AceptarRuta$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AceptarRuta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AgregarRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaAereolinea$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaAereolinea$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaAereolinea$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaAereolinea$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaAereolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaCategoria.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaCiudad$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaCiudad$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaCiudad.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaVuelo$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaVuelo$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/AltaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/CompraPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ConsultaPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ConsultaRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ConsultaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/EligeUsuario$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/EligeUsuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/InicioSesion$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/InicioSesion$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/InicioSesion$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/InicioSesion$4.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/InicioSesion$5.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/InicioSesion.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ModificarDatosAereolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ModificarDatosCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/NuevaRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ReservaVuelo$1.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ReservaVuelo$2.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ReservaVuelo$3.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/ReservaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/Presentacion/gui/guiSesion/VerUsuarios.class" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -197,32 +392,33 @@
     "git-widget-placeholder": "junior",
     "ignore.virus.scanning.warn.message": "true",
     "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/java",
+    "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp/WEB-INF/lib",
     "node.js.detected.package.eslint": "true",
     "node.js.detected.package.tslint": "true",
     "node.js.selected.package.eslint": "(autodetect)",
     "node.js.selected.package.tslint": "(autodetect)",
     "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
+    "project.structure.last.edited": "Artifacts",
     "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.30358785",
-    "settings.editor.selected.configurable": "preferences.applicationServers",
+    "project.structure.side.proportion": "0.29319373",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
     "vue.rearranger.settings.migration": "true"
   }
 }]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
-      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp\WEB-INF\lib" />
+      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\target" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat" />
     </key>
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp\WEB-INF\META-INF" />
+      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main" />
+      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java" />
+      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\DataTypes" />
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\gui" />
-      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache" />
-      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example" />
-      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -238,7 +434,7 @@
       </map>
     </option>
   </component>
-  <component name="RunManager" selected="Application.Main">
+  <component name="RunManager" selected="Tomcat Server.Tomcat 11.0.11">
     <configuration name="Main" type="Application" factoryName="Application" temporary="true" nameIsGenerated="true">
       <option name="MAIN_CLASS_NAME" value="Presentacion.gui.Main" />
       <module name="WebAppApache" />
@@ -371,6 +567,9 @@
       <workItem from="1760457663446" duration="4396000" />
       <workItem from="1760479760639" duration="17289000" />
       <workItem from="1760585006030" duration="632000" />
+      <workItem from="1760616324542" duration="77000" />
+      <workItem from="1760616412174" duration="2133000" />
+      <workItem from="1760623476807" duration="8739000" />
     </task>
     <task id="LOCAL-00001" summary="fxg">
       <option name="closed" value="true" />
@@ -421,7 +620,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/jr" />
+                        <option value="origin/junior" />
                       </list>
                     </value>
                   </entry>
