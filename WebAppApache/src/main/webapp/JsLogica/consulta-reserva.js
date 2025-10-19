@@ -306,7 +306,7 @@ async function cargarReservasAerolinea(vueloNombre) {
         const container = document.getElementById('listaReservasAerolinea');
         container.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Cargando reservas...</p></div>';
 
-        const response = await fetch('api/reservas-vuelo?nombreVuelo=' + encodeURIComponent(vueloNombre));
+        const response = await fetch(`api/consulta-reserva?action=reservas-vuelo&vuelo=${encodeURIComponent(vueloNombre)}`);
 
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
@@ -326,12 +326,21 @@ async function cargarReservasAerolinea(vueloNombre) {
 
             const reservaHTML = `
                 <div class="col-md-6">
-                    <div class="card reserva-card mb-3" onclick="seleccionarReservaAerolinea('${reserva.id}')">
+                    <div class="card reserva-card mb-3" onclick="seleccionarReservaAerolinea(
+                        '${reserva.id}', 
+                        '${reserva.clienteNombre}', 
+                        '${reserva.tipoAsiento}', 
+                        ${reserva.cantidadPasajes}, 
+                        ${reserva.equipajeExtra}, 
+                        ${reserva.costoTotal},
+                        '${reserva.fechaReserva}'
+                    )">
                         <div class="card-body">
                             <h6 class="card-title text-dark">${reserva.id}</h6>
                             <p class="card-text mb-1 text-dark">Cliente: ${reserva.clienteNombre}</p>
                             <p class="card-text mb-1 text-dark">Pasajeros: ${reserva.cantidadPasajes}</p>
                             <p class="card-text mb-1 text-dark">Asiento: ${reserva.tipoAsiento}</p>
+                            <p class="card-text mb-1 text-dark">Costo: $${reserva.costoTotal}</p>
                             <span class="badge ${estadoBadge}">Confirmada</span>
                         </div>
                     </div>
@@ -393,8 +402,17 @@ function actualizarPasos(tipo, pasoActivo) {
     }
 }
 
-function seleccionarReservaAerolinea(reservaId) {
-    reservaSeleccionada = reservaId;
+// Modificar la función de selección para guardar más datos
+function seleccionarReservaAerolinea(reservaId, clienteNombre, tipoAsiento, cantidadPasajes, equipajeExtra, costoTotal, fechaReserva) {
+    reservaSeleccionada = {
+        id: reservaId,
+        clienteNombre: clienteNombre,
+        tipoAsiento: tipoAsiento,
+        cantidadPasajes: cantidadPasajes,
+        equipajeExtra: equipajeExtra,
+        costoTotal: costoTotal,
+        fechaReserva: fechaReserva
+    };
 
     // Remover selección anterior y marcar actual
     document.querySelectorAll('#flujoAerolinea .reserva-card').forEach(card => {
@@ -412,11 +430,22 @@ async function mostrarReservaCliente(vueloNombre) {
     container.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Buscando reserva...</p></div>';
 
     try {
-        // Buscar reserva del cliente en este vuelo
-        const responseReserva = await fetch('api/reserva-cliente?vuelo=' + encodeURIComponent(vueloNombre));
+        // Buscar reserva del cliente en este vuelo usando el nuevo servlet
+        const responseReserva = await fetch(`api/consulta-reserva?action=reserva-cliente-vuelo&usuario=${encodeURIComponent(usuarioInfo.nickname)}&vuelo=${encodeURIComponent(vueloNombre)}`);
 
         if (responseReserva.ok) {
             const reserva = await responseReserva.json();
+
+            if (reserva.error) {
+                // No tiene reserva en este vuelo
+                container.innerHTML = `
+                    <div class="alert alert-warning text-center">
+                        <h5 class="text-warning">No tiene reserva en este vuelo</h5>
+                        <p class="text-dark">No se encontró una reserva a su nombre para el vuelo seleccionado.</p>
+                    </div>
+                `;
+                return;
+            }
 
             const estadoBadge = 'bg-success';
             const aerolineaSelect = document.getElementById('aerolineaCliente');
@@ -469,6 +498,7 @@ async function mostrarReservaCliente(vueloNombre) {
     }
 }
 
+// Para aerolínea - mostrar detalles básicos de reserva
 async function mostrarReservaAerolinea() {
     const container = document.getElementById('reservaAerolineaDetalle');
     container.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Cargando detalles...</p></div>';
@@ -479,38 +509,29 @@ async function mostrarReservaAerolinea() {
     }
 
     try {
-        // Obtener detalles completos de la reserva
-        const response = await fetch('api/reserva-detalle?id=' + encodeURIComponent(reservaSeleccionada));
+        const estadoBadge = 'bg-success';
 
-        if (response.ok) {
-            const reserva = await response.json();
-
-            const estadoBadge = 'bg-success';
-
-            container.innerHTML = `
-                <div class="card border-primary">
-                    <div class="card-body">
-                        <div class="row">
-                            <div class="col-md-6">
-                                <h5 class="text-primary">Detalles de la Reserva</h5>
-                                <p class="mb-1 text-dark"><strong>Código:</strong> ${reserva.id}</p>
-                                <p class="mb-1 text-dark"><strong>Cliente:</strong> ${reserva.clienteNombre}</p>
-                                <p class="mb-1 text-dark"><strong>Fecha Reserva:</strong> ${reserva.fechaReserva}</p>
-                                <p class="mb-1"><strong>Estado:</strong> <span class="badge ${estadoBadge}">Confirmada</span></p>
-                            </div>
-                            <div class="col-md-6">
-                                <p class="mb-1 text-dark"><strong>Tipo Asiento:</strong> ${reserva.tipoAsiento}</p>
-                                <p class="mb-1 text-dark"><strong>Cantidad Pasajes:</strong> ${reserva.cantidadPasajes}</p>
-                                <p class="mb-1 text-dark"><strong>Equipaje Extra:</strong> ${reserva.equipajeExtra}</p>
-                                <p class="mb-1 text-dark"><strong>Costo Total:</strong> $${reserva.costoTotal}</p>
-                            </div>
+        container.innerHTML = `
+            <div class="card border-primary">
+                <div class="card-body">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <h5 class="text-primary">Detalles de la Reserva</h5>
+                            <p class="mb-1 text-dark"><strong>Código:</strong> ${reservaSeleccionada.id}</p>
+                            <p class="mb-1 text-dark"><strong>Cliente:</strong> ${reservaSeleccionada.clienteNombre}</p>
+                            <p class="mb-1 text-dark"><strong>Fecha Reserva:</strong> ${reservaSeleccionada.fechaReserva}</p>
+                            <p class="mb-1"><strong>Estado:</strong> <span class="badge ${estadoBadge}">Confirmada</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p class="mb-1 text-dark"><strong>Tipo Asiento:</strong> ${reservaSeleccionada.tipoAsiento}</p>
+                            <p class="mb-1 text-dark"><strong>Cantidad Pasajes:</strong> ${reservaSeleccionada.cantidadPasajes}</p>
+                            <p class="mb-1 text-dark"><strong>Equipaje Extra:</strong> ${reservaSeleccionada.equipajeExtra}</p>
+                            <p class="mb-1 text-dark"><strong>Costo Total:</strong> $${reservaSeleccionada.costoTotal}</p>
                         </div>
                     </div>
                 </div>
-            `;
-        } else {
-            container.innerHTML = '<div class="alert alert-danger">Error al cargar los detalles de la reserva</div>';
-        }
+            </div>
+        `;
 
     } catch (error) {
         console.error('Error:', error);
