@@ -1,5 +1,8 @@
+// javascript
 document.addEventListener('DOMContentLoaded', function() {
     console.log('Session manager cargado');
+    // Calcular la base API igual que en las JSP: quitar el último segmento del path
+    window.SESSION_API_BASE = window.location.pathname.replace(/\/[^/]*$/, '');
     checkSession();
 
     // Login para modal
@@ -19,7 +22,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (logoutBtn) {
         logoutBtn.addEventListener('click', function() {
             console.log('Cerrando sesión...');
-            fetch('api/logout', {
+            fetch(window.SESSION_API_BASE + '/api/logout', {
                 method: 'POST',
                 credentials: 'include'
             })
@@ -34,10 +37,11 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-function performLogin(nickname, password) {
+// javascript
+async function performLogin(nickname, password) {
     console.log('Ejecutando login para:', nickname);
 
-    fetch('api/login', {
+    fetch(window.SESSION_API_BASE + '/api/login', {
         method: 'POST',
         headers: {
             'Content-Type': 'application/x-www-form-urlencoded'
@@ -57,20 +61,32 @@ function performLogin(nickname, password) {
         })
         .then(data => {
             console.log('Datos recibidos:', data);
-            if (data.success) {
+            if (data && data.success) {
                 console.log('Login exitoso');
-                // Cerrar modal
-                const modal = bootstrap.Modal.getInstance(document.getElementById('loginModal'));
-                if (modal) {
-                    modal.hide();
+                const modalEl = document.getElementById('loginModal');
+                const modal = bootstrap.Modal.getInstance(modalEl) || bootstrap.Modal.getOrCreateInstance(modalEl);
+                if (modal) modal.hide();
+
+                try {
+                    updateUI({ authenticated: true, nickname: data.nickname, tipo: data.tipo });
+                } catch (e) {
+                    console.warn('No se pudo actualizar UI tras login:', e);
                 }
-                // Recargar para mostrar cambios en navbar
+
+                try {
+                    window.dispatchEvent(new Event('sessionUpdated'));
+                } catch (e) {
+                    console.warn('No se pudo dispatch sessionUpdated', e);
+                }
+
+                // Recargar la página para reflejar estado completo (pequeño retardo para asegurar cookie/sesión)
                 setTimeout(() => {
                     window.location.reload();
-                }, 100);
+                }, 150);
+
             } else {
-                console.error('Error en login:', data.error);
-                alert('Error: ' + (data.error || 'Credenciales incorrectas'));
+                console.error('Error en login:', data && data.error);
+                alert('Error: ' + (data && data.error ? data.error : 'Credenciales incorrectas'));
             }
         })
         .catch(error => {
@@ -79,8 +95,45 @@ function performLogin(nickname, password) {
         });
 }
 
+
+// Función para registro (si existe flujo de registro en la app)
+// Ajustar endpoint/formatos según tu backend.
+function performRegister(payloadObj) {
+    const body = Object.keys(payloadObj).map(k => `${encodeURIComponent(k)}=${encodeURIComponent(payloadObj[k])}`).join('&');
+    fetch(window.SESSION_API_BASE + '/api/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: body,
+        credentials: 'include'
+    })
+        .then(res => {
+            if (!res.ok) throw new Error('Registro fallido: ' + res.status);
+            return res.json();
+        })
+        .then(data => {
+            if (data && data.success) {
+                console.log('Registro exitoso');
+                // Si el backend crea sesión automática, avisar
+                try {
+                    window.dispatchEvent(new Event('sessionUpdated'));
+                } catch (e) {
+                    console.warn('No se pudo dispatch sessionUpdated tras registro', e);
+                }
+                return;
+            }
+            // Si no crea sesión, opcionalmente logear automáticamente:
+            // performLogin(payloadObj.nickname, payloadObj.password);
+            alert('Registro: ' + (data && data.error ? data.error : 'No se pudo completar'));
+        })
+        .catch(err => {
+            console.error('Error en registro:', err);
+            alert('Error de conexión al registrar');
+        });
+}
+
 function checkSession() {
-    fetch('api/check-session', {
+    const base = window.SESSION_API_BASE || '';
+    fetch(base + '/api/check-session', {
         credentials: 'include'
     })
         .then(res => res.json())
@@ -99,7 +152,7 @@ function updateUI(sessionData) {
     const loginBtn = document.getElementById('loginBtn');
     const logoutBtn = document.getElementById('logoutBtn');
 
-    if (sessionData.authenticated) {
+    if (sessionData && sessionData.authenticated) {
         console.log('Usuario autenticado:', sessionData.nickname);
         if (userInfo) {
             userInfo.innerHTML = `<i class="bi bi-person-circle"></i> ${sessionData.nickname}`;

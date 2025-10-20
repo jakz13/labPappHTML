@@ -1,95 +1,69 @@
-// Datos de ejemplo de rutas
-const rutasDisponibles = [
-    {
-        id: "ZL1502",
-        nombre: "Montevideo - Rio de Janeiro",
-        descripcionCorta: "Vuelo directo a las playas de Brasil",
-        descripcionCompleta: "Disfrute de un vuelo directo desde Montevideo hasta la maravillosa ciudad de Rio de Janeiro. Con una duración de apenas 2 horas y 30 minutos, llegará listo para explorar las famosas playas de Copacabana e Ipanema, el Cristo Redentor y el Pan de Azúcar. Incluye servicio de comidas y bebidas a bordo.",
-        aerolinea: "ZulyFly",
-        origen: "Montevideo, Uruguay (MVD)",
-        destino: "Rio de Janeiro, Brasil (GIG)",
-        hora: "07:15",
-        costoTurista: 320,
-        costoEjecutivo: 550,
-        costoEquipaje: 25,
-        categorias: ["Internacionales", "América", "Cortos"],
-        estado: "Confirmada",
-        fechaAlta: "15/01/2024",
-        imagen: "https://via.placeholder.com/600x400/3498db/ffffff?text=Montevideo-Rio+de+Janeiro",
-        vuelos: [
-            { id: "ZL1502001", fecha: "25/10/2024", disponible: true },
-            { id: "ZL1502002", fecha: "26/10/2024", disponible: true },
-            { id: "ZL1502003", fecha: "27/10/2024", disponible: false }
-        ]
-    },
-    {
-        id: "IB6012",
-        nombre: "Montevideo - Madrid",
-        descripcionCorta: "Conexión directa con Europa",
-        descripcionCompleta: "Vuele directamente desde Montevideo hasta Madrid en nuestro servicio premium. Disfrute de entretenimiento a bordo en todos los asientos, comidas gourmet y servicio de primera clase. Perfecto para viajes de negocios o placer.",
-        aerolinea: "Iberia",
-        origen: "Montevideo, Uruguay (MVD)",
-        destino: "Madrid, España (MAD)",
-        hora: "22:00",
-        costoTurista: 750,
-        costoEjecutivo: 1200,
-        costoEquipaje: 30,
-        categorias: ["Internacionales", "Europa"],
-        estado: "Confirmada",
-        fechaAlta: "10/02/2024",
-        imagen: "https://via.placeholder.com/600x400/8e44ad/ffffff?text=Montevideo-Madrid",
-        vuelos: [
-            { id: "IB6012201", fecha: "28/10/2024", disponible: true },
-            { id: "IB6012202", fecha: "29/10/2024", disponible: true }
-        ]
-    },
-    {
-        id: "CN804",
-        nombre: "Ciudad de Panamá - Nueva York",
-        descripcionCorta: "De Centroamérica a la gran manzana",
-        descripcionCompleta: "Conecte desde Ciudad de Panamá hasta Nueva York en este vuelo internacional. Copa Airlines ofrece un servicio excepcional con comidas, bebidas y entretenimiento a bordo para hacer su viaje más placentero.",
-        aerolinea: "Copa Airlines",
-        origen: "Ciudad de Panamá, Panamá (PTY)",
-        destino: "Nueva York, USA (JFK)",
-        hora: "08:30",
-        costoTurista: 520,
-        costoEjecutivo: 850,
-        costoEquipaje: 35,
-        categorias: ["Internacionales", "América"],
-        estado: "Confirmada",
-        fechaAlta: "05/03/2024",
-        imagen: "https://via.placeholder.com/600x400/e74c3c/ffffff?text=Panamá-Nueva+York",
-        vuelos: [
-            { id: "CN804101", fecha: "30/10/2024", disponible: true }
-        ]
-    },
-    {
-        id: "AR2050",
-        nombre: "Buenos Aires - Santiago",
-        descripcionCorta: "Cruzando la cordillera de los Andes",
-        descripcionCompleta: "Experimente la majestuosidad de los Andes en este vuelo entre Buenos Aires y Santiago. Disfrute de vistas panorámicas de la cordillera mientras cruza hacia Chile.",
-        aerolinea: "Aerolíneas Argentinas",
-        origen: "Buenos Aires, Argentina (EZE)",
-        destino: "Santiago, Chile (SCL)",
-        hora: "14:30",
-        costoTurista: 280,
-        costoEjecutivo: 480,
-        costoEquipaje: 30,
-        categorias: ["Internacionales", "América", "Cortos"],
-        estado: "Confirmada",
-        fechaAlta: "20/01/2024",
-        imagen: "https://via.placeholder.com/600x400/2ecc71/ffffff?text=Bs+As-Santiago",
-        vuelos: [
-            { id: "AR205001", fecha: "01/11/2024", disponible: true },
-            { id: "AR205002", fecha: "02/11/2024", disponible: true }
-        ]
-    }
-];
+// Variables globales
+let rutaSeleccionada = null;
+let vueloSeleccionado = null;
+let usuarioInfo = null;
 
-// Cargar rutas al iniciar la página
+// Inicialización
 document.addEventListener('DOMContentLoaded', function() {
-    cargarRutas(rutasDisponibles);
+    cargarAerolineas();
+    configurarEventListeners();
 });
+
+// Cargar aerolíneas desde backend
+function cargarAerolineas() {
+    fetch('api/aerolineas')
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById('aerolinea');
+            select.innerHTML = '<option value="">Seleccione aerolínea...</option>';
+            data.forEach(a => {
+                select.innerHTML += `<option value="${a.nickname}">${a.nombre}</option>`;
+            });
+        })
+        .catch(err => {
+            console.error("Error al cargar aerolíneas:", err);
+        });
+}
+
+function configurarEventListeners() {
+    // Aerolínea -> rutas
+    document.getElementById('aerolinea').addEventListener('change', function() {
+        const aerolinea = this.value;
+        const rutasList = document.getElementById('listaRutas');
+        const vuelosList = document.getElementById('vuelosAsociados');
+
+        rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Cargando rutas...</p></div>';
+        vuelosList.innerHTML = '';
+        document.getElementById('infoRuta').style.display = 'none';
+        document.getElementById('infoVuelo').style.display = 'none';
+        rutaSeleccionada = null;
+        vueloSeleccionado = null;
+
+        if (aerolinea) {
+            fetch('api/rutas?aerolinea=' + encodeURIComponent(aerolinea))
+                .then(res => res.json())
+                .then(data => {
+                    cargarRutas(data);
+                })
+                .catch(err => {
+                    console.error("Error al cargar rutas:", err);
+                    rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Error al cargar rutas</p></div>';
+                });
+        } else {
+            rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
+        }
+    });
+
+    // Botón aplicar filtros
+    document.getElementById('btnAplicarFiltros').addEventListener('click', function() {
+        aplicarFiltros();
+    });
+
+    // Botón limpiar
+    document.getElementById('btnLimpiar').addEventListener('click', function() {
+        limpiarFiltros();
+    });
+}
 
 function cargarRutas(rutas) {
     const container = document.getElementById('listaRutas');
@@ -98,8 +72,7 @@ function cargarRutas(rutas) {
     if (rutas.length === 0) {
         container.innerHTML = `
             <div class="col-12 text-center py-4">
-                <p class="text-muted">No se encontraron rutas con los filtros seleccionados.</p>
-                <button class="btn btn-outline-primary" onclick="limpiarFiltros()">Mostrar todas las rutas</button>
+                <p class="text-muted">No se encontraron rutas para esta aerolínea.</p>
             </div>
         `;
         return;
@@ -107,21 +80,15 @@ function cargarRutas(rutas) {
 
     rutas.forEach(ruta => {
         const rutaHTML = `
-            <div class="col-md-6">
-                <div class="card ruta-card h-100" onclick="mostrarDetallesRuta('${ruta.id}')">
-                    <img src="${ruta.imagen}" class="ruta-image" alt="${ruta.nombre}">
+            <div class="col-md-6 mb-3">
+                <div class="card ruta-card h-100" onclick="seleccionarRuta('${ruta.nombre}')" style="cursor: pointer;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="card-title">${ruta.nombre}</h6>
-                            <span class="info-badge">${ruta.id}</span>
+                            <h6 class="card-title text-primary">${ruta.nombre}</h6>
+                            <span class="badge bg-success">Confirmada</span>
                         </div>
-                        <p class="card-text small text-muted">${ruta.descripcionCorta}</p>
-                        <div class="d-flex justify-content-between align-items-center">
-                            <span class="text-primary fw-bold">${ruta.aerolinea}</span>
-                            <span class="costo-destacado">$${ruta.costoTurista}</span>
-                        </div>
-                        <div class="mt-2">
-                            ${ruta.categorias.map(cat => `<span class="badge bg-secondary me-1">${cat}</span>`).join('')}
+                        <div class="d-flex justify-content-between align-items-center mt-2">
+                            <small class="text-muted">Ruta de vuelo</small>
                         </div>
                     </div>
                 </div>
@@ -131,93 +98,333 @@ function cargarRutas(rutas) {
     });
 }
 
-function mostrarDetallesRuta(rutaId) {
-    const ruta = rutasDisponibles.find(r => r.id === rutaId);
-
-    if (!ruta) return;
-
-    // Actualizar información de la ruta
-    document.getElementById('rutaNombre').textContent = ruta.nombre;
-    document.getElementById('rutaDescripcionCorta').textContent = ruta.descripcionCorta;
-    document.getElementById('rutaDescripcion').textContent = ruta.descripcionCompleta;
-    document.getElementById('rutaAerolinea').textContent = ruta.aerolinea;
-    document.getElementById('rutaOrigen').textContent = ruta.origen;
-    document.getElementById('rutaDestino').textContent = ruta.destino;
-    document.getElementById('rutaHora').textContent = ruta.hora;
-    document.getElementById('rutaEstado').textContent = ruta.estado;
-    document.getElementById('rutaFechaAlta').textContent = ruta.fechaAlta;
-    document.getElementById('rutaCategorias').textContent = ruta.categorias.join(', ');
-    document.getElementById('costoTurista').textContent = ruta.costoTurista;
-    document.getElementById('costoEjecutivo').textContent = ruta.costoEjecutivo;
-    document.getElementById('costoEquipaje').textContent = ruta.costoEquipaje;
-    document.getElementById('imagenRuta').src = ruta.imagen;
-
-    // Cargar vuelos asociados
-    const vuelosContainer = document.getElementById('vuelosAsociados');
-    vuelosContainer.innerHTML = '';
-
-    ruta.vuelos.forEach(vuelo => {
-        const vueloHTML = `
-            <div class="col-md-4">
-                <div class="card ${vuelo.disponible ? 'border-success' : 'border-secondary'}">
-                    <div class="card-body text-center">
-                        <h6 class="card-title">${vuelo.id}</h6>
-                        <p class="mb-1">${vuelo.fecha}</p>
-                        <span class="badge ${vuelo.disponible ? 'bg-success' : 'bg-secondary'}">
-                            ${vuelo.disponible ? 'Disponible' : 'Completo'}
-                        </span>
-                    </div>
-                </div>
-            </div>
-        `;
-        vuelosContainer.innerHTML += vueloHTML;
-    });
-
-    // Mostrar sección de información
-    document.getElementById('infoRuta').style.display = 'block';
+function seleccionarRuta(nombreRuta) {
+    // Mostrar información básica de la ruta
+    rutaSeleccionada = { nombre: nombreRuta };
+    mostrarDetallesRuta(nombreRuta);
+    cargarVuelosRuta(nombreRuta);
 
     // Remover selección anterior y marcar actual
     document.querySelectorAll('.ruta-card').forEach(card => {
-        card.classList.remove('selected');
+        card.classList.remove('border-primary', 'bg-light');
     });
-    event.currentTarget.classList.add('selected');
+    event.currentTarget.classList.add('border-primary', 'bg-light');
+}
+
+function mostrarDetallesRuta(nombreRuta) {
+    // Actualizar información básica de la ruta
+    document.getElementById('rutaNombre').textContent = nombreRuta;
+    document.getElementById('rutaDescripcion').textContent = `Información detallada de la ruta ${nombreRuta}`;
+    document.getElementById('rutaAerolinea').textContent = document.getElementById('aerolinea').options[document.getElementById('aerolinea').selectedIndex].text;
+    document.getElementById('rutaOrigen').textContent = 'Información no disponible';
+    document.getElementById('rutaDestino').textContent = 'Información no disponible';
+    document.getElementById('rutaHora').textContent = 'No disponible';
+    document.getElementById('rutaEstado').textContent = 'Confirmada';
+    document.getElementById('rutaFechaAlta').textContent = 'No disponible';
+    document.getElementById('rutaCategorias').textContent = 'No disponible';
+    document.getElementById('costoTurista').textContent = 'N/A';
+    document.getElementById('costoEjecutivo').textContent = 'N/A';
+    document.getElementById('costoEquipaje').textContent = 'N/A';
+
+    // Mostrar sección de información de la ruta
+    document.getElementById('infoRuta').style.display = 'block';
+    document.getElementById('infoVuelo').style.display = 'none';
 
     // Scroll a la información de la ruta
     document.getElementById('infoRuta').scrollIntoView({ behavior: 'smooth' });
 }
 
-function filtrarRutas() {
-    const aerolineaFiltro = document.getElementById('aerolinea').value;
-    const categoriaFiltro = document.getElementById('categoria').value;
-    const estadoFiltro = document.getElementById('estado').value;
+function cargarVuelosRuta(nombreRuta) {
+    const vuelosContainer = document.getElementById('vuelosAsociados');
+    vuelosContainer.innerHTML = '<div class="col-12 text-center py-2"><p class="text-muted">Cargando vuelos...</p></div>';
 
-    let rutasFiltradas = rutasDisponibles.filter(ruta => {
-        const coincideAerolinea = !aerolineaFiltro ||
-            ruta.aerolinea.toLowerCase().includes(aerolineaFiltro.toLowerCase());
-        const coincideCategoria = !categoriaFiltro ||
-            ruta.categorias.some(cat => cat.toLowerCase().includes(categoriaFiltro.toLowerCase()));
-        const coincideEstado = estadoFiltro === 'todas' || ruta.estado === 'Confirmada';
+    fetch(`api/vuelos?ruta=${encodeURIComponent(nombreRuta)}`)
+        .then(res => res.json())
+        .then(vuelos => {
+            vuelosContainer.innerHTML = '';
 
-        return coincideAerolinea && coincideCategoria && coincideEstado;
+            if (vuelos.length === 0) {
+                vuelosContainer.innerHTML = '<div class="col-12 text-center py-2"><p class="text-muted">No hay vuelos disponibles para esta ruta</p></div>';
+                return;
+            }
+
+            vuelos.forEach(vuelo => {
+                const vueloHTML = `
+                    <div class="col-md-4 mb-3">
+                        <div class="card border-success h-100" onclick="seleccionarVuelo('${vuelo.nombre}')" style="cursor: pointer;">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">${vuelo.nombre}</h6>
+                                <p class="mb-1 small text-muted">Vuelo disponible</p>
+                                <span class="badge bg-success">Disponible</span>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                vuelosContainer.innerHTML += vueloHTML;
+            });
+        })
+        .catch(err => {
+            console.error("Error cargando vuelos:", err);
+            vuelosContainer.innerHTML = '<div class="col-12 text-center py-2"><p class="text-muted">Error al cargar vuelos</p></div>';
+        });
+}
+
+function seleccionarVuelo(nombreVuelo) {
+    // Cargar información completa del vuelo
+    fetch(`api/vuelo?nombre=${encodeURIComponent(nombreVuelo)}`)
+        .then(res => res.json())
+        .then(data => {
+            vueloSeleccionado = data;
+            mostrarDetallesVuelo(data);
+            verificarPermisosUsuario(nombreVuelo, document.getElementById('aerolinea').value);
+        })
+        .catch(err => {
+            console.error("Error cargando detalles del vuelo:", err);
+            mostrarMensajeError('Error al cargar detalles del vuelo');
+        });
+
+    // Remover selección anterior de vuelos y marcar actual
+    document.querySelectorAll('#vuelosAsociados .card').forEach(card => {
+        card.classList.remove('border-warning', 'bg-light');
+    });
+    event.currentTarget.classList.add('border-warning', 'bg-light');
+}
+
+function mostrarDetallesVuelo(vueloData) {
+    // Actualizar información del vuelo
+    document.getElementById('nombreVueloDetalle').textContent = vueloData.nombre || '-';
+    document.getElementById('aerolineaVueloDetalle').textContent = document.getElementById('aerolinea').options[document.getElementById('aerolinea').selectedIndex].text;
+    document.getElementById('rutaVueloDetalle').textContent = rutaSeleccionada ? rutaSeleccionada.nombre : '-';
+    document.getElementById('fechaVueloDetalle').textContent = vueloData.fecha || '-';
+    document.getElementById('duracionVueloDetalle').textContent = vueloData.duracion || '-';
+    document.getElementById('horaSalidaDetalle').textContent = vueloData.horaSalida || '-';
+    document.getElementById('horaLlegadaDetalle').textContent = vueloData.horaLlegada || '-';
+    document.getElementById('asientosTuristaDetalle').textContent = vueloData.asientosTurista !== undefined ? vueloData.asientosTurista : '-';
+    document.getElementById('asientosEjecutivoDetalle').textContent = vueloData.asientosEjecutivo !== undefined ? vueloData.asientosEjecutivo : '-';
+    document.getElementById('estadoVueloDetalle').textContent = vueloData.estado || 'Confirmado';
+
+    // Mostrar sección de información del vuelo
+    document.getElementById('infoVuelo').style.display = 'block';
+
+    // Scroll a la información del vuelo
+    document.getElementById('infoVuelo').scrollIntoView({ behavior: 'smooth' });
+}
+
+// Verificar permisos del usuario para el vuelo
+function verificarPermisosUsuario(nombreVuelo, aerolineaSeleccionada) {
+    fetch(`api/verificar-permisos-vuelo?nombreVuelo=${encodeURIComponent(nombreVuelo)}&aerolinea=${encodeURIComponent(aerolineaSeleccionada)}`)
+        .then(res => res.json())
+        .then(data => {
+            usuarioInfo = data;
+            mostrarSeccionesUsuario(data, nombreVuelo);
+        })
+        .catch(err => {
+            console.error("Error verificando permisos:", err);
+            // Por defecto, mostrar como usuario no autenticado
+            usuarioInfo = { autenticado: false };
+            mostrarSeccionesUsuario({ autenticado: false }, nombreVuelo);
+        });
+}
+
+// Mostrar secciones según el tipo de usuario
+function mostrarSeccionesUsuario(usuarioData, nombreVuelo) {
+    const infoAerolinea = document.getElementById('infoAerolinea');
+    const infoCliente = document.getElementById('infoCliente');
+    const btnReservar = document.getElementById('btnReservar');
+
+    // Ocultar todas las secciones primero
+    infoAerolinea.style.display = 'none';
+    infoCliente.style.display = 'none';
+    btnReservar.style.display = 'none';
+
+    if (usuarioData.autenticado) {
+        if (usuarioData.esAerolineaDueña) {
+            // Es la aerolínea que publicó el vuelo - mostrar gestión de reservas
+            infoAerolinea.style.display = 'block';
+            cargarReservasVuelo(nombreVuelo);
+        } else if (usuarioData.tieneReservaCliente) {
+            // Es un cliente con reserva en este vuelo
+            infoCliente.style.display = 'block';
+
+            // Configurar el botón para ver los detalles de la reserva
+            const btnVerReserva = infoCliente.querySelector('button');
+            btnVerReserva.onclick = function() {
+                verDetalleReservaCliente(usuarioData.idReservaCliente);
+            };
+        } else {
+            // Usuario autenticado pero sin reserva - mostrar opción de reserva
+            btnReservar.style.display = 'block';
+        }
+    } else {
+        // Usuario no autenticado - mostrar opción de reserva
+        btnReservar.style.display = 'block';
+    }
+}
+
+// Cargar reservas del vuelo (para aerolíneas)
+function cargarReservasVuelo(nombreVuelo) {
+    fetch(`api/reservas-vuelo?nombreVuelo=${encodeURIComponent(nombreVuelo)}`)
+        .then(res => res.json())
+        .then(reservas => {
+            const totalReservas = document.getElementById('totalReservas');
+            totalReservas.textContent = reservas.length;
+
+            // Actualizar el botón para mostrar detalles
+            const btnVerReservas = document.querySelector('#infoAerolinea button');
+            if (btnVerReservas) {
+                btnVerReservas.onclick = function() {
+                    mostrarDetallesReservas(reservas);
+                };
+            }
+        })
+        .catch(err => {
+            console.error("Error cargando reservas:", err);
+            document.getElementById('totalReservas').textContent = '0';
+        });
+}
+
+// Función para ver el detalle de la reserva del cliente
+function verDetalleReservaCliente(idReserva) {
+    fetch(`api/detalle-reserva-cliente?idReserva=${encodeURIComponent(idReserva)}`)
+        .then(res => res.json())
+        .then(data => {
+            if (data.success) {
+                mostrarModalDetalleReserva(data.reserva);
+            } else {
+                mostrarMensajeError('Error al cargar los detalles de la reserva: ' + data.error);
+            }
+        })
+        .catch(err => {
+            console.error("Error cargando detalle de reserva:", err);
+            mostrarMensajeError('Error al cargar los detalles de la reserva');
+        });
+}
+
+// Mostrar modal con detalles de reservas
+function mostrarDetallesReservas(reservas) {
+    let contenido = `
+        <div class="table-responsive">
+            <table class="table table-dark table-striped">
+                <thead>
+                    <tr>
+                        <th>ID Reserva</th>
+                        <th>Cliente</th>
+                        <th>Tipo Asiento</th>
+                        <th>Cantidad</th>
+                        <th>Costo</th>
+                    </tr>
+                </thead>
+                <tbody>
+    `;
+
+    reservas.forEach(reserva => {
+        contenido += `
+            <tr>
+                <td>${reserva.id}</td>
+                <td>${reserva.cliente}</td>
+                <td>${reserva.tipoAsiento}</td>
+                <td>${reserva.cantidadPasajes}</td>
+                <td>$${reserva.costo}</td>
+            </tr>
+        `;
     });
 
-    cargarRutas(rutasFiltradas);
-    document.getElementById('infoRuta').style.display = 'none';
+    contenido += `
+                </tbody>
+            </table>
+        </div>
+        <div class="mt-3">
+            <strong>Total de reservas:</strong> ${reservas.length}
+        </div>
+    `;
+
+    // Mostrar modal
+    alert(`Detalles de Reservas:\n\n${contenido.replace(/<[^>]*>/g, '')}`);
+}
+
+// Mostrar modal con detalles de la reserva del cliente
+function mostrarModalDetalleReserva(reserva) {
+    const contenido = `
+        <div class="detalle-reserva">
+            <h5 class="text-primary mb-3">Detalles de tu Reserva</h5>
+            <div class="row">
+                <div class="col-6">
+                    <p><strong>ID Reserva:</strong> ${reserva.id}</p>
+                    <p><strong>Vuelo:</strong> ${reserva.vuelo}</p>
+                    <p><strong>Tipo de Asiento:</strong> ${reserva.tipoAsiento}</p>
+                </div>
+                <div class="col-6">
+                    <p><strong>Cantidad de Pasajes:</strong> ${reserva.cantidadPasajes}</p>
+                    <p><strong>Costo Total:</strong> $${reserva.costo}</p>
+                    <p><strong>Estado:</strong> <span class="badge bg-success">${reserva.estado}</span></p>
+                </div>
+            </div>
+            ${reserva.fechaReserva ? `<p><strong>Fecha de Reserva:</strong> ${reserva.fechaReserva}</p>` : ''}
+        </div>
+    `;
+
+    alert(`Detalles de Reserva:\n\n${contenido.replace(/<[^>]*>/g, '')}`);
+}
+
+function aplicarFiltros() {
+    const aerolinea = document.getElementById('aerolinea').value;
+    const categoria = document.getElementById('categoria').value;
+
+    if (!aerolinea) {
+        mostrarMensajeError('Por favor seleccione una aerolínea primero');
+        return;
+    }
+
+    // Recargar rutas
+    fetch('api/rutas?aerolinea=' + encodeURIComponent(aerolinea))
+        .then(res => res.json())
+        .then(data => {
+            cargarRutas(data);
+            document.getElementById('infoRuta').style.display = 'none';
+            document.getElementById('infoVuelo').style.display = 'none';
+            rutaSeleccionada = null;
+            vueloSeleccionado = null;
+        })
+        .catch(err => {
+            console.error("Error aplicando filtros:", err);
+            mostrarMensajeError('Error al aplicar filtros');
+        });
 }
 
 function limpiarFiltros() {
     document.getElementById('aerolinea').value = '';
     document.getElementById('categoria').value = '';
-    document.getElementById('estado').value = 'confirmada';
-    cargarRutas(rutasDisponibles);
+    document.getElementById('listaRutas').innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
+    document.getElementById('vuelosAsociados').innerHTML = '';
     document.getElementById('infoRuta').style.display = 'none';
+    document.getElementById('infoVuelo').style.display = 'none';
+    rutaSeleccionada = null;
+    vueloSeleccionado = null;
 }
 
-// Mejorar la experiencia de usuario
-document.addEventListener('DOMContentLoaded', function() {
-    // Agregar tooltips si es necesario
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
+function mostrarMensajeError(mensaje) {
+    const toastHTML = `
+        <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>${mensaje}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+    const toastContainer = document.getElementById('toastContainer') || (() => {
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed top-0 end-0 p-3';
+        container.style.zIndex = '1060';
+        document.body.appendChild(container);
+        return container;
+    })();
+
+    toastContainer.innerHTML = toastHTML;
+    const toastElement = toastContainer.querySelector('.toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}

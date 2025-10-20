@@ -35,21 +35,25 @@ public class ObtenerUsuarioServlet extends HttpServlet {
             if ("cliente".equals(tipoUsuario)) {
                 DtCliente dtCliente = sistema.obtenerCliente(nickname);
                 if (dtCliente != null) {
+                    String imagen = "";
+                    try { imagen = dtCliente.getImagenUrl() != null ? dtCliente.getImagenUrl() : ""; } catch (Throwable t) { imagen = ""; }
+
                     String json = String.format(
                             "{\"success\":true, \"tipo\":\"cliente\", " +
                                     "\"nickname\":\"%s\", \"email\":\"%s\", \"nombre\":\"%s\", " +
                                     "\"apellido\":\"%s\", \"fechaNacimiento\":\"%s\", " +
                                     "\"nacionalidad\":\"%s\", \"tipoDocumento\":\"%s\", " +
-                                    "\"numeroDocumento\":\"%s\", \"fechaRegistro\":\"%s\"}",
-                            dtCliente.getNickname(),
-                            dtCliente.getEmail(),
-                            dtCliente.getNombre(),
-                            dtCliente.getApellido(),
+                                    "\"numeroDocumento\":\"%s\", \"fechaRegistro\":\"%s\", \"imagenUrl\":\"%s\"}",
+                            escapeJson(dtCliente.getNickname()),
+                            escapeJson(dtCliente.getEmail()),
+                            escapeJson(dtCliente.getNombre()),
+                            escapeJson(dtCliente.getApellido()),
                             dtCliente.getFechaNacimiento() != null ? dtCliente.getFechaNacimiento().toString() : "",
-                            dtCliente.getNacionalidad(),
-                            dtCliente.getTipoDocumento(),
-                            dtCliente.getNumeroDocumento(),
-                            dtCliente.getFechaAlta() != null ? dtCliente.getFechaAlta().toString() : ""
+                            escapeJson(dtCliente.getNacionalidad()),
+                            escapeJson(dtCliente.getTipoDocumento() != null ? dtCliente.getTipoDocumento().toString() : ""),
+                            escapeJson(dtCliente.getNumeroDocumento()),
+                            dtCliente.getFechaAlta() != null ? dtCliente.getFechaAlta().toString() : "",
+                            escapeJson(imagen)
                     );
                     out.print(json);
                 } else {
@@ -60,15 +64,19 @@ public class ObtenerUsuarioServlet extends HttpServlet {
                 DtAerolinea dtAerolinea = sistema.obtenerAerolinea(nickname);
                 if (dtAerolinea != null) {
 
+                    String imagen = "";
+                    try { imagen = dtAerolinea.getImagenUrl() != null ? dtAerolinea.getImagenUrl() : ""; } catch (Throwable t) { imagen = ""; }
+
                     String json = String.format(
                             "{\"success\":true, \"tipo\":\"aerolinea\", " +
                                     "\"nickname\":\"%s\", \"email\":\"%s\", \"nombre\":\"%s\", " +
-                                    "\"descripcion\":\"%s\", \"sitioWeb\":\"%s\"}",
-                            dtAerolinea.getNickname(),
-                            dtAerolinea.getEmail(),
-                            dtAerolinea.getNombre(),
-                            dtAerolinea.getDescripcion() != null ? dtAerolinea.getDescripcion() : "",
-                            dtAerolinea.getSitioWeb() != null ? dtAerolinea.getSitioWeb() : ""
+                                    "\"descripcion\":\"%s\", \"sitioWeb\":\"%s\", \"imagenUrl\":\"%s\"}",
+                            escapeJson(dtAerolinea.getNickname()),
+                            escapeJson(dtAerolinea.getEmail()),
+                            escapeJson(dtAerolinea.getNombre()),
+                            escapeJson(dtAerolinea.getDescripcion() != null ? dtAerolinea.getDescripcion() : ""),
+                            escapeJson(dtAerolinea.getSitioWeb() != null ? dtAerolinea.getSitioWeb() : ""),
+                            escapeJson(imagen)
                     );
                     out.print(json);
                 } else {
@@ -86,5 +94,14 @@ public class ObtenerUsuarioServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"success\":false, \"error\":\"Error interno del servidor\"}");
         }
+    }
+
+    private String escapeJson(String input) {
+        if (input == null) return "";
+        return input.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 }

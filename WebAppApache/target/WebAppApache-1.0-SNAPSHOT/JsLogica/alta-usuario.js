@@ -240,9 +240,12 @@ function enviarRegistroAlServidor() {
     submitBtn.disabled = true;
 
     // Enviar al servidor
-    fetch('/WebAppApache_war_exploded/altaUsuario', {
+    // Determinar base (intentar usar la variable de session-manager si está disponible)
+    const basePath = (window.SESSION_API_BASE && window.SESSION_API_BASE.length > 0) ? window.SESSION_API_BASE : window.location.pathname.replace(/\/[^/]*$/, '');
+    fetch(basePath + '/altaUsuario', {
         method: 'POST',
-        body: formData
+        body: formData,
+        credentials: 'include'
     })
 
         .then(response => {
@@ -254,13 +257,20 @@ function enviarRegistroAlServidor() {
         .then(data => {
             if (data.success) {
                 // Éxito
-                const successModal = new bootstrap.Modal(document.getElementById('successModal'));
-                successModal.show();
+                // Mostrar modal de éxito si existe
+                try {
+                    const successModal = new bootstrap.Modal(document.getElementById('successModal'));
+                    successModal.show();
+                } catch (e) { /* ignore */ }
 
-                // Redirigir después de éxito
+                // Notificar a otras partes de la página que la sesión cambió y forzar recarga/redirect
+                try { window.dispatchEvent(new Event('sessionUpdated')); } catch (e) { console.warn('No se pudo dispatch sessionUpdated', e); }
+
+                // Si el servidor devolvió nickname/tipo, podemos redirigir al inicio o recargar la página
                 setTimeout(() => {
-                    window.location.href = 'PaginaPrincipal.jsp';
-                }, 2000);
+                    // Preferir redirect a PaginaPrincipal si existe
+                    try { window.location.href = 'PaginaPrincipal.jsp'; } catch (e) { window.location.reload(); }
+                }, 900);
             } else {
                 // Error
                 mostrarError(data.error || 'Error desconocido al registrar usuario');

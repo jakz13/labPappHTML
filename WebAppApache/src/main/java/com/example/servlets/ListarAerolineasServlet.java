@@ -18,7 +18,7 @@ public class ListarAerolineasServlet extends HttpServlet {
         List<DtAerolinea> aerolineas = sistema.listarAerolineas();
 
         // DEBUG: Imprimir en consola del servidor
-        System.out.println("Aerolineas extraídas de la BD:");
+        System.out.println("Aerolineas extraÃdas de la BD:");
         for (DtAerolinea a : aerolineas) {
             System.out.println("Nickname: " + a.getNickname() + ", Nombre: " + a.getNombre());
         }
@@ -34,4 +34,3 @@ public class ListarAerolineasServlet extends HttpServlet {
         out.print("]");
     }
 }
-

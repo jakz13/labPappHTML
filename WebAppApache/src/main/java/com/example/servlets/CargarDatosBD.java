@@ -8,6 +8,7 @@ import jakarta.servlet.annotation.WebListener;
 
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import java.io.File;
 
 @WebListener
 public class CargarDatosBD implements ServletContextListener {
@@ -24,6 +25,24 @@ public class CargarDatosBD implements ServletContextListener {
         } catch (Throwable t) {
             // No fallar el arranque del servidor por este paso; solo loguear
             logger.log(Level.WARNING, "CargarDatosBD: no se pudo cargar datos desde BD: " + t.getMessage(), t);
+        }
+
+        // Asegurar que exista la carpeta /Images dentro del contexto y guardarla en el ServletContext
+        try {
+            String imagesRealPath = sce.getServletContext().getRealPath("/Images");
+            if (imagesRealPath == null) {
+                // Fallback a temp dir
+                imagesRealPath = System.getProperty("java.io.tmpdir") + File.separator + "WebAppApache_Images";
+            }
+            File imagesDir = new File(imagesRealPath);
+            if (!imagesDir.exists()) {
+                boolean ok = imagesDir.mkdirs();
+                if (ok) logger.info("CargarDatosBD: carpeta Images creada en " + imagesDir.getAbsolutePath());
+            }
+            sce.getServletContext().setAttribute("IMAGES_DIR", imagesDir.getAbsolutePath());
+            logger.info("CargarDatosBD: IMAGES_DIR inicializado -> " + imagesDir.getAbsolutePath());
+        } catch (Throwable t) {
+            logger.log(Level.WARNING, "CargarDatosBD: no se pudo inicializar IMAGES_DIR: " + t.getMessage(), t);
         }
     }
 

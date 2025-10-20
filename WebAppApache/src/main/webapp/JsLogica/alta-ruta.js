@@ -1,69 +1,129 @@
-// Validación del formulario y envío al backend
+// javascript
+// javascript
 document.addEventListener('DOMContentLoaded', function() {
     const formulario = document.getElementById('formAltaRuta');
     const selectCategorias = document.getElementById('categorias');
+    const selectOrigen = document.getElementById('origen');
+    const selectDestino = document.getElementById('destino');
 
-    // Cargar categorías desde el backend
+    function setDefaultSelect(select, label) {
+        if (!select) return;
+        select.innerHTML = `<option value="" selected disabled>${label}</option>`;
+    }
+
+    // Cargar categorías (manejando lista de strings o lista de objetos {nombre:...})
     fetch('listarCategorias')
-        .then(res => res.json())
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
         .then(categorias => {
-            selectCategorias.innerHTML = '';
+            console.debug('listarCategorias ->', categorias);
+            setDefaultSelect(selectCategorias, 'Seleccione categorías (Ctrl/Cmd + click para múltiples)');
+            if (!Array.isArray(categorias) || categorias.length === 0) {
+                console.warn('No se recibieron categorías.');
+                return;
+            }
             categorias.forEach(cat => {
+                const nombre = (typeof cat === 'string') ? cat : (cat && (cat.nombre || cat.name) ? (cat.nombre || cat.name) : null);
+                if (!nombre) return;
                 const option = document.createElement('option');
-                option.value = cat.nombre;
-                option.textContent = cat.nombre;
+                option.value = nombre;
+                option.textContent = nombre;
                 selectCategorias.appendChild(option);
             });
+        })
+        .catch(err => {
+            console.error('Error cargando categorias:', err);
+            setDefaultSelect(selectCategorias, 'No se pudieron cargar categorías');
+        });
+
+    // Cargar ciudades desde el backend y poblar selects origen/destino
+    fetch('listarCiudades')
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            return res.json();
+        })
+        .then(ciudades => {
+            console.debug('listarCiudades ->', ciudades);
+            setDefaultSelect(selectOrigen, 'Seleccione ciudad de origen');
+            setDefaultSelect(selectDestino, 'Seleccione ciudad de destino');
+            if (!Array.isArray(ciudades) || ciudades.length === 0) {
+                console.warn('No se recibieron ciudades.');
+                return;
+            }
+            ciudades.forEach(ciudad => {
+                const nombre = (typeof ciudad === 'string') ? ciudad : (ciudad && (ciudad.nombre || ciudad.name) ? (ciudad.nombre || ciudad.name) : null);
+                if (!nombre) return;
+                const opt = document.createElement('option');
+                opt.value = nombre;
+                opt.textContent = nombre;
+                // clonar para cada select
+                if (selectOrigen) selectOrigen.appendChild(opt.cloneNode(true));
+                if (selectDestino) selectDestino.appendChild(opt.cloneNode(true));
+            });
+        })
+        .catch(err => {
+            console.error('Error cargando ciudades:', err);
+            setDefaultSelect(selectOrigen, 'No se pudieron cargar ciudades');
+            setDefaultSelect(selectDestino, 'No se pudieron cargar ciudades');
         });
 
     formulario.addEventListener('submit', function(event) {
         event.preventDefault();
 
         if (this.checkValidity()) {
-            const datosRuta = {
-                nombre: document.getElementById('nombreRuta').value,
-                descripcion: document.getElementById('descripcionCorta').value,
-                descripcionDetallada: document.getElementById('descripcion').value,
-                hora: document.getElementById('hora').value,
-                costoTurista: document.getElementById('costoTurista').value,
-                costoEjecutivo: document.getElementById('costoEjecutivo').value,
-                costoEquipaje: document.getElementById('costoEquipaje').value,
-                origen: document.getElementById('origen').value,
-                destino: document.getElementById('destino').value,
-                categorias: Array.from(selectCategorias.selectedOptions).map(option => option.value)
-            };
+            const formData = new FormData();
+            formData.append('nombre', document.getElementById('nombreRuta').value);
+            formData.append('descripcion', document.getElementById('descripcionCorta').value);
+            formData.append('descripcionDetallada', document.getElementById('descripcion').value);
+            formData.append('hora', document.getElementById('hora').value);
+            formData.append('costoTurista', document.getElementById('costoTurista').value);
+            formData.append('costoEjecutivo', document.getElementById('costoEjecutivo').value);
+            formData.append('costoEquipaje', document.getElementById('costoEquipaje').value);
+            formData.append('origen', document.getElementById('origen').value);
+            formData.append('destino', document.getElementById('destino').value);
 
-            // Construir los parámetros para x-www-form-urlencoded
-            const params = new URLSearchParams();
-            params.append('nombre', datosRuta.nombre);
-            params.append('descripcion', datosRuta.descripcion);
-            params.append('descripcionDetallada', datosRuta.descripcionDetallada);
-            params.append('hora', datosRuta.hora);
-            params.append('costoTurista', datosRuta.costoTurista);
-            params.append('costoEjecutivo', datosRuta.costoEjecutivo);
-            params.append('costoEquipaje', datosRuta.costoEquipaje);
-            params.append('origen', datosRuta.origen);
-            params.append('destino', datosRuta.destino);
-            datosRuta.categorias.forEach(cat => params.append('categorias', cat));
-            // Si tienes la aerolínea por sesión, puedes agregarla aquí:
-            // params.append('aerolinea', 'latam001');
+            const categorias = Array.from(selectCategorias.selectedOptions).map(option => option.value);
+            categorias.forEach(cat => formData.append('categorias', cat));
+
+            const imagenInput = document.getElementById('imagenRuta');
+            if (imagenInput && imagenInput.files && imagenInput.files[0]) {
+                const file = imagenInput.files[0];
+                formData.append('imagenRuta', file, file.name);
+            }
 
             fetch('altaRuta', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-                body: params
+                credentials: 'include',
+                body: formData
             })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
+                .then(async res => {
+                    let data;
+                    try { data = await res.json(); } catch (e) { data = { success: false, error: 'Respuesta inválida del servidor' }; }
+                    if (res.ok && data && data.success) {
                         mostrarMensajeExito();
                         formulario.reset();
                         formulario.classList.remove('was-validated');
+                        // si vino imagenUrl, puedes mostrarla o loguearla
+                        if (data.imagenUrl) {
+                            console.log('Imagen guardada en:', data.imagenUrl);
+                            // actualizar preview con la URL persistida
+                            const imgPrev = document.getElementById('imagenPreviewRuta');
+                            if (imgPrev) imgPrev.src = data.imagenUrl;
+                        }
                     } else {
-                        alert('Error: ' + (data.error || 'No se pudo crear la ruta.'));
+                        if (res.status === 409) {
+                            const volver = confirm((data && data.error) ? (data.error + '\n\n¿Desea reingresar los datos?') : 'Ya existe una ruta con ese nombre.\n\n¿Desea reingresar los datos?');
+                            if (volver) document.getElementById('nombreRuta').focus();
+                            else window.location.href = '/PaginaPrincipal.jsp';
+                        } else {
+                            alert('Error: ' + (data && data.error ? data.error : 'No se pudo crear la ruta.'));
+                        }
                     }
                 })
-                .catch(() => {
+                .catch(err => {
+                    console.error('Error en fetch altaRuta:', err);
                     alert('Error de conexión con el servidor.');
                 });
         } else {
@@ -73,7 +133,7 @@ document.addEventListener('DOMContentLoaded', function() {
         this.classList.add('was-validated');
     });
 
-    // Validación en tiempo real para campos requeridos
+    // Validaciones en tiempo real
     const camposRequeridos = formulario.querySelectorAll('[required]');
     camposRequeridos.forEach(campo => {
         campo.addEventListener('input', function() {
@@ -87,26 +147,62 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Validación para select múltiple
-    selectCategorias.addEventListener('change', function() {
-        if (this.selectedOptions.length > 0) {
-            this.classList.remove('is-invalid');
-            this.classList.add('is-valid');
-        } else {
-            this.classList.remove('is-valid');
-            this.classList.add('is-invalid');
-        }
-    });
+    const selectCats = document.getElementById('categorias');
+    if (selectCats) {
+        selectCats.addEventListener('change', function() {
+            if (this.selectedOptions.length > 0) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            }
+        });
+    }
 
-    // Agregar texto de ayuda
-    const ayudaTexto = document.createElement('div');
-    ayudaTexto.className = 'form-text text-light mt-1';
-    ayudaTexto.textContent = 'Mantenga Ctrl (Cmd en Mac) para seleccionar múltiples categorías';
-    selectCategorias.parentNode.appendChild(ayudaTexto);
+    // Preview local al seleccionar archivo (igual que en modificar-usuario.jsp)
+    const imagenInputRuta = document.getElementById('imagenRuta');
+    if (imagenInputRuta) {
+        imagenInputRuta.addEventListener('change', function(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validar tamaño (2MB)
+                if (file.size > 2 * 1024 * 1024) {
+                    alert('La imagen debe ser menor a 2MB');
+                    this.value = '';
+                    return;
+                }
+
+                // Validar tipo (JPG/PNG)
+                if (!file.type.match('image/jpeg') && !file.type.match('image/png')) {
+                    alert('Solo se permiten imágenes JPG y PNG');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(evt) {
+                    // Crear preview si no existe
+                    let preview = document.getElementById('imagenPreviewRuta');
+                    if (!preview) {
+                        preview = document.createElement('img');
+                        preview.id = 'imagenPreviewRuta';
+                        preview.className = 'mt-2 rounded d-none';
+                        preview.style.maxWidth = '150px';
+                        preview.style.maxHeight = '150px';
+                        imagenInputRuta.parentNode.appendChild(preview);
+                    }
+                    preview.src = evt.target.result;
+                    preview.classList.remove('d-none');
+                }
+                reader.readAsDataURL(file);
+            }
+        });
+    }
+
 });
 
 function mostrarMensajeExito() {
-    // Crear modal de éxito dinámicamente
     const modalHTML = `
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -130,13 +226,9 @@ function mostrarMensajeExito() {
             </div>
         </div>
     `;
-
-    // Agregar modal al documento si no existe
     if (!document.getElementById('successModal')) {
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
-
-    // Mostrar modal
     const successModal = new bootstrap.Modal(document.getElementById('successModal'));
     successModal.show();
 }
