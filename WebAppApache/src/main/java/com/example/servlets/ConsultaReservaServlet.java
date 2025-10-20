@@ -4,11 +4,14 @@ import Logica.Fabrica;
 import Logica.ISistema;
 import DataTypes.*;
 import Logica.Vuelo;
+import Logica.Reserva;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.List;
+import java.util.Map;
+import java.util.ArrayList;
 
 @WebServlet("/api/consulta-reserva")
 public class ConsultaReservaServlet extends HttpServlet {
@@ -46,18 +49,18 @@ public class ConsultaReservaServlet extends HttpServlet {
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"error\":\"Error interno: " + e.getMessage() + "\"}");
+            out.print("{\"error\":\"Error interno: " + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
     private void obtenerReservasCliente(ISistema sistema, String usuario, PrintWriter out) {
         try {
             DtCliente cliente = sistema.obtenerCliente(usuario);
-            for (DtReserva r : cliente.getReservas()) {
-                System.out.println("Reserva encontrada: " + r.getId());
-            }
             if (cliente != null) {
                 List<DtReserva> reservas = cliente.getReservas();
+                for (DtReserva r : reservas) {
+                    System.out.println("Reserva encontrada: " + r.getId());
+                }
                 escribirReservasJSON(reservas, out);
             } else {
                 out.print("[]");
@@ -71,7 +74,18 @@ public class ConsultaReservaServlet extends HttpServlet {
         try {
             Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
             if (vuelo != null) {
-                List<DtReserva> reservas = (List<DtReserva>) vuelo.getReservas();
+                // Convertir el Map<String, Reserva> a List<DtReserva> directamente aquí
+                Map<Long, Reserva> reservasMap = vuelo.getReservas();
+                List<DtReserva> reservas = new ArrayList<>();
+
+                for (Reserva reserva : reservasMap.values()) {
+                    // Buscar el DtReserva correspondiente en todos los clientes
+                    DtReserva dtReserva = buscarDtReservaPorId(reserva.getId(), sistema);
+                    if (dtReserva != null) {
+                        reservas.add(dtReserva);
+                    }
+                }
+
                 escribirReservasVueloJSON(reservas, sistema, out);
             } else {
                 out.print("[]");
@@ -81,31 +95,39 @@ public class ConsultaReservaServlet extends HttpServlet {
         }
     }
 
+    private DtReserva buscarDtReservaPorId(Long idReserva, ISistema sistema) {
+        try {
+            // Buscar en todos los clientes la reserva con este ID
+            for (DtCliente cliente : sistema.listarClientes()) {
+                for (DtReserva reserva : cliente.getReservas()) {
+                    if (reserva.getId().equals(idReserva)) {
+                        return reserva;
+                    }
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     private void obtenerReservaClienteEnVuelo(ISistema sistema, String usuario, String nombreVuelo, PrintWriter out) {
         try {
             DtCliente cliente = sistema.obtenerCliente(usuario);
             if (cliente != null) {
                 List<DtReserva> reservasCliente = cliente.getReservas();
 
-                // Obtener todas las reservas del vuelo
-                Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
-                if (vuelo != null) {
-                    List<DtReserva> reservasVuelo = (List<DtReserva>) vuelo.getReservas();
-
-                    // Buscar si alguna reserva del cliente está en el vuelo
-                    for (DtReserva reservaCliente : reservasCliente) {
-                        for (DtReserva reservaVuelo : reservasVuelo) {
-                            if (reservasSonIguales(reservaCliente, reservaVuelo)) {
-                                escribirReservaDetalleJSON(reservaCliente, out);
-                                return;
-                            }
-                        }
+                // Buscar si alguna reserva del cliente está en el vuelo
+                for (DtReserva reservaCliente : reservasCliente) {
+                    if (nombreVuelo.equals(reservaCliente.getVuelo())) {
+                        escribirReservaDetalleJSON(reservaCliente, out);
+                        return;
                     }
                 }
             }
             out.print("{\"error\":\"Reserva no encontrada\"}");
         } catch (Exception e) {
-            out.print("{\"error\":\"Error buscando reserva\"}");
+            out.print("{\"error\":\"Error buscando reserva: " + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
@@ -122,12 +144,13 @@ public class ConsultaReservaServlet extends HttpServlet {
         for (int i = 0; i < reservas.size(); i++) {
             DtReserva r = reservas.get(i);
             out.print("{");
-            out.print("\"id\":\"" + escapeJson(r.getId()) + "\",");
+            out.print("\"id\":" + r.getId() + ","); // Cambiado a número (sin comillas)
             out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(r.getTipoAsiento())) + "\",");
             out.print("\"cantidadPasajes\":" + r.getCantidadPasajes() + ",");
             out.print("\"equipajeExtra\":" + r.getUnidadesEquipajeExtra() + ",");
             out.print("\"costoTotal\":" + r.getCosto() + ",");
-            out.print("\"fechaReserva\":\"" + r.getFecha() + "\"");
+            out.print("\"fechaReserva\":\"" + escapeJson(String.valueOf(r.getFecha())) + "\",");
+            out.print("\"vuelo\":\"" + escapeJson(r.getVuelo()) + "\""); // Agregado nombre del vuelo
             out.print("}");
 
             if (i < reservas.size() - 1) out.print(",");
@@ -144,13 +167,13 @@ public class ConsultaReservaServlet extends HttpServlet {
             String clienteNombre = buscarClienteDeReserva(r, sistema);
 
             out.print("{");
-            out.print("\"id\":\"" + escapeJson(r.getId()) + "\",");
+            out.print("\"id\":" + r.getId() + ","); // Cambiado a número (sin comillas)
             out.print("\"clienteNombre\":\"" + escapeJson(clienteNombre) + "\",");
             out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(r.getTipoAsiento())) + "\",");
             out.print("\"cantidadPasajes\":" + r.getCantidadPasajes() + ",");
             out.print("\"equipajeExtra\":" + r.getUnidadesEquipajeExtra() + ",");
             out.print("\"costoTotal\":" + r.getCosto() + ",");
-            out.print("\"fechaReserva\":\"" + r.getFecha() + "\"");
+            out.print("\"fechaReserva\":\"" + escapeJson(String.valueOf(r.getFecha())) + "\"");
             out.print("}");
 
             if (i < reservas.size() - 1) out.print(",");
@@ -176,17 +199,22 @@ public class ConsultaReservaServlet extends HttpServlet {
 
     private void escribirReservaDetalleJSON(DtReserva reserva, PrintWriter out) {
         out.print("{");
-        out.print("\"id\":\"" + escapeJson(reserva.getId()) + "\",");
+        out.print("\"id\":" + reserva.getId() + ","); // Cambiado a número (sin comillas)
         out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(reserva.getTipoAsiento())) + "\",");
         out.print("\"cantidadPasajes\":" + reserva.getCantidadPasajes() + ",");
         out.print("\"equipajeExtra\":" + reserva.getUnidadesEquipajeExtra() + ",");
         out.print("\"costoTotal\":" + reserva.getCosto() + ",");
-        out.print("\"fechaReserva\":\"" + reserva.getFecha() + "\"");
+        out.print("\"fechaReserva\":\"" + escapeJson(String.valueOf(reserva.getFecha())) + "\",");
+        out.print("\"vuelo\":\"" + escapeJson(reserva.getVuelo()) + "\""); // Agregado nombre del vuelo
         out.print("}");
     }
 
     private String escapeJson(String value) {
         if (value == null) return "";
-        return value.replace("\\", "\\\\").replace("\"", "\\\"");
+        return value.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 }

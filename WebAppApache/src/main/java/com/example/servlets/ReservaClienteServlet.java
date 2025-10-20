@@ -1,4 +1,3 @@
-// src/main/java/com/example/servlets/ReservaClienteServlet.java
 package com.example.servlets;
 
 import DataTypes.DtAerolinea;
@@ -49,7 +48,7 @@ public class ReservaClienteServlet extends HttpServlet {
 
             if (reservaEnVuelo != null) {
                 out.print("{");
-                out.print("\"id\":\"" + escapeJson(reservaEnVuelo.getId()) + "\",");
+                out.print("\"id\":" + reservaEnVuelo.getId() + ","); // Cambiado a número (sin comillas)
                 out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(reservaEnVuelo.getTipoAsiento())) + "\",");
                 out.print("\"cantidadPasajes\":" + reservaEnVuelo.getCantidadPasajes() + ",");
                 out.print("\"equipajeExtra\":" + reservaEnVuelo.getUnidadesEquipajeExtra() + ",");
@@ -63,7 +62,7 @@ public class ReservaClienteServlet extends HttpServlet {
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"error\":\"Error al obtener reserva: " + e.getMessage() + "\"}");
+            out.print("{\"error\":\"Error al obtener reserva: " + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
@@ -73,14 +72,20 @@ public class ReservaClienteServlet extends HttpServlet {
             Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
             if (vuelo != null) {
                 // Obtener las reservas del vuelo como Map
-                Map<String, Reserva> reservasVuelo = vuelo.getReservas();
+                Map<Long, Reserva> reservasVuelo = vuelo.getReservas();
 
                 // Buscar si alguna reserva del cliente está en el vuelo
                 for (DtReserva reservaCliente : reservasCliente) {
+                    // Buscar por ID en el mapa de reservas del vuelo
                     for (Reserva reservaVuelo : reservasVuelo.values()) {
                         if (reservaVuelo.getId().equals(reservaCliente.getId())) {
                             return reservaCliente;
                         }
+                    }
+
+                    // También verificar por nombre de vuelo directamente en la reserva del cliente
+                    if (nombreVuelo.equals(reservaCliente.getVuelo())) {
+                        return reservaCliente;
                     }
                 }
             }
@@ -92,6 +97,9 @@ public class ReservaClienteServlet extends HttpServlet {
 
     private String escapeJson(String value) {
         if (value == null) return "";
-        return value.replace("\\", "\\\\").replace("\"", "\\\"");
+        return value.replace("\\", "\\\\").replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 }

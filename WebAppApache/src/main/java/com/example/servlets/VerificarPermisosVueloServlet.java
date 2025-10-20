@@ -1,4 +1,3 @@
-// src/main/java/com/example/servlets/VerificarPermisosVueloServlet.java
 package com.example.servlets;
 
 import Logica.Fabrica;
@@ -37,17 +36,17 @@ public class VerificarPermisosVueloServlet extends HttpServlet {
                     // Verificar si es aerolínea dueña del vuelo
                     boolean esAerolineaDueña = false;
                     boolean tieneReservaCliente = false;
-                    String idReservaCliente = null;
+                    Long idReservaCliente = null; // Cambiado a Long
 
-                    if ("aerolinea".equals(tipoUsuario) && aerolineaSeleccionada != null) {
+                    if ("AEROLINEA".equals(tipoUsuario) && aerolineaSeleccionada != null) {
                         esAerolineaDueña = usuarioNickname.equals(aerolineaSeleccionada);
-                    } else if ("cliente".equals(tipoUsuario) && nombreVuelo != null) {
+                    } else if ("CLIENTE".equals(tipoUsuario) && nombreVuelo != null) {
                         // Verificar si el cliente tiene reserva en este vuelo usando getReservasCliente
                         List<DtReserva> reservasCliente = sistema.getReservasCliente(usuarioNickname);
                         for (DtReserva reserva : reservasCliente) {
                             if (reserva.getVuelo().equals(nombreVuelo)) {
                                 tieneReservaCliente = true;
-                                idReservaCliente = reserva.getId();
+                                idReservaCliente = reserva.getId(); // Ya es Long
                                 break;
                             }
                         }
@@ -58,7 +57,7 @@ public class VerificarPermisosVueloServlet extends HttpServlet {
                     out.print("\"tipoUsuario\": \"" + escapeJson(tipoUsuario) + "\",");
                     out.print("\"esAerolineaDueña\": " + esAerolineaDueña + ",");
                     out.print("\"tieneReservaCliente\": " + tieneReservaCliente + ",");
-                    out.print("\"idReservaCliente\": \"" + (idReservaCliente != null ? escapeJson(idReservaCliente) : "") + "\"");
+                    out.print("\"idReservaCliente\": " + (idReservaCliente != null ? idReservaCliente : "null"));
                     out.print("}");
                     return;
                 }
@@ -68,7 +67,8 @@ public class VerificarPermisosVueloServlet extends HttpServlet {
             out.print("{\"autenticado\": false}");
 
         } catch (Exception e) {
-            out.print("{\"autenticado\": false, \"error\": \"" + e.getMessage() + "\"}");
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"autenticado\": false, \"error\": \"" + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
