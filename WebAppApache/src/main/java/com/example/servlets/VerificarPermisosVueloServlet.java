@@ -45,9 +45,9 @@ public class VerificarPermisosVueloServlet extends HttpServlet {
                         // Verificar si el cliente tiene reserva en este vuelo usando getReservasCliente
                         List<DtReserva> reservasCliente = sistema.getReservasCliente(usuarioNickname);
                         for (DtReserva reserva : reservasCliente) {
-                            if (reserva.getVuelo().equals(nombreVuelo)) {
+                            if (String.valueOf(reserva.getVuelo()).equals(String.valueOf(nombreVuelo))) {
                                 tieneReservaCliente = true;
-                                idReservaCliente = reserva.getId();
+                                idReservaCliente = String.valueOf(reserva.getId());
                                 break;
                             }
                         }
@@ -58,7 +58,7 @@ public class VerificarPermisosVueloServlet extends HttpServlet {
                     out.print("\"tipoUsuario\": \"" + escapeJson(tipoUsuario) + "\",");
                     out.print("\"esAerolineaDueña\": " + esAerolineaDueña + ",");
                     out.print("\"tieneReservaCliente\": " + tieneReservaCliente + ",");
-                    out.print("\"idReservaCliente\": \"" + (idReservaCliente != null ? escapeJson(idReservaCliente) : "") + "\"");
+                    out.print("\"idReservaCliente\": \"" + (idReservaCliente != null ? escapeJson(String.valueOf(idReservaCliente)) : "") + "\"");
                     out.print("}");
                     return;
                 }

@@ -42,7 +42,7 @@ public class ReservasVueloServlet extends HttpServlet {
                         }
 
                         jsonBuilder.append("{");
-                        jsonBuilder.append("\"id\":\"").append(escapeJson(reserva.getId())).append("\",");
+                        jsonBuilder.append("\"id\":\"").append(escapeJson(String.valueOf(reserva.getId()))).append("\",");
                         jsonBuilder.append("\"clienteNombre\":\"").append(escapeJson(cliente.getNombre() + " " + cliente.getApellido())).append("\",");
                         jsonBuilder.append("\"tipoAsiento\":\"").append(escapeJson(String.valueOf(reserva.getTipoAsiento()))).append("\",");
                         jsonBuilder.append("\"cantidadPasajes\":").append(reserva.getCantidadPasajes()).append(",");
@@ -70,10 +70,10 @@ public class ReservasVueloServlet extends HttpServlet {
             // Obtener el vuelo específico
             Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
             if (vuelo != null) {
-                // Verificar si el vuelo tiene esta reserva
-                Map<String, Reserva> reservasVuelo = vuelo.getReservas();
+                // Verificar si el vuelo tiene esta reserva (Map con clave Long)
+                Map<Long, Reserva> reservasVuelo = vuelo.getReservas();
                 for (Reserva reservaVuelo : reservasVuelo.values()) {
-                    if (reservaVuelo.getId().equals(reserva.getId())) {
+                    if (String.valueOf(reservaVuelo.getId()).equals(String.valueOf(reserva.getId()))) {
                         return true;
                     }
                 }

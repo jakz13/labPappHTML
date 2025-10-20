@@ -49,7 +49,7 @@ public class ReservaClienteServlet extends HttpServlet {
 
             if (reservaEnVuelo != null) {
                 out.print("{");
-                out.print("\"id\":\"" + escapeJson(reservaEnVuelo.getId()) + "\",");
+                out.print("\"id\":\"" + escapeJson(String.valueOf(reservaEnVuelo.getId())) + "\",");
                 out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(reservaEnVuelo.getTipoAsiento())) + "\",");
                 out.print("\"cantidadPasajes\":" + reservaEnVuelo.getCantidadPasajes() + ",");
                 out.print("\"equipajeExtra\":" + reservaEnVuelo.getUnidadesEquipajeExtra() + ",");
@@ -72,13 +72,14 @@ public class ReservaClienteServlet extends HttpServlet {
             // Obtener el vuelo específico
             Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
             if (vuelo != null) {
-                // Obtener las reservas del vuelo como Map
-                Map<String, Reserva> reservasVuelo = vuelo.getReservas();
+                // Obtener las reservas del vuelo como Map (clave Long)
+                Map<Long, Reserva> reservasVuelo = vuelo.getReservas();
 
                 // Buscar si alguna reserva del cliente está en el vuelo
                 for (DtReserva reservaCliente : reservasCliente) {
                     for (Reserva reservaVuelo : reservasVuelo.values()) {
-                        if (reservaVuelo.getId().equals(reservaCliente.getId())) {
+                        // Comparar IDs convirtiéndolos a String para asegurarnos de compatibilidad entre tipos
+                        if (String.valueOf(reservaVuelo.getId()).equals(String.valueOf(reservaCliente.getId()))) {
                             return reservaCliente;
                         }
                     }

@@ -71,8 +71,32 @@ public class RegistrarReservaServlet extends HttpServlet {
             System.out.println("=== FIN PROCESO DE COMPRA ===");
             out.print("{\"success\":true, \"codigoReserva\":\"RES-" + System.currentTimeMillis() + "\"}");
         } catch (Exception e) {
+            // Log completo para debugging
+            System.err.println("Error en RegistrarReservaServlet: " + e.getMessage());
+            e.printStackTrace(System.err);
+
+            // Obtener causa raíz
+            Throwable root = e;
+            while (root.getCause() != null) root = root.getCause();
+            String causa = root.getClass().getSimpleName() + ": " + (root.getMessage() != null ? root.getMessage() : "(sin mensaje)");
+
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"success\":false, \"error\":\"" + e.getMessage().replace("\"", "'") + "\"}");
+            // Devolver mensaje útil para debugging sin exponer stacktrace completo al cliente
+            out.print("{\"success\":false, \"error\":\"Error al agregar la reserva: " + escapeForJson(causa) + "\"}");
         }
+    }
+
+    private static String escapeForJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
+    }
+
+    private static String readRequestBody(HttpServletRequest request) throws IOException {
+        StringBuilder sb = new StringBuilder();
+        try (BufferedReader br = request.getReader()) {
+            String line;
+            while ((line = br.readLine()) != null) sb.append(line);
+        }
+        return sb.toString();
     }
 }
