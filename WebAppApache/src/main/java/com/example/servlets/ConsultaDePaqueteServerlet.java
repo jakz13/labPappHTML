@@ -9,7 +9,7 @@ import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.List;
 
-@WebServlet("/api/consulta-paquete")
+@WebServlet("/consulta-paquete")
 public class ConsultaDePaqueteServerlet extends HttpServlet {
 
     @Override
@@ -27,13 +27,13 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
             sistema.cargarDesdeBd();
 
             if ("listar-paquetes".equals(action)) {
-                // Listar todos los paquetes disponibles
-                System.out.println("Listando todos los paquetes");
-                listarPaquetes(sistema, out);
+                // Listar todos los paquetes disponibles CON información básica de rutas
+                System.out.println("Listando todos los paquetes con información básica de rutas");
+                listarPaquetesConRutas(sistema, out);
             } else if ("obtener-paquete".equals(action) && paqueteId != null) {
-                // Obtener información específica de un paquete
-                System.out.println("Obteniendo información del paquete: " + paqueteId);
-                obtenerPaquete(sistema, paqueteId, out, response);
+                // Obtener información específica de un paquete (detalle completo)
+                System.out.println("Obteniendo información detallada del paquete: " + paqueteId);
+                obtenerPaqueteDetalle(sistema, paqueteId, out, response);
             } else if ("obtener-ruta".equals(action) && paqueteId != null && rutaId != null) {
                 // Obtener información detallada de una ruta específica dentro de un paquete
                 System.out.println("Obteniendo ruta " + rutaId + " del paquete " + paqueteId);
@@ -50,16 +50,17 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
         }
     }
 
-    private void listarPaquetes(ISistema sistema, PrintWriter out) {
+    private void listarPaquetesConRutas(ISistema sistema, PrintWriter out) {
         try {
             List<DtPaquete> paquetes = sistema.listarPaquetes();
-            escribirPaquetesJSON(paquetes, out);
+            escribirPaquetesConRutasBasicasJSON(paquetes, out);
         } catch (Exception e) {
+            System.err.println("Error listando paquetes: " + e.getMessage());
             out.print("[]");
         }
     }
 
-    private void obtenerPaquete(ISistema sistema, String paqueteId, PrintWriter out, HttpServletResponse response) {
+    private void obtenerPaqueteDetalle(ISistema sistema, String paqueteId, PrintWriter out, HttpServletResponse response) {
         try {
             DtPaquete paquete = sistema.obtenerDtPaquete(paqueteId);
             if (paquete != null) {
@@ -112,7 +113,7 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
         }
     }
 
-    private void escribirPaquetesJSON(List<DtPaquete> paquetes, PrintWriter out) {
+    private void escribirPaquetesConRutasBasicasJSON(List<DtPaquete> paquetes, PrintWriter out) {
         out.print("[");
         for (int i = 0; i < paquetes.size(); i++) {
             DtPaquete p = paquetes.get(i);
@@ -123,7 +124,35 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
             out.print("\"costoBase\":" + p.getCosto() + ",");
             out.print("\"descuento\":" + p.getDescuentoPorc() + ",");
             out.print("\"vigenciaDias\":" + p.getPeriodoValidezDias() + ",");
-            out.print("\"cantidadRutas\":" + p.getItems().size());
+            out.print("\"cantidadRutas\":" + p.getItems().size() + ",");
+
+            // Información básica de las rutas
+            out.print("\"rutas\":[");
+            List<DtItemPaquete> items = p.getItems();
+            for (int j = 0; j < items.size(); j++) {
+                DtItemPaquete item = items.get(j);
+                DtRutaVuelo ruta = item.getRutaVuelo();
+
+                out.print("{");
+                out.print("\"id\":\"" + escapeJson(ruta.getNombre()) + "\",");
+                out.print("\"nombre\":\"" + escapeJson(ruta.getNombre()) + "\",");
+                out.print("\"descripcionCorta\":\"" + escapeJson(ruta.getDescripcionCorta()) + "\",");
+                out.print("\"aerolinea\":\"" + escapeJson(ruta.getAerolinea()) + "\",");
+                out.print("\"origen\":\"" + escapeJson(ruta.getCiudadOrigen()) + "\",");
+                out.print("\"destino\":\"" + escapeJson(ruta.getCiudadDestino()) + "\",");
+                out.print("\"duracion\":\"" + escapeJson(ruta.getHora()) + "\",");
+                out.print("\"cantidadAsientos\":" + item.getCantAsientos() + ",");
+                out.print("\"tipoAsiento\":\"" + escapeJson(item.getTipoAsiento()) + "\",");
+                out.print("\"costoTurista\":" + ruta.getCostoTurista() + ",");
+                out.print("\"costoEjecutivo\":" + ruta.getCostoEjecutivo() + ",");
+                out.print("\"costoEquipaje\":" + ruta.getCostoEquipajeExtra() + ",");
+                out.print("\"estado\":\"" + escapeJson(ruta.getEstado()) + "\",");
+                out.print("\"imagen\":\"" + escapeJson(ruta.getImagenUrl()) + "\"");
+                out.print("}");
+
+                if (j < items.size() - 1) out.print(",");
+            }
+            out.print("]");
             out.print("}");
 
             if (i < paquetes.size() - 1) out.print(",");
@@ -147,7 +176,7 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
         out.print("\"" + escapeJson("Vigencia de " + paquete.getPeriodoValidezDias() + " días") + "\"");
         out.print("],");
 
-        // Rutas del paquete
+        // Rutas del paquete (detalle completo)
         out.print("\"rutas\":[");
         for (int i = 0; i < items.size(); i++) {
             DtItemPaquete item = items.get(i);
@@ -157,6 +186,7 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
             out.print("\"id\":\"" + escapeJson(ruta.getNombre()) + "\",");
             out.print("\"nombre\":\"" + escapeJson(ruta.getNombre()) + "\",");
             out.print("\"descripcionCorta\":\"" + escapeJson(ruta.getDescripcionCorta()) + "\",");
+            out.print("\"descripcionCompleta\":\"" + escapeJson(ruta.getDescripcion()) + "\",");
             out.print("\"aerolinea\":\"" + escapeJson(ruta.getAerolinea()) + "\",");
             out.print("\"origen\":\"" + escapeJson(ruta.getCiudadOrigen()) + "\",");
             out.print("\"destino\":\"" + escapeJson(ruta.getCiudadDestino()) + "\",");
@@ -167,6 +197,7 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
             out.print("\"costoEjecutivo\":" + ruta.getCostoEjecutivo() + ",");
             out.print("\"costoEquipaje\":" + ruta.getCostoEquipajeExtra() + ",");
             out.print("\"estado\":\"" + escapeJson(ruta.getEstado()) + "\",");
+            out.print("\"categorias\":\"" + escapeJson(String.join(", ", ruta.getCategorias())) + "\",");
             out.print("\"imagen\":\"" + escapeJson(ruta.getImagenUrl()) + "\"");
             out.print("}");
 

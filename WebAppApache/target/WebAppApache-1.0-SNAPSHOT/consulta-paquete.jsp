@@ -29,11 +29,8 @@
                     <div class="mb-4">
                         <label for="paqueteSelect" class="form-label h5">Seleccione un Paquete</label>
                         <select class="form-select form-select-lg" id="paqueteSelect">
-                            <option value="">Seleccione un paquete para consultar...</option>
-                            <option value="sudamerica">Paquete Sudamérica Esencial</option>
-                            <option value="europa">Paquete Europa Grand Tour</option>
-                            <option value="caribe">Paquete Caribe Paradise</option>
-                            <option value="norteamerica">Paquete Norteamérica Explorer</option>
+                            <option value="">Cargando paquetes...</option>
+                            <!-- Las opciones se cargarán dinámicamente desde JavaScript -->
                         </select>
                     </div>
 
