@@ -1,13 +1,14 @@
-// compra-paquete.js - Versión conectada a base de datos
+// compra-paquete.js - Versión integrada con Session Manager
 
 // Variables globales
 let paquetesDisponibles = [];
 let paquetesComprados = [];
 let paqueteSeleccionado = null;
-let clienteActual = null; // Esto debería venir de la sesión del usuario
+let clienteActual = null;
+let sessionData = null;
 
 // Elementos del DOM
-let listaPaquetes, infoPaquete, mensajeCompra, listaPaquetesComprados, contadorPaquetes, saldoCliente;
+let listaPaquetes, infoPaquete, mensajeCompra, listaPaquetesComprados, contadorPaquetes, nombreClienteElement;
 
 // Inicializar la página
 async function inicializarPagina() {
@@ -19,60 +20,197 @@ async function inicializarPagina() {
     mensajeCompra = document.getElementById('mensajeCompra');
     listaPaquetesComprados = document.getElementById('listaPaquetesComprados');
     contadorPaquetes = document.getElementById('contadorPaquetes');
-    saldoCliente = document.getElementById('saldoCliente');
+    nombreClienteElement = document.getElementById('nombreCliente');
 
     // Configurar event listeners
     document.getElementById('btnConfirmarCompra').addEventListener('click', confirmarCompra);
     document.getElementById('btnCancelarSeleccion').addEventListener('click', cancelarSeleccion);
     document.getElementById('btnModalConfirmar').addEventListener('click', realizarCompraDesdeModal);
 
-    // Obtener cliente de la sesión (simulado por ahora)
-    await obtenerClienteDeSesion();
+    // Esperar a que el session manager cargue y luego obtener datos
+    await esperarSessionManager();
 
-    // Cargar datos iniciales desde el servidor
-    await cargarDatosIniciales();
+    // Verificar sesión y cargar datos
+    await verificarSesionYCargarDatos();
 
     console.log('✅ Compra de paquetes inicializada correctamente');
 }
 
-// Obtener cliente de la sesión (simulado - en producción esto vendría del servidor)
-async function obtenerClienteDeSesion() {
-    try {
-        // Por ahora simulamos un cliente - en producción esto vendría de la sesión
-        clienteActual = "maria001"; // Esto debería venir del login real
-        console.log('👤 Cliente de sesión:', clienteActual);
+// Esperar a que el session manager esté listo
+async function esperarSessionManager() {
+    return new Promise((resolve) => {
+        const checkSessionManager = () => {
+            if (window.SESSION_API_BASE !== undefined) {
+                console.log('✅ Session manager detectado');
+                resolve();
+            } else {
+                console.log('⏳ Esperando session manager...');
+                setTimeout(checkSessionManager, 100);
+            }
+        };
+        checkSessionManager();
+    });
+}
 
-        // Actualizar la interfaz con el nombre del cliente
-        const clienteInfo = document.querySelector('.alert-info strong');
-        if (clienteInfo) {
-            clienteInfo.textContent = "María González (maria001)";
+// Verificar sesión y cargar datos
+async function verificarSesionYCargarDatos() {
+    try {
+        console.log('🔐 Verificando sesión del usuario...');
+
+        // Obtener datos de sesión del session manager
+        const response = await fetch(window.SESSION_API_BASE + '/api/check-session', {
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            throw new Error('Error al verificar sesión');
+        }
+
+        sessionData = await response.json();
+        console.log('📋 Datos de sesión:', sessionData);
+
+        // CORREGIDO: Comparar en mayúsculas para evitar problemas de case
+        const tipoUsuario = sessionData.tipo ? sessionData.tipo.toUpperCase() : '';
+
+        if (sessionData && sessionData.authenticated && tipoUsuario === 'CLIENTE') {
+            // Usuario autenticado como cliente
+            clienteActual = sessionData.nickname;
+            console.log('👤 Cliente autenticado:', clienteActual);
+
+            // Actualizar interfaz con datos del cliente
+            actualizarInterfazCliente();
+
+            // Cargar datos del servidor
+            await cargarDatosIniciales();
+
+        } else if (sessionData && sessionData.authenticated && tipoUsuario !== 'CLIENTE') {
+            // Usuario autenticado pero no es cliente
+            mostrarEstadoNoCliente();
+
+        } else {
+            // Usuario no autenticado
+            mostrarEstadoNoAutenticado();
         }
 
     } catch (error) {
-        console.error('❌ Error obteniendo sesión:', error);
-        // Si no hay sesión, redirigir al login
-        // window.location.href = 'login.jsp';
+        console.error('❌ Error verificando sesión:', error);
+        mostrarEstadoErrorSesion();
     }
+}
+
+// Actualizar interfaz con datos del cliente
+function actualizarInterfazCliente() {
+    if (nombreClienteElement && clienteActual) {
+        // Mostrar nickname (podrías obtener el nombre completo del servidor si lo necesitas)
+        nombreClienteElement.textContent = clienteActual;
+    }
+
+    // Mostrar secciones principales
+    mostrarEstadoCarga(false);
+}
+
+// Mostrar estado cuando el usuario no es cliente
+function mostrarEstadoNoCliente() {
+    mostrarEstadoCarga(false);
+
+    const mensaje = `
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <strong>Acceso restringido</strong><br>
+            Esta funcionalidad está disponible solo para clientes.
+            <div class="mt-2">
+                <small>Tu tipo de usuario: <strong>${sessionData.tipo}</strong></small>
+            </div>
+            <div class="mt-2">
+                <small class="text-muted">
+                    <i class="bi bi-info-circle me-1"></i>
+                    Si eres un cliente, contacta con soporte técnico.
+                </small>
+            </div>
+        </div>
+    `;
+
+    if (mensajeCompra) {
+        mensajeCompra.innerHTML = mensaje;
+    }
+
+    // Ocultar secciones que no debe ver
+    const seccionPaquetes = document.getElementById('seccionPaquetes');
+    if (seccionPaquetes) seccionPaquetes.classList.add('d-none');
+}
+
+// Mostrar estado cuando el usuario no está autenticado
+function mostrarEstadoNoAutenticado() {
+    mostrarEstadoCarga(false);
+
+    const mensaje = `
+        <div class="alert alert-info text-center">
+            <i class="bi bi-person-x me-2"></i>
+            <strong>Inicia sesión para comprar paquetes</strong><br>
+            Debes iniciar sesión como cliente para acceder a esta funcionalidad.
+            <div class="mt-3">
+                <button class="btn btn-primary" onclick="abrirModalLogin()">
+                    <i class="bi bi-box-arrow-in-right me-2"></i>Iniciar Sesión
+                </button>
+            </div>
+        </div>
+    `;
+
+    if (mensajeCompra) {
+        mensajeCompra.innerHTML = mensaje;
+    }
+
+    // Ocultar secciones que no debe ver
+    const seccionPaquetes = document.getElementById('seccionPaquetes');
+    if (seccionPaquetes) seccionPaquetes.classList.add('d-none');
+}
+
+// Mostrar estado cuando hay error de sesión
+function mostrarEstadoErrorSesion() {
+    mostrarEstadoCarga(false);
+
+    const mensaje = `
+        <div class="alert alert-danger text-center">
+            <i class="bi bi-exclamation-triangle me-2"></i>
+            <strong>Error al verificar sesión</strong><br>
+            No se pudo verificar tu sesión. Por favor, recarga la página.
+            <div class="mt-2">
+                <button class="btn btn-outline-danger btn-sm" onclick="window.location.reload()">
+                    <i class="bi bi-arrow-clockwise me-1"></i>Recargar
+                </button>
+            </div>
+        </div>
+    `;
+
+    if (mensajeCompra) {
+        mensajeCompra.innerHTML = mensaje;
+    }
+}
+
+// Función para abrir modal de login
+function abrirModalLogin() {
+    const loginModal = new bootstrap.Modal(document.getElementById('loginModal'));
+    loginModal.show();
 }
 
 // Cargar datos iniciales desde el servidor
 async function cargarDatosIniciales() {
     try {
+        mostrarEstadoCarga(true);
         console.log('📦 Cargando datos iniciales...');
 
-        // Cargar paquetes disponibles
         await cargarPaquetesDisponibles();
 
-        // Cargar paquetes comprados (si hay un cliente logueado)
         if (clienteActual) {
             await cargarPaquetesComprados();
         }
 
-        // Actualizar interfaz
         actualizarContadores();
+        mostrarEstadoCarga(false);
 
     } catch (error) {
         console.error('❌ Error cargando datos iniciales:', error);
+        mostrarEstadoCarga(false);
         mostrarMensaje('Error al cargar los datos: ' + error.message, 'danger');
     }
 }
@@ -135,6 +273,27 @@ async function cargarPaquetesComprados() {
     }
 }
 
+// Función para mostrar/ocultar estado de carga
+function mostrarEstadoCarga(mostrar) {
+    const estadoCarga = document.getElementById('estadoCarga');
+    const seccionPaquetes = document.getElementById('seccionPaquetes');
+    const seccionPaquetesComprados = document.getElementById('seccionPaquetesComprados');
+
+    if (estadoCarga && seccionPaquetes) {
+        if (mostrar) {
+            estadoCarga.classList.remove('d-none');
+            seccionPaquetes.classList.add('d-none');
+            if (seccionPaquetesComprados) seccionPaquetesComprados.classList.add('d-none');
+        } else {
+            estadoCarga.classList.add('d-none');
+            seccionPaquetes.classList.remove('d-none');
+            if (seccionPaquetesComprados && paquetesComprados.length > 0) {
+                seccionPaquetesComprados.classList.remove('d-none');
+            }
+        }
+    }
+}
+
 // Actualizar lista de paquetes disponibles en la interfaz
 function actualizarListaPaquetesDisponibles() {
     if (!listaPaquetes) return;
@@ -190,7 +349,13 @@ async function seleccionarPaquete(id) {
     try {
         console.log('🎯 Seleccionando paquete:', id);
 
-        // Buscar el paquete en los disponibles (evitamos llamada al servidor si ya tenemos los datos)
+        // Verificar que el usuario esté autenticado
+        if (!clienteActual) {
+            mostrarMensaje('Debe iniciar sesión para seleccionar un paquete.', 'warning');
+            return;
+        }
+
+        // Buscar el paquete en los disponibles
         const paqueteEnCache = paquetesDisponibles.find(p => p.id === id);
         if (paqueteEnCache) {
             paqueteSeleccionado = paqueteEnCache;
@@ -286,16 +451,6 @@ function confirmarCompra() {
         return;
     }
 
-    // Verificar saldo suficiente
-    const saldoTexto = saldoCliente.textContent.replace(',', '');
-    const saldo = parseFloat(saldoTexto) || 0;
-    const costoFinal = paqueteSeleccionado.costoFinal || paqueteSeleccionado.costoBase || 0;
-
-    if (saldo < costoFinal) {
-        mostrarMensaje('Saldo insuficiente para realizar esta compra.', 'danger');
-        return;
-    }
-
     // Verificar si ya está comprado
     const yaComprado = paquetesComprados.some(p => p.id === paqueteSeleccionado.id && estaVigente(p));
     if (yaComprado) {
@@ -305,7 +460,7 @@ function confirmarCompra() {
 
     // Mostrar modal de confirmación
     document.getElementById('modalNombrePaquete').textContent = paqueteSeleccionado.nombre || 'Sin nombre';
-    document.getElementById('modalCostoPaquete').textContent = costoFinal.toFixed(2);
+    document.getElementById('modalCostoPaquete').textContent = (paqueteSeleccionado.costoFinal || paqueteSeleccionado.costoBase || 0).toFixed(2);
     document.getElementById('modalVigencia').textContent = paqueteSeleccionado.vigenciaDias || 0;
 
     const confirmacionModal = new bootstrap.Modal(document.getElementById('confirmacionModal'));
@@ -322,34 +477,57 @@ async function realizarCompraDesdeModal() {
         fechaVencimiento.setDate(fechaVencimiento.getDate() + (paqueteSeleccionado.vigenciaDias || 0));
         const costoFinal = paqueteSeleccionado.costoFinal || paqueteSeleccionado.costoBase || 0;
 
-        // Realizar la compra en el servidor
-        const formData = new FormData();
-        formData.append('action', 'realizar-compra');
-        formData.append('paquete', paqueteSeleccionado.id);
-        formData.append('cliente', clienteActual);
-        formData.append('validezDias', (paqueteSeleccionado.vigenciaDias || 0).toString());
-        formData.append('fechaCompra', fechaCompra.toISOString().split('T')[0]);
-        formData.append('costo', costoFinal.toString());
+        // DEBUG: Log los datos que se enviarán
+        console.log('📤 Datos a enviar:', {
+            action: 'realizar-compra',
+            paquete: paqueteSeleccionado.id,
+            cliente: clienteActual,
+            validezDias: (paqueteSeleccionado.vigenciaDias || 0).toString(),
+            fechaCompra: fechaCompra.toISOString().split('T')[0],
+            costo: costoFinal.toString()
+        });
+
+        // ✅ SOLUCIÓN: Usar URLSearchParams en lugar de FormData
+        const params = new URLSearchParams();
+        params.append('action', 'realizar-compra');
+        params.append('paquete', paqueteSeleccionado.id);
+        params.append('cliente', clienteActual);
+        params.append('validezDias', (paqueteSeleccionado.vigenciaDias || 0).toString());
+        params.append('fechaCompra', fechaCompra.toISOString().split('T')[0]);
+        params.append('costo', costoFinal.toString());
+
+        console.log('🌐 Enviando request a compra-paquete...');
+        console.log('📝 Body:', params.toString());
 
         const response = await fetch('compra-paquete', {
             method: 'POST',
-            body: formData
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8'
+            },
+            body: params
         });
 
+        console.log('📨 Response status:', response.status);
+        console.log('📨 Response ok:', response.ok);
+
         if (!response.ok) {
-            const errorData = await response.json();
-            throw new Error(errorData.error || 'Error en la compra');
+            const errorText = await response.text();
+            console.error('❌ Error response text:', errorText);
+            let errorData;
+            try {
+                errorData = JSON.parse(errorText);
+            } catch (e) {
+                errorData = { error: errorText };
+            }
+            throw new Error(errorData.error || `Error HTTP: ${response.status}`);
         }
 
         const result = await response.json();
+        console.log('✅ Resultado compra:', result);
 
         if (result.success) {
             // Mostrar mensaje de éxito
             mostrarMensaje(`¡Compra realizada con éxito! El paquete "${paqueteSeleccionado.nombre}" ha sido agregado a tu cuenta. Vence el ${fechaVencimiento.toLocaleDateString()}.`, 'success');
-
-            // Actualizar saldo (simulado)
-            const nuevoSaldo = parseFloat(saldoCliente.textContent.replace(',', '')) - costoFinal;
-            saldoCliente.textContent = nuevoSaldo.toFixed(2);
 
             // Actualizar datos
             await cargarPaquetesComprados();
@@ -502,32 +680,13 @@ function utilizarPaquete(id) {
     }
 }
 
-// Función para establecer el cliente actual (puede llamarse desde session-manager.js)
-function establecerClienteActual(nickname, nombreCompleto) {
-    clienteActual = nickname;
-    console.log('👤 Cliente establecido:', clienteActual);
-
-    // Actualizar la interfaz con el nombre del cliente
-    const clienteInfo = document.querySelector('.alert-info strong');
-    if (clienteInfo && nombreCompleto) {
-        clienteInfo.textContent = `${nombreCompleto} (${nickname})`;
-    }
-
-    // Recargar datos del cliente
-    if (clienteActual) {
-        cargarPaquetesComprados();
-    }
-}
-
-// Función para debug
-function debugEstado() {
-    console.log('=== 🐛 DEBUG COMPRA PAQUETES ===');
-    console.log('Cliente actual:', clienteActual);
-    console.log('Paquetes disponibles:', paquetesDisponibles);
-    console.log('Paquetes comprados:', paquetesComprados);
-    console.log('Paquete seleccionado:', paqueteSeleccionado);
-    console.log('================================');
-}
+// Escuchar eventos de actualización de sesión
+window.addEventListener('sessionUpdated', function() {
+    console.log('🔄 Evento sessionUpdated recibido, recargando datos...');
+    setTimeout(() => {
+        window.location.reload();
+    }, 500);
+});
 
 // Inicializar la página cuando se carga
 document.addEventListener('DOMContentLoaded', function() {

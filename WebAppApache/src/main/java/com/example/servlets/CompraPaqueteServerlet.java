@@ -8,6 +8,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.time.LocalDate;
+import java.util.Enumeration;
 import java.util.List;
 
 @WebServlet("/compra-paquete")
@@ -55,6 +56,19 @@ public class CompraPaqueteServerlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
 
+        // DEBUG: Log los parámetros recibidos
+        System.out.println("=== DEBUG COMPRA PAQUETE ===");
+        System.out.println("Action recibido: " + action);
+        System.out.println("Método: " + request.getMethod());
+
+        Enumeration<String> paramNames = request.getParameterNames();
+        while (paramNames.hasMoreElements()) {
+            String paramName = paramNames.nextElement();
+            String paramValue = request.getParameter(paramName);
+            System.out.println("Parámetro: " + paramName + " = " + paramValue);
+        }
+        System.out.println("============================");
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
@@ -68,7 +82,7 @@ public class CompraPaqueteServerlet extends HttpServlet {
                 realizarCompraPaquete(sistema, request, out, response);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.print("{\"error\":\"Acción no válida\"}");
+                out.print("{\"error\":\"Acción no válida. Action recibido: " + (action != null ? action : "null") + "\"}");
             }
 
         } catch (Exception e) {

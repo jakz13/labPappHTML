@@ -51,8 +51,7 @@
                         <i class="bi bi-person-circle me-2 fs-5"></i>
                         <div>
                             <strong>Cliente:</strong> <span id="nombreCliente">María González</span> |
-                            <strong>Paquetes comprados:</strong> <span id="contadorPaquetes">0/0</span> |
-                            <strong>Saldo disponible:</strong> $<span id="saldoCliente">2,500.00</span>
+                            <strong>Paquetes vigentes:</strong> <span id="contadorPaquetes">0/0</span>
                         </div>
                     </div>
 
@@ -77,7 +76,7 @@
                         <div class="card border-success">
                             <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                                 <h6 class="mb-0"><i class="bi bi-check-circle me-2"></i>Paquete Seleccionado</h6>
-                                <span class="badge bg-light text-success" id="badgeSeleccionado">LISTO PARA COMPRAR</span>
+                                <span class="badge bg-light text-success">LISTO PARA COMPRAR</span>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -214,7 +213,8 @@
             const estadoCarga = document.getElementById('estadoCarga');
             if (estadoCarga && estadoCarga.style.display !== 'none') {
                 estadoCarga.classList.add('d-none');
-                document.getElementById('seccionPaquetes').classList.remove('d-none');
+                const seccionPaquetes = document.getElementById('seccionPaquetes');
+                if (seccionPaquetes) seccionPaquetes.classList.remove('d-none');
             }
         }, 5000);
 
