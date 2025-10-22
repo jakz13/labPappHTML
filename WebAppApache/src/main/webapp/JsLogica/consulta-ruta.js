@@ -2,17 +2,18 @@
 let rutaSeleccionada = null;
 let vueloSeleccionado = null;
 let usuarioInfo = null;
-let rutasCargadas = []; // <--- NUEVO: para guardar los datos reales de rutas
+let rutasCargadas = []; // <--- guarda las rutas reales de la aerolínea
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
     cargarAerolineas();
+    cargarCategorias(); // <-- agregado: cargar las categorías al iniciar
     configurarEventListeners();
 });
 
 // Cargar aerolíneas desde backend
 function cargarAerolineas() {
-    fetch('api/aerolineas')
+    fetch('aerolineas')
         .then(res => res.json())
         .then(data => {
             const select = document.getElementById('aerolinea');
@@ -23,6 +24,25 @@ function cargarAerolineas() {
         })
         .catch(err => {
             console.error("Error al cargar aerolíneas:", err);
+        });
+}
+
+// Nueva función: cargar categorías desde el servlet ListarCategoriasServlet (ruta: /listarCategorias)
+function cargarCategorias() {
+    fetch('listarCategorias')
+        .then(res => res.json())
+        .then(data => {
+            const select = document.getElementById('categoria');
+            // Si no existe el select, evitamos errores
+            if (!select) return;
+            select.innerHTML = '<option value="">Todas las categorías</option>';
+            data.forEach(c => {
+                // c.nombre según lo que devuelve tu servlet
+                select.innerHTML += `<option value="${c.nombre}">${c.nombre}</option>`;
+            });
+        })
+        .catch(err => {
+            console.error("Error al cargar categorías:", err);
         });
 }
 
@@ -45,7 +65,7 @@ function configurarEventListeners() {
                 .then(res => res.json())
                 .then(data => {
                     rutasCargadas = data; // <--- guardar todas las rutas cargadas
-                    cargarRutas(data);
+                    aplicarFiltros(); // aplicar filtro de categoría localmente (si hay)
                 })
                 .catch(err => {
                     console.error("Error al cargar rutas:", err);
@@ -53,25 +73,36 @@ function configurarEventListeners() {
                 });
         } else {
             rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
+            rutasCargadas = [];
         }
     });
 
     // Botón aplicar filtros
-    document.getElementById('btnAplicarFiltros').addEventListener('click', function() {
+    const btnAplicar = document.getElementById('btnAplicarFiltros');
+    if (btnAplicar) btnAplicar.addEventListener('click', function() {
         aplicarFiltros();
     });
 
     // Botón limpiar
-    document.getElementById('btnLimpiar').addEventListener('click', function() {
+    const btnLimpiar = document.getElementById('btnLimpiar');
+    if (btnLimpiar) btnLimpiar.addEventListener('click', function() {
         limpiarFiltros();
     });
+
+    // Aplicar filtro cuando se cambia la categoría (UX: filtrado instantáneo)
+    const selectCategoria = document.getElementById('categoria');
+    if (selectCategoria) {
+        selectCategoria.addEventListener('change', function() {
+            aplicarFiltros();
+        });
+    }
 }
 
 function cargarRutas(rutas) {
     const container = document.getElementById('listaRutas');
     container.innerHTML = '';
 
-    if (rutas.length === 0) {
+    if (!rutas || rutas.length === 0) {
         container.innerHTML = `
             <div class="col-12 text-center py-4">
                 <p class="text-muted">No se encontraron rutas para esta aerolínea.</p>
@@ -114,14 +145,22 @@ function seleccionarRuta(nombreRuta) {
     document.querySelectorAll('.ruta-card').forEach(card => {
         card.classList.remove('border-primary', 'bg-light');
     });
-    event.currentTarget.classList.add('border-primary', 'bg-light');
+    // event puede no estar definido en algunos contextos; si falla, no romper
+    try {
+        event.currentTarget.classList.add('border-primary', 'bg-light');
+    } catch (e) {
+        // no hacemos nada si no existe event
+    }
 }
 
 function mostrarDetallesRuta(ruta) {
     // Actualizar información de la ruta con datos reales
     document.getElementById('rutaNombre').textContent = ruta.nombre || '-';
     document.getElementById('rutaDescripcion').textContent = ruta.descripcion || 'Sin descripción';
-    document.getElementById('rutaAerolinea').textContent = document.getElementById('aerolinea').options[document.getElementById('aerolinea').selectedIndex].text;
+    // si el select de aerolinea no tiene texto (por ejemplo value ''), poner '-'
+    const aerSelect = document.getElementById('aerolinea');
+    const aerText = (aerSelect && aerSelect.options[aerSelect.selectedIndex]) ? aerSelect.options[aerSelect.selectedIndex].text : '-';
+    document.getElementById('rutaAerolinea').textContent = aerText;
     document.getElementById('rutaOrigen').textContent = ruta.origen || '-';
     document.getElementById('rutaDestino').textContent = ruta.destino || '-';
     document.getElementById('rutaEstado').textContent = ruta.estado || 'Confirmada';
@@ -147,7 +186,7 @@ function cargarVuelosRuta(nombreRuta) {
         .then(vuelos => {
             vuelosContainer.innerHTML = '';
 
-            if (vuelos.length === 0) {
+            if (!vuelos || vuelos.length === 0) {
                 vuelosContainer.innerHTML = '<div class="col-12 text-center py-2"><p class="text-muted">No hay vuelos disponibles para esta ruta</p></div>';
                 return;
             }
@@ -191,13 +230,19 @@ function seleccionarVuelo(nombreVuelo) {
     document.querySelectorAll('#vuelosAsociados .card').forEach(card => {
         card.classList.remove('border-warning', 'bg-light');
     });
-    event.currentTarget.classList.add('border-warning', 'bg-light');
+    try {
+        event.currentTarget.classList.add('border-warning', 'bg-light');
+    } catch (e) {
+        // ignore
+    }
 }
 
 function mostrarDetallesVuelo(vueloData) {
     // Actualizar información del vuelo
     document.getElementById('nombreVueloDetalle').textContent = vueloData.nombre || '-';
-    document.getElementById('aerolineaVueloDetalle').textContent = document.getElementById('aerolinea').options[document.getElementById('aerolinea').selectedIndex].text;
+    const aerSelect = document.getElementById('aerolinea');
+    const aerText = (aerSelect && aerSelect.options[aerSelect.selectedIndex]) ? aerSelect.options[aerSelect.selectedIndex].text : '-';
+    document.getElementById('aerolineaVueloDetalle').textContent = aerText;
     document.getElementById('rutaVueloDetalle').textContent = rutaSeleccionada ? rutaSeleccionada.nombre : '-';
     document.getElementById('fechaVueloDetalle').textContent = vueloData.fecha || '-';
     document.getElementById('duracionVueloDetalle').textContent = vueloData.duracion || '-';
@@ -247,21 +292,21 @@ function mostrarSeccionesUsuario(usuarioData, nombreVuelo) {
     const btnReservar = document.getElementById('btnReservar');
 
     // Ocultar todas las secciones primero
-    infoAerolinea.style.display = 'none';
-    infoCliente.style.display = 'none';
-    btnReservar.style.display = 'none';
+    if (infoAerolinea) infoAerolinea.style.display = 'none';
+    if (infoCliente) infoCliente.style.display = 'none';
+    if (btnReservar) btnReservar.style.display = 'none';
 
     if (usuarioData.autenticado) {
         if (usuarioData.esAerolineaDueña) {
             // Es la aerolínea que publicó el vuelo - mostrar gestión de reservas
-            infoAerolinea.style.display = 'block';
+            if (infoAerolinea) infoAerolinea.style.display = 'block';
             cargarReservasVuelo(nombreVuelo);
         } else if (usuarioData.tieneReservaCliente) {
             // Es un cliente con reserva en este vuelo
-            infoCliente.style.display = 'block';
+            if (infoCliente) infoCliente.style.display = 'block';
 
             // Configurar el botón para ver los detalles de la reserva
-            const btnVerReserva = infoCliente.querySelector('button');
+            const btnVerReserva = infoCliente ? infoCliente.querySelector('button') : null;
             if (btnVerReserva) {
                 btnVerReserva.onclick = function() {
                     verDetalleReservaCliente(usuarioData.idReservaCliente);
@@ -269,11 +314,11 @@ function mostrarSeccionesUsuario(usuarioData, nombreVuelo) {
             }
         } else {
             // Usuario autenticado pero sin reserva - mostrar opción de reserva
-            btnReservar.style.display = 'block';
+            if (btnReservar) btnReservar.style.display = 'block';
         }
     } else {
         // Usuario no autenticado - mostrar opción de reserva
-        btnReservar.style.display = 'block';
+        if (btnReservar) btnReservar.style.display = 'block';
     }
 }
 
@@ -283,7 +328,7 @@ function cargarReservasVuelo(nombreVuelo) {
         .then(res => res.json())
         .then(reservas => {
             const totalReservas = document.getElementById('totalReservas');
-            totalReservas.textContent = reservas.length;
+            if (totalReservas) totalReservas.textContent = reservas.length;
 
             // Actualizar el botón para mostrar detalles
             const btnVerReservas = document.querySelector('#infoAerolinea button');
@@ -295,7 +340,8 @@ function cargarReservasVuelo(nombreVuelo) {
         })
         .catch(err => {
             console.error("Error cargando reservas:", err);
-            document.getElementById('totalReservas').textContent = '0';
+            const totalReservas = document.getElementById('totalReservas');
+            if (totalReservas) totalReservas.textContent = '0';
         });
 }
 
@@ -370,7 +416,7 @@ function mostrarDetallesReservas(reservas) {
             <div class="modal-dialog modal-xl">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Detalles de Reservas - ${vueloSeleccionado.nombre}</h5>
+                        <h5 class="modal-title">Detalles de Reservas - ${vueloSeleccionado ? vueloSeleccionado.nombre : ''}</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
@@ -406,7 +452,7 @@ function mostrarModalDetalleReserva(reserva) {
             <div class="row">
                 <div class="col-6">
                     <p><strong>ID Reserva:</strong> ${reserva.id}</p>
-                    <p><strong>Vuelo:</strong> ${vueloSeleccionado.nombre}</p>
+                    <p><strong>Vuelo:</strong> ${vueloSeleccionado ? vueloSeleccionado.nombre : ''}</p>
                     <p><strong>Tipo de Asiento:</strong> ${reserva.tipoAsiento}</p>
                 </div>
                 <div class="col-6">
@@ -454,34 +500,62 @@ function mostrarModalDetalleReserva(reserva) {
     modal.show();
 }
 
+// --------------------------------------------------
+// A PARTIR DE AQUÍ: filtrado local por categoría (sin tocar servlets)
+// --------------------------------------------------
+
+// Aplicar filtros: ahora filtra localmente usando rutasCargadas
 function aplicarFiltros() {
-    const aerolinea = document.getElementById('aerolinea').value;
-    const categoria = document.getElementById('categoria').value;
+    const aerolinea = document.getElementById('aerolinea') ? document.getElementById('aerolinea').value : '';
+    const categoria = document.getElementById('categoria') ? document.getElementById('categoria').value : '';
 
     if (!aerolinea) {
         mostrarMensajeError('Por favor seleccione una aerolínea primero');
         return;
     }
 
-    // Recargar rutas
-    fetch('api/rutas?aerolinea=' + encodeURIComponent(aerolinea))
-        .then(res => res.json())
-        .then(data => {
-            cargarRutas(data);
-            document.getElementById('infoRuta').style.display = 'none';
-            document.getElementById('infoVuelo').style.display = 'none';
-            rutaSeleccionada = null;
-            vueloSeleccionado = null;
-        })
-        .catch(err => {
-            console.error("Error aplicando filtros:", err);
-            mostrarMensajeError('Error al aplicar filtros');
-        });
+    if (!rutasCargadas || rutasCargadas.length === 0) {
+        // Si por alguna razón no hay rutas cargadas, intentamos cargar una vez más
+        fetch('api/rutas?aerolinea=' + encodeURIComponent(aerolinea))
+            .then(res => res.json())
+            .then(data => {
+                rutasCargadas = data;
+                // aplicar filtro local ahora
+                let rutasFiltradas = rutasCargadas;
+                if (categoria && categoria !== '') {
+                    rutasFiltradas = rutasCargadas.filter(r => r.categorias && r.categorias.includes(categoria));
+                }
+                cargarRutas(rutasFiltradas);
+                document.getElementById('infoRuta').style.display = 'none';
+                document.getElementById('infoVuelo').style.display = 'none';
+                rutaSeleccionada = null;
+                vueloSeleccionado = null;
+            })
+            .catch(err => {
+                console.error("Error aplicando filtros (fetch fallback):", err);
+                mostrarMensajeError('Error al aplicar filtros');
+            });
+        return;
+    }
+
+    // Filtrado local
+    let rutasFiltradas = rutasCargadas;
+    if (categoria && categoria !== '') {
+        rutasFiltradas = rutasCargadas.filter(r => r.categorias && r.categorias.includes(categoria));
+    }
+
+    cargarRutas(rutasFiltradas);
+    document.getElementById('infoRuta').style.display = 'none';
+    document.getElementById('infoVuelo').style.display = 'none';
+    rutaSeleccionada = null;
+    vueloSeleccionado = null;
 }
 
+// Limpiar filtros: restablece la vista localmente sin llamar al backend
 function limpiarFiltros() {
     document.getElementById('aerolinea').value = '';
     document.getElementById('categoria').value = '';
+    rutasCargadas = []; // limpiar cache local porque quitamos aerolínea
     document.getElementById('listaRutas').innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
     document.getElementById('vuelosAsociados').innerHTML = '';
     document.getElementById('infoRuta').style.display = 'none';
@@ -490,6 +564,7 @@ function limpiarFiltros() {
     vueloSeleccionado = null;
 }
 
+// Mostrar toast de error (igual que antes)
 function mostrarMensajeError(mensaje) {
     const toastHTML = `
         <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">

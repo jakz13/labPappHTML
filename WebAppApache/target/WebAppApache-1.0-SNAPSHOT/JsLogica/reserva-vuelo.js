@@ -10,7 +10,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 // Cargar aerolíneas desde backend
 function cargarAerolineas() {
-    fetch('api/aerolineas')
+    fetch('aerolineas')
         .then(res => res.json())
         .then(data => {
             const select = document.getElementById('aerolinea');

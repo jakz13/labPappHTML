@@ -10,7 +10,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
 
-@WebServlet("/api/aerolineas")
+@WebServlet("/aerolineas")
 public class ListarAerolineasServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         ISistema sistema = Fabrica.getInstance().getISistema();
