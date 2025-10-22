@@ -1,6 +1,44 @@
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page import="java.util.List" %>
+<%@ page import="Logica.Fabrica" %>
+<%@ page import="Logica.ISistema" %>
+<%@ page import="DataTypes.DtRutaVuelo" %>
+<%@ page import="DataTypes.DtPaquete" %>
+<%@ page import="DataTypes.DtAerolinea" %>
+<%
+    // Cargar datos desde la base de datos
+    ISistema sistema = Fabrica.getInstance().getISistema();
+    sistema.cargarDesdeBd();
+
+    // Obtener rutas de forma segura
+    List<DtRutaVuelo> rutasDestacadas = new java.util.ArrayList<>();
+    List<DtAerolinea> aerolineas = sistema.listarAerolineas();
+
+    for (DtAerolinea aerolinea : aerolineas) {
+        try {
+            List<DtRutaVuelo> rutasAerolinea = sistema.listarRutasPorAerolinea(aerolinea.getNickname());
+            for (DtRutaVuelo ruta : rutasAerolinea) {
+                if ("CONFIRMADA".equals(ruta.getEstado())) {
+                    rutasDestacadas.add(ruta);
+                    if (rutasDestacadas.size() >= 3) break;
+                }
+            }
+            if (rutasDestacadas.size() >= 3) break;
+        } catch (Exception e) {
+            // Continuar con la siguiente aerolínea si hay error
+            continue;
+        }
+    }
+
+    // Obtener paquetes
+    List<DtPaquete> paquetesDestacados = sistema.listarPaquetes();
+    if (paquetesDestacados.size() > 2) {
+        paquetesDestacados = paquetesDestacados.subList(0, 2);
+    }
+%>
+
 <html lang="es">
 <head>
-    <%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Juan Viajes - Tu plataforma de viajes</title>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css">
@@ -85,107 +123,92 @@
         <div class="col-lg-9">
             <h2 class="section-title fade-in">Rutas de Vuelo Disponibles</h2>
 
-            <!-- Tarjeta de vuelo 1 -->
+            <!-- Tarjetas de vuelo dinámicas -->
+            <% for (DtRutaVuelo ruta : rutasDestacadas) { %>
             <div class="flight-card fade-in">
                 <div class="flight-header">
                     <div>
-                        <span class="flight-route">Montevideo - Madrid</span>
-                        <div>Iberia (IB6012)</div>
+                        <span class="flight-route"><%= ruta.getCiudadOrigen() %> - <%= ruta.getCiudadDestino() %></span>
+                        <div><%= ruta.getAerolinea() %> (<%= ruta.getNombre() %>)</div>
                     </div>
-                    <span class="badge bg-danger">Popular</span>
+                    <span class="badge bg-success">Confirmada</span>
+                    <% if (ruta.getCategorias() != null && !ruta.getCategorias().isEmpty()) { %>
+                    <span class="badge bg-primary">Categorías</span>
+                    <% } %>
                 </div>
                 <div class="flight-description">
-                    Vuelo directo desde Montevideo a Madrid. Tiempo estimado: 11 horas y 45 minutos. Incluye comidas, bebidas y entretenimiento a bordo.
+                    <%= ruta.getDescripcion() != null ? ruta.getDescripcion() : "Descripción no disponible" %>
                 </div>
                 <div class="flight-details">
-                    <small><strong>Salida:</strong> 22:00 | <strong>Llegada:</strong> 14:00 (+1) | <strong>Precio desde:</strong> $750</small>
+                    <small>
+                        <strong>Hora:</strong> <%= ruta.getHora() != null ? ruta.getHora() : "No disponible" %> |
+                        <strong>Precio Turista:</strong> $<%= ruta.getCostoTurista() %> |
+                        <strong>Precio Ejecutivo:</strong> $<%= ruta.getCostoEjecutivo() %>
+                    </small>
                 </div>
-                <a href="consulta-vuelo.jsp?id=IB6012" class="read-more">
+                <a href="consulta-vuelo.jsp?nombre=<%= ruta.getNombre() %>" class="read-more">
                     Ver detalles <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
+            <% } %>
 
-            <!-- Tarjeta de vuelo 2 -->
+            <!-- Mensaje si no hay rutas -->
+            <% if (rutasDestacadas.isEmpty()) { %>
             <div class="flight-card fade-in">
-                <div class="flight-header">
-                    <div>
-                        <span class="flight-route">Ciudad de Panamá - Nueva York</span>
-                        <div>Copa Airlines (CN804)</div>
-                    </div>
+                <div class="text-center py-4">
+                    <i class="bi bi-airplane" style="font-size: 3rem; opacity: 0.3;"></i>
+                    <p class="text-muted mt-2">No hay rutas de vuelo disponibles en este momento.</p>
+                    <a href="consulta-vuelo.jsp" class="btn btn-primary btn-sm">Explorar todas las rutas</a>
                 </div>
-                <div class="flight-description">
-                    Copa Airlines ofrece comidas, bebidas y entretenimiento a bordo, asegurando una experiencia de viaje cómoda y agradable entre Centroamérica y la ciudad de Nueva York.
-                </div>
-                <div class="flight-details">
-                    <small><strong>Salida:</strong> 08:30 | <strong>Llegada:</strong> 15:45 | <strong>Precio desde:</strong> $520</small>
-                </div>
-                <a href="consulta-vuelo.jsp?id=CN804" class="read-more">
-                    Ver detalles <i class="bi bi-arrow-right"></i>
-                </a>
             </div>
-
-            <!-- Tarjeta de vuelo 3 -->
-            <div class="flight-card fade-in">
-                <div class="flight-header">
-                    <div>
-                        <span class="flight-route">Montevideo - Rio de Janeiro</span>
-                        <div>ZulyFly (ZL1502)</div>
-                    </div>
-                    <span class="badge bg-success">Directo</span>
-                </div>
-                <div class="flight-description">
-                    Tiempo estimado de vuelo 2 horas y 30 minutos, vuelo directo. Perfecto para un fin de semana en las playas de Copacabana e Ipanema.
-                </div>
-                <div class="flight-details">
-                    <small><strong>Salida:</strong> 07:15 | <strong>Llegada:</strong> 09:45 | <strong>Precio desde:</strong> $320</small>
-                </div>
-                <a href="consulta-vuelo.jsp?id=ZL1502" class="read-more">
-                    Ver detalles <i class="bi bi-arrow-right"></i>
-                </a>
-            </div>
+            <% } %>
 
             <!-- Sección de paquetes -->
-            <h3 class="section-title mt-5 fade-in">Paquetes de Rutas de Vuelo</h3>
+            <h3 class="section-title mt-5 fade-in">Paquetes Destacados</h3>
 
+            <% for (DtPaquete paquete : paquetesDestacados) { %>
             <div class="flight-card fade-in">
                 <div class="flight-header">
                     <div>
-                        <span class="flight-route">Paquete Sudamérica Esencial</span>
+                        <span class="flight-route"><%= paquete.getNombre() %></span>
                     </div>
-                    <span class="badge bg-warning text-dark">Oferta</span>
+                    <% if (paquete.getDescuentoPorc() > 0) { %>
+                    <span class="badge bg-warning text-dark"><%= paquete.getDescuentoPorc() %>% OFF</span>
+                    <% } %>
+                    <span class="badge bg-info"><%= paquete.getItems() != null ? paquete.getItems().size() : 0 %> rutas</span>
                 </div>
                 <div class="flight-description">
-                    Disfruta de los mejores destinos de Sudamérica con nuestro paquete exclusivo. Incluye vuelos a Brasil, Argentina y Chile con alojamiento en hoteles 4 estrellas.
+                    <%= paquete.getDescripcion() != null ? paquete.getDescripcion() : "Paquete de viaje exclusivo" %>
+                    <% if (paquete.getDescuentoPorc() > 0) { %>
+                    <br><small class="text-success">¡Ahorra <%= paquete.getDescuentoPorc() %>% con este paquete!</small>
+                    <% } %>
                 </div>
                 <div class="flight-details">
-                    <small><strong>Incluye:</strong> 3 rutas | <strong>Vigencia:</strong> 6 meses | <strong>Precio:</strong> $1,200</small>
+                    <small>
+                        <strong>Precio:</strong> $<%= paquete.getCosto() %> |
+                        <strong>Vigencia:</strong> <%= paquete.getPeriodoValidezDias() %> días |
+                        <strong>Incluye:</strong> <%= paquete.getItems() != null ? paquete.getItems().size() : 0 %> rutas
+                    </small>
                 </div>
-                <a href="consulta-paquete.jsp?id=1" class="read-more">
+                <a href="consulta-paquete.jsp?nombre=<%= paquete.getNombre() %>" class="read-more">
                     Ver detalles del paquete <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
+            <% } %>
 
+            <!-- Mensaje si no hay paquetes -->
+            <% if (paquetesDestacados.isEmpty()) { %>
             <div class="flight-card fade-in">
-                <div class="flight-header">
-                    <div>
-                        <span class="flight-route">Europa Grand Tour</span>
-                    </div>
+                <div class="text-center py-4">
+                    <i class="bi bi-gift" style="font-size: 3rem; opacity: 0.3;"></i>
+                    <p class="text-muted mt-2">No hay paquetes disponibles en este momento.</p>
+                    <a href="consulta-paquete.jsp" class="btn btn-primary btn-sm">Explorar todos los paquetes</a>
                 </div>
-                <div class="flight-description">
-                    Recorre las capitales más emblemáticas de Europa: Madrid, París, Roma y Barcelona. Incluye traslados y tours guiados.
-                </div>
-                <div class="flight-details">
-                    <small><strong>Incluye:</strong> 4 rutas | <strong>Vigencia:</strong> 1 año | <strong>Precio:</strong> $2,500</small>
-                </div>
-                <a href="consulta-paquete.jsp?id=2" class="read-more">
-                    Ver detalles del paquete <i class="bi bi-arrow-right"></i>
-                </a>
             </div>
+            <% } %>
         </div>
     </div>
 </main>
-
-
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="JsLogica/session-manager.js"></script>
