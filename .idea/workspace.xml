@@ -10,14 +10,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="Compra paquete quedo, faltan pruebas">
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaUsuarioServerlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CompraPaqueteServerlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CompraPaqueteServerlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/compra-paquete.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/compra-paquete.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/compra-paquete.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/compra-paquete.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/compra-paquete.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/compra-paquete.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CompraPaqueteServerlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CompraPaqueteServerlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/compra-paquete.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/compra-paquete.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CompraPaqueteServerlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CompraPaqueteServerlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-usuario.js" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -39,6 +34,7 @@
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+    <option name="RESET_MODE" value="HARD" />
     <option name="UPDATE_TYPE" value="REBASE" />
   </component>
   <component name="GitHubPullRequestSearchHistory">{
@@ -47,12 +43,12 @@
     &quot;assignee&quot;: &quot;jakz13&quot;
   }
 }</component>
-  <component name="GithubPullRequestsUISettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "url": "https://github.com/jakz13/labPappHTML.git",
-    "accountId": "9ccc7a2a-ebad-452a-9d8d-fb4a3fe791f9"
+  <component name="GithubPullRequestsUISettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;url&quot;: &quot;https://github.com/jakz13/labPappHTML.git&quot;,
+    &quot;accountId&quot;: &quot;9ccc7a2a-ebad-452a-9d8d-fb4a3fe791f9&quot;
   }
-}]]></component>
+}</component>
   <component name="KubernetesApiPersistence">{}</component>
   <component name="KubernetesApiProvider">{
   &quot;isMigrated&quot;: true
@@ -359,7 +355,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/junior" />
+                        <option value="origin/Felipe" />
                       </list>
                     </value>
                   </entry>
