@@ -22,16 +22,16 @@
         </div>
         <div class="card-body">
 
-            <form id="formAltaVuelo" novalidate>
+            <form id="formAltaVuelo" name="formAltaVuelo" enctype="multipart/form-data" method="post" novalidate>
                 <!-- Información de la aerolínea -->
                 <div class="alert alert-info">
-                    <strong>Aerolínea:</strong> latam001
+                    <strong>Aerolínea:</strong> <span id="aerolineaName">(no autenticado)</span>
                 </div>
 
                 <!-- Selección de ruta -->
                 <div class="mb-3">
                     <label for="rutaVuelo" class="form-label">Seleccionar Ruta de Vuelo *</label>
-                    <select class="form-select" id="rutaVuelo" required>
+                    <select class="form-select" id="rutaVuelo" name="nombreRuta" required>
                         <option value="">Seleccione una ruta...</option>
                     </select>
                     <div class="invalid-feedback">Por favor seleccione una ruta de vuelo.</div>
@@ -44,7 +44,7 @@
 
                 <div class="mb-3">
                     <label for="nombreVuelo" class="form-label">Nombre del Vuelo *</label>
-                    <input type="text" class="form-control" id="nombreVuelo" placeholder="Ej: ZL1502001" required>
+                    <input type="text" class="form-control" id="nombreVuelo" name="nombreVuelo" placeholder="Ej: ZL1502001" required>
                     <div class="form-text">El nombre debe ser único en la plataforma.</div>
                     <div class="invalid-feedback">Por favor ingrese un nombre para el vuelo.</div>
                 </div>
@@ -52,7 +52,7 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="fechaVuelo" class="form-label">Fecha del Vuelo *</label>
-                        <input type="date" class="form-control" id="fechaVuelo" required>
+                        <input type="date" class="form-control" id="fechaVuelo" name="fecha" required>
                         <div class="invalid-feedback">Por favor seleccione una fecha.</div>
                     </div>
                     <div class="col-md-6 mb-3">
@@ -70,13 +70,13 @@
                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <label for="asientosTurista" class="form-label">Asientos turista *</label>
-                        <input type="number" class="form-control" id="asientosTurista" min="1" max="500" value="150" required>
+                        <input type="number" class="form-control" id="asientosTurista" name="asientosTurista" min="1" max="500" value="150" required>
                         <div class="form-text">Cantidad máxima de asientos en clase turista.</div>
                         <div class="invalid-feedback">Por favor ingrese un número válido.</div>
                     </div>
                     <div class="col-md-6 mb-3">
                         <label for="asientosEjecutivo" class="form-label">Asientos ejecutivo *</label>
-                        <input type="number" class="form-control" id="asientosEjecutivo" min="1" max="100" value="30" required>
+                        <input type="number" class="form-control" id="asientosEjecutivo" name="asientosEjecutivo" min="1" max="100" value="30" required>
                         <div class="form-text">Cantidad máxima de asientos en clase ejecutiva.</div>
                         <div class="invalid-feedback">Por favor ingrese un número válido.</div>
                     </div>
@@ -84,9 +84,12 @@
 
                 <div class="mb-3">
                     <label for="imagenVuelo" class="form-label">Imagen del vuelo (opcional)</label>
-                    <input type="file" class="form-control" id="imagenVuelo" accept="image/*">
+                    <input type="file" class="form-control" id="imagenVuelo" name="imagenVuelo" accept="image/*">
                     <div class="form-text">Formatos aceptados: JPG, PNG, GIF. Tamaño máximo: 5MB.</div>
                 </div>
+
+                <!-- campo oculto para enviar la duración en minutos -->
+                <input type="hidden" id="duracion" name="duracion" value="0">
 
                 <!-- Información de la ruta seleccionada (se actualiza dinámicamente) -->
                 <div id="infoRuta" class="alert alert-secondary d-none">
@@ -113,6 +116,16 @@
 </div>
 
 <!-- Scripts -->
+<script>
+    // Establecer SESSION_API_BASE desde la JSP para evitar ambigüedades en context path
+    // Ejemplo resultante: http://localhost:8080/WebAppApache_war_exploded
+    try {
+        window.SESSION_API_BASE = (window.location.origin || (window.location.protocol + '//' + window.location.host)) + '<%= request.getContextPath() %>';
+    } catch (e) {
+        window.SESSION_API_BASE = window.location.origin || (window.location.protocol + '//' + window.location.host);
+    }
+    console.log('SESSION_API_BASE (injected):', window.SESSION_API_BASE);
+</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="JsLogica/session-manager.js"></script>
 <script src="JsLogica/alta-vuelo.js"></script>

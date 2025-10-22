@@ -19,6 +19,7 @@ public class LoginServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
+        // El parámetro 'nickname' puede contener el nickname o el email (gmail)
         String user = request.getParameter("nickname");
         String password = request.getParameter("password"); // No se usa por ahora
 
@@ -34,45 +35,60 @@ public class LoginServlet extends HttpServlet {
             Cliente cliente = null;
             Aerolinea aerolinea = null;
 
-            // Buscar cliente SOLO por nickname
+            // Buscar cliente por nickname o por email y verificar contraseña
             List<DtCliente> clientes = sistema.listarClientes();
             System.out.println("Clientes encontrados: " + clientes.size());
-
             for (DtCliente c : clientes) {
-                System.out.println("Cliente disponible: " + c.getNickname());
-                if (c.getNickname().equalsIgnoreCase(user)) {
-                    try {
-                    if (sistema.verificarLogin(c.getEmail(), password)) {
-                        System.out.println("Contraseña verificada para cliente: " + c.getNickname());
-                    } else {
-                        System.out.println("Contraseña incorrecta para cliente: " + c.getNickname());
-                        continue; // Saltar a la siguiente iteración si la contraseña no coincide
+                try {
+                    String nick = c.getNickname();
+                    String mail = c.getEmail();
+                    boolean match = false;
+                    if (nick != null && nick.equalsIgnoreCase(user)) match = true;
+                    if (mail != null && mail.equalsIgnoreCase(user)) match = true;
+                    if (!match) continue;
+
+                    // verificar contraseña usando el email (clave en el sistema)
+                    boolean ok = false;
+                    try { ok = sistema.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
+                    if (!ok) {
+                        System.out.println("Contraseña incorrecta para cliente: " + nick + " (identificador: " + user + ")");
+                        // no autenticado, continuar buscando (por seguridad no revelamos si nickname/email existe)
+                        continue;
                     }
 
-                        cliente = sistema.verInfoCliente(c.getNickname());
-                        System.out.println("Cliente encontrado: " + c.getNickname());
-                        break;
-                    } catch (Exception e) {
-                        System.err.println("Error obteniendo info cliente: " + e.getMessage());
-                    }
+                    cliente = sistema.verInfoCliente(nick);
+                    System.out.println("Cliente autenticado: " + nick);
+                    break;
+                } catch (Exception e) {
+                    System.err.println("Error obteniendo info cliente: " + e.getMessage());
                 }
             }
 
-            // Buscar aerolínea SOLO por nickname
+            // Buscar aerolínea por nickname o email y verificar contraseña
             if (cliente == null) {
                 List<DtAerolinea> aerolineas = sistema.listarAerolineas();
                 System.out.println("Aerolíneas encontradas: " + aerolineas.size());
-
                 for (DtAerolinea a : aerolineas) {
-                    System.out.println("Aerolínea disponible: " + a.getNickname());
-                    if (a.getNickname().equalsIgnoreCase(user)) {
-                        try {
-                            aerolinea = sistema.verInfoAerolinea(a.getNickname());
-                            System.out.println("Aerolínea encontrada: " + a.getNickname());
-                            break;
-                        } catch (Exception e) {
-                            System.err.println("Error obteniendo info aerolínea: " + e.getMessage());
+                    try {
+                        String nick = a.getNickname();
+                        String mail = a.getEmail();
+                        boolean match = false;
+                        if (nick != null && nick.equalsIgnoreCase(user)) match = true;
+                        if (mail != null && mail.equalsIgnoreCase(user)) match = true;
+                        if (!match) continue;
+
+                        boolean ok = false;
+                        try { ok = sistema.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
+                        if (!ok) {
+                            System.out.println("Contraseña incorrecta para aerolínea: " + nick + " (identificador: " + user + ")");
+                            continue;
                         }
+
+                        aerolinea = sistema.verInfoAerolinea(nick);
+                        System.out.println("Aerolínea autenticada: " + nick);
+                        break;
+                    } catch (Exception e) {
+                        System.err.println("Error obteniendo info aerolínea: " + e.getMessage());
                     }
                 }
             }
@@ -101,9 +117,9 @@ public class LoginServlet extends HttpServlet {
                 out.print(jsonResponse);
 
             } else {
-                System.out.println("LOGIN FALLIDO - Usuario no encontrado: " + user);
+                System.out.println("LOGIN FALLIDO - Usuario no encontrado o contraseña inválida: " + user);
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                out.print("{\"success\":false,\"error\":\"Usuario no encontrado\"}");
+                out.print("{\"success\":false,\"error\":\"Usuario no encontrado o credenciales inválidas\"}");
             }
 
         } catch (Exception e) {

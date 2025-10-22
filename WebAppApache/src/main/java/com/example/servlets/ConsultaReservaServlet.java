@@ -64,7 +64,6 @@ public class ConsultaReservaServlet extends HttpServlet {
         try {
             Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
             if (vuelo != null) {
-                // vuelo.getReservas() devuelve probablemente un Map<String, Reserva>
                 Object reservasObj = vuelo.getReservas();
                 Collection<?> reservasColl = null;
                 if (reservasObj instanceof Collection) {
@@ -73,7 +72,69 @@ public class ConsultaReservaServlet extends HttpServlet {
                     reservasColl = ((Map<?, ?>) reservasObj).values();
                 }
                 if (reservasColl == null) reservasColl = Collections.emptyList();
-                escribirReservasVueloGeneric(reservasColl, sistema, out);
+
+                List<Map<String, Object>> reservasCompletas = new ArrayList<>();
+
+                for (Object reservaObj : reservasColl) {
+                    Map<String, Object> reservaInfo = new HashMap<>();
+
+                    // Obtener información básica de la reserva
+                    String idReserva = getPropAsString(reservaObj, "getId", "id");
+                    String tipoAsiento = getPropAsString(reservaObj, "getTipoAsiento", "getTipo", "tipoAsiento");
+                    String cantidadPasajes = getPropAsString(reservaObj, "getCantidadPasajes", "cantidadPasajes");
+                    String equipaje = getPropAsString(reservaObj, "getUnidadesEquipajeExtra", "getEquipajeExtra", "equipajeExtra");
+                    String costo = getPropAsString(reservaObj, "getCosto", "costo");
+                    String fecha = getPropAsString(reservaObj, "getFecha", "fecha");
+
+                    // Obtener información del cliente - CORREGIDO
+                    String clienteNickname = getPropAsString(reservaObj, "getCliente", "cliente");
+                    String clienteNombre = "Cliente no disponible";
+
+                    if (clienteNickname != null && !clienteNickname.isEmpty() && !clienteNickname.equals("N/A")) {
+                        try {
+                            // Intentar obtener el DtCliente para obtener nombre y apellido
+                            DtCliente cliente = sistema.obtenerCliente(clienteNickname);
+                            if (cliente != null) {
+                                clienteNombre = cliente.getNombre() + " " + cliente.getApellido();
+                            } else {
+                                // Si no se puede obtener el cliente, usar el nickname
+                                clienteNombre = clienteNickname;
+                            }
+                        } catch (Exception e) {
+                            // Si hay error, usar el nickname
+                            clienteNombre = clienteNickname;
+                        }
+                    }
+
+                    reservaInfo.put("id", idReserva != null ? idReserva : "N/A");
+                    reservaInfo.put("cliente", clienteNombre); // Nombre completo del cliente
+                    reservaInfo.put("clienteNickname", clienteNickname != null ? clienteNickname : "N/A");
+                    reservaInfo.put("tipoAsiento", tipoAsiento != null ? tipoAsiento : "N/A");
+                    reservaInfo.put("cantidadPasajes", cantidadPasajes != null ? cantidadPasajes : "0");
+                    reservaInfo.put("equipajeExtra", equipaje != null ? equipaje : "0");
+                    reservaInfo.put("costo", costo != null ? costo : "0"); // Usar "costo" en lugar de "costoTotal"
+                    reservaInfo.put("fechaReserva", fecha != null ? fecha : "N/A");
+
+                    reservasCompletas.add(reservaInfo);
+                }
+
+                // Convertir a JSON
+                out.print("[");
+                for (int i = 0; i < reservasCompletas.size(); i++) {
+                    Map<String, Object> reserva = reservasCompletas.get(i);
+                    if (i > 0) out.print(",");
+                    out.print("{");
+                    out.print("\"id\":\"" + escapeJson(String.valueOf(reserva.get("id"))) + "\",");
+                    out.print("\"cliente\":\"" + escapeJson(String.valueOf(reserva.get("cliente"))) + "\",");
+                    out.print("\"clienteNickname\":\"" + escapeJson(String.valueOf(reserva.get("clienteNickname"))) + "\",");
+                    out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(reserva.get("tipoAsiento"))) + "\",");
+                    out.print("\"cantidadPasajes\":" + reserva.get("cantidadPasajes") + ",");
+                    out.print("\"equipajeExtra\":" + reserva.get("equipajeExtra") + ",");
+                    out.print("\"costo\":" + reserva.get("costo") + ","); // Mantener como "costo"
+                    out.print("\"fechaReserva\":\"" + escapeJson(String.valueOf(reserva.get("fechaReserva"))) + "\"");
+                    out.print("}");
+                }
+                out.print("]");
             } else {
                 out.print("[]");
             }

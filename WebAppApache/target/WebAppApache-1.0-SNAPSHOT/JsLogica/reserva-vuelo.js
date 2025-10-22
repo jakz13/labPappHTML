@@ -1,12 +1,38 @@
 // Variables globales
 let vueloSeleccionado = null;
+let sessionUser = null; // info de sesión (nombre, apellido, nickname, tipo)
 
 // Inicialización
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
+    await cargarSesionUsuario();
     cargarAerolineas();
     configurarEventListeners();
     inicializarValidacion();
+
+    // Renderizar pasajeros inicial según el valor por defecto del input
+    const cantidadInicial = parseInt(document.getElementById('cantidadPasajes').value || '1', 10);
+    renderPasajeros(cantidadInicial);
 });
+
+// Cargar información de sesión del servidor o window.CURRENT_SESSION
+async function cargarSesionUsuario() {
+    try {
+        if (window.CURRENT_SESSION) {
+            sessionUser = window.CURRENT_SESSION;
+            return;
+        }
+        const res = await fetch('api/check-session', { credentials: 'include' });
+        if (res.ok) {
+            const data = await res.json();
+            sessionUser = data;
+        } else {
+            sessionUser = null;
+        }
+    } catch (e) {
+        console.warn('No se pudo obtener sesión:', e);
+        sessionUser = null;
+    }
+}
 
 // Cargar aerolíneas desde backend
 function cargarAerolineas() {
@@ -118,36 +144,10 @@ function configurarEventListeners() {
         }
     });
 
-    // Gestión de pasajeros
+    // Gestión de pasajeros (usar la función renderPasajeros)
     document.getElementById('cantidadPasajes').addEventListener('input', function() {
-        const cantidad = parseInt(this.value);
-        const container = document.getElementById('pasajerosContainer');
-        const pasajerosDiv = document.getElementById('pasajerosDiv');
-
-        container.innerHTML = '';
-
-        if (cantidad > 1) {
-            pasajerosDiv.style.display = 'block';
-            for (let i = 1; i <= cantidad; i++) {
-                const pasajeroHTML = `
-                    <div class="pasajero-card">
-                        <h6 class="mb-3 text-light">Pasajero ${i}</h6>
-                        <div class="row g-2">
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Nombre *" required>
-                            </div>
-                            <div class="col-md-6">
-                                <input type="text" class="form-control" placeholder="Apellido *" required>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                container.innerHTML += pasajeroHTML;
-            }
-        } else {
-            pasajerosDiv.style.display = 'none';
-        }
-
+        const cantidad = parseInt(this.value) || 1;
+        renderPasajeros(cantidad);
         calcularCostos();
     });
 
@@ -169,13 +169,25 @@ function configurarEventListeners() {
         event.stopPropagation();
 
         if (this.checkValidity() && validarPaso2() && document.getElementById('confirmarReserva').checked) {
+            // recolectar datos de pasajeros
+            const pasajeroCards = Array.from(document.querySelectorAll('#pasajerosContainer .pasajero-card'));
+            const pasajeros = pasajeroCards.map(card => {
+                const nombreInput = card.querySelector('input[name="pasajero-nombre"]');
+                const apellidoInput = card.querySelector('input[name="pasajero-apellido"]');
+                return {
+                    nombre: nombreInput ? nombreInput.value.trim() : '',
+                    apellido: apellidoInput ? apellidoInput.value.trim() : ''
+                };
+            });
+
             const datosReserva = {
-                vuelo: vueloSeleccionado.nombre,
+                vuelo: vueloSeleccionado ? vueloSeleccionado.nombre : null,
                 tipoAsiento: document.getElementById('tipoAsiento').value,
-                cantidadPasajes: document.getElementById('cantidadPasajes').value,
-                equipajeExtra: document.getElementById('equipajeExtra').value,
+                cantidadPasajes: parseInt(document.getElementById('cantidadPasajes').value, 10) || 1,
+                equipajeExtra: parseInt(document.getElementById('equipajeExtra').value, 10) || 0,
                 formaPago: document.getElementById('formaPago').value,
-                paquete: document.getElementById('formaPago').value === 'paquete' ? document.getElementById('paqueteSelect').value : null
+                paquete: document.getElementById('formaPago').value === 'paquete' ? document.getElementById('paqueteSelect').value : null,
+                pasajeros: pasajeros
             };
 
             fetch('api/reservas', {
@@ -208,19 +220,51 @@ function configurarEventListeners() {
     });
 }
 
-function inicializarValidacion() {
-    const form = document.getElementById('formReservaVuelo');
-    const camposRequeridos = form.querySelectorAll('[required]');
-    camposRequeridos.forEach(campo => {
-        campo.addEventListener('change', function() {
-            if (this.value.trim()) {
-                this.classList.remove('is-invalid');
-                this.classList.add('is-valid');
-            } else {
-                this.classList.remove('is-valid');
-                this.classList.add('is-invalid');
-            }
-        });
+// Función para renderizar los formularios de pasajeros
+function renderPasajeros(cantidad) {
+    const container = document.getElementById('pasajerosContainer');
+    const pasajerosDiv = document.getElementById('pasajerosDiv');
+    container.innerHTML = '';
+
+    if (!cantidad || cantidad < 1) {
+        pasajerosDiv.style.display = 'none';
+        return;
+    }
+
+    pasajerosDiv.style.display = 'block';
+
+    for (let i = 1; i <= cantidad; i++) {
+        // crear card
+        const isFirst = i === 1;
+        const nombreVal = isFirst ? (sessionUser && (sessionUser.nombre || sessionUser.firstName) ? (sessionUser.nombre || sessionUser.firstName) : (sessionUser && sessionUser.nickname ? sessionUser.nickname.split(' ')[0] : '')) : '';
+        const apellidoVal = isFirst ? (sessionUser && (sessionUser.apellido || sessionUser.lastName) ? (sessionUser.apellido || sessionUser.lastName) : (sessionUser && sessionUser.nickname ? (sessionUser.nickname.split(' ').slice(1).join(' ') || '') : '')) : '';
+
+        const readonlyAttr = isFirst ? 'readonly' : '';
+        const helperNote = isFirst ? '<small class="text-muted">(Autocompletado desde su cuenta)</small>' : '';
+
+        const pasajeroHTML = document.createElement('div');
+        pasajeroHTML.className = 'pasajero-card mb-3 p-3 border rounded bg-dark';
+        pasajeroHTML.innerHTML = `
+            <h6 class="mb-2 text-light">Pasajero ${i} ${helperNote}</h6>
+            <div class="row g-2">
+                <div class="col-md-6">
+                    <input type="text" name="pasajero-nombre" class="form-control" placeholder="Nombre *" value="${escapeHtml(nombreVal)}" ${readonlyAttr} required>
+                </div>
+                <div class="col-md-6">
+                    <input type="text" name="pasajero-apellido" class="form-control" placeholder="Apellido *" value="${escapeHtml(apellidoVal)}" ${readonlyAttr} required>
+                </div>
+            </div>
+        `;
+
+        container.appendChild(pasajeroHTML);
+    }
+}
+
+// helper para evitar inyección de HTML al insertar valores
+function escapeHtml(str) {
+    if (!str) return '';
+    return String(str).replace(/[&<>"']/g, function (c) {
+        return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];
     });
 }
 
@@ -265,9 +309,10 @@ function validarPaso1() {
     return true;
 }
 
+// Validar que los datos de pasajeros estén completos
 function validarPaso2() {
     const tipoAsiento = document.getElementById('tipoAsiento').value;
-    const cantidadPasajes = document.getElementById('cantidadPasajes').value;
+    const cantidadPasajes = parseInt(document.getElementById('cantidadPasajes').value, 10) || 1;
     const formaPago = document.getElementById('formaPago').value;
 
     if (!tipoAsiento || !cantidadPasajes || !formaPago) {
@@ -278,6 +323,22 @@ function validarPaso2() {
     if (formaPago === 'paquete' && !document.getElementById('paqueteSelect').value) {
         mostrarMensajeError('Por favor seleccione un paquete para el pago.');
         return false;
+    }
+
+    // validar pasajeros
+    const pasajeroCards = Array.from(document.querySelectorAll('#pasajerosContainer .pasajero-card'));
+    if (pasajeroCards.length !== cantidadPasajes) {
+        mostrarMensajeError('La cantidad de formularios de pasajeros no coincide con la cantidad de pasajes.');
+        return false;
+    }
+
+    for (const card of pasajeroCards) {
+        const nombre = card.querySelector('input[name="pasajero-nombre"]').value.trim();
+        const apellido = card.querySelector('input[name="pasajero-apellido"]').value.trim();
+        if (!nombre || !apellido) {
+            mostrarMensajeError('Por favor complete el nombre y apellido de todos los pasajeros.');
+            return false;
+        }
     }
 
     return true;

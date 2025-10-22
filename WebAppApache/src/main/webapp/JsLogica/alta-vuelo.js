@@ -5,23 +5,107 @@ document.addEventListener('DOMContentLoaded', function() {
     const selectRuta = document.getElementById('rutaVuelo');
     const formulario = document.getElementById('formAltaVuelo');
 
-    // ...
-    fetch('listarRutas')
-        .then(res => res.json())
-        .then(rutas => {
-            console.log("Rutas recibidas del backend:", rutas); // <-- Agrega esta línea
-            rutasData = {}; // Limpiar antes de cargar
-            selectRuta.innerHTML = '<option value="">Seleccione una ruta...</option>';
-            rutas.forEach(ruta => {
-                rutasData[ruta.nombre] = ruta; // Guardar cada ruta por nombre
-                selectRuta.innerHTML += `<option value="${ruta.nombre}">${ruta.nombre} - ${ruta.descripcion}</option>`;
-            });
-        })
-        .catch(() => {
-            selectRuta.innerHTML = '<option value="">Error cargando rutas</option>';
-        });
-// ...
+    // Cargar sesión y rutas inicialmente
+    function loadSessionAndRutas() {
+        const base = window.SESSION_API_BASE || '';
+        // Si session-manager ya resolvió la sesión, usarla y evitar una segunda petición
+        if (window.CURRENT_SESSION) {
+            const session = window.CURRENT_SESSION;
+            console.log('Usando window.CURRENT_SESSION (alta-vuelo):', session);
+            procesarSessionYCargarRutas(session, base);
+            return;
+        }
 
+        // comprobar sesión
+        fetch(base + '/api/check-session', { credentials: 'include' })
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                const ct = res.headers.get('content-type') || '';
+                if (!ct.includes('application/json')) throw new Error('Respuesta no JSON: ' + ct);
+                return res.json();
+            })
+            .then(session => {
+                console.log('Session info (alta-vuelo):', session);
+                procesarSessionYCargarRutas(session, base);
+            })
+            .catch(err => {
+                console.error('Error verificando sesión:', err);
+                const aerolineaNameEl = document.getElementById('aerolineaName');
+                if (aerolineaNameEl) aerolineaNameEl.textContent = '(no autenticado)';
+                selectRuta.innerHTML = '<option value="">Error verificando sesión</option>';
+            });
+    }
+
+    // Extraer la lógica de procesamiento de session y carga de rutas para reutilizarla
+    function procesarSessionYCargarRutas(session, base) {
+        console.log('Procesando session y cargando rutas (alta-vuelo):', session);
+        const aerolineaNameEl = document.getElementById('aerolineaName');
+        if (session && session.authenticated && session.tipo === 'aerolinea') {
+            if (aerolineaNameEl) aerolineaNameEl.textContent = session.nickname;
+            // cargar rutas para la aerolínea logueada
+            fetch(base + '/listarRutas', { credentials: 'include' })
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const ct = res.headers.get('content-type') || '';
+                    if (!ct.includes('application/json')) throw new Error('Respuesta no JSON: ' + ct);
+                    return res.json();
+                })
+                .then(rutas => {
+                    console.log('Rutas recibidas del backend:', rutas);
+                    rutasData = {};
+                    selectRuta.innerHTML = '<option value="">Seleccione una ruta...</option>';
+                    rutas.forEach(ruta => {
+                        rutasData[ruta.nombre] = ruta;
+                        selectRuta.innerHTML += `<option value="${ruta.nombre}">${ruta.nombre} - ${ruta.descripcion}</option>`;
+                    });
+                })
+                .catch(err => {
+                    console.error('Error cargando rutas:', err);
+                    selectRuta.innerHTML = '<option value="">Error cargando rutas</option>';
+                });
+        } else {
+            // FALLBACK: intentar usar localStorage (p. ej. después de registro) si existe
+            const storedNick = localStorage.getItem('session_nickname');
+            const storedTipo = localStorage.getItem('session_tipo');
+            if (storedNick && storedTipo === 'aerolinea') {
+                console.log('Usando fallback localStorage session_nickname:', storedNick);
+                if (aerolineaNameEl) aerolineaNameEl.textContent = storedNick;
+                // llamar listarRutas con parámetro aerolinea como fallback
+                fetch(base + '/listarRutas?aerolinea=' + encodeURIComponent(storedNick))
+                    .then(res => {
+                        if (!res.ok) throw new Error('HTTP ' + res.status);
+                        const ct = res.headers.get('content-type') || '';
+                        if (!ct.includes('application/json')) throw new Error('Respuesta no JSON: ' + ct);
+                        return res.json();
+                    })
+                    .then(rutas => {
+                        console.log('Rutas recibidas (fallback):', rutas);
+                        rutasData = {};
+                        selectRuta.innerHTML = '<option value="">Seleccione una ruta...</option>';
+                        rutas.forEach(ruta => {
+                            rutasData[ruta.nombre] = ruta;
+                            selectRuta.innerHTML += `<option value="${ruta.nombre}">${ruta.nombre} - ${ruta.descripcion}</option>`;
+                        });
+                    })
+                    .catch(err => {
+                        console.error('Error cargando rutas (fallback):', err);
+                        selectRuta.innerHTML = '<option value="">Error cargando rutas</option>';
+                    });
+            } else {
+                if (aerolineaNameEl) aerolineaNameEl.textContent = '(no autenticado)';
+                // mostrar mensaje para iniciar sesión
+                selectRuta.innerHTML = '<option value="">Inicie sesión como aerolínea</option>';
+            }
+        }
+    }
+
+    // cargar al inicio
+    loadSessionAndRutas();
+
+    // refrescar cuando la sesión cambie
+    window.addEventListener('sessionUpdated', () => {
+        loadSessionAndRutas();
+    });
 
     // Actualizar información de la ruta seleccionada
     selectRuta.addEventListener('change', function() {
@@ -47,46 +131,59 @@ document.addEventListener('DOMContentLoaded', function() {
         event.preventDefault();
 
         if (this.checkValidity()) {
-            // Recolectar datos
-            const datosVuelo = {
-                nombreVuelo: document.getElementById('nombreVuelo').value,
-                nombreAerolinea: "cos", // Ajusta según corresponda
-                nombreRuta: document.getElementById('rutaVuelo').value,
-                fecha: document.getElementById('fechaVuelo').value,
-                duracion: (parseInt(document.getElementById('horas').value) * 60 + parseInt(document.getElementById('minutos').value)).toString(),
-                asientosTurista: document.getElementById('asientosTurista').value,
-                asientosEjecutivo: document.getElementById('asientosEjecutivo').value
-            };
+            // calcular duración en minutos y guardarla en el input hidden
+            const horas = parseInt(document.getElementById('horas').value) || 0;
+            const minutos = parseInt(document.getElementById('minutos').value) || 0;
+            const duracionMin = horas * 60 + minutos;
+            document.getElementById('duracion').value = String(duracionMin);
 
-            fetch('altaVuelo', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/x-www-form-urlencoded'
-                },
-                body: new URLSearchParams(datosVuelo)
-            })
-                .then(res => res.json())
-                .then(data => {
-                    if (data.success) {
-                        mostrarMensajeExito();
-                        setTimeout(() => {
-                            formulario.reset();
-                            formulario.classList.remove('was-validated');
-                            document.getElementById('infoRuta').classList.add('d-none');
-                        }, 2000);
-                    } else {
-                        alert("Error: " + data.error);
-                    }
+            // Construir FormData (multipart) para enviar imagen y campos
+            const formData = new FormData();
+            formData.append('nombreVuelo', document.getElementById('nombreVuelo').value);
+            formData.append('nombreRuta', document.getElementById('rutaVuelo').value);
+            formData.append('fecha', document.getElementById('fechaVuelo').value);
+            formData.append('duracion', String(duracionMin));
+            formData.append('asientosTurista', document.getElementById('asientosTurista').value);
+            formData.append('asientosEjecutivo', document.getElementById('asientosEjecutivo').value);
+
+            const imagenInput = document.getElementById('imagenVuelo');
+            if (imagenInput && imagenInput.files && imagenInput.files.length > 0) {
+                formData.append('imagenVuelo', imagenInput.files[0]);
+            }
+
+            // usar base para asegurar la URL absoluta correcta
+            fetch((window.SESSION_API_BASE || '') + '/altaVuelo', {
+                 method: 'POST',
+                 body: formData,
+                 credentials: 'include'
+             })
+                .then(res => {
+                    if (!res.ok) throw new Error('HTTP ' + res.status);
+                    const ct = res.headers.get('content-type') || '';
+                    if (!ct.includes('application/json')) throw new Error('Respuesta no JSON: ' + ct);
+                    return res.json();
                 })
-                .catch(err => {
-                    alert("Error de red o servidor: " + err);
-                });
-        } else {
-            event.stopPropagation();
-        }
+                 .then(data => {
+                     if (data.success) {
+                         mostrarMensajeExito();
+                         setTimeout(() => {
+                             formulario.reset();
+                             formulario.classList.remove('was-validated');
+                             document.getElementById('infoRuta').classList.add('d-none');
+                         }, 2000);
+                     } else {
+                         alert("Error: " + data.error);
+                     }
+                 })
+                 .catch(err => {
+                     alert("Error de red o servidor: " + err);
+                 });
+         } else {
+             event.stopPropagation();
+         }
 
-        this.classList.add('was-validated');
-    });
+         this.classList.add('was-validated');
+     });
 
     // Validar que la fecha sea futura
     document.getElementById('fechaVuelo').min = new Date().toISOString().split('T')[0];

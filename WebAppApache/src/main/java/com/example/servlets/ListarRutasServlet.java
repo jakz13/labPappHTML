@@ -3,7 +3,6 @@ package com.example.servlets;
 import Logica.Fabrica;
 import Logica.ISistema;
 import DataTypes.DtRutaVuelo;
-import Logica.RutaVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -21,9 +20,34 @@ public class ListarRutasServlet extends HttpServlet {
 
         try {
             ISistema sistema = Fabrica.getInstance().getISistema();
-            // Cambia aquí el nickname
+
+            // Priorizar aerolinea en sesión si existe
+            HttpSession session = request.getSession(false);
+            String nombreAerolinea = null;
+            if (session != null) {
+                Object tipo = session.getAttribute("tipoUsuario");
+                Object usuario = session.getAttribute("usuario");
+                if (usuario != null && "aerolinea".equalsIgnoreCase(String.valueOf(tipo))) {
+                    nombreAerolinea = String.valueOf(usuario);
+                }
+            }
+
+            // Fallback: permitir pasar ?aerolinea=XXX (por ejemplo tras registro antes de que la cookie esté activa)
+            if (nombreAerolinea == null || nombreAerolinea.trim().isEmpty()) {
+                String param = request.getParameter("aerolinea");
+                if (param != null && !param.trim().isEmpty()) {
+                    nombreAerolinea = param.trim();
+                }
+            }
+
+            // Si no hay aerolínea disponible, devolver lista vacía
+            if (nombreAerolinea == null || nombreAerolinea.trim().isEmpty()) {
+                out.print("[]");
+                return;
+            }
+
             sistema.cargarDesdeBd();
-            List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea("latam001");
+            List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(nombreAerolinea);
             out.print("[");
             for (int i = 0; i < rutas.size(); i++) {
                 DtRutaVuelo r = rutas.get(i);

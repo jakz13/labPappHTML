@@ -263,13 +263,29 @@ function enviarRegistroAlServidor() {
                     successModal.show();
                 } catch (e) { /* ignore */ }
 
+                // Guardar info de sesión en localStorage como fallback inmediato
+                try {
+                    if (data.nickname) localStorage.setItem('session_nickname', data.nickname);
+                    if (data.tipo) localStorage.setItem('session_tipo', data.tipo);
+                    // opcional: marcar un timestamp
+                    localStorage.setItem('session_timestamp', String(Date.now()));
+                } catch (e) {
+                    console.warn('No se pudo guardar session en localStorage:', e);
+                }
+
                 // Notificar a otras partes de la página que la sesión cambió y forzar recarga/redirect
                 try { window.dispatchEvent(new Event('sessionUpdated')); } catch (e) { console.warn('No se pudo dispatch sessionUpdated', e); }
 
-                // Si el servidor devolvió nickname/tipo, podemos redirigir al inicio o recargar la página
+                // Si el servidor devolvió nickname/tipo, redirigir: si es aerolinea, ir a alta-vuelo con parámetro
                 setTimeout(() => {
-                    // Preferir redirect a PaginaPrincipal si existe
-                    try { window.location.href = 'PaginaPrincipal.jsp'; } catch (e) { window.location.reload(); }
+                    try {
+                        if (data.tipo === 'aerolinea' && data.nickname) {
+                            // redirigir a la página de alta-vuelo con parámetro para forzar carga de rutas
+                            window.location.href = 'alta-vuelo.jsp?aerolinea=' + encodeURIComponent(data.nickname);
+                        } else {
+                            window.location.href = 'PaginaPrincipal.jsp';
+                        }
+                    } catch (e) { window.location.reload(); }
                 }, 900);
             } else {
                 // Error

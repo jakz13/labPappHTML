@@ -5,6 +5,8 @@ C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\
 C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\CargarDatosBD.java
 C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\CheckSessionServlet.java
 C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ConsultaReservaServlet.java
+C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\DebugVueloServlet.java
+C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\FlightImageServlet.java
 C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\GetRutaServlet.java
 C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ImageServeServlet.java
 C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ListarAerolineasServlet.java

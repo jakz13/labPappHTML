@@ -49,6 +49,7 @@ public class ReservasVueloServlet extends HttpServlet {
                         jsonBuilder.append("\"equipajeExtra\":").append(reserva.getUnidadesEquipajeExtra()).append(",");
                         jsonBuilder.append("\"costoTotal\":").append(reserva.getCosto()).append(",");
                         jsonBuilder.append("\"fechaReserva\":\"").append(escapeJson(String.valueOf(reserva.getFecha()))).append("\"");
+
                         jsonBuilder.append("}");
 
                         primeraReserva = false;

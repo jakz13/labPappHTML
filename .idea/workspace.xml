@@ -10,27 +10,50 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="&#10;Inicio de Sesión&#9;&#9;&#9;hecho&#10;Cierre de Sesión&#9;&#9;&#9;hecho&#10;Alta de Usuario&#9;&#9;&#9;&#9;hecho&#10;Consulta de Usuario&#9;&#9;&#9;sin hacer&#10;Modificar Datos de Usuario&#9;&#9;hecho&#10;Alta de Ruta de Vuelo&#9;&#9;&#9;hecho&#9;&#10;Consulta de Ruta de Vuelo&#9;&#9;hecho a medias&#10;Alta de Vuelo&#9;&#9;&#9;&#9;sin hacer falata logear&#10;Consulta de Vuelo&#9;&#9;&#9;hecho a medias &#10;Reserva de Vuelo&#9;&#9;&#9;falan ingresar pasajeros &#10;Consulta de Reserva de vuelo&#9;&#9;hecho a medias&#10;&#10;Consulta de Paquete de Rutas de Vuelo&#9;sin hacer&#10;Compra de Paquete de Rutas de Vuelo&#9;sin hacer">
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/DebugVueloServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/FlightImageServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/Images/.gitkeep" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaVueloServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaVueloServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaReservaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/RegistrarReservaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/RegistrarReservaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ReservaClienteServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ReservaClienteServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarRutasServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarRutasServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LoginServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/LoginServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ReservasVueloServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ReservasVueloServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/VerificarPermisosVueloServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/VerificarPermisosVueloServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/VerInfoVueloServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/VerInfoVueloServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-usuario.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-vuelo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-reserva.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-reserva.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-vuelo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/reserva-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/reserva-vuelo.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/session-manager.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-vuelo.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-vuelo.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-usuario.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-vuelo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-reserva.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-reserva.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-vuelo.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/reserva-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/reserva-vuelo.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaVueloServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservaClienteServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservaClienteServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservasVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservasVueloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarPermisosVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarPermisosVueloServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerInfoVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerInfoVueloServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-vuelo.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-vuelo.jsp" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaVueloServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaReservaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaReservaServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservaClienteServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservaClienteServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservasVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservasVueloServlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarPermisosVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarPermisosVueloServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerInfoVueloServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerInfoVueloServlet.class" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -78,6 +101,7 @@
   </component>
   <component name="ProblemsViewState">
     <option name="selectedTabId" value="CurrentFile" />
+    <option name="showPreview" value="true" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 6
@@ -87,33 +111,33 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Application.Main.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "SHELLCHECK.PATH": "C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe",
-    "Tomcat Server.Tomcat 11.0.11.executor": "Run",
-    "git-widget-placeholder": "junior",
-    "ignore.virus.scanning.warn.message": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp/WEB-INF/lib",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Artifacts",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.29319373",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe&quot;,
+    &quot;Tomcat Server.Tomcat 11.0.11.executor&quot;: &quot;Run&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;junior&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp/WEB-INF/lib&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.29319373&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp\WEB-INF\lib" />
@@ -279,7 +303,7 @@
       <workItem from="1760616324542" duration="77000" />
       <workItem from="1760616412174" duration="2133000" />
       <workItem from="1760623476807" duration="26409000" />
-      <workItem from="1760733904838" duration="39785000" />
+      <workItem from="1760733904838" duration="84967000" />
     </task>
     <task id="LOCAL-00001" summary="fxg">
       <option name="closed" value="true" />
@@ -337,7 +361,15 @@
       <option name="project" value="LOCAL" />
       <updated>1760991315795</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="&#10;Inicio de Sesión&#9;&#9;&#9;hecho&#10;Cierre de Sesión&#9;&#9;&#9;hecho&#10;Alta de Usuario&#9;&#9;&#9;&#9;hecho&#10;Consulta de Usuario&#9;&#9;&#9;sin hacer&#10;Modificar Datos de Usuario&#9;&#9;hecho&#10;Alta de Ruta de Vuelo&#9;&#9;&#9;hecho&#9;&#10;Consulta de Ruta de Vuelo&#9;&#9;hecho a medias&#10;Alta de Vuelo&#9;&#9;&#9;&#9;sin hacer falata logear&#10;Consulta de Vuelo&#9;&#9;&#9;hecho a medias &#10;Reserva de Vuelo&#9;&#9;&#9;falan ingresar pasajeros &#10;Consulta de Reserva de vuelo&#9;&#9;hecho a medias&#10;&#10;Consulta de Paquete de Rutas de Vuelo&#9;sin hacer&#10;Compra de Paquete de Rutas de Vuelo&#9;sin hacer">
+      <option name="closed" value="true" />
+      <created>1760998596566</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1760998596566</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
