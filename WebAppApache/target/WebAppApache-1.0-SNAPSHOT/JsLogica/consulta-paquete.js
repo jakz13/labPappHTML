@@ -1,268 +1,328 @@
-// Datos simulados de paquetes mejorados
-const paquetes = {
-    "sudamerica": {
-        nombre: "Sudamérica Esencial",
-        costo: 1200,
-        vigencia: "180 días",
-        descripcion: "Descubre los destinos más emblemáticos de Sudamérica con este paquete esencial que incluye las rutas más populares.",
-        beneficios: [
-            "20% de descuento vs compra individual",
-            "Flexibilidad para cambiar fechas",
-            "Asistencia al viajero incluida",
-            "Traslados aeropuerto-hotel"
-        ],
-        rutas: [
-            {
-                id: "ZL1502",
-                nombre: "Montevideo - Rio de Janeiro",
-                descripcionCorta: "Vuelo directo a las playas de Brasil",
-                descripcionCompleta: "Disfrute de un vuelo directo desde Montevideo hasta la maravillosa ciudad de Rio de Janeiro. Con una duración de apenas 2 horas y 30 minutos, llegará listo para explorar las famosas playas de Copacabana e Ipanema, el Cristo Redentor y el Pan de Azúcar.",
-                aerolinea: "ZulyFly",
-                origen: "Montevideo, Uruguay (MVD)",
-                destino: "Rio de Janeiro, Brasil (GIG)",
-                duracion: "2h 30m",
-                horaSalida: "07:15",
-                turista: 320,
-                ejecutivo: 550,
-                equipaje: 25,
-                categorias: "Internacionales, América, Cortos",
-                estado: "Confirmada",
-                imagen: "https://via.placeholder.com/400x250/3498db/ffffff?text=Montevideo-Rio"
-            },
-            {
-                id: "AR2050",
-                nombre: "Buenos Aires - Santiago",
-                descripcionCorta: "Cruzando la cordillera de los Andes",
-                descripcionCompleta: "Experimente la majestuosidad de los Andes en este vuelo entre Buenos Aires y Santiago. Disfrute de vistas panorámicas de la cordillera mientras cruza hacia Chile, donde le esperan viñedos, montañas y la vibrante capital Santiago.",
-                aerolinea: "Aerolíneas Argentinas",
-                origen: "Buenos Aires, Argentina (EZE)",
-                destino: "Santiago, Chile (SCL)",
-                duracion: "2h 15m",
-                horaSalida: "14:30",
-                turista: 280,
-                ejecutivo: 480,
-                equipaje: 30,
-                categorias: "Internacionales, América",
-                estado: "Confirmada",
-                imagen: "https://via.placeholder.com/400x250/e74c3c/ffffff?text=BsAs-Santiago"
-            },
-            {
-                id: "LA3040",
-                nombre: "Lima - Bogotá",
-                descripcionCorta: "Conectando capitales sudamericanas",
-                descripcionCompleta: "Conecte dos de las capitales más importantes de Sudamérica en este vuelo directo. Desde la riqueza histórica de Lima hasta la energía moderna de Bogotá, explore la diversidad cultural del continente.",
-                aerolinea: "LATAM",
-                origen: "Lima, Perú (LIM)",
-                destino: "Bogotá, Colombia (BOG)",
-                duracion: "3h 45m",
-                horaSalida: "10:20",
-                turista: 350,
-                ejecutivo: 620,
-                equipaje: 28,
-                categorias: "Internacionales, América",
-                estado: "Confirmada",
-                imagen: "https://via.placeholder.com/400x250/2ecc71/ffffff?text=Lima-Bogotá"
-            }
-        ]
-    },
-    "europa": {
-        nombre: "Europa Grand Tour",
-        costo: 2500,
-        vigencia: "365 días",
-        descripcion: "Vive la experiencia europea con este paquete premium que incluye las capitales más emblemáticas del viejo continente.",
-        beneficios: [
-            "30% de descuento vs compra individual",
-            "Alojamiento 4 estrellas incluido",
-            "Tours guiados en cada ciudad",
-            "Transporte entre ciudades",
-            "Seguro de viaje premium"
-        ],
-        rutas: [
-            {
-                id: "IB6012",
-                nombre: "Madrid - París",
-                descripcionCorta: "De la capital española a la ciudad luz",
-                descripcionCompleta: "Viaje desde el vibrante Madrid hasta la romántica París en este vuelo que conecta dos de las capitales más fascinantes de Europa. Disfrute de la fusión entre la pasión española y la elegancia francesa.",
-                aerolinea: "Iberia",
-                origen: "Madrid, España (MAD)",
-                destino: "París, Francia (CDG)",
-                duracion: "2h 10m",
-                horaSalida: "08:45",
-                turista: 450,
-                ejecutivo: 780,
-                equipaje: 35,
-                categorias: "Internacionales, Europa",
-                estado: "Confirmada",
-                imagen: "https://via.placeholder.com/400x250/9b59b6/ffffff?text=Madrid-París"
-            }
-        ]
-    },
-    "caribe": {
-        nombre: "Caribe Paradise",
-        costo: 1800,
-        vigencia: "90 días",
-        descripcion: "Escape tropical a los destinos más exclusivos del Caribe con todo incluido para unas vacaciones perfectas.",
-        beneficios: [
-            "Todo incluido: alojamiento y comidas",
-            "Actividades acuáticas gratuitas",
-            "Traslados privados",
-            "Asistencia VIP en destino"
-        ],
-        rutas: [
-            {
-                id: "AA904",
-                nombre: "Miami - Cancún",
-                descripcionCorta: "Del glamour americano al paraíso mexicano",
-                descripcionCompleta: "Escape desde la vibrante Miami hasta el paraíso caribeño de Cancún. Disfrute de aguas turquesas, playas de arena blanca y la rica cultura mexicana en este vuelo directo.",
-                aerolinea: "American Airlines",
-                origen: "Miami, USA (MIA)",
-                destino: "Cancún, México (CUN)",
-                duracion: "2h 30m",
-                horaSalida: "11:20",
-                turista: 380,
-                ejecutivo: 650,
-                equipaje: 32,
-                categorias: "Internacionales, Caribe, Exclusivos",
-                estado: "Confirmada",
-                imagen: "https://via.placeholder.com/400x250/f39c12/ffffff?text=Miami-Cancún"
-            }
-        ]
-    },
-    "norteamerica": {
-        nombre: "Norteamérica Explorer",
-        costo: 2200,
-        vigencia: "240 días",
-        descripcion: "Descubre la diversidad de Norteamérica con este paquete que combina ciudades vibrantes y paisajes naturales impresionantes.",
-        beneficios: [
-            "25% de descuento vs compra individual",
-            "Alquiler de auto incluido",
-            "Entradas a parques nacionales",
-            "Asistencia 24/7 en inglés y español"
-        ],
-        rutas: [
-            {
-                id: "UA845",
-                nombre: "Nueva York - Los Ángeles",
-                descripcionCorta: "Cruzando Estados Unidos de costa a costa",
-                descripcionCompleta: "Vuele desde la vibrante Nueva York hasta el soleado Los Ángeles en este vuelo transcontinental. Experimente la diversidad cultural y geográfica de Estados Unidos en un solo viaje.",
-                aerolinea: "United Airlines",
-                origen: "Nueva York, USA (JFK)",
-                destino: "Los Ángeles, USA (LAX)",
-                duracion: "6h 30m",
-                horaSalida: "09:15",
-                turista: 420,
-                ejecutivo: 720,
-                equipaje: 30,
-                categorias: "Nacionales, América",
-                estado: "Confirmada",
-                imagen: "https://via.placeholder.com/400x250/3498db/ffffff?text=NY-LA"
-            }
-        ]
-    }
-};
+// Variables globales
+let paquetes = {};
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Inicializando consulta de paquetes...');
+    inicializarConsultaPaquetes();
+});
+
+async function inicializarConsultaPaquetes() {
+    try {
+        console.log('📦 Cargando paquetes desde backend...');
+        await cargarPaquetesDesdeBackend();
+
+        console.log('⚙️ Configurando interfaz...');
+        configurarInterfaz();
+
+        console.log('✅ Consulta de paquetes inicializada correctamente');
+    } catch (error) {
+        console.error('❌ Error en inicialización:', error);
+        mostrarError('Error al inicializar la consulta de paquetes: ' + error.message);
+    }
+}
+
+async function cargarPaquetesDesdeBackend() {
+    try {
+        console.log('🌐 Haciendo fetch a /api/consulta-paquete...');
+
+        const response = await fetch('consulta-paquete?action=listar-paquetes');
+        console.log('📨 Response status:', response.status);
+        console.log('📨 Response ok:', response.ok);
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+        }
+
+        const text = await response.text();
+        console.log('📄 Response text:', text);
+
+        let paquetesData;
+        try {
+            paquetesData = JSON.parse(text);
+        } catch (parseError) {
+            console.error('❌ Error parseando JSON:', parseError);
+            throw new Error('Respuesta del servidor no es JSON válido');
+        }
+
+        console.log('📊 Paquetes cargados del backend:', paquetesData);
+
+        // Si no hay paquetes en la base de datos
+        if (!paquetesData || paquetesData.length === 0) {
+            console.log('📭 No hay paquetes en la BD');
+            mostrarMensajeSinPaquetes();
+            return;
+        }
+
+        // Usar directamente los datos del servidor - SIN TRANSFORMACIÓN COMPLEJA
+        paquetes = {};
+        paquetesData.forEach(paquete => {
+            console.log('📋 Procesando paquete:', paquete);
+
+            // Solo agregar propiedades que necesitamos para la lista
+            paquetes[paquete.id] = {
+                id: paquete.id,
+                nombre: paquete.nombre || 'Sin nombre',
+                costo: paquete.costoBase || 0, // Usar costoBase directamente
+                costoFinal: calcularCostoFinalCliente(paquete.costoBase, paquete.descuento),
+                vigencia: (paquete.vigenciaDias || 0) + " días",
+                descripcion: paquete.descripcion || "Sin descripción",
+                descuento: paquete.descuento || 0,
+                vigenciaDias: paquete.vigenciaDias || 0,
+                cantidadRutas: paquete.cantidadRutas || 0,
+                rutas: paquete.rutas || [] // Usar rutas directamente del servidor
+            };
+        });
+
+        console.log('🎯 Paquetes procesados:', paquetes);
+
+    } catch (error) {
+        console.error('💥 Error cargando paquetes:', error);
+        mostrarError('No se pudieron cargar los paquetes: ' + error.message);
+    }
+}
+
+function calcularCostoFinalCliente(costoBase, descuento) {
+    if (!costoBase || !descuento) return costoBase || 0;
+    return costoBase * (1 - descuento / 100.0);
+}
+
+function generarBeneficios(paquete) {
+    const beneficios = [];
+
+    if (paquete.descuento > 0) {
+        beneficios.push(paquete.descuento + "% de descuento");
+    }
+
+    if (paquete.vigenciaDias > 0) {
+        beneficios.push("Vigencia de " + paquete.vigenciaDias + " días");
+    }
+
+    // Usar rutas directamente del paquete
+    if (paquete.rutas && paquete.rutas.length > 0) {
+        beneficios.push(paquete.rutas.length + " rutas incluidas");
+    }
+
+    // Beneficios por defecto
+    if (beneficios.length === 0) {
+        beneficios.push("Paquete con múltiples destinos");
+        beneficios.push("Precio especial");
+        beneficios.push("Flexibilidad en fechas");
+    }
+
+    return beneficios;
+}
+
+function configurarInterfaz() {
     const paqueteSelect = document.getElementById("paqueteSelect");
     const infoPaquete = document.getElementById("infoPaquete");
     const infoRuta = document.getElementById("infoRuta");
 
-    paqueteSelect.addEventListener("change", () => {
-        const paqueteId = paqueteSelect.value;
+    console.log('🔄 Configurando interfaz...');
+    console.log('📋 Número de paquetes:', Object.keys(paquetes).length);
+
+    // Limpiar el select
+    paqueteSelect.innerHTML = '<option value="">Seleccione un paquete...</option>';
+
+    if (Object.keys(paquetes).length === 0) {
+        console.log('📭 No hay paquetes para mostrar en el select');
+        paqueteSelect.innerHTML = '<option value="">No hay paquetes disponibles</option>';
+        return;
+    }
+
+    // Llenar con paquetes reales
+    Object.keys(paquetes).forEach(paqueteId => {
         const paquete = paquetes[paqueteId];
+        const option = document.createElement('option');
+        option.value = paqueteId;
+        option.textContent = paquete.nombre;
+        paqueteSelect.appendChild(option);
+    });
 
-        if(paquete) {
-            // Mostrar información del paquete
-            infoPaquete.style.display = "block";
-            document.getElementById("nombrePaquete").textContent = paquete.nombre;
-            document.getElementById("costoPaquete").textContent = paquete.costo;
-            document.getElementById("vigenciaPaquete").textContent = paquete.vigencia;
-            document.getElementById("cantidadRutas").textContent = paquete.rutas.length + " rutas";
-            document.getElementById("descripcionPaquete").textContent = paquete.descripcion;
+    console.log('✅ Select poblado con', Object.keys(paquetes).length, 'paquetes');
 
-            // Mostrar beneficios
-            const beneficiosList = document.getElementById("beneficiosPaquete");
-            beneficiosList.innerHTML = "";
-            paquete.beneficios.forEach(beneficio => {
-                const li = document.createElement("li");
-                li.innerHTML = `<i class="bi bi-check-circle-fill text-success"></i> ${beneficio}`;
-                beneficiosList.appendChild(li);
-            });
+    // Configurar event listener
+    paqueteSelect.addEventListener("change", function() {
+        const paqueteId = this.value;
+        console.log('🎯 Paquete seleccionado:', paqueteId);
 
-            // Mostrar rutas
-            const rutasContainer = document.getElementById("rutasPaquete");
-            rutasContainer.innerHTML = "";
-            paquete.rutas.forEach((ruta, index) => {
-                const rutaHTML = `
-                    <div class="col-md-6">
-                        <div class="ruta-item" onclick="mostrarRutaDetalle('${paqueteId}', ${index})">
-                            <div class="d-flex justify-content-between align-items-start">
-                                <div>
-                                    <h6 class="mb-1">${ruta.nombre}</h6>
-                                    <p class="mb-1 text-muted small">${ruta.descripcionCorta}</p>
-                                    <p class="mb-0 small"><strong>${ruta.aerolinea}</strong> | ${ruta.duracion}</p>
-                                </div>
-                                <span class="badge bg-primary">${ruta.id}</span>
-                            </div>
-                        </div>
-                    </div>
-                `;
-                rutasContainer.innerHTML += rutaHTML;
-            });
-
-            // Ocultar información de ruta
-            infoRuta.style.display = "none";
+        if (paqueteId && paquetes[paqueteId]) {
+            mostrarInformacionPaquete(paquetes[paqueteId]);
         } else {
             infoPaquete.style.display = "none";
             infoRuta.style.display = "none";
         }
     });
 
-    // Mejorar la experiencia de usuario con tooltips
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
-});
-
-function mostrarRutaDetalle(paqueteId, rutaIndex) {
-    const ruta = paquetes[paqueteId].rutas[rutaIndex];
-
-    if (ruta) {
-        // Actualizar información de la ruta
-        document.getElementById("rutaNombre").textContent = ruta.nombre;
-        document.getElementById("rutaDescripcionCorta").textContent = ruta.descripcionCorta;
-        document.getElementById("rutaDescripcionCompleta").textContent = ruta.descripcionCompleta;
-        document.getElementById("rutaAerolinea").textContent = ruta.aerolinea;
-        document.getElementById("rutaOrigen").textContent = ruta.origen;
-        document.getElementById("rutaDestino").textContent = ruta.destino;
-        document.getElementById("rutaDuracion").textContent = ruta.duracion;
-        document.getElementById("rutaHoraSalida").textContent = ruta.horaSalida;
-        document.getElementById("rutaTurista").textContent = ruta.turista;
-        document.getElementById("rutaEjecutivo").textContent = ruta.ejecutivo;
-        document.getElementById("rutaEquipaje").textContent = ruta.equipaje;
-        document.getElementById("rutaCategorias").textContent = ruta.categorias;
-        document.getElementById("rutaEstado").textContent = ruta.estado;
-        document.getElementById("rutaImagen").src = ruta.imagen;
-
-        // Mostrar sección de información de ruta
-        document.getElementById("infoRuta").style.display = "block";
-
-        // Remover selección anterior y marcar actual
-        document.querySelectorAll('.ruta-item').forEach(item => {
-            item.classList.remove('selected');
+    // Configurar tooltips
+    try {
+        const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+        const tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            return new bootstrap.Tooltip(tooltipTriggerEl);
         });
-        event.currentTarget.classList.add('selected');
-
-        // Scroll a la información de la ruta
-        document.getElementById("infoRuta").scrollIntoView({ behavior: 'smooth' });
+        console.log('🔧 Tooltips configurados');
+    } catch (tooltipError) {
+        console.warn('⚠️ No se pudieron cargar tooltips:', tooltipError);
     }
+}
+
+function mostrarMensajeSinPaquetes() {
+    const paqueteSelect = document.getElementById("paqueteSelect");
+    const infoPaquete = document.getElementById("infoPaquete");
+
+    console.log('📭 Mostrando mensaje de no hay paquetes');
+
+    paqueteSelect.innerHTML = '<option value="">No hay paquetes disponibles</option>';
+    infoPaquete.innerHTML = `
+        <div class="alert alert-info">
+            <h5>No hay paquetes disponibles</h5>
+            <p>Actualmente no hay paquetes de rutas de vuelo registrados en el sistema.</p>
+            <p>Por favor, contacte al administrador o vuelva más tarde.</p>
+        </div>
+    `;
+    infoPaquete.style.display = "block";
+}
+
+function mostrarInformacionPaquete(paquete) {
+    console.log('📖 Mostrando información del paquete:', paquete);
+
+    const infoPaquete = document.getElementById("infoPaquete");
+    const infoRuta = document.getElementById("infoRuta");
+
+    // Mostrar información del paquete
+    infoPaquete.style.display = "block";
+    document.getElementById("nombrePaquete").textContent = paquete.nombre;
+    document.getElementById("costoPaquete").textContent = `${paquete.costoFinal.toFixed(2)}`;
+    document.getElementById("vigenciaPaquete").textContent = paquete.vigencia;
+    document.getElementById("cantidadRutas").textContent = paquete.cantidadRutas + " rutas";
+    document.getElementById("descripcionPaquete").textContent = paquete.descripcion;
+
+    // Mostrar beneficios
+    const beneficiosList = document.getElementById("beneficiosPaquete");
+    beneficiosList.innerHTML = "";
+    const beneficios = generarBeneficios(paquete);
+    beneficios.forEach(beneficio => {
+        const li = document.createElement("li");
+        li.innerHTML = `<i class="bi bi-check-circle-fill text-success"></i> ${beneficio}`;
+        beneficiosList.appendChild(li);
+    });
+
+    // Mostrar rutas - USANDO RUTAS DIRECTAMENTE DEL PAQUETE
+    const rutasContainer = document.getElementById("rutasPaquete");
+    rutasContainer.innerHTML = "";
+
+    if (paquete.rutas && paquete.rutas.length > 0) {
+        console.log('🛣️ Mostrando', paquete.rutas.length, 'rutas');
+        paquete.rutas.forEach((ruta, index) => {
+            const rutaHTML = `
+                <div class="col-md-6">
+                    <div class="ruta-item card h-100" onclick="mostrarRutaDetalle('${paquete.id}', '${ruta.id}')" style="cursor: pointer;">
+                        <div class="card-body">
+                            <div class="d-flex justify-content-between align-items-start">
+                                <div>
+                                    <h6 class="mb-1">${ruta.nombre || 'Sin nombre'}</h6>
+                                    <p class="mb-1 text-muted small">${ruta.descripcionCorta || 'Sin descripción'}</p>
+                                    <p class="mb-0 small">
+                                        <strong>${ruta.aerolinea || 'Aerolínea no especificada'}</strong> | 
+                                        ${ruta.origen || 'N/A'} → ${ruta.destino || 'N/A'}
+                                    </p>
+                                    <p class="mb-0 small text-success">
+                                        ${ruta.cantidadAsientos} asientos ${ruta.tipoAsiento || ''} - 
+                                        $${(ruta.tipoAsiento === 'EJECUTIVO' ? ruta.costoEjecutivo : ruta.costoTurista) || 0}
+                                    </p>
+                                </div>
+                                <span class="badge bg-primary">${ruta.id || 'N/A'}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            rutasContainer.innerHTML += rutaHTML;
+        });
+    } else {
+        console.log('🛑 No hay rutas para mostrar');
+        rutasContainer.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-warning text-center">
+                    <p class="mb-0">No hay rutas disponibles para este paquete.</p>
+                </div>
+            </div>
+        `;
+    }
+
+    // Ocultar información de ruta
+    infoRuta.style.display = "none";
+
+    console.log('✅ Información del paquete mostrada correctamente');
+}
+
+async function mostrarRutaDetalle(paqueteId, rutaId) {
+    try {
+        console.log(`🔍 Solicitando detalle de ruta: paquete=${paqueteId}, ruta=${rutaId}`);
+
+        const response = await fetch(`consulta-paquete?action=obtener-ruta&paquete=${encodeURIComponent(paqueteId)}&ruta=${encodeURIComponent(rutaId)}`);
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
+        }
+
+        const ruta = await response.json();
+        console.log('📄 Detalle de ruta recibido:', ruta);
+
+        actualizarInterfazRuta(ruta);
+
+    } catch (error) {
+        console.error('💥 Error cargando detalle de ruta:', error);
+        mostrarError('No se pudo cargar la información detallada de la ruta: ' + error.message);
+    }
+}
+
+function actualizarInterfazRuta(ruta) {
+    console.log('🎨 Actualizando interfaz de ruta:', ruta);
+
+    // Actualizar todos los campos
+    document.getElementById("rutaNombre").textContent = ruta.nombre || "Sin nombre";
+    document.getElementById("rutaDescripcionCorta").textContent = ruta.descripcionCorta || "Sin descripción corta";
+    document.getElementById("rutaDescripcionCompleta").textContent = ruta.descripcionCompleta || ruta.descripcion || "Sin descripción completa";
+    document.getElementById("rutaAerolinea").textContent = ruta.aerolinea || "No especificada";
+    document.getElementById("rutaOrigen").textContent = ruta.origen || "No especificado";
+    document.getElementById("rutaDestino").textContent = ruta.destino || "No especificado";
+    document.getElementById("rutaDuracion").textContent = ruta.duracion || "No especificada";
+    document.getElementById("rutaHoraSalida").textContent = ruta.horaSalida || "No especificada";
+    document.getElementById("rutaTurista").textContent = ruta.costoTurista ? `${ruta.costoTurista}` : "No disponible";
+    document.getElementById("rutaEjecutivo").textContent = ruta.costoEjecutivo ? `${ruta.costoEjecutivo}` : "No disponible";
+    document.getElementById("rutaEquipaje").textContent = ruta.costoEquipaje ? `${ruta.costoEquipaje}` : "No disponible";
+    document.getElementById("rutaCategorias").textContent = ruta.categorias || "No especificadas";
+    document.getElementById("rutaEstado").textContent = ruta.estado || "No especificado";
+
+    // Manejar la imagen
+    const imagenRuta = document.getElementById("rutaImagen");
+    if (ruta.imagen) {
+        imagenRuta.src = ruta.imagen;
+        imagenRuta.alt = `Imagen de la ruta ${ruta.nombre || ''}`;
+    } else {
+        imagenRuta.src = "https://via.placeholder.com/400x250/6c757d/ffffff?text=Imagen+No+Disponible";
+        imagenRuta.alt = "Imagen no disponible";
+    }
+
+    // Mostrar sección de información de ruta
+    document.getElementById("infoRuta").style.display = "block";
+
+    // Remover selección anterior y marcar actual
+    document.querySelectorAll('.ruta-item').forEach(item => {
+        item.classList.remove('border-primary', 'shadow');
+    });
+
+    // Scroll a la información de la ruta
+    document.getElementById("infoRuta").scrollIntoView({ behavior: 'smooth' });
+
+    console.log('✅ Interfaz de ruta actualizada correctamente');
 }
 
 function consultarVuelos() {
     const rutaNombre = document.getElementById("rutaNombre").textContent;
+    console.log('✈️ Consultando vuelos para:', rutaNombre);
 
-    // Crear modal de confirmación
     const modalHTML = `
         <div class="modal fade" id="vuelosModal" tabindex="-1" aria-labelledby="vuelosModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -289,12 +349,51 @@ function consultarVuelos() {
         </div>
     `;
 
-    // Agregar modal al documento si no existe
     if (!document.getElementById('vuelosModal')) {
         document.body.insertAdjacentHTML('beforeend', modalHTML);
     }
 
-    // Mostrar modal
     const vuelosModal = new bootstrap.Modal(document.getElementById('vuelosModal'));
     vuelosModal.show();
+}
+
+function mostrarError(mensaje) {
+    console.error('💥 Mostrando error:', mensaje);
+
+    const toastHTML = `
+        <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>${mensaje}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+    const toastContainer = document.getElementById('toastContainer') || crearToastContainer();
+    toastContainer.innerHTML = toastHTML;
+    const toastElement = toastContainer.querySelector('.toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}
+
+function crearToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container position-fixed top-0 end-0 p-3';
+    container.style.zIndex = '9999';
+    document.body.appendChild(container);
+    return container;
+}
+
+// Función para debug manual
+function debugEstado() {
+    console.log('=== 🐛 DEBUG CONSULTA PAQUETES ===');
+    console.log('Paquetes cargados:', Object.keys(paquetes).length);
+    console.log('Paquetes objeto:', paquetes);
+    console.log('Select element:', document.getElementById('paqueteSelect'));
+    console.log('InfoPaquete element:', document.getElementById('infoPaquete'));
+    console.log('InfoRuta element:', document.getElementById('infoRuta'));
+    console.log('================================');
 }

@@ -1,114 +1,322 @@
-// Datos simulados de usuarios
-const usuarios = {
-    "maria_gonzalez": {
-        tipo: "Cliente",
-        nombre: "María González",
-        nickname: "maria_gonzalez",
-        correo: "maria.gonzalez@email.com",
-        fechaRegistro: "15/03/2024",
-        imagen: "https://via.placeholder.com/120/3498db/ffffff?text=MG",
-        datosPersonales: {
-            apellido: "González",
-            nacimiento: "12/08/1990",
-            nacionalidad: "Uruguaya",
-            documento: "Pasaporte: AB123456"
-        },
-        reservas: [
-            { id: "RES-001", vuelo: "ZL1502001", fecha: "25/10/2024", estado: "Confirmada" },
-            { id: "RES-002", vuelo: "IB6012201", fecha: "28/10/2024", estado: "Pendiente" }
-        ],
-        paquetes: [
-            { id: "PKG-001", nombre: "Sudamérica Esencial", compra: "20/03/2024", vencimiento: "20/09/2024", estado: "Vigente" }
-        ]
-    },
-    "carlos_rodriguez": {
-        tipo: "Cliente",
-        nombre: "Carlos Rodríguez",
-        nickname: "carlos_rodr",
-        correo: "carlos.rodriguez@email.com",
-        fechaRegistro: "22/02/2024",
-        imagen: "https://via.placeholder.com/120/e74c3c/ffffff?text=CR",
-        datosPersonales: {
-            apellido: "Rodríguez",
-            nacimiento: "03/11/1985",
-            nacionalidad: "Argentina",
-            documento: "DNI: 35.123.456"
-        },
-        reservas: [],
-        paquetes: []
-    },
-    "zulyfly": {
-        tipo: "Aerolínea",
-        nombre: "ZulyFly Airlines",
-        nickname: "zulyfly",
-        correo: "info@zulyfly.com",
-        fechaRegistro: "10/01/2024",
-        imagen: "https://via.placeholder.com/120/2ecc71/ffffff?text=ZF",
-        descripcion: "Aerolínea uruguaya especializada en vuelos regionales dentro de Sudamérica.",
-        sitioWeb: "https://www.zulyfly.com",
-        rutas: [
-            { id: "ZL1502", nombre: "Montevideo - Rio de Janeiro", estado: "Confirmada", fechaAlta: "15/01/2024" },
-            { id: "ZL2001", nombre: "Montevideo - São Paulo", estado: "Confirmada", fechaAlta: "20/01/2024" },
-            { id: "ZL3005", nombre: "Buenos Aires - Santiago", estado: "Ingresada", fechaAlta: "05/03/2024" },
-            { id: "ZL4002", nombre: "Lima - Bogotá", estado: "Rechazada", fechaAlta: "12/02/2024" }
-        ]
-    },
-    "iberia": {
-        tipo: "Aerolínea",
-        nombre: "Iberia",
-        nickname: "iberia",
-        correo: "contacto@iberia.com",
-        fechaRegistro: "05/01/2024",
-        imagen: "https://via.placeholder.com/120/9b59b6/ffffff?text=IB",
-        descripcion: "Aerolínea bandera de España con conexiones a todo el mundo.",
-        sitioWeb: "https://www.iberia.com",
-        rutas: [
-            { id: "IB6012", nombre: "Montevideo - Madrid", estado: "Confirmada", fechaAlta: "10/02/2024" },
-            { id: "IB6015", nombre: "Madrid - París", estado: "Confirmada", fechaAlta: "15/02/2024" }
-        ]
-    },
-    "copa_airlines": {
-        tipo: "Aerolínea",
-        nombre: "Copa Airlines",
-        nickname: "copa_airlines",
-        correo: "info@copaairlines.com",
-        fechaRegistro: "08/01/2024",
-        imagen: "https://via.placeholder.com/120/f39c12/ffffff?text=CA",
-        descripcion: "Aerolínea panameña con conexiones en Centro y Norteamérica.",
-        sitioWeb: "https://www.copaair.com",
-        rutas: [
-            { id: "CM804", nombre: "Ciudad de Panamá - Nueva York", estado: "Confirmada", fechaAlta: "12/02/2024" }
-        ]
-    }
-};
-
+// Variables globales
+let usuarios = {};
 let rutasActuales = [];
+let usuarioActual = null;
+
+// Inicialización
+document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Inicializando consulta de usuarios...');
+    inicializarConsultaUsuarios();
+});
+
+async function inicializarConsultaUsuarios() {
+    try {
+        console.log('👥 Cargando usuarios desde backend...');
+        await cargarUsuariosDesdeBackend();
+
+        console.log('⚙️ Configurando interfaz...');
+        configurarInterfaz();
+
+        console.log('✅ Consulta de usuarios inicializada correctamente');
+    } catch (error) {
+        console.error('❌ Error en inicialización:', error);
+        mostrarError('Error al inicializar la consulta de usuarios: ' + error.message);
+    }
+}
+
+async function cargarUsuariosDesdeBackend() {
+    try {
+        console.log('🌐 Haciendo fetch a /consulta-usuario...');
+
+        const response = await fetch('consulta-usuario?action=listar-usuarios');
+        console.log('📨 Response status:', response.status);
+        console.log('📨 Response ok:', response.ok);
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
+        }
+
+        const text = await response.text();
+        console.log('📄 Response text:', text);
+
+        let usuariosData;
+        try {
+            usuariosData = JSON.parse(text);
+        } catch (parseError) {
+            console.error('❌ Error parseando JSON:', parseError);
+            throw new Error('Respuesta del servidor no es JSON válido');
+        }
+
+        console.log('📊 Usuarios cargados del backend:', usuariosData);
+
+        // Verificar si no hay usuarios en la base de datos
+        if (!usuariosData || (!usuariosData.clientes && !usuariosData.aerolineas)) {
+            console.log('📭 No hay usuarios en la BD');
+            mostrarMensajeSinUsuarios();
+            return;
+        }
+
+        // Transformar datos del servidor al formato esperado
+        usuarios = {};
+
+        // Procesar clientes
+        if (usuariosData.clientes && Array.isArray(usuariosData.clientes)) {
+            usuariosData.clientes.forEach(cliente => {
+                console.log('📋 Procesando cliente:', cliente);
+
+                usuarios[cliente.id] = {
+                    tipo: "Cliente",
+                    nombre: cliente.nombre || 'Sin nombre',
+                    nickname: cliente.id || 'Sin nickname',
+                    correo: cliente.correo || 'Sin email',
+                    fechaRegistro: cliente.fechaRegistro || 'No especificada',
+                    imagen: cliente.imagen || "https://via.placeholder.com/120/3498db/ffffff?text=C",
+                    datosPersonales: {
+                        apellido: cliente.nombre ? cliente.nombre.split(' ').slice(1).join(' ') : 'No especificado',
+                        nacimiento: 'No especificada',
+                        nacionalidad: 'No especificada',
+                        documento: 'No especificado'
+                    },
+                    reservas: [],
+                    paquetes: []
+                };
+            });
+        }
+
+        // Procesar aerolíneas
+        if (usuariosData.aerolineas && Array.isArray(usuariosData.aerolineas)) {
+            usuariosData.aerolineas.forEach(aerolinea => {
+                console.log('📋 Procesando aerolínea:', aerolinea);
+
+                usuarios[aerolinea.id] = {
+                    tipo: "Aerolínea",
+                    nombre: aerolinea.nombre || 'Sin nombre',
+                    nickname: aerolinea.id || 'Sin nickname',
+                    correo: aerolinea.correo || 'Sin email',
+                    fechaRegistro: aerolinea.fechaRegistro || 'No especificada',
+                    imagen: aerolinea.imagen || "https://via.placeholder.com/120/2ecc71/ffffff?text=A",
+                    descripcion: 'Sin descripción',
+                    sitioWeb: '',
+                    rutas: []
+                };
+            });
+        }
+
+        console.log('🎯 Usuarios procesados:', usuarios);
+
+    } catch (error) {
+        console.error('💥 Error cargando usuarios:', error);
+        mostrarError('No se pudieron cargar los usuarios: ' + error.message);
+    }
+}
 
 // Cargar información del usuario seleccionado
-document.getElementById('usuarioSelect').addEventListener('change', function() {
-    const usuarioId = this.value;
-    const usuario = usuarios[usuarioId];
+async function cargarUsuarioSeleccionado(usuarioId) {
+    try {
+        const usuario = usuarios[usuarioId];
+        if (!usuario) return;
 
-    if (usuario) {
-        // Mostrar información básica
-        document.getElementById('infoUsuario').style.display = 'block';
-        document.getElementById('nombreUsuario').textContent = usuario.nombre;
-        document.getElementById('nicknameUsuario').textContent = usuario.nickname;
-        document.getElementById('correoUsuario').textContent = usuario.correo;
-        document.getElementById('tipoUsuario').textContent = usuario.tipo;
-        document.getElementById('fechaRegistro').textContent = usuario.fechaRegistro;
-        document.getElementById('imagenUsuario').src = usuario.imagen;
+        console.log('👤 Cargando detalles del usuario:', usuarioId);
 
-        // Mostrar información específica según el tipo
-        if (usuario.tipo === 'Cliente') {
-            mostrarInfoCliente(usuario);
-        } else if (usuario.tipo === 'Aerolínea') {
-            mostrarInfoAerolinea(usuario);
+        // Cargar información detallada del usuario
+        const response = await fetch(`consulta-usuario?action=obtener-usuario&usuario=${encodeURIComponent(usuarioId)}&tipo=${usuario.tipo.toLowerCase() === 'cliente' ? 'cliente' : 'aerolinea'}`);
+
+        if (!response.ok) {
+            throw new Error(`Error HTTP: ${response.status}`);
         }
-    } else {
-        document.getElementById('infoUsuario').style.display = 'none';
+
+        const usuarioDetalle = await response.json();
+        console.log('📄 Detalle de usuario recibido:', usuarioDetalle);
+
+        // Actualizar usuario con información detallada
+        if (usuario.tipo === 'Cliente') {
+            usuario.datosPersonales.nacimiento = usuarioDetalle.fechaNacimiento || usuario.datosPersonales.nacimiento;
+            usuario.datosPersonales.nacionalidad = usuarioDetalle.nacionalidad || usuario.datosPersonales.nacionalidad;
+
+            // Cargar reservas y paquetes
+            await cargarReservasCliente(usuarioId);
+            await cargarPaquetesCliente(usuarioId);
+        } else if (usuario.tipo === 'Aerolínea') {
+            usuario.descripcion = usuarioDetalle.descripcion || usuario.descripcion;
+            usuario.sitioWeb = usuarioDetalle.sitioWeb || usuario.sitioWeb;
+
+            // Cargar rutas
+            await cargarRutasAerolinea(usuarioId);
+        }
+
+        usuarioActual = usuario;
+        mostrarInformacionUsuario(usuario);
+
+    } catch (error) {
+        console.error('💥 Error cargando detalles del usuario:', error);
+        mostrarError('No se pudieron cargar los detalles del usuario: ' + error.message);
     }
-});
+}
+
+async function cargarReservasCliente(usuarioId) {
+    try {
+        const response = await fetch(`consulta-usuario?action=obtener-reservas-cliente&usuario=${encodeURIComponent(usuarioId)}`);
+
+        if (!response.ok) {
+            console.warn('⚠️ No se pudieron cargar las reservas');
+            return;
+        }
+
+        const reservasData = await response.json();
+        console.log('🎫 Reservas cargadas:', reservasData);
+
+        // Transformar reservas al formato esperado
+        usuarios[usuarioId].reservas = reservasData.map(reserva => ({
+            id: "RES-" + reserva.id,
+            vuelo: reserva.vuelo || 'Vuelo no especificado',
+            fecha: reserva.fechaReserva || 'No especificada',
+            estado: 'Confirmada' // Por defecto
+        }));
+
+    } catch (error) {
+        console.error('💥 Error cargando reservas:', error);
+    }
+}
+
+async function cargarPaquetesCliente(usuarioId) {
+    try {
+        const response = await fetch(`consulta-usuario?action=obtener-paquetes-cliente&usuario=${encodeURIComponent(usuarioId)}`);
+
+        if (!response.ok) {
+            console.warn('⚠️ No se pudieron cargar los paquetes');
+            return;
+        }
+
+        const paquetesData = await response.json();
+        console.log('📦 Paquetes cargados:', paquetesData);
+
+        // Transformar paquetes al formato esperado
+        usuarios[usuarioId].paquetes = paquetesData.map(paquete => ({
+            id: "PKG-" + paquete.id,
+            nombre: paquete.nombre || 'Paquete sin nombre',
+            compra: paquete.fechaCompra || 'No especificada',
+            vencimiento: calcularVencimiento(paquete.fechaCompra, paquete.periodoValidezDias),
+            estado: 'Vigente'
+        }));
+
+    } catch (error) {
+        console.error('💥 Error cargando paquetes:', error);
+    }
+}
+
+async function cargarRutasAerolinea(usuarioId) {
+    try {
+        const response = await fetch(`consulta-usuario?action=obtener-rutas-aerolinea&usuario=${encodeURIComponent(usuarioId)}`);
+
+        if (!response.ok) {
+            console.warn('⚠️ No se pudieron cargar las rutas');
+            return;
+        }
+
+        const rutasData = await response.json();
+        console.log('🛣️ Rutas cargadas:', rutasData);
+
+        // Transformar rutas al formato esperado
+        usuarios[usuarioId].rutas = rutasData.map(ruta => ({
+            id: ruta.id || 'Sin ID',
+            nombre: ruta.nombre || 'Ruta sin nombre',
+            estado: ruta.estado || 'No especificado',
+            fechaAlta: ruta.fechaAlta || 'No especificada'
+        }));
+
+    } catch (error) {
+        console.error('💥 Error cargando rutas:', error);
+    }
+}
+
+function calcularVencimiento(fechaCompra, diasValidez) {
+    if (!fechaCompra || !diasValidez) return 'No especificado';
+
+    try {
+        const fecha = new Date(fechaCompra);
+        fecha.setDate(fecha.getDate() + diasValidez);
+        return fecha.toISOString().split('T')[0];
+    } catch (e) {
+        return 'No especificado';
+    }
+}
+
+function configurarInterfaz() {
+    const usuarioSelect = document.getElementById("usuarioSelect");
+
+    console.log('🔄 Configurando interfaz...');
+    console.log('📋 Número de usuarios:', Object.keys(usuarios).length);
+
+    // Limpiar el select
+    usuarioSelect.innerHTML = '<option value="">Seleccione un usuario...</option>';
+
+    if (Object.keys(usuarios).length === 0) {
+        console.log('📭 No hay usuarios para mostrar en el select');
+        usuarioSelect.innerHTML = '<option value="">No hay usuarios disponibles</option>';
+        return;
+    }
+
+    // Llenar con usuarios reales - ahora usando el objeto 'usuarios'
+    Object.keys(usuarios).forEach(usuarioId => {
+        const usuario = usuarios[usuarioId];
+        const option = document.createElement('option');
+        option.value = usuarioId;
+        option.textContent = `${usuario.nombre} (${usuario.tipo})`;
+        option.setAttribute('data-tipo', usuario.tipo.toLowerCase());
+        usuarioSelect.appendChild(option);
+    });
+
+    console.log('✅ Select poblado con', Object.keys(usuarios).length, 'usuarios');
+
+    // Configurar event listener
+    usuarioSelect.addEventListener("change", function() {
+        const usuarioId = this.value;
+        console.log('🎯 Usuario seleccionado:', usuarioId);
+
+        if (usuarioId && usuarios[usuarioId]) {
+            cargarUsuarioSeleccionado(usuarioId);
+        } else {
+            document.getElementById('infoUsuario').style.display = 'none';
+        }
+    });
+}
+
+function mostrarMensajeSinUsuarios() {
+    const usuarioSelect = document.getElementById("usuarioSelect");
+    const infoUsuario = document.getElementById("infoUsuario");
+
+    console.log('📭 Mostrando mensaje de no hay usuarios');
+
+    usuarioSelect.innerHTML = '<option value="">No hay usuarios disponibles</option>';
+    infoUsuario.innerHTML = `
+        <div class="alert alert-info">
+            <h5>No hay usuarios disponibles</h5>
+            <p>Actualmente no hay usuarios registrados en el sistema.</p>
+            <p>Por favor, contacte al administrador o vuelva más tarde.</p>
+        </div>
+    `;
+    infoUsuario.style.display = "block";
+}
+
+function mostrarInformacionUsuario(usuario) {
+    console.log('📖 Mostrando información del usuario:', usuario);
+
+    // Mostrar información básica
+    document.getElementById('infoUsuario').style.display = 'block';
+    document.getElementById('nombreUsuario').textContent = usuario.nombre;
+    document.getElementById('nicknameUsuario').textContent = usuario.nickname;
+    document.getElementById('correoUsuario').textContent = usuario.correo;
+    document.getElementById('tipoUsuario').textContent = usuario.tipo;
+    document.getElementById('fechaRegistro').textContent = usuario.fechaRegistro;
+    document.getElementById('imagenUsuario').src = usuario.imagen;
+
+    // Mostrar información específica según el tipo
+    if (usuario.tipo === 'Cliente') {
+        mostrarInfoCliente(usuario);
+    } else if (usuario.tipo === 'Aerolínea') {
+        mostrarInfoAerolinea(usuario);
+    }
+}
 
 function mostrarInfoCliente(usuario) {
     // Mostrar sección de cliente y ocultar aerolínea
@@ -188,10 +396,10 @@ function mostrarInfoAerolinea(usuario) {
 
     // Guardar rutas para filtrado
     rutasActuales = usuario.rutas;
-    cargarRutasAerolinea('todas');
+    cargarRutasAerolineaInterfaz('todas');
 }
 
-function cargarRutasAerolinea(filtro) {
+function cargarRutasAerolineaInterfaz(filtro) {
     const rutasContainer = document.getElementById('rutasAerolinea');
     rutasContainer.innerHTML = '';
 
@@ -240,17 +448,46 @@ function filtrarRutas(filtro) {
     });
     event.target.classList.add('active');
 
-    cargarRutasAerolinea(filtro);
+    cargarRutasAerolineaInterfaz(filtro);
 }
 
-// Mejorar la experiencia de usuario
-document.addEventListener('DOMContentLoaded', function() {
-    // Agregar tooltips si es necesario
-    const tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    const tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl);
-    });
+function mostrarError(mensaje) {
+    console.error('💥 Mostrando error:', mensaje);
 
-    // Debug: Verificar que el evento se está registrando
-    console.log('Consulta de Usuario - Script cargado correctamente');
-});
+    const toastHTML = `
+        <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>${mensaje}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+    const toastContainer = document.getElementById('toastContainer') || crearToastContainer();
+    toastContainer.innerHTML = toastHTML;
+    const toastElement = toastContainer.querySelector('.toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}
+
+function crearToastContainer() {
+    const container = document.createElement('div');
+    container.id = 'toastContainer';
+    container.className = 'toast-container position-fixed top-0 end-0 p-3';
+    container.style.zIndex = '9999';
+    document.body.appendChild(container);
+    return container;
+}
+
+// Función para debug manual
+function debugEstado() {
+    console.log('=== 🐛 DEBUG CONSULTA USUARIOS ===');
+    console.log('Usuarios cargados:', Object.keys(usuarios).length);
+    console.log('Usuarios objeto:', usuarios);
+    console.log('Usuario actual:', usuarioActual);
+    console.log('Select element:', document.getElementById('usuarioSelect'));
+    console.log('InfoUsuario element:', document.getElementById('infoUsuario'));
+    console.log('================================');
+}

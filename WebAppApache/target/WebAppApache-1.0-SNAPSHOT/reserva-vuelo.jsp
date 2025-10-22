@@ -252,7 +252,6 @@
                 <h5 class="text-light">Reserva realizada con éxito</h5>
                 <p class="text-light">Su reserva ha sido confirmada y está ahora en nuestro sistema.</p>
                 <!-- Código de reserva visible para el usuario -->
-                <p class="text-light"><strong>Código de reserva:</strong> <span id="codigoReserva" class="text-primary"></span></p>
             </div>
             <div class="modal-footer justify-content-center">
                 <a href="PaginaPrincipal.jsp" class="btn btn-primary">Ir al Inicio</a>

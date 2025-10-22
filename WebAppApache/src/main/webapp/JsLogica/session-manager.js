@@ -170,4 +170,51 @@ function updateUI(sessionData) {
         if (loginBtn) loginBtn.classList.remove('d-none');
         if (logoutBtn) logoutBtn.classList.add('d-none');
     }
+
+    // Actualizar visibilidad del navbar según el rol/tipo de sesión
+    try {
+        updateNavByRole(sessionData);
+    } catch (e) {
+        console.warn('No se pudo actualizar el navbar por rol:', e);
+    }
+}
+
+// Muestra/oculta elementos del navbar según el tipo de sesión
+function updateNavByRole(sessionData) {
+    // roles esperados: 'invitado' (no autenticado), 'cliente', 'aerolinea'
+    let role = 'invitado';
+    if (sessionData && sessionData.authenticated) {
+        // intentar obtener tipo desde distintas propiedades posibles; si no existe, no asumir cliente (usar invitado como fallback seguro)
+        const raw = (sessionData.tipo || sessionData.role || sessionData.tipoUsuario || '');
+        role = raw ? raw.toString().toLowerCase() : 'invitado';
+    }
+
+    // Mostrar/ocultar elementos con el atributo data-visible-for
+    const elems = document.querySelectorAll('[data-visible-for]');
+    elems.forEach(el => {
+        const attr = el.getAttribute('data-visible-for') || '';
+        const allowed = attr.split(',').map(s => s.trim().toLowerCase()).filter(Boolean);
+        if (allowed.length === 0) {
+            // si no hay restricción explícita, mostrar por defecto
+            el.style.display = '';
+            return;
+        }
+        if (allowed.includes(role)) {
+            el.style.display = '';
+        } else {
+            el.style.display = 'none';
+        }
+    });
+
+    // Ocultar dropdowns completos si ninguno de sus items está visible
+    const dropdowns = document.querySelectorAll('.nav-item.dropdown');
+    dropdowns.forEach(dd => {
+        const menuItems = dd.querySelectorAll('ul.dropdown-menu > li');
+        let anyVisible = false;
+        menuItems.forEach(mi => {
+            // consideramos visible si no tiene style.display === 'none'
+            if (mi.style.display !== 'none') anyVisible = true;
+        });
+        dd.style.display = anyVisible ? '' : 'none';
+    });
 }

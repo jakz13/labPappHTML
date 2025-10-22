@@ -23,10 +23,10 @@
                         Vuelos
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="vuelosDropdown">
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-vuelo.jsp"><i class="bi bi-search"></i> Consulta de Vuelo</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-reserva.jsp"><i class="bi bi-ticket-perforated"></i> Consulta de Reserva</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/reserva-vuelo.jsp"><i class="bi bi-calendar-check"></i> Reserva de Vuelo</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-plus-circle"></i> Alta de Vuelo</a></li>
+                        <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-vuelo.jsp"><i class="bi bi-search"></i> Consulta de Vuelo</a></li>
+                        <li data-visible-for="cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-reserva.jsp"><i class="bi bi-ticket-perforated"></i> Consulta de Reserva</a></li>
+                        <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/reserva-vuelo.jsp"><i class="bi bi-calendar-check"></i> Reserva de Vuelo</a></li>
+                        <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-plus-circle"></i> Alta de Vuelo</a></li>
                     </ul>
                 </li>
 
@@ -36,9 +36,9 @@
                         Paquetes
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="paquetesDropdown">
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-paquete.jsp"><i class="bi bi-box-seam"></i> Consulta de Paquete</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/compra-paquete.jsp"><i class="bi bi-cart-check"></i> Compra de Paquete</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-paquete.jsp"><i class="bi bi-plus-square"></i> Alta de Paquete</a></li>
+                        <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-paquete.jsp"><i class="bi bi-box-seam"></i> Consulta de Paquete</a></li>
+                        <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/compra-paquete.jsp"><i class="bi bi-cart-check"></i> Compra de Paquete</a></li>
+                        <!-- Alta de Paquete eliminada: antes visible solo para aerolínea -->
                     </ul>
                 </li>
 
@@ -48,9 +48,9 @@
                         Aerolíneas
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="aerolineasDropdown">
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-ruta.jsp"><i class="bi bi-signpost"></i> Alta de Ruta</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-ruta.jsp"><i class="bi bi-map"></i> Consulta de Ruta</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-airplane"></i> Alta de Vuelo</a></li>
+                        <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-ruta.jsp"><i class="bi bi-signpost"></i> Alta de Ruta</a></li>
+                        <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-ruta.jsp"><i class="bi bi-map"></i> Consulta de Ruta</a></li>
+                        <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-airplane"></i> Alta de Vuelo</a></li>
                     </ul>
                 </li>
 
@@ -60,9 +60,9 @@
                         Usuarios
                     </a>
                     <ul class="dropdown-menu" aria-labelledby="usuariosDropdown">
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-usuario.jsp"><i class="bi bi-person-plus"></i> Alta de Usuario</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-usuario.jsp"><i class="bi bi-person-vcard"></i> Consulta de Usuario</a></li>
-                        <li><a class="dropdown-item" href="${pageContext.request.contextPath}/modificar-usuario.jsp"><i class="bi bi-pencil-square"></i> Modificar Datos</a></li>
+                        <li data-visible-for="invitado"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-usuario.jsp"><i class="bi bi-person-plus"></i> Alta de Usuario</a></li>
+                        <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-usuario.jsp"><i class="bi bi-person-vcard"></i> Consulta de Usuario</a></li>
+                        <li data-visible-for="cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/modificar-usuario.jsp"><i class="bi bi-pencil-square"></i> Modificar Datos</a></li>
                     </ul>
                 </li>
             </ul>
