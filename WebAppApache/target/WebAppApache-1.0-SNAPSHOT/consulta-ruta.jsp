@@ -37,16 +37,10 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label for="categoria" class="form-label">Categoría</label>
-                                <select class="form-select" id="categoria">
+                                <label for="categoria" class="form-label">Filtrar por categoría:</label>
+                                <select id="categoria" class="form-select">
                                     <option value="">Todas las categorías</option>
-                                    <option value="nacionales">Nacionales</option>
-                                    <option value="internacionales">Internacionales</option>
-                                    <option value="europa">Europa</option>
-                                    <option value="america">América</option>
-                                    <option value="caribe">Caribe</option>
-                                    <option value="cortos">Cortos</option>
-                                    <option value="exclusivos">Exclusivos</option>
+                                    <!-- Las opciones se cargarán dinámicamente -->
                                 </select>
                             </div>
                             <div class="col-md-4">

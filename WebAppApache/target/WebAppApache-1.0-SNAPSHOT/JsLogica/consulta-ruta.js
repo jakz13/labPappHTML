@@ -2,6 +2,7 @@
 let rutaSeleccionada = null;
 let vueloSeleccionado = null;
 let usuarioInfo = null;
+let rutasCargadas = []; // <--- NUEVO: para guardar los datos reales de rutas
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
@@ -43,6 +44,7 @@ function configurarEventListeners() {
             fetch('api/rutas?aerolinea=' + encodeURIComponent(aerolinea))
                 .then(res => res.json())
                 .then(data => {
+                    rutasCargadas = data; // <--- guardar todas las rutas cargadas
                     cargarRutas(data);
                 })
                 .catch(err => {
@@ -85,11 +87,9 @@ function cargarRutas(rutas) {
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h6 class="card-title text-primary">${ruta.nombre}</h6>
-                            <span class="badge bg-success">Confirmada</span>
+                            <span class="badge bg-success">${ruta.estado || 'Confirmada'}</span>
                         </div>
-                        <div class="d-flex justify-content-between align-items-center mt-2">
-                            <small class="text-muted">Ruta de vuelo</small>
-                        </div>
+                        <small class="text-muted">${ruta.origen} → ${ruta.destino}</small>
                     </div>
                 </div>
             </div>
@@ -99,9 +99,15 @@ function cargarRutas(rutas) {
 }
 
 function seleccionarRuta(nombreRuta) {
-    // Mostrar información básica de la ruta
-    rutaSeleccionada = { nombre: nombreRuta };
-    mostrarDetallesRuta(nombreRuta);
+    // Buscar la ruta seleccionada en el arreglo de rutas cargadas
+    const ruta = rutasCargadas.find(r => r.nombre === nombreRuta);
+    if (!ruta) {
+        console.error("Ruta no encontrada:", nombreRuta);
+        return;
+    }
+
+    rutaSeleccionada = ruta;
+    mostrarDetallesRuta(ruta);
     cargarVuelosRuta(nombreRuta);
 
     // Remover selección anterior y marcar actual
@@ -111,20 +117,18 @@ function seleccionarRuta(nombreRuta) {
     event.currentTarget.classList.add('border-primary', 'bg-light');
 }
 
-function mostrarDetallesRuta(nombreRuta) {
-    // Actualizar información básica de la ruta
-    document.getElementById('rutaNombre').textContent = nombreRuta;
-    document.getElementById('rutaDescripcion').textContent = `Información detallada de la ruta ${nombreRuta}`;
+function mostrarDetallesRuta(ruta) {
+    // Actualizar información de la ruta con datos reales
+    document.getElementById('rutaNombre').textContent = ruta.nombre || '-';
+    document.getElementById('rutaDescripcion').textContent = ruta.descripcion || 'Sin descripción';
     document.getElementById('rutaAerolinea').textContent = document.getElementById('aerolinea').options[document.getElementById('aerolinea').selectedIndex].text;
-    document.getElementById('rutaOrigen').textContent = 'Información no disponible';
-    document.getElementById('rutaDestino').textContent = 'Información no disponible';
-    document.getElementById('rutaHora').textContent = 'No disponible';
-    document.getElementById('rutaEstado').textContent = 'Confirmada';
-    document.getElementById('rutaFechaAlta').textContent = 'No disponible';
-    document.getElementById('rutaCategorias').textContent = 'No disponible';
-    document.getElementById('costoTurista').textContent = 'N/A';
-    document.getElementById('costoEjecutivo').textContent = 'N/A';
-    document.getElementById('costoEquipaje').textContent = 'N/A';
+    document.getElementById('rutaOrigen').textContent = ruta.origen || '-';
+    document.getElementById('rutaDestino').textContent = ruta.destino || '-';
+    document.getElementById('rutaEstado').textContent = ruta.estado || 'Confirmada';
+    document.getElementById('rutaCategorias').textContent = ruta.categorias && ruta.categorias.length > 0 ? ruta.categorias.join(', ') : 'No especificadas';
+    document.getElementById('costoTurista').textContent = ruta.costoTurista !== undefined ? `$${ruta.costoTurista}` : 'N/A';
+    document.getElementById('costoEjecutivo').textContent = ruta.costoEjecutivo !== undefined ? `$${ruta.costoEjecutivo}` : 'N/A';
+    document.getElementById('costoEquipaje').textContent = ruta.costoEquipaje !== undefined ? `$${ruta.costoEquipaje}` : 'N/A';
 
     // Mostrar sección de información de la ruta
     document.getElementById('infoRuta').style.display = 'block';
@@ -212,8 +216,18 @@ function mostrarDetallesVuelo(vueloData) {
 
 // Verificar permisos del usuario para el vuelo
 function verificarPermisosUsuario(nombreVuelo, aerolineaSeleccionada) {
-    fetch(`api/verificar-permisos-vuelo?nombreVuelo=${encodeURIComponent(nombreVuelo)}&aerolinea=${encodeURIComponent(aerolineaSeleccionada)}`)
+    // Primero verificar sesión actual
+    fetch('api/check-session', { credentials: 'include' })
         .then(res => res.json())
+        .then(sessionData => {
+            if (sessionData.authenticated) {
+                // Si está autenticado, verificar permisos específicos del vuelo
+                return fetch(`api/verificar-permisos-vuelo?nombreVuelo=${encodeURIComponent(nombreVuelo)}&aerolinea=${encodeURIComponent(aerolineaSeleccionada)}`)
+                    .then(res => res.json());
+            } else {
+                return { autenticado: false };
+            }
+        })
         .then(data => {
             usuarioInfo = data;
             mostrarSeccionesUsuario(data, nombreVuelo);
@@ -248,9 +262,11 @@ function mostrarSeccionesUsuario(usuarioData, nombreVuelo) {
 
             // Configurar el botón para ver los detalles de la reserva
             const btnVerReserva = infoCliente.querySelector('button');
-            btnVerReserva.onclick = function() {
-                verDetalleReservaCliente(usuarioData.idReservaCliente);
-            };
+            if (btnVerReserva) {
+                btnVerReserva.onclick = function() {
+                    verDetalleReservaCliente(usuarioData.idReservaCliente);
+                };
+            }
         } else {
             // Usuario autenticado pero sin reserva - mostrar opción de reserva
             btnReservar.style.display = 'block';
@@ -285,13 +301,19 @@ function cargarReservasVuelo(nombreVuelo) {
 
 // Función para ver el detalle de la reserva del cliente
 function verDetalleReservaCliente(idReserva) {
-    fetch(`api/detalle-reserva-cliente?idReserva=${encodeURIComponent(idReserva)}`)
+    if (!idReserva) {
+        mostrarMensajeError('No se pudo identificar la reserva');
+        return;
+    }
+
+    // Usar el mismo endpoint que funciona en consulta-reserva
+    fetch(`api/consulta-reserva?action=reserva-cliente-vuelo&usuario=${encodeURIComponent(usuarioInfo.nickname)}&vuelo=${encodeURIComponent(vueloSeleccionado.nombre)}`)
         .then(res => res.json())
         .then(data => {
-            if (data.success) {
-                mostrarModalDetalleReserva(data.reserva);
+            if (data.error) {
+                mostrarMensajeError('No se pudo encontrar la reserva: ' + data.error);
             } else {
-                mostrarMensajeError('Error al cargar los detalles de la reserva: ' + data.error);
+                mostrarModalDetalleReserva(data);
             }
         })
         .catch(err => {
@@ -318,13 +340,17 @@ function mostrarDetallesReservas(reservas) {
     `;
 
     reservas.forEach(reserva => {
+        // Usar los nombres de campos correctos como en consulta-vuelo
+        const clienteDisplay = reserva.clienteNombre || reserva.cliente || 'Cliente no disponible';
+        const costoDisplay = reserva.costoTotal !== undefined ? reserva.costoTotal : (reserva.costo || 0);
+
         contenido += `
             <tr>
                 <td>${reserva.id}</td>
-                <td>${reserva.cliente}</td>
+                <td>${clienteDisplay}</td>
                 <td>${reserva.tipoAsiento}</td>
                 <td>${reserva.cantidadPasajes}</td>
-                <td>$${reserva.costo}</td>
+                <td>$${costoDisplay}</td>
             </tr>
         `;
     });
@@ -338,8 +364,38 @@ function mostrarDetallesReservas(reservas) {
         </div>
     `;
 
+    // Mostrar modal usando Bootstrap
+    const modalHTML = `
+        <div class="modal fade" id="modalReservasAerolinea" tabindex="-1">
+            <div class="modal-dialog modal-xl">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detalles de Reservas - ${vueloSeleccionado.nombre}</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ${contenido}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Remover modal existente
+    const modalExistente = document.getElementById('modalReservasAerolinea');
+    if (modalExistente) {
+        modalExistente.remove();
+    }
+
+    // Agregar nuevo modal al body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
     // Mostrar modal
-    alert(`Detalles de Reservas:\n\n${contenido.replace(/<[^>]*>/g, '')}`);
+    const modal = new bootstrap.Modal(document.getElementById('modalReservasAerolinea'));
+    modal.show();
 }
 
 // Mostrar modal con detalles de la reserva del cliente
@@ -350,20 +406,52 @@ function mostrarModalDetalleReserva(reserva) {
             <div class="row">
                 <div class="col-6">
                     <p><strong>ID Reserva:</strong> ${reserva.id}</p>
-                    <p><strong>Vuelo:</strong> ${reserva.vuelo}</p>
+                    <p><strong>Vuelo:</strong> ${vueloSeleccionado.nombre}</p>
                     <p><strong>Tipo de Asiento:</strong> ${reserva.tipoAsiento}</p>
                 </div>
                 <div class="col-6">
                     <p><strong>Cantidad de Pasajes:</strong> ${reserva.cantidadPasajes}</p>
-                    <p><strong>Costo Total:</strong> $${reserva.costo}</p>
-                    <p><strong>Estado:</strong> <span class="badge bg-success">${reserva.estado}</span></p>
+                    <p><strong>Equipaje Extra:</strong> ${reserva.equipajeExtra}</p>
+                    <p><strong>Costo Total:</strong> $${reserva.costoTotal}</p>
+                    <p><strong>Estado:</strong> <span class="badge bg-success">Confirmada</span></p>
                 </div>
             </div>
             ${reserva.fechaReserva ? `<p><strong>Fecha de Reserva:</strong> ${reserva.fechaReserva}</p>` : ''}
         </div>
     `;
 
-    alert(`Detalles de Reserva:\n\n${contenido.replace(/<[^>]*>/g, '')}`);
+    // Mostrar modal usando Bootstrap
+    const modalHTML = `
+        <div class="modal fade" id="modalDetalleReserva" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Detalles de Reserva</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        ${contenido}
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+
+    // Remover modal existente
+    const modalExistente = document.getElementById('modalDetalleReserva');
+    if (modalExistente) {
+        modalExistente.remove();
+    }
+
+    // Agregar nuevo modal al body
+    document.body.insertAdjacentHTML('beforeend', modalHTML);
+
+    // Mostrar modal
+    const modal = new bootstrap.Modal(document.getElementById('modalDetalleReserva'));
+    modal.show();
 }
 
 function aplicarFiltros() {

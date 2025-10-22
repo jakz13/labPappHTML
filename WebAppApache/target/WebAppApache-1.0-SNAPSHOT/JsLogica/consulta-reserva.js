@@ -301,6 +301,7 @@ async function cargarVuelosAerolinea(ruta) {
 }
 
 // Cargar reservas para aerolínea
+// Cargar reservas para aerolínea - CORREGIDO
 async function cargarReservasAerolinea(vueloNombre) {
     try {
         const container = document.getElementById('listaReservasAerolinea');
@@ -313,6 +314,8 @@ async function cargarReservasAerolinea(vueloNombre) {
         }
 
         const reservas = await response.json();
+        console.log('Reservas recibidas en consulta-reserva:', reservas);
+
         container.innerHTML = '';
 
         if (reservas.length === 0) {
@@ -324,23 +327,34 @@ async function cargarReservasAerolinea(vueloNombre) {
         reservas.forEach((reserva, index) => {
             const estadoBadge = 'bg-success';
 
+            // CORRECIÓN: Usar clienteNickname cuando cliente no esté disponible
+            const clienteDisplay = reserva.cliente && reserva.cliente !== "Cliente no disponible"
+                ? reserva.cliente
+                : (reserva.clienteNickname && reserva.clienteNickname !== "N/A"
+                    ? reserva.clienteNickname
+                    : 'Cliente no disponible');
+
+            // CORRECIÓN: Usar costo en lugar de costoTotal
+            const costoDisplay = reserva.costo !== undefined ? reserva.costo : (reserva.costoTotal || 0);
+            const equipajeExtra = reserva.equipajeExtra !== undefined ? reserva.equipajeExtra : 0;
+
             const reservaHTML = `
                 <div class="col-md-6">
                     <div class="card reserva-card mb-3" onclick="seleccionarReservaAerolinea(
                         '${reserva.id}', 
-                        '${reserva.clienteNombre}', 
+                        '${clienteDisplay}', 
                         '${reserva.tipoAsiento}', 
                         ${reserva.cantidadPasajes}, 
-                        ${reserva.equipajeExtra}, 
-                        ${reserva.costoTotal},
+                        ${equipajeExtra}, 
+                        ${costoDisplay},
                         '${reserva.fechaReserva}'
                     )">
                         <div class="card-body">
                             <h6 class="card-title text-dark">${reserva.id}</h6>
-                            <p class="card-text mb-1 text-dark">Cliente: ${reserva.clienteNombre}</p>
+                            <p class="card-text mb-1 text-dark">Cliente: ${clienteDisplay}</p>
                             <p class="card-text mb-1 text-dark">Pasajeros: ${reserva.cantidadPasajes}</p>
                             <p class="card-text mb-1 text-dark">Asiento: ${reserva.tipoAsiento}</p>
-                            <p class="card-text mb-1 text-dark">Costo: $${reserva.costoTotal}</p>
+                            <p class="card-text mb-1 text-dark">Costo: $${costoDisplay}</p>
                             <span class="badge ${estadoBadge}">Confirmada</span>
                         </div>
                     </div>
@@ -358,7 +372,6 @@ async function cargarReservasAerolinea(vueloNombre) {
         mostrarMensajeError('Error al cargar las reservas: ' + error.message);
     }
 }
-
 // ========== FUNCIONES DE NAVEGACIÓN ==========
 
 function siguientePasoCliente(paso) {
@@ -430,14 +443,13 @@ async function mostrarReservaCliente(vueloNombre) {
     container.innerHTML = '<div class="text-center"><div class="spinner-border text-primary" role="status"></div><p class="mt-2">Buscando reserva...</p></div>';
 
     try {
-        // Buscar reserva del cliente en este vuelo usando el nuevo servlet
         const responseReserva = await fetch(`api/consulta-reserva?action=reserva-cliente-vuelo&usuario=${encodeURIComponent(usuarioInfo.nickname)}&vuelo=${encodeURIComponent(vueloNombre)}`);
 
         if (responseReserva.ok) {
             const reserva = await responseReserva.json();
+            console.log('Reserva cliente recibida:', reserva); // DEBUG
 
             if (reserva.error) {
-                // No tiene reserva en este vuelo
                 container.innerHTML = `
                     <div class="alert alert-warning text-center">
                         <h5 class="text-warning">No tiene reserva en este vuelo</h5>
@@ -451,6 +463,12 @@ async function mostrarReservaCliente(vueloNombre) {
             const aerolineaSelect = document.getElementById('aerolineaCliente');
             const aerolineaNombre = aerolineaSelect.options[aerolineaSelect.selectedIndex].text;
 
+            // Usar los nombres de campos correctos
+            const clienteNombre = reserva.clienteNombre || 'Cliente';
+            const costoTotal = reserva.costoTotal !== undefined ? reserva.costoTotal : (reserva.costo || 0);
+            const equipajeExtra = reserva.equipajeExtra !== undefined ? reserva.equipajeExtra : 0;
+            const fechaReserva = reserva.fechaReserva || reserva.fecha || 'No disponible';
+
             container.innerHTML = `
                 <div class="card border-success">
                     <div class="card-body">
@@ -460,25 +478,25 @@ async function mostrarReservaCliente(vueloNombre) {
                                 <p class="mb-1 text-dark"><strong>Código:</strong> ${reserva.id}</p>
                                 <p class="mb-1 text-dark"><strong>Vuelo:</strong> ${vueloNombre}</p>
                                 <p class="mb-1 text-dark"><strong>Aerolínea:</strong> ${aerolineaNombre}</p>
+                                <p class="mb-1 text-dark"><strong>Cliente:</strong> ${clienteNombre}</p>
                             </div>
                             <div class="col-md-6">
                                 <p class="mb-1 text-dark"><strong>Estado:</strong> <span class="badge ${estadoBadge}">Confirmada</span></p>
-                                <p class="mb-1 text-dark"><strong>Fecha Reserva:</strong> ${reserva.fechaReserva}</p>
+                                <p class="mb-1 text-dark"><strong>Fecha Reserva:</strong> ${fechaReserva}</p>
                                 <p class="mb-1 text-dark"><strong>Tipo Asiento:</strong> ${reserva.tipoAsiento}</p>
-                                <p class="mb-1 text-dark"><strong>Costo Total:</strong> $${reserva.costoTotal}</p>
+                                <p class="mb-1 text-dark"><strong>Costo Total:</strong> $${costoTotal}</p>
                             </div>
                         </div>
 
                         <div class="mt-4">
                             <h6 class="text-dark">Detalles Adicionales</h6>
                             <p class="mb-1 text-dark"><strong>Cantidad de Pasajes:</strong> ${reserva.cantidadPasajes}</p>
-                            <p class="mb-1 text-dark"><strong>Equipaje Extra:</strong> ${reserva.equipajeExtra}</p>
+                            <p class="mb-1 text-dark"><strong>Equipaje Extra:</strong> ${equipajeExtra}</p>
                         </div>
                     </div>
                 </div>
             `;
         } else {
-            // No tiene reserva en este vuelo
             container.innerHTML = `
                 <div class="alert alert-warning text-center">
                     <h5 class="text-warning">No tiene reserva en este vuelo</h5>
@@ -497,7 +515,6 @@ async function mostrarReservaCliente(vueloNombre) {
         `;
     }
 }
-
 // Para aerolínea - mostrar detalles básicos de reserva
 async function mostrarReservaAerolinea() {
     const container = document.getElementById('reservaAerolineaDetalle');
@@ -538,7 +555,6 @@ async function mostrarReservaAerolinea() {
         container.innerHTML = '<div class="alert alert-danger">Error al cargar los detalles de la reserva</div>';
     }
 }
-
 function nuevaConsulta() {
     if (tipoUsuario === 'cliente') {
         siguientePasoCliente(1);
