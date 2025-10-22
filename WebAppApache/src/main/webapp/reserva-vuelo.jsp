@@ -144,6 +144,7 @@
                             </div>
 
                             <!-- Datos de Pasajeros -->
+                            <div id="autocompletadoUsuario" style="display: none;" class="mt-2"></div>
                             <div id="pasajerosDiv" class="mt-4" style="display: none;">
                                 <h6 class="mb-3 text-light">Datos de los Pasajeros</h6>
                                 <div id="pasajerosContainer"></div>
@@ -161,7 +162,7 @@
 
                                 <!-- Selección de Paquete -->
                                 <div id="selectorPaquete" class="mt-3" style="display: none;">
-                                    <label class="form-label">Seleccionar Paquete</label>
+                                    <label for="paqueteSelect" class="form-label">Seleccionar Paquete</label>
                                     <select class="form-select" id="paqueteSelect">
                                         <option value="">Seleccione un paquete...</option>
                                         <option value="sudamerica">Paquete Sudamérica (3 rutas disponibles)</option>
@@ -250,7 +251,7 @@
                 </div>
                 <h5 class="text-light">Reserva realizada con éxito</h5>
                 <p class="text-light">Su reserva ha sido confirmada y está ahora en nuestro sistema.</p>
-                <p class="text-light"><strong>Código de reserva:</strong> <span id="codigoReserva" class="text-primary">RES-2024-001</span></p>
+                <!-- Código de reserva visible para el usuario -->
             </div>
             <div class="modal-footer justify-content-center">
                 <a href="PaginaPrincipal.jsp" class="btn btn-primary">Ir al Inicio</a>
