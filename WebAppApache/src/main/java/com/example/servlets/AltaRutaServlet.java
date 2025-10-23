@@ -2,8 +2,8 @@
 package com.example.servlets;
 
 import DataTypes.DtAerolinea;
-import Logica.Fabrica;
-import Logica.ISistema;
+import logica.Fabrica;
+import logica.ISistema;
 import DataTypes.DtRutaVuelo;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;

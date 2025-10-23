@@ -1,10 +1,10 @@
 // src/main/java/com/example/servlets/ReservaVueloServlet.java
 package com.example.servlets;
 
-import Logica.Fabrica;
-import Logica.ISistema;
-import Logica.Pasajero;
-import Logica.TipoAsiento;
+import logica.Fabrica;
+import logica.ISistema;
+import logica.Pasajero;
+import logica.TipoAsiento;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;

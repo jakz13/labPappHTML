@@ -1,8 +1,8 @@
 // src/main/java/com/example/servlets/ListarCategoriasServlet.java
 package com.example.servlets;
 
-import Logica.Fabrica;
-import Logica.ISistema;
+import logica.Fabrica;
+import logica.ISistema;
 import DataTypes.DtCategoria;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;

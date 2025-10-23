@@ -2,8 +2,8 @@ package com.example.servlets;
 
 import DataTypes.DtAerolinea;
 import DataTypes.DtCliente;
-import Logica.Fabrica;
-import Logica.ISistema;
+import logica.Fabrica;
+import logica.ISistema;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;

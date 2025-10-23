@@ -1,9 +1,9 @@
 package com.example.servlets;
 
-import Logica.Fabrica;
-import Logica.ISistema;
-import Logica.Pasajero;
-import Logica.TipoAsiento;
+import logica.Fabrica;
+import logica.ISistema;
+import logica.Pasajero;
+import logica.TipoAsiento;
 import DataTypes.DtCliente;
 import DataTypes.DtPaquete;
 import DataTypes.DtItemPaquete;
@@ -244,10 +244,72 @@ public class RegistrarReservaServlet extends HttpServlet {
                 costoFinal = Math.max(0.0, costoServidor - descuento);
             }
 
+            // PRE-CHECK: evitar que un mismo usuario tenga más de una reserva en el mismo vuelo
             try {
-                sistema.crearYRegistrarReserva(
-                        nicknameCliente, vuelo, fechaReserva, costoFinal, tipoAsiento, cantidadPasajes, equipajeExtra, pasajeros
-                );
+                Object vueloObj = null;
+                try { vueloObj = sistema.obtenerVuelo(vuelo); } catch (Exception vx) { /* ignore */ }
+
+                if (vueloObj != null) {
+                    Object reservasObj = null;
+                    try { reservasObj = vueloObj.getClass().getMethod("getReservas").invoke(vueloObj); } catch (Exception m) { /* ignore */ }
+
+                    Iterable<?> iterable = null;
+                    if (reservasObj instanceof Map) iterable = ((Map<?, ?>) reservasObj).values();
+                    else if (reservasObj instanceof Iterable) iterable = (Iterable<?>) reservasObj;
+
+                    if (iterable != null) {
+                        for (Object r : iterable) {
+                            String clienteProp = getClienteNicknameFromReserva(r);
+                            if (clienteProp != null && clienteProp.equalsIgnoreCase(nicknameCliente)) {
+                                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                                out.print("{\"success\":false, \"error\":\"El usuario ya tiene una reserva en este vuelo\"}");
+                                // salir del método devolviendo la respuesta
+                                return;
+                            }
+                        }
+                    }
+                }
+            } catch (Throwable t) {
+                // No bloquear la operación si falla el pre-check; la lógica de negocio decidirá.
+                System.err.println("Warning: pre-check reserva falló: " + t.getMessage());
+            }
+
+            // Intentar crear y registrar reserva; si se puede obtener el objeto vuelo, sincronizar sobre él para evitar race conditions en la misma JVM
+            try {
+                Object vueloObjForLock = null;
+                try { vueloObjForLock = sistema.obtenerVuelo(vuelo); } catch (Exception vx) { /* ignore */ }
+
+                if (vueloObjForLock != null) {
+                    synchronized (vueloObjForLock) {
+                        // re-check dentro del lock
+                        Object reservasObjInner = null;
+                        try { reservasObjInner = vueloObjForLock.getClass().getMethod("getReservas").invoke(vueloObjForLock); } catch (Exception m) { /* ignore */ }
+                        Iterable<?> iterableInner = null;
+                        if (reservasObjInner instanceof Map) iterableInner = ((Map<?, ?>) reservasObjInner).values();
+                        else if (reservasObjInner instanceof Iterable) iterableInner = (Iterable<?>) reservasObjInner;
+
+                        if (iterableInner != null) {
+                            for (Object r : iterableInner) {
+                                String clienteProp = getClienteNicknameFromReserva(r);
+                                if (clienteProp != null && clienteProp.equalsIgnoreCase(nicknameCliente)) {
+                                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                                    out.print("{\"success\":false, \"error\":\"El usuario ya tiene una reserva en este vuelo\"}");
+                                    return;
+                                }
+                            }
+                        }
+
+                        // No hay reserva previa detectada dentro del lock -> crear la reserva
+                        sistema.crearYRegistrarReserva(
+                                nicknameCliente, vuelo, fechaReserva, costoFinal, tipoAsiento, cantidadPasajes, equipajeExtra, pasajeros
+                        );
+                    }
+                } else {
+                    // No se pudo obtener el objeto vuelo; proceder de forma normal
+                    sistema.crearYRegistrarReserva(
+                            nicknameCliente, vuelo, fechaReserva, costoFinal, tipoAsiento, cantidadPasajes, equipajeExtra, pasajeros
+                    );
+                }
 
                 // Si llegamos aquí, la creación no lanzó excepción -> devolver éxito
                 response.setStatus(HttpServletResponse.SC_OK);
@@ -257,7 +319,6 @@ public class RegistrarReservaServlet extends HttpServlet {
                 if (paqueteReq != null && !paqueteReq.trim().isEmpty()) resp.put("paquete", paqueteReq);
                 resp.put("message", "Reserva creada correctamente");
                 out.print(resp);
-                return;
 
             } catch (IllegalArgumentException iae) {
                 // Intentar post-check: la lógica de negocio pudo crear la reserva y luego lanzar la excepción.

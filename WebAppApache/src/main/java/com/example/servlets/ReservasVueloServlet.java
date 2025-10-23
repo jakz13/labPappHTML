@@ -3,10 +3,10 @@ package com.example.servlets;
 
 import DataTypes.DtCliente;
 import DataTypes.DtReserva;
-import Logica.Fabrica;
-import Logica.ISistema;
-import Logica.Reserva;
-import Logica.Vuelo;
+import logica.Fabrica;
+import logica.ISistema;
+import logica.Reserva;
+import logica.Vuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;

@@ -1,9 +1,9 @@
 // java
 package com.example.servlets;
 
-import Logica.Fabrica;
-import Logica.ISistema;
-import Logica.TipoDoc;
+import logica.Fabrica;
+import logica.ISistema;
+import logica.TipoDoc;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -265,7 +265,7 @@ public class ActualizarUsuarioServlet extends HttpServlet {
             case "ci":
             case "cedula":
             case "dni":
-                return TipoDoc.CI;
+                return TipoDoc.CEDULAIDENTIDAD;
             case "pasaporte":
                 return TipoDoc.PASAPORTE;
             default:

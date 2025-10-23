@@ -53,7 +53,7 @@
 
                 <!-- Ver todas las aerolíneas -->
                 <div class="text-center mt-3">
-                    <a href="consulta-vuelo.jsp" class="btn btn-outline-primary btn-sm">
+                    <a href="consulta-usuario.jsp" class="btn btn-outline-primary btn-sm">
                         Ver todas las aerolíneas
                     </a>
                 </div>

@@ -255,7 +255,10 @@
                         <div class="alert alert-warning text-center">
                             <h5 class="text-warning">Acceso Restringido</h5>
                             <p class="text-dark">Debe iniciar sesión para consultar reservas de vuelo.</p>
-                            <a href="login.jsp" class="btn btn-primary">Iniciar Sesión</a>
+                            <button class="btn btn-primary mt-3" data-bs-toggle="modal" data-bs-target="#loginModal">
+                                <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
+                            </button>
+
                         </div>
                     </div>
 

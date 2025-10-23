@@ -1,8 +1,8 @@
 // src/main/java/com/example/servlets/VerificarPermisosVueloServlet.java
 package com.example.servlets;
 
-import Logica.Fabrica;
-import Logica.ISistema;
+import logica.Fabrica;
+import logica.ISistema;
 import DataTypes.DtReserva;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;

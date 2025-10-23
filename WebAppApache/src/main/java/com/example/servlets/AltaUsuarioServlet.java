@@ -1,7 +1,7 @@
 package com.example.servlets;
 
-import Logica.Sistema;
-import Logica.TipoDoc;
+import logica.Sistema;
+import logica.TipoDoc;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
