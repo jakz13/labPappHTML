@@ -53,7 +53,7 @@
 
                 <!-- Ver todas las aerolíneas -->
                 <div class="text-center mt-3">
-                    <a href="consulta-usuario.jsp" class="btn btn-outline-primary btn-sm">
+                    <a href="consulta-vuelo.jsp" class="btn btn-outline-primary btn-sm">
                         Ver todas las aerolíneas
                     </a>
                 </div>
@@ -216,7 +216,7 @@
                 '<p class="small text-muted mb-0">' + descCorta + '</p>' +
                 '</div>' +
                 '</div>' +
-                '<a href="consulta-usuario.jsp?aerolinea=' + aerolinea.nickname + '" class="stretched-link"></a>' +
+                '<a href="consulta-usuario.jsp?id=' + aerolinea.nickname + '" class="stretched-link"></a>' +
                 '</div>';
         });
 
@@ -245,7 +245,8 @@
             rutasHTML += '<div class="flight-card fade-in">' +
                 '<div class="flight-header">' +
                 '<div>' +
-                '<span class="flight-route">' + ruta.ciudadOrigen + ' - ' + ruta.ciudadDestino + '</span>' +
+                // Hacer el texto de la ruta clickeable y abrir reserva-vuelo
+                '<a href="reserva-vuelo.jsp?nombre=' + encodeURIComponent(ruta.nombre) + '" class="flight-route">' + ruta.ciudadOrigen + ' - ' + ruta.ciudadDestino + '</a>' +
                 '<div class="text-muted small">' +
                 '<i class="bi bi-airplane me-1"></i>' + ruta.aerolinea + ' • ' + ruta.nombre +
                 '</div>' +
@@ -268,7 +269,8 @@
                 '</div>' +
                 '</div>' +
                 '</div>' +
-                '<a href="consulta-ruta.jsp?nombre=' + ruta.nombre + '" class="read-more">' +
+                // Cambiar el enlace de detalles para que vaya a reserva-vuelo.jsp
+                '<a href="reserva-vuelo.jsp?nombre=' + encodeURIComponent(ruta.nombre) + '" class="read-more">' +
                 'Ver detalles y reservar <i class="bi bi-arrow-right"></i>' +
                 '</a>' +
                 '</div>';
