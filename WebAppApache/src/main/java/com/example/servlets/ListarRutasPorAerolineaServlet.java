@@ -21,7 +21,43 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
 
         ISistema sistema = Fabrica.getInstance().getISistema();
         sistema.cargarDesdeBd();
-        List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea((aerolinea != null && !aerolinea.trim().isEmpty()) ? aerolinea : null);
+
+        sistema.obtenerAerolinea(aerolinea);
+        List<DtRutaVuelo> rutasTotales = sistema.listarRutasPorAerolinea((aerolinea != null && !aerolinea.trim().isEmpty()) ? aerolinea : null);
+
+        // Determinar si el usuario en sesión es la aerolínea propietaria solicitada
+        HttpSession session = request.getSession(false);
+        boolean ownerIsRequesting = false;
+        if (session != null) {
+            Object tipoUsuario = session.getAttribute("tipoUsuario");
+            Object usuarioSession = session.getAttribute("usuario");
+            if (tipoUsuario != null && "aerolinea".equalsIgnoreCase(String.valueOf(tipoUsuario))
+                    && usuarioSession != null && aerolinea != null
+                    && String.valueOf(usuarioSession).equalsIgnoreCase(aerolinea)) {
+                ownerIsRequesting = true;
+            }
+        }
+
+        // Si el que pide es la aerolínea dueña, le mostramos todas sus rutas (incluidas no confirmadas).
+        // En caso contrario, exponemos solo las rutas confirmadas.
+        List<DtRutaVuelo> rutas;
+        if (rutasTotales == null) {
+            rutas = new ArrayList<>();
+        } else if (ownerIsRequesting) {
+            rutas = rutasTotales; // dueño: ver todas sus rutas
+            System.out.println("[DEBUG ListarRutas] usuario dueño detectado, mostrando todas las rutas para: " + aerolinea);
+        } else {
+            // filtrar sólo CONFIRMADA
+            List<DtRutaVuelo> rutasConfirmadas = new ArrayList<>();
+            for (DtRutaVuelo ruta : rutasTotales) {
+                String est = ruta.getEstado() != null ? ruta.getEstado() : "";
+                if ("CONFIRMADA".equalsIgnoreCase(est)) {
+                    rutasConfirmadas.add(ruta);
+                    System.out.println("[DEBUG ListarRutas] ruta confirmada extraida: " + ruta.getNombre());
+                }
+            }
+            rutas = rutasConfirmadas;
+        }
 
         // Aplicar filtros
         List<DtRutaVuelo> rutasFiltradas = new ArrayList<>();
@@ -44,7 +80,7 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
                 }
             }
 
-            // Filtro por estado
+            // Filtro por estado (si se solicita un estado distinto de "todas")
             if (estado != null && !estado.isEmpty() && !"todas".equalsIgnoreCase(estado)) {
                 String estadoRuta = r.getEstado() != null ? r.getEstado() : "";
                 pasaFiltros = pasaFiltros && estadoRuta.equalsIgnoreCase(estado);
@@ -253,3 +289,4 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
         return s.replace("\\","\\\\").replace("\"","\\\"").replace("\n","\\n").replace("\r","\\r").replace("\t","\\t");
     }
 }
+
