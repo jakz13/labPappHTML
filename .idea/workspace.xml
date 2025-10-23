@@ -9,15 +9,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="solucion de login de usuarios y reparacion parcial de reserva de vuelos">
+    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="mostrar usuario">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaUsuarioServerlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaUsuarioServerlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-usuario.js" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-usuario.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-usuario.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-usuario.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -350,7 +345,15 @@
       <option name="project" value="LOCAL" />
       <updated>1761100359631</updated>
     </task>
-    <option name="localTasksCounter" value="11" />
+    <task id="LOCAL-00011" summary="mostrar usuario">
+      <option name="closed" value="true" />
+      <created>1761185723209</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1761185723209</updated>
+    </task>
+    <option name="localTasksCounter" value="12" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -385,6 +388,7 @@
     <MESSAGE value="prueba" />
     <MESSAGE value="&#10;Inicio de Sesión&#9;&#9;&#9;hecho&#10;Cierre de Sesión&#9;&#9;&#9;hecho&#10;Alta de Usuario&#9;&#9;&#9;&#9;hecho&#10;Consulta de Usuario&#9;&#9;&#9;sin hacer&#10;Modificar Datos de Usuario&#9;&#9;hecho&#10;Alta de Ruta de Vuelo&#9;&#9;&#9;hecho&#9;&#10;Consulta de Ruta de Vuelo&#9;&#9;hecho a medias&#10;Alta de Vuelo&#9;&#9;&#9;&#9;sin hacer falata logear&#10;Consulta de Vuelo&#9;&#9;&#9;hecho a medias &#10;Reserva de Vuelo&#9;&#9;&#9;falan ingresar pasajeros &#10;Consulta de Reserva de vuelo&#9;&#9;hecho a medias&#10;&#10;Consulta de Paquete de Rutas de Vuelo&#9;sin hacer&#10;Compra de Paquete de Rutas de Vuelo&#9;sin hacer" />
     <MESSAGE value="solucion de login de usuarios y reparacion parcial de reserva de vuelos" />
-    <option name="LAST_COMMIT_MESSAGE" value="solucion de login de usuarios y reparacion parcial de reserva de vuelos" />
+    <MESSAGE value="mostrar usuario" />
+    <option name="LAST_COMMIT_MESSAGE" value="mostrar usuario" />
   </component>
 </project>

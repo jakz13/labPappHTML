@@ -357,7 +357,7 @@ function mostrarInfoCliente(usuario) {
         });
     }
 
-    // Paquetes
+    // Paquetes - AHORA CON ENLACE A CONSULTA PAQUETE
     const paquetesContainer = document.getElementById('paquetesCliente');
     paquetesContainer.innerHTML = '';
 
@@ -374,6 +374,12 @@ function mostrarInfoCliente(usuario) {
                         <span class="badge ${paquete.estado === 'Vigente' ? 'bg-success' : 'bg-secondary'} badge-estado">
                             ${paquete.estado}
                         </span>
+                        <div class="mt-2">
+                            <a href="consulta-paquete.jsp?paquete=${encodeURIComponent(paquete.nombre)}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-search"></i> Ver Detalles
+                            </a>
+                        </div>
                     </div>
                 </div>
             `;
@@ -381,6 +387,7 @@ function mostrarInfoCliente(usuario) {
         });
     }
 }
+
 
 function mostrarInfoAerolinea(usuario) {
     // Mostrar sección de aerolínea y ocultar cliente
@@ -406,6 +413,58 @@ function mostrarInfoAerolinea(usuario) {
     `;
 
     cargarRutasAerolineaInterfaz('todas');
+}
+
+function mostrarVuelosAerolinea(vuelos) {
+    const vuelosContainer = document.getElementById('vuelosAerolinea');
+
+    if (!vuelos || vuelos.length === 0) {
+        vuelosContainer.innerHTML = '<div class="col-12"><p class="text-muted">No hay vuelos disponibles para esta aerolínea.</p></div>';
+        return;
+    }
+
+    let vuelosHTML = '';
+
+    vuelos.forEach(vuelo => {
+        const origen = vuelo.origen || 'N/A';
+        const destino = vuelo.destino || 'N/A';
+        const nombreVuelo = vuelo.nombre || 'N/A';
+        const fecha = vuelo.fecha || 'No especificada';
+        const duracion = vuelo.duracion || 'N/A';
+        const ruta = vuelo.ruta || 'No especificada';
+        const aerolinea = vuelo.aerolinea || 'N/A';
+        const vueloId = vuelo.id || '';
+
+        vuelosHTML +=
+            '<div class="col-md-6">' +
+            '    <div class="flight-card">' +
+            '        <div class="flight-header">' +
+            '            <div>' +
+            '                <span class="flight-route">' + origen + ' - ' + destino + '</span>' +
+            '                <div class="text-muted small">' +
+            '                    <i class="bi bi-airplane me-1"></i>' + nombreVuelo +
+            '                </div>' +
+            '            </div>' +
+            '            <span class="badge bg-info">Vuelo</span>' +
+            '        </div>' +
+            '        <div class="flight-description">' +
+            '            <strong>Fecha:</strong> ' + fecha + ' | ' +
+            '            <strong>Duración:</strong> ' + duracion + ' min' +
+            '        </div>' +
+            '        <div class="flight-details">' +
+            '            <small>' +
+            '                <strong>Ruta:</strong> ' + ruta + ' | ' +
+            '                <strong>Aerolínea:</strong> ' + aerolinea +
+            '            </small>' +
+            '        </div>' +
+            '        <a href="consulta-vuelo.jsp?vuelo=' + encodeURIComponent(vueloId) + '" class="read-more">' +
+            '            Ver detalles del vuelo <i class="bi bi-arrow-right"></i>' +
+            '        </a>' +
+            '    </div>' +
+            '</div>';
+    });
+
+    vuelosContainer.innerHTML = vuelosHTML;
 }
 
 function cargarRutasAerolineaInterfaz(filtro) {

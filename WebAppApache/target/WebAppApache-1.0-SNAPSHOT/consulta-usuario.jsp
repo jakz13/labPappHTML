@@ -186,7 +186,7 @@
         }
     }
 
-    // Función para mostrar los vuelos
+    // Función para mostrar los vuelos - AHORA CON ENLACE A CONSULTA VUELO
     function mostrarVuelosAerolinea(vuelos) {
         const vuelosContainer = document.getElementById('vuelosAerolinea');
 
@@ -229,7 +229,7 @@
                 '                <strong>Aerolínea:</strong> ' + aerolinea +
                 '            </small>' +
                 '        </div>' +
-                '        <a href="javascript:void(0)" onclick="consultarDetalleVuelo(\'' + vueloId + '\')" class="read-more">' +
+                '        <a href="consulta-vuelo.jsp?vuelo=' + encodeURIComponent(vueloId) + '" class="read-more">' +
                 '            Ver detalles del vuelo <i class="bi bi-arrow-right"></i>' +
                 '        </a>' +
                 '    </div>' +
@@ -257,7 +257,7 @@
         }
     }
 
-    // Función para mostrar modal con detalles del vuelo
+    // Función para mostrar modal con detalles del vuelo - AHORA CON ENLACE A CONSULTA VUELO
     function mostrarModalVueloDetalle(vuelo) {
         // Crear modal dinámicamente usando concatenación de strings en lugar de template literals
         let modalHTML =
@@ -331,6 +331,9 @@
         modalHTML +=
             '            </div>' +
             '            <div class="modal-footer">' +
+            '                <a href="consulta-vuelo.jsp?vuelo=' + encodeURIComponent(vuelo.nombre || vuelo.id) + '" class="btn btn-primary">' +
+            '                    <i class="bi bi-search"></i> Ver Detalles Completos' +
+            '                </a>' +
             '                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>' +
             '            </div>' +
             '        </div>' +
