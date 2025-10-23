@@ -1,0 +1,257 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ArtifactsWorkspaceSettings\">\r\n    <artifacts-to-build>\r\n      <artifact name=\"WebAppApache:war exploded\" />\r\n    </artifacts-to-build>\r\n  </component>\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"9fad4d8b-b73d-4daa-994f-a9c0a792a904\" name=\"Changes\" comment=\"Consulta de usuario anda\">\r\n      <change afterPath=\"$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/HomePageServlet.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Jsp File\" />\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"junior\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n    <option name=\"RESET_MODE\" value=\"HARD\" />\r\n    <option name=\"UPDATE_TYPE\" value=\"REBASE\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;jakz13&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/jakz13/labPappHTML.git&quot;,\r\n    &quot;accountId&quot;: &quot;9ccc7a2a-ebad-452a-9d8d-fb4a3fe791f9&quot;\r\n  }\r\n}</component>\r\n  <component name=\"KubernetesApiPersistence\">{}</component>\r\n  <component name=\"KubernetesApiProvider\">{\r\n  &quot;isMigrated&quot;: true\r\n}</component>\r\n  <component name=\"LogFilters\">\r\n    <option name=\"FILTER_ERRORS\" value=\"false\" />\r\n    <option name=\"FILTER_WARNINGS\" value=\"false\" />\r\n    <option name=\"FILTER_INFO\" value=\"true\" />\r\n    <option name=\"FILTER_DEBUG\" value=\"true\" />\r\n    <option name=\"CUSTOM_FILTER\" />\r\n  </component>\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"33qFSfqJTCS0xza7qRa7NE0hl13\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">{\r\n  &quot;keyToString&quot;: {\r\n    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,\r\n    &quot;Application.Main.executor&quot;: &quot;Run&quot;,\r\n    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,\r\n    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,\r\n    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,\r\n    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\\\Users\\\\Curbe\\\\AppData\\\\Roaming\\\\JetBrains\\\\IntelliJIdea2025.2\\\\plugins\\\\Shell Script\\\\shellcheck.exe&quot;,\r\n    &quot;Tomcat Server.Tomcat 11.0.11.executor&quot;: &quot;Run&quot;,\r\n    &quot;git-widget-placeholder&quot;: &quot;Felipe&quot;,\r\n    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,\r\n    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,\r\n    &quot;last_opened_file_path&quot;: &quot;C:/Users/Usuario/Desktop/Juegos Varios/NicoESwing/labPappHTML/WebAppApache/src/main/webapp/WEB-INF/lib&quot;,\r\n    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,\r\n    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,\r\n    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,\r\n    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,\r\n    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,\r\n    &quot;project.structure.side.proportion&quot;: &quot;0.29319373&quot;,\r\n    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,\r\n    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;\r\n  }\r\n}</component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Usuario\\Desktop\\Juegos Varios\\NicoESwing\\labPappHTML\\WebAppApache\\src\\main\\webapp\\WEB-INF\\lib\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\webapp\\WEB-INF\\lib\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\webapp\\WEB-INF\\META-INF\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\DataTypes\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunDashboard\">\r\n    <option name=\"configurationStatuses\">\r\n      <map>\r\n        <entry key=\"#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory\">\r\n          <value>\r\n            <map>\r\n              <entry key=\"Tomcat 11.0.11\" value=\"STOPPED\" />\r\n            </map>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Tomcat Server.Tomcat 11.0.11\">\r\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"Presentacion.gui.Main\" />\r\n      <module name=\"WebAppApache\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"Presentacion.gui.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"Tomcat 11.0.11\" type=\"#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory\" factoryName=\"Local\" APPLICATION_SERVER_NAME=\"Tomcat 11.0.11\" ALTERNATIVE_JRE_ENABLED=\"false\" nameIsGenerated=\"true\">\r\n      <option name=\"UPDATING_POLICY\" value=\"restart-server\" />\r\n      <deployment>\r\n        <artifact name=\"WebAppApache:war exploded\">\r\n          <settings>\r\n            <option name=\"CONTEXT_PATH\" value=\"/WebAppApache_war_exploded\" />\r\n          </settings>\r\n        </artifact>\r\n      </deployment>\r\n      <server-settings>\r\n        <option name=\"BASE_DIRECTORY_NAME\" value=\"dbba3c89-5013-40db-8e5a-f39be74e2917\" />\r\n      </server-settings>\r\n      <predefined_log_file enabled=\"true\" id=\"Tomcat\" />\r\n      <predefined_log_file enabled=\"true\" id=\"Tomcat Catalina\" />\r\n      <predefined_log_file id=\"Tomcat Manager\" />\r\n      <predefined_log_file id=\"Tomcat Host Manager\" />\r\n      <predefined_log_file id=\"Tomcat Localhost Access\" />\r\n      <RunnerSettings RunnerId=\"Debug\">\r\n        <option name=\"DEBUG_PORT\" value=\"62806\" />\r\n      </RunnerSettings>\r\n      <ConfigurationWrapper VM_VAR=\"JAVA_OPTS\" RunnerId=\"Cover\">\r\n        <option name=\"USE_ENV_VARIABLES\" value=\"true\" />\r\n        <STARTUP>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </STARTUP>\r\n        <SHUTDOWN>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </SHUTDOWN>\r\n      </ConfigurationWrapper>\r\n      <ConfigurationWrapper VM_VAR=\"JAVA_OPTS\" RunnerId=\"Debug\">\r\n        <option name=\"USE_ENV_VARIABLES\" value=\"true\" />\r\n        <STARTUP>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </STARTUP>\r\n        <SHUTDOWN>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </SHUTDOWN>\r\n      </ConfigurationWrapper>\r\n      <ConfigurationWrapper VM_VAR=\"JAVA_OPTS\" RunnerId=\"Profile\">\r\n        <option name=\"USE_ENV_VARIABLES\" value=\"true\" />\r\n        <STARTUP>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </STARTUP>\r\n        <SHUTDOWN>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </SHUTDOWN>\r\n      </ConfigurationWrapper>\r\n      <ConfigurationWrapper VM_VAR=\"JAVA_OPTS\" RunnerId=\"Run\">\r\n        <option name=\"USE_ENV_VARIABLES\" value=\"true\" />\r\n        <STARTUP>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </STARTUP>\r\n        <SHUTDOWN>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </SHUTDOWN>\r\n      </ConfigurationWrapper>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n        <option name=\"BuildArtifacts\" enabled=\"true\">\r\n          <artifact name=\"WebAppApache:war exploded\" />\r\n        </option>\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.Main\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409\" />\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"9fad4d8b-b73d-4daa-994f-a9c0a792a904\" name=\"Changes\" comment=\"\" />\r\n      <created>1760036697072</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1760036697072</updated>\r\n      <workItem from=\"1760036698471\" duration=\"3677000\" />\r\n      <workItem from=\"1760139315582\" duration=\"3923000\" />\r\n      <workItem from=\"1760144997034\" duration=\"166000\" />\r\n      <workItem from=\"1760145179273\" duration=\"1308000\" />\r\n      <workItem from=\"1760146511436\" duration=\"3350000\" />\r\n      <workItem from=\"1760311399195\" duration=\"40551000\" />\r\n      <workItem from=\"1760400110377\" duration=\"12091000\" />\r\n      <workItem from=\"1760447957679\" duration=\"9649000\" />\r\n      <workItem from=\"1760457663446\" duration=\"4396000\" />\r\n      <workItem from=\"1760479760639\" duration=\"17289000\" />\r\n      <workItem from=\"1760585006030\" duration=\"632000\" />\r\n      <workItem from=\"1760616324542\" duration=\"77000\" />\r\n      <workItem from=\"1760616412174\" duration=\"2133000\" />\r\n      <workItem from=\"1760623476807\" duration=\"26409000\" />\r\n      <workItem from=\"1760733904838\" duration=\"32864000\" />\r\n      <workItem from=\"1761006325711\" duration=\"6882000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"fxg\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760457059759</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760457059759</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"fxg\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760457107369</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760457107369</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"fxg\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760457895232</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760457895232</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"registro\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760573654482</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760573654482</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"prueba\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760634712367</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760634712367</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"prueba\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760649004419</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760649004419</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"nuevo caso de uso\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760997681269</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760997681269</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"Consulta paquete totalmente funcional\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761010061414</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761010061414</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"Compra paquete quedo, faltan pruebas\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761011296839</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761011296839</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00010\" summary=\"Consulta de usuario anda\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761095181753</created>\r\n      <option name=\"number\" value=\"00010\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761095181753</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"11\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"origin/Felipe\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"fxg\" />\r\n    <MESSAGE value=\"registro\" />\r\n    <MESSAGE value=\"prueba\" />\r\n    <MESSAGE value=\"nuevo caso de uso\" />\r\n    <MESSAGE value=\"Consulta paquete totalmente funcional\" />\r\n    <MESSAGE value=\"Compra paquete quedo, faltan pruebas\" />\r\n    <MESSAGE value=\"Consulta de usuario anda\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Consulta de usuario anda\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision e2636b87e31d40385b0d132e5992043770f63378)
++++ b/.idea/workspace.xml	(date 1761175733137)
+@@ -9,10 +9,68 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="Consulta de usuario anda">
+-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/HomePageServlet.java" afterDir="false" />
++    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="prueba">
++      <change afterPath="$PROJECT_DIR$/.idea/copilotDiffState.xml" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaReservaServlet.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/GetRutaServlet.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ImageServeServlet.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarCiudadesServlet.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ReservaClienteServlet.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ReservasVueloServlet.java" afterDir="false" />
++      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/VerificarPermisosVueloServlet.java" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/PaginaPrincipal.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/pom.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ActualizarUsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ActualizarUsuarioServlet.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaRutaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaRutaServlet.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaUsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/AltaUsuarioServlet.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CargarDatosBD.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CargarDatosBD.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarAerolineasServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarAerolineasServlet.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarRutasPorAerolineaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ListarRutasPorAerolineaServlet.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ObtenerUsuarioServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ObtenerUsuarioServlet.java" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-ruta.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-ruta.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/alta-usuario.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-reserva.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-reserva.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-ruta.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-ruta.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-vuelo.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/session-manager.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-ruta.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/alta-ruta.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-reserva.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-reserva.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-ruta.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-ruta.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-vuelo.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/modificar-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/modificar-usuario.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-ruta.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-ruta.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-usuario.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-reserva.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-reserva.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-ruta.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-ruta.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-vuelo.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ActualizarUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ActualizarUsuarioServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaRutaServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaUsuarioServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CargarDatosBD.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CargarDatosBD.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ObtenerUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ObtenerUsuarioServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-ruta.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-ruta.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-reserva.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-reserva.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-ruta.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-ruta.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-vuelo.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-vuelo.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/modificar-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/modificar-usuario.jsp" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ActualizarUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ActualizarUsuarioServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaRutaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaRutaServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/AltaUsuarioServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CargarDatosBD.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/CargarDatosBD.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarAerolineasServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarAerolineasServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ObtenerUsuarioServlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ObtenerUsuarioServlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" afterPath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT.war" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" afterPath="$PROJECT_DIR$/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -30,12 +88,10 @@
+   <component name="Git.Settings">
+     <option name="RECENT_BRANCH_BY_REPOSITORY">
+       <map>
+-        <entry key="$PROJECT_DIR$" value="junior" />
++        <entry key="$PROJECT_DIR$" value="main" />
+       </map>
+     </option>
+     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+-    <option name="RESET_MODE" value="HARD" />
+-    <option name="UPDATE_TYPE" value="REBASE" />
+   </component>
+   <component name="GitHubPullRequestSearchHistory">{
+   &quot;lastFilter&quot;: {
+@@ -45,8 +101,8 @@
+ }</component>
+   <component name="GithubPullRequestsUISettings">{
+   &quot;selectedUrlAndAccountId&quot;: {
+-    &quot;url&quot;: &quot;https://github.com/jakz13/labPappHTML.git&quot;,
+-    &quot;accountId&quot;: &quot;9ccc7a2a-ebad-452a-9d8d-fb4a3fe791f9&quot;
++    &quot;url&quot;: &quot;https://github.com/jakz13/labPappHTML&quot;,
++    &quot;accountId&quot;: &quot;01f832ff-b1f7-4722-8427-e88b1bf7ac21&quot;
+   }
+ }</component>
+   <component name="KubernetesApiPersistence">{}</component>
+@@ -71,40 +127,40 @@
+     <option name="hideEmptyMiddlePackages" value="true" />
+     <option name="showLibraryContents" value="true" />
+   </component>
+-  <component name="PropertiesComponent">{
+-  &quot;keyToString&quot;: {
+-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+-    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe&quot;,
+-    &quot;Tomcat Server.Tomcat 11.0.11.executor&quot;: &quot;Run&quot;,
+-    &quot;git-widget-placeholder&quot;: &quot;Felipe&quot;,
+-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Usuario/Desktop/Juegos Varios/NicoESwing/labPappHTML/WebAppApache/src/main/webapp/WEB-INF/lib&quot;,
+-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+-    &quot;project.structure.last.edited&quot;: &quot;Artifacts&quot;,
+-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+-    &quot;project.structure.side.proportion&quot;: &quot;0.29319373&quot;,
+-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
++  <component name="PropertiesComponent"><![CDATA[{
++  "keyToString": {
++    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
++    "Application.Main.executor": "Run",
++    "ModuleVcsDetector.initialDetectionPerformed": "true",
++    "RunOnceActivity.ShowReadmeOnStart": "true",
++    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
++    "RunOnceActivity.git.unshallow": "true",
++    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
++    "SHELLCHECK.PATH": "C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe",
++    "Tomcat Server.Tomcat 11.0.11.executor": "Run",
++    "git-widget-placeholder": "junior",
++    "ignore.virus.scanning.warn.message": "true",
++    "kotlin-language-version-configured": "true",
++    "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp/WEB-INF/lib",
++    "node.js.detected.package.eslint": "true",
++    "node.js.detected.package.tslint": "true",
++    "node.js.selected.package.eslint": "(autodetect)",
++    "node.js.selected.package.tslint": "(autodetect)",
++    "nodejs_package_manager_path": "npm",
++    "project.structure.last.edited": "Artifacts",
++    "project.structure.proportion": "0.15",
++    "project.structure.side.proportion": "0.29319373",
++    "settings.editor.selected.configurable": "preferences.lookFeel",
++    "vue.rearranger.settings.migration": "true"
+   }
+-}</component>
++}]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+-      <recent name="C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\webapp\WEB-INF\lib" />
+       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp\WEB-INF\lib" />
+       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets" />
+       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java" />
+       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache" />
++      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\target" />
+     </key>
+     <key name="MoveFile.RECENT_KEYS">
+       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets" />
+@@ -237,8 +293,8 @@
+   <component name="SharedIndexes">
+     <attachedChunks>
+       <set>
+-        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.23892.409" />
+-        <option value="bundled-js-predefined-d6986cc7102b-e03c56caf84a-JavaScript-IU-252.23892.409" />
++        <option value="bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84" />
++        <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
+       </set>
+     </attachedChunks>
+   </component>
+@@ -264,7 +320,6 @@
+       <workItem from="1760616412174" duration="2133000" />
+       <workItem from="1760623476807" duration="26409000" />
+       <workItem from="1760733904838" duration="32864000" />
+-      <workItem from="1761006325711" duration="6882000" />
+     </task>
+     <task id="LOCAL-00001" summary="fxg">
+       <option name="closed" value="true" />
+@@ -314,39 +369,7 @@
+       <option name="project" value="LOCAL" />
+       <updated>1760649004419</updated>
+     </task>
+-    <task id="LOCAL-00007" summary="nuevo caso de uso">
+-      <option name="closed" value="true" />
+-      <created>1760997681269</created>
+-      <option name="number" value="00007" />
+-      <option name="presentableId" value="LOCAL-00007" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1760997681269</updated>
+-    </task>
+-    <task id="LOCAL-00008" summary="Consulta paquete totalmente funcional">
+-      <option name="closed" value="true" />
+-      <created>1761010061414</created>
+-      <option name="number" value="00008" />
+-      <option name="presentableId" value="LOCAL-00008" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1761010061414</updated>
+-    </task>
+-    <task id="LOCAL-00009" summary="Compra paquete quedo, faltan pruebas">
+-      <option name="closed" value="true" />
+-      <created>1761011296839</created>
+-      <option name="number" value="00009" />
+-      <option name="presentableId" value="LOCAL-00009" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1761011296839</updated>
+-    </task>
+-    <task id="LOCAL-00010" summary="Consulta de usuario anda">
+-      <option name="closed" value="true" />
+-      <created>1761095181753</created>
+-      <option name="number" value="00010" />
+-      <option name="presentableId" value="LOCAL-00010" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1761095181753</updated>
+-    </task>
+-    <option name="localTasksCounter" value="11" />
++    <option name="localTasksCounter" value="7" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -363,7 +386,7 @@
+                   <entry key="branch">
+                     <value>
+                       <list>
+-                        <option value="origin/Felipe" />
++                        <option value="origin/junior" />
+                       </list>
+                     </value>
+                   </entry>
+@@ -379,10 +402,6 @@
+     <MESSAGE value="fxg" />
+     <MESSAGE value="registro" />
+     <MESSAGE value="prueba" />
+-    <MESSAGE value="nuevo caso de uso" />
+-    <MESSAGE value="Consulta paquete totalmente funcional" />
+-    <MESSAGE value="Compra paquete quedo, faltan pruebas" />
+-    <MESSAGE value="Consulta de usuario anda" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Consulta de usuario anda" />
++    <option name="LAST_COMMIT_MESSAGE" value="prueba" />
+   </component>
+ </project>
+\ No newline at end of file
