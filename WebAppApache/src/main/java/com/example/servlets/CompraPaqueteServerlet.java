@@ -10,6 +10,7 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.Enumeration;
 import java.util.List;
+import java.util.ArrayList;
 
 @WebServlet("/compra-paquete")
 public class CompraPaqueteServerlet extends HttpServlet {
@@ -46,9 +47,9 @@ public class CompraPaqueteServerlet extends HttpServlet {
             // NO llamar cargarDesdeBd() aquí - ya se cargó en init()
 
             if ("listar-paquetes-disponibles".equals(action)) {
-                // Listar TODOS los paquetes (no solo los "disponibles" en el sentido de no comprados)
-                System.out.println("Listando TODOS los paquetes para compra");
-                listarTodosLosPaquetes(sistema, out);
+                // Listar TODOS los paquetes VÁLIDOS (filtrados)
+                System.out.println("Listando paquetes VÁLIDOS para compra");
+                listarPaquetesValidos(sistema, out);
             } else if ("paquetes-comprados".equals(action) && clienteId != null) {
                 // Listar paquetes comprados por un cliente específico
                 System.out.println("Listando paquetes comprados por: " + clienteId);
@@ -111,18 +112,80 @@ public class CompraPaqueteServerlet extends HttpServlet {
         }
     }
 
-    // CAMBIO IMPORTANTE: Usar listarPaquetes() en lugar de listarPaquetesDisp()
-    private void listarTodosLosPaquetes(ISistema sistema, PrintWriter out) {
+    // NUEVO MÉTODO: Filtrar paquetes válidos (con costo > 0 y con rutas)
+    private void listarPaquetesValidos(ISistema sistema, PrintWriter out) {
         try {
-            // CAMBIADO: Usar listarPaquetes() que devuelve TODOS los paquetes
-            List<DtPaquete> paquetes = sistema.listarPaquetes();
-            System.out.println("📦 Número de paquetes encontrados: " + (paquetes != null ? paquetes.size() : "NULL"));
-            escribirPaquetesDisponiblesJSON(paquetes, out);
+            // Obtener TODOS los paquetes
+            List<DtPaquete> todosLosPaquetes = sistema.listarPaquetes();
+            System.out.println("📦 Número total de paquetes encontrados: " + (todosLosPaquetes != null ? todosLosPaquetes.size() : "NULL"));
+
+            // Filtrar paquetes válidos
+            List<DtPaquete> paquetesValidos = new ArrayList<>();
+            if (todosLosPaquetes != null) {
+                for (DtPaquete paquete : todosLosPaquetes) {
+                    if (esPaqueteValido(paquete)) {
+                        paquetesValidos.add(paquete);
+                        System.out.println("✅ Paquete VÁLIDO: " + paquete.getNombre() +
+                                " - Costo: $" + paquete.getCosto() +
+                                " - Rutas: " + (paquete.getItems() != null ? paquete.getItems().size() : 0));
+                    } else {
+                        System.out.println("❌ Paquete INVÁLIDO (filtrado): " + paquete.getNombre() +
+                                " - Costo: $" + paquete.getCosto() +
+                                " - Rutas: " + (paquete.getItems() != null ? paquete.getItems().size() : 0));
+                    }
+                }
+            }
+
+            System.out.println("📊 Paquetes válidos después del filtro: " + paquetesValidos.size());
+            escribirPaquetesDisponiblesJSON(paquetesValidos, out);
+
         } catch (Exception e) {
-            System.err.println("💥 ERROR listando paquetes: " + e.getMessage());
+            System.err.println("💥 ERROR listando paquetes válidos: " + e.getMessage());
             e.printStackTrace();
             out.print("[]");
         }
+    }
+
+    // MÉTODO PARA VALIDAR PAQUETES
+    private boolean esPaqueteValido(DtPaquete paquete) {
+        if (paquete == null) {
+            return false;
+        }
+
+        // 1. Validar que tenga costo mayor a 0
+        if (paquete.getCosto() <= 0) {
+            System.out.println("   ❌ Filtrado por costo: $" + paquete.getCosto());
+            return false;
+        }
+
+        // 2. Validar que tenga rutas
+        if (paquete.getItems() == null || paquete.getItems().isEmpty()) {
+            System.out.println("   ❌ Filtrado por falta de rutas");
+            return false;
+        }
+
+        // 3. Validar que tenga al menos una ruta válida
+        boolean tieneRutasValidas = false;
+        for (DtItemPaquete item : paquete.getItems()) {
+            if (item != null && item.getRutaVuelo() != null) {
+                tieneRutasValidas = true;
+                break;
+            }
+        }
+
+        if (!tieneRutasValidas) {
+            System.out.println("   ❌ Filtrado por rutas inválidas");
+            return false;
+        }
+
+        // 4. Validar que tenga nombre
+        if (paquete.getNombre() == null || paquete.getNombre().trim().isEmpty()) {
+            System.out.println("   ❌ Filtrado por nombre vacío");
+            return false;
+        }
+
+        System.out.println("   ✅ Paquete cumple todos los criterios de validación");
+        return true;
     }
 
     private void listarPaquetesComprados(ISistema sistema, String clienteId, PrintWriter out) {
@@ -300,8 +363,10 @@ public class CompraPaqueteServerlet extends HttpServlet {
                 out.print("\"nombre\":\"" + escapeJson(p.getNombre()) + "\",");
                 out.print("\"descripcion\":\"" + escapeJson(p.getDescripcion()) + "\",");
                 out.print("\"costo\":" + p.getCosto() + ",");
+                // Usar la fecha de compra real del paquete si está disponible
                 String fechaCompraStr = p.getFechaAlta() != null ? p.getFechaAlta().toString() : "";
                 out.print("\"fechaCompra\":\"" + fechaCompraStr + "\",");
+                // Calcular fecha de vencimiento a partir de fechaAlta y periodoValidezDias
                 String fechaVencimientoStr = "";
                 if (p.getFechaAlta() != null && p.getPeriodoValidezDias() > 0) {
                     fechaVencimientoStr = p.getFechaAlta().plusDays(p.getPeriodoValidezDias()).toString();

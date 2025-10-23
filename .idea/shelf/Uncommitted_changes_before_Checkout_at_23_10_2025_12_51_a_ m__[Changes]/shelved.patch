@@ -1,0 +1,359 @@
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ArtifactsWorkspaceSettings\">\r\n    <artifacts-to-build>\r\n      <artifact name=\"WebAppApache:war exploded\" />\r\n    </artifacts-to-build>\r\n  </component>\r\n  <component name=\"AutoImportSettings\">\r\n    <option name=\"autoReloadType\" value=\"SELECTIVE\" />\r\n  </component>\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"9fad4d8b-b73d-4daa-994f-a9c0a792a904\" name=\"Changes\" comment=\"&#10;algo\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaDePaqueteServerlet.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaDePaqueteServerlet.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaUsuarioServerlet.java\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaUsuarioServerlet.java\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-usuario.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-usuario.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/reserva-vuelo.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/reserva-vuelo.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-usuario.jsp\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-usuario.jsp\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-usuario.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-usuario.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/reserva-vuelo.js\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/reserva-vuelo.js\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaDePaqueteServerlet.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaDePaqueteServerlet.class\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-usuario.jsp\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-usuario.jsp\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaDePaqueteServerlet.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaDePaqueteServerlet.class\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"Jsp File\" />\r\n        <option value=\"Class\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_BRANCH_BY_REPOSITORY\">\r\n      <map>\r\n        <entry key=\"$PROJECT_DIR$\" value=\"main\" />\r\n      </map>\r\n    </option>\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitHubPullRequestSearchHistory\">{\r\n  &quot;lastFilter&quot;: {\r\n    &quot;state&quot;: &quot;OPEN&quot;,\r\n    &quot;assignee&quot;: &quot;jakz13&quot;\r\n  }\r\n}</component>\r\n  <component name=\"GithubPullRequestsUISettings\">{\r\n  &quot;selectedUrlAndAccountId&quot;: {\r\n    &quot;url&quot;: &quot;https://github.com/jakz13/labPappHTML&quot;,\r\n    &quot;accountId&quot;: &quot;01f832ff-b1f7-4722-8427-e88b1bf7ac21&quot;\r\n  }\r\n}</component>\r\n  <component name=\"KubernetesApiPersistence\">{}</component>\r\n  <component name=\"KubernetesApiProvider\">{\r\n  &quot;isMigrated&quot;: true\r\n}</component>\r\n  <component name=\"LogFilters\">\r\n    <option name=\"FILTER_ERRORS\" value=\"false\" />\r\n    <option name=\"FILTER_WARNINGS\" value=\"false\" />\r\n    <option name=\"FILTER_INFO\" value=\"true\" />\r\n    <option name=\"FILTER_DEBUG\" value=\"true\" />\r\n    <option name=\"CUSTOM_FILTER\" />\r\n  </component>\r\n  <component name=\"ProblemsViewState\">\r\n    <option name=\"selectedTabId\" value=\"CurrentFile\" />\r\n    <option name=\"showPreview\" value=\"true\" />\r\n  </component>\r\n  <component name=\"ProjectColorInfo\">{\r\n  &quot;associatedIndex&quot;: 6\r\n}</component>\r\n  <component name=\"ProjectId\" id=\"33qFSfqJTCS0xza7qRa7NE0hl13\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\"><![CDATA[{\r\n  \"keyToString\": {\r\n    \"ASKED_SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"Application.Main.executor\": \"Run\",\r\n    \"ModuleVcsDetector.initialDetectionPerformed\": \"true\",\r\n    \"RunOnceActivity.ShowReadmeOnStart\": \"true\",\r\n    \"RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252\": \"true\",\r\n    \"RunOnceActivity.git.unshallow\": \"true\",\r\n    \"SHARE_PROJECT_CONFIGURATION_FILES\": \"true\",\r\n    \"SHELLCHECK.PATH\": \"C:\\\\Users\\\\Curbe\\\\AppData\\\\Roaming\\\\JetBrains\\\\IntelliJIdea2025.2\\\\plugins\\\\Shell Script\\\\shellcheck.exe\",\r\n    \"Tomcat Server.Tomcat 11.0.11.executor\": \"Run\",\r\n    \"git-widget-placeholder\": \"junior\",\r\n    \"ignore.virus.scanning.warn.message\": \"true\",\r\n    \"kotlin-language-version-configured\": \"true\",\r\n    \"last_opened_file_path\": \"C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp\",\r\n    \"node.js.detected.package.eslint\": \"true\",\r\n    \"node.js.detected.package.tslint\": \"true\",\r\n    \"node.js.selected.package.eslint\": \"(autodetect)\",\r\n    \"node.js.selected.package.tslint\": \"(autodetect)\",\r\n    \"nodejs_package_manager_path\": \"npm\",\r\n    \"project.structure.last.edited\": \"Artifacts\",\r\n    \"project.structure.proportion\": \"0.15\",\r\n    \"project.structure.side.proportion\": \"0.29319373\",\r\n    \"settings.editor.selected.configurable\": \"preferences.lookFeel\",\r\n    \"vue.rearranger.settings.migration\": \"true\"\r\n  }\r\n}]]></component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\webapp\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\webapp\\JsLogica\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\webapp\\WEB-INF\\lib\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\webapp\\WEB-INF\\META-INF\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\" />\r\n      <recent name=\"C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\DataTypes\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunDashboard\">\r\n    <option name=\"configurationStatuses\">\r\n      <map>\r\n        <entry key=\"#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory\">\r\n          <value>\r\n            <map>\r\n              <entry key=\"Tomcat 11.0.11\" value=\"STOPPED\" />\r\n            </map>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"RunManager\" selected=\"Tomcat Server.Tomcat 11.0.11\">\r\n    <configuration name=\"Main\" type=\"Application\" factoryName=\"Application\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <option name=\"MAIN_CLASS_NAME\" value=\"Presentacion.gui.Main\" />\r\n      <module name=\"WebAppApache\" />\r\n      <extension name=\"coverage\">\r\n        <pattern>\r\n          <option name=\"PATTERN\" value=\"Presentacion.gui.*\" />\r\n          <option name=\"ENABLED\" value=\"true\" />\r\n        </pattern>\r\n      </extension>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n      </method>\r\n    </configuration>\r\n    <configuration name=\"Tomcat 11.0.11\" type=\"#com.intellij.j2ee.web.tomcat.TomcatRunConfigurationFactory\" factoryName=\"Local\" APPLICATION_SERVER_NAME=\"Tomcat 11.0.11\" ALTERNATIVE_JRE_ENABLED=\"false\" nameIsGenerated=\"true\">\r\n      <option name=\"UPDATING_POLICY\" value=\"restart-server\" />\r\n      <deployment>\r\n        <artifact name=\"WebAppApache:war exploded\">\r\n          <settings>\r\n            <option name=\"CONTEXT_PATH\" value=\"/WebAppApache_war_exploded\" />\r\n          </settings>\r\n        </artifact>\r\n      </deployment>\r\n      <server-settings>\r\n        <option name=\"BASE_DIRECTORY_NAME\" value=\"dbba3c89-5013-40db-8e5a-f39be74e2917\" />\r\n      </server-settings>\r\n      <predefined_log_file enabled=\"true\" id=\"Tomcat\" />\r\n      <predefined_log_file enabled=\"true\" id=\"Tomcat Catalina\" />\r\n      <predefined_log_file id=\"Tomcat Manager\" />\r\n      <predefined_log_file id=\"Tomcat Host Manager\" />\r\n      <predefined_log_file id=\"Tomcat Localhost Access\" />\r\n      <RunnerSettings RunnerId=\"Debug\">\r\n        <option name=\"DEBUG_PORT\" value=\"62806\" />\r\n      </RunnerSettings>\r\n      <ConfigurationWrapper VM_VAR=\"JAVA_OPTS\" RunnerId=\"Cover\">\r\n        <option name=\"USE_ENV_VARIABLES\" value=\"true\" />\r\n        <STARTUP>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </STARTUP>\r\n        <SHUTDOWN>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </SHUTDOWN>\r\n      </ConfigurationWrapper>\r\n      <ConfigurationWrapper VM_VAR=\"JAVA_OPTS\" RunnerId=\"Debug\">\r\n        <option name=\"USE_ENV_VARIABLES\" value=\"true\" />\r\n        <STARTUP>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </STARTUP>\r\n        <SHUTDOWN>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </SHUTDOWN>\r\n      </ConfigurationWrapper>\r\n      <ConfigurationWrapper VM_VAR=\"JAVA_OPTS\" RunnerId=\"Profile\">\r\n        <option name=\"USE_ENV_VARIABLES\" value=\"true\" />\r\n        <STARTUP>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </STARTUP>\r\n        <SHUTDOWN>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </SHUTDOWN>\r\n      </ConfigurationWrapper>\r\n      <ConfigurationWrapper VM_VAR=\"JAVA_OPTS\" RunnerId=\"Run\">\r\n        <option name=\"USE_ENV_VARIABLES\" value=\"true\" />\r\n        <STARTUP>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </STARTUP>\r\n        <SHUTDOWN>\r\n          <option name=\"USE_DEFAULT\" value=\"true\" />\r\n          <option name=\"SCRIPT\" value=\"\" />\r\n          <option name=\"VM_PARAMETERS\" value=\"\" />\r\n          <option name=\"PROGRAM_PARAMETERS\" value=\"\" />\r\n        </SHUTDOWN>\r\n      </ConfigurationWrapper>\r\n      <method v=\"2\">\r\n        <option name=\"Make\" enabled=\"true\" />\r\n        <option name=\"BuildArtifacts\" enabled=\"true\">\r\n          <artifact name=\"WebAppApache:war exploded\" />\r\n        </option>\r\n      </method>\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Application.Main\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SharedIndexes\">\r\n    <attachedChunks>\r\n      <set>\r\n        <option value=\"bundled-jdk-9823dce3aa75-bf35d07a577b-intellij.indexing.shared.core-IU-252.26830.84\" />\r\n        <option value=\"bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84\" />\r\n      </set>\r\n    </attachedChunks>\r\n  </component>\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"9fad4d8b-b73d-4daa-994f-a9c0a792a904\" name=\"Changes\" comment=\"\" />\r\n      <created>1760036697072</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1760036697072</updated>\r\n      <workItem from=\"1760036698471\" duration=\"3677000\" />\r\n      <workItem from=\"1760139315582\" duration=\"3923000\" />\r\n      <workItem from=\"1760144997034\" duration=\"166000\" />\r\n      <workItem from=\"1760145179273\" duration=\"1308000\" />\r\n      <workItem from=\"1760146511436\" duration=\"3350000\" />\r\n      <workItem from=\"1760311399195\" duration=\"40551000\" />\r\n      <workItem from=\"1760400110377\" duration=\"12091000\" />\r\n      <workItem from=\"1760447957679\" duration=\"9649000\" />\r\n      <workItem from=\"1760457663446\" duration=\"4396000\" />\r\n      <workItem from=\"1760479760639\" duration=\"17289000\" />\r\n      <workItem from=\"1760585006030\" duration=\"632000\" />\r\n      <workItem from=\"1760616324542\" duration=\"77000\" />\r\n      <workItem from=\"1760616412174\" duration=\"2133000\" />\r\n      <workItem from=\"1760623476807\" duration=\"26409000\" />\r\n      <workItem from=\"1760733904838\" duration=\"116627000\" />\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"fxg\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760457059759</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760457059759</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"fxg\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760457107369</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760457107369</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"fxg\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760457895232</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760457895232</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"registro\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760573654482</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760573654482</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"prueba\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760634712367</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760634712367</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"prueba\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760649004419</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760649004419</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"&#10;Inicio de Sesión&#9;&#9;&#9;hecho&#10;Cierre de Sesión&#9;&#9;&#9;hecho&#10;Alta de Usuario&#9;&#9;&#9;&#9;hecho&#10;Consulta de Usuario&#9;&#9;&#9;sin hacer&#10;Modificar Datos de Usuario&#9;&#9;hecho&#10;Alta de Ruta de Vuelo&#9;&#9;&#9;hecho&#9;&#10;Consulta de Ruta de Vuelo&#9;&#9;hecho a medias&#10;Alta de Vuelo&#9;&#9;&#9;&#9;sin hacer falata logear&#10;Consulta de Vuelo&#9;&#9;&#9;hecho a medias &#10;Reserva de Vuelo&#9;&#9;&#9;falan ingresar pasajeros &#10;Consulta de Reserva de vuelo&#9;&#9;hecho a medias&#10;&#10;Consulta de Paquete de Rutas de Vuelo&#9;sin hacer&#10;Compra de Paquete de Rutas de Vuelo&#9;sin hacer\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760991315795</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760991315795</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"&#10;Inicio de Sesión&#9;&#9;&#9;hecho&#10;Cierre de Sesión&#9;&#9;&#9;hecho&#10;Alta de Usuario&#9;&#9;&#9;&#9;hecho&#10;Consulta de Usuario&#9;&#9;&#9;sin hacer&#10;Modificar Datos de Usuario&#9;&#9;hecho&#10;Alta de Ruta de Vuelo&#9;&#9;&#9;hecho&#9;&#10;Consulta de Ruta de Vuelo&#9;&#9;hecho a medias&#10;Alta de Vuelo&#9;&#9;&#9;&#9;sin hacer falata logear&#10;Consulta de Vuelo&#9;&#9;&#9;hecho a medias &#10;Reserva de Vuelo&#9;&#9;&#9;falan ingresar pasajeros &#10;Consulta de Reserva de vuelo&#9;&#9;hecho a medias&#10;&#10;Consulta de Paquete de Rutas de Vuelo&#9;sin hacer&#10;Compra de Paquete de Rutas de Vuelo&#9;sin hacer\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1760998596566</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1760998596566</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"&#10;Inicio de Sesión&#9;&#9;&#9;hecho&#10;Cierre de Sesión&#9;&#9;&#9;hecho&#10;Alta de Usuario&#9;&#9;&#9;&#9;hecho&#10;Consulta de Usuario&#9;&#9;&#9;sin hacer&#10;Modificar Datos de Usuario&#9;&#9;hecho&#10;Alta de Ruta de Vuelo&#9;&#9;&#9;hecho&#9;&#10;Consulta de Ruta de Vuelo&#9;&#9;hecho a medias&#10;Alta de Vuelo&#9;&#9;&#9;&#9;sin hacer falata logear&#10;Consulta de Vuelo&#9;&#9;&#9;hecho a medias &#10;Reserva de Vuelo&#9;&#9;&#9;falan ingresar pasajeros &#10;Consulta de Reserva de vuelo&#9;&#9;hecho a medias&#10;&#10;Consulta de Paquete de Rutas de Vuelo&#9;sin hacer&#10;Compra de Paquete de Rutas de Vuelo&#9;sin hacer\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761095437470</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761095437470</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00010\" summary=\"solucion de login de usuarios y reparacion parcial de reserva de vuelos\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761100359631</created>\r\n      <option name=\"number\" value=\"00010\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761100359631</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00011\" summary=\"solucion de login de usuarios y reparacion parcial de reserva de vuelos\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761167692962</created>\r\n      <option name=\"number\" value=\"00011\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761167692962</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00012\" summary=\"&#10;algo\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761180731717</created>\r\n      <option name=\"number\" value=\"00012\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761180731717</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00013\" summary=\"&#10;algo\">\r\n      <option name=\"closed\" value=\"true\" />\r\n      <created>1761189110448</created>\r\n      <option name=\"number\" value=\"00013\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1761189110448</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"14\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"TypeScriptGeneratedFilesManager\">\r\n    <option name=\"version\" value=\"3\" />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State>\r\n              <option name=\"FILTERS\">\r\n                <map>\r\n                  <entry key=\"branch\">\r\n                    <value>\r\n                      <list>\r\n                        <option value=\"origin/junior\" />\r\n                      </list>\r\n                    </value>\r\n                  </entry>\r\n                </map>\r\n              </option>\r\n            </State>\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"fxg\" />\r\n    <MESSAGE value=\"registro\" />\r\n    <MESSAGE value=\"prueba\" />\r\n    <MESSAGE value=\"&#10;Inicio de Sesión&#9;&#9;&#9;hecho&#10;Cierre de Sesión&#9;&#9;&#9;hecho&#10;Alta de Usuario&#9;&#9;&#9;&#9;hecho&#10;Consulta de Usuario&#9;&#9;&#9;sin hacer&#10;Modificar Datos de Usuario&#9;&#9;hecho&#10;Alta de Ruta de Vuelo&#9;&#9;&#9;hecho&#9;&#10;Consulta de Ruta de Vuelo&#9;&#9;hecho a medias&#10;Alta de Vuelo&#9;&#9;&#9;&#9;sin hacer falata logear&#10;Consulta de Vuelo&#9;&#9;&#9;hecho a medias &#10;Reserva de Vuelo&#9;&#9;&#9;falan ingresar pasajeros &#10;Consulta de Reserva de vuelo&#9;&#9;hecho a medias&#10;&#10;Consulta de Paquete de Rutas de Vuelo&#9;sin hacer&#10;Compra de Paquete de Rutas de Vuelo&#9;sin hacer\" />\r\n    <MESSAGE value=\"solucion de login de usuarios y reparacion parcial de reserva de vuelos\" />\r\n    <MESSAGE value=\"&#10;algo\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"&#10;algo\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 88ca6ef072dc2c3ac26c3eee8cf0cbad5966625a)
++++ b/.idea/workspace.xml	(date 1761191240809)
+@@ -9,20 +9,145 @@
+     <option name="autoReloadType" value="SELECTIVE" />
+   </component>
+   <component name="ChangeListManager">
+-    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="&#10;algo">
++    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="solucion de login de usuarios y reparacion parcial de reserva de vuelos">
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaDePaqueteServerlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaDePaqueteServerlet.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaUsuarioServerlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ConsultaUsuarioServerlet.java" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-usuario.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/reserva-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/reserva-vuelo.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-usuario.jsp" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-usuario.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-usuario.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/reserva-vuelo.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/reserva-vuelo.js" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaDePaqueteServerlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaDePaqueteServerlet.class" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-usuario.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-usuario.jsp" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaDePaqueteServerlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaDePaqueteServerlet.class" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/CssLogica/estilo-css.css" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/.gitkeep" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/0d667bfc-0e9e-4549-b2f3-fa9cfbc0b9ca.jpg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/327d11d6-66cc-4f56-bea8-288dd248386d.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/36f5db91-971b-4ae1-a2d8-365a47751c7e.jpg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/7657ed6f-4ea7-40bd-911b-21ac00005aee.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/89d36bb7-1433-4e80-8d1e-26a48ffd756c.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/8ab006d3-5126-4d27-abba-030537a14c32.gif" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/95fb577a-69b3-423c-a79d-6e940b5f7c7e.jpg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/99dee849-1f49-4276-ad79-af9fed0a9c3e.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/b511413e-5f1a-4dba-901c-619521182445.jpg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/d5f0208f-9ddd-4d78-b914-e4c2f811ad02.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/db4024c0-a435-41ac-989e-46cc3500b228.jpeg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/e9f69bda-7d49-41c3-8766-57faec1221da.jpg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/juan123_1761101347263.jpg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/latam001_1761088115924.jpg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/placeholder.svg" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-paquete.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-ruta.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-usuario.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/alta-vuelo.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/compra-paquete.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-paquete.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-reserva.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-ruta.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-usuario.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/consulta-vuelo.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/modificar-usuario.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/reserva-vuelo.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/JsLogica/session-manager.js" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/META-INF/MANIFEST.MF" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/PaginaPrincipal.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/META-INF/MANIFEST.MF" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ActualizarUsuarioServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaRutaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaUsuarioServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/AltaVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CargarDatosBD.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CheckSessionServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/CompraPaqueteServerlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaDePaqueteServerlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaReservaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/DebugVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/FlightImageServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/GetRutaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/HomePageServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ImageServeServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCategoriasServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCiudadesServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LoginServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/LogoutServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ObtenerUsuarioServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservaClienteServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservaVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ReservasVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/UsuarioServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerInfoVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarEmailServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/VerificarPermisosVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/angus-activation-2.0.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/antlr4-runtime-4.13.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/byte-buddy-1.14.11.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/checker-qual-3.42.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/classmate-1.5.1.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/gson-2.10.1.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/hibernate-commons-annotations-6.0.6.Final.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/hibernate-core-6.4.4.Final.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/istack-commons-runtime-4.1.1.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.activation-2.0.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.activation-api-2.1.1.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.el-api-4.0.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.inject-api-2.0.1.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.persistence-api-3.1.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.servlet.jsp.jstl-2.0.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.servlet.jsp.jstl-api-2.0.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.transaction-api-2.0.1.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jakarta.xml.bind-api-3.0.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jandex-3.1.2.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jaxb-core-4.0.2.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jaxb-runtime-4.0.2.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/jboss-logging-3.5.0.Final.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/json-20240303.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/mi-proyecto-swing-1.0.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/postgresql-42.7.3.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/txw2-4.0.2.jar" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/web.xml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-paquete.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-ruta.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-usuario.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/alta-vuelo.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/compra-paquete.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-paquete.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-reserva.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-ruta.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-usuario.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/consulta-vuelo.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/index.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/login.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/modificar-usuario.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/reserva-vuelo.jsp" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/web/WEB-INF/web.xml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaReservaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/DebugVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/FlightImageServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/GetRutaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/HomePageServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ImageServeServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarAerolineasServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarCategoriasServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarCiudadesServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarRutasServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarVuelosPorRutaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LoginServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/LogoutServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ObtenerUsuarioServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservaClienteServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservaVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ReservasVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/UsuarioServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerInfoVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarEmailServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/VerificarPermisosVueloServlet.class" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-archiver/pom.properties" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -94,7 +219,7 @@
+     "git-widget-placeholder": "junior",
+     "ignore.virus.scanning.warn.message": "true",
+     "kotlin-language-version-configured": "true",
+-    "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp",
++    "last_opened_file_path": "C:/Users/Usuario/Desktop/Juegos Varios/NicoESwing/labPappHTML/WebAppApache/src/main/webapp/WEB-INF/lib",
+     "node.js.detected.package.eslint": "true",
+     "node.js.detected.package.tslint": "true",
+     "node.js.selected.package.eslint": "(autodetect)",
+@@ -109,10 +234,10 @@
+ }]]></component>
+   <component name="RecentsManager">
+     <key name="CopyFile.RECENT_KEYS">
+-      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp" />
++      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets" />
+       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp\JsLogica" />
++      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp" />
+       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp\WEB-INF\lib" />
+-      <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets" />
+       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java" />
+     </key>
+     <key name="MoveFile.RECENT_KEYS">
+@@ -272,7 +397,7 @@
+       <workItem from="1760616324542" duration="77000" />
+       <workItem from="1760616412174" duration="2133000" />
+       <workItem from="1760623476807" duration="26409000" />
+-      <workItem from="1760733904838" duration="116627000" />
++      <workItem from="1760733904838" duration="96347000" />
+     </task>
+     <task id="LOCAL-00001" summary="fxg">
+       <option name="closed" value="true" />
+@@ -354,31 +479,7 @@
+       <option name="project" value="LOCAL" />
+       <updated>1761100359631</updated>
+     </task>
+-    <task id="LOCAL-00011" summary="solucion de login de usuarios y reparacion parcial de reserva de vuelos">
+-      <option name="closed" value="true" />
+-      <created>1761167692962</created>
+-      <option name="number" value="00011" />
+-      <option name="presentableId" value="LOCAL-00011" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1761167692962</updated>
+-    </task>
+-    <task id="LOCAL-00012" summary="&#10;algo">
+-      <option name="closed" value="true" />
+-      <created>1761180731717</created>
+-      <option name="number" value="00012" />
+-      <option name="presentableId" value="LOCAL-00012" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1761180731717</updated>
+-    </task>
+-    <task id="LOCAL-00013" summary="&#10;algo">
+-      <option name="closed" value="true" />
+-      <created>1761189110448</created>
+-      <option name="number" value="00013" />
+-      <option name="presentableId" value="LOCAL-00013" />
+-      <option name="project" value="LOCAL" />
+-      <updated>1761189110448</updated>
+-    </task>
+-    <option name="localTasksCounter" value="14" />
++    <option name="localTasksCounter" value="11" />
+     <servers />
+   </component>
+   <component name="TypeScriptGeneratedFilesManager">
+@@ -413,7 +514,6 @@
+     <MESSAGE value="prueba" />
+     <MESSAGE value="&#10;Inicio de Sesión&#9;&#9;&#9;hecho&#10;Cierre de Sesión&#9;&#9;&#9;hecho&#10;Alta de Usuario&#9;&#9;&#9;&#9;hecho&#10;Consulta de Usuario&#9;&#9;&#9;sin hacer&#10;Modificar Datos de Usuario&#9;&#9;hecho&#10;Alta de Ruta de Vuelo&#9;&#9;&#9;hecho&#9;&#10;Consulta de Ruta de Vuelo&#9;&#9;hecho a medias&#10;Alta de Vuelo&#9;&#9;&#9;&#9;sin hacer falata logear&#10;Consulta de Vuelo&#9;&#9;&#9;hecho a medias &#10;Reserva de Vuelo&#9;&#9;&#9;falan ingresar pasajeros &#10;Consulta de Reserva de vuelo&#9;&#9;hecho a medias&#10;&#10;Consulta de Paquete de Rutas de Vuelo&#9;sin hacer&#10;Compra de Paquete de Rutas de Vuelo&#9;sin hacer" />
+     <MESSAGE value="solucion de login de usuarios y reparacion parcial de reserva de vuelos" />
+-    <MESSAGE value="&#10;algo" />
+-    <option name="LAST_COMMIT_MESSAGE" value="&#10;algo" />
++    <option name="LAST_COMMIT_MESSAGE" value="solucion de login de usuarios y reparacion parcial de reserva de vuelos" />
+   </component>
+ </project>
+\ No newline at end of file
+Index: WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>com\\example\\servlets\\FlightImageServlet.class\r\ncom\\example\\servlets\\ListarVuelosPorRutaServlet.class\r\ncom\\example\\servlets\\ListarAerolineasServlet.class\r\ncom\\example\\servlets\\ActualizarUsuarioServlet.class\r\ncom\\example\\servlets\\ImageServeServlet.class\r\ncom\\example\\servlets\\ListarRutasServlet.class\r\ncom\\example\\servlets\\UsuarioServlet.class\r\ncom\\example\\servlets\\ListarCategoriasServlet.class\r\ncom\\example\\servlets\\LoginServlet.class\r\ncom\\example\\servlets\\RegistrarReservaServlet.class\r\ncom\\example\\servlets\\GetRutaServlet.class\r\ncom\\example\\servlets\\ListarCiudadesServlet.class\r\ncom\\example\\servlets\\CargarDatosBD.class\r\ncom\\example\\servlets\\DebugVueloServlet.class\r\ncom\\example\\servlets\\AltaUsuarioServlet.class\r\ncom\\example\\servlets\\ReservasVueloServlet.class\r\ncom\\example\\servlets\\ReservaClienteServlet.class\r\ncom\\example\\servlets\\ConsultaReservaServlet.class\r\ncom\\example\\servlets\\CheckSessionServlet.class\r\ncom\\example\\servlets\\ListarRutasPorAerolineaServlet.class\r\ncom\\example\\servlets\\VerificarEmailServlet.class\r\ncom\\example\\servlets\\VerificarPermisosVueloServlet.class\r\ncom\\example\\servlets\\AltaRutaServlet.class\r\ncom\\example\\servlets\\ObtenerUsuarioServlet.class\r\ncom\\example\\servlets\\LogoutServlet.class\r\ncom\\example\\servlets\\ReservaVueloServlet.class\r\ncom\\example\\servlets\\AltaVueloServlet.class\r\ncom\\example\\servlets\\VerInfoVueloServlet.class\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst b/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst
+--- a/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst	(revision 88ca6ef072dc2c3ac26c3eee8cf0cbad5966625a)
++++ b/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst	(date 1761191298580)
+@@ -10,6 +10,7 @@
+ com\example\servlets\RegistrarReservaServlet.class
+ com\example\servlets\GetRutaServlet.class
+ com\example\servlets\ListarCiudadesServlet.class
++com\example\servlets\HomePageServlet.class
+ com\example\servlets\CargarDatosBD.class
+ com\example\servlets\DebugVueloServlet.class
+ com\example\servlets\AltaUsuarioServlet.class
+@@ -24,5 +25,8 @@
+ com\example\servlets\ObtenerUsuarioServlet.class
+ com\example\servlets\LogoutServlet.class
+ com\example\servlets\ReservaVueloServlet.class
++com\example\servlets\ConsultaDePaqueteServerlet.class
++com\example\servlets\ConsultaUsuarioServerlet.class
+ com\example\servlets\AltaVueloServlet.class
+ com\example\servlets\VerInfoVueloServlet.class
++com\example\servlets\CompraPaqueteServerlet.class
+Index: WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>C:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ActualizarUsuarioServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\AltaRutaServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\AltaUsuarioServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\AltaVueloServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\CargarDatosBD.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\CheckSessionServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ConsultaReservaServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\DebugVueloServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\FlightImageServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\GetRutaServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ImageServeServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ListarAerolineasServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ListarCategoriasServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ListarCiudadesServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ListarRutasPorAerolineaServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ListarRutasServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ListarVuelosPorRutaServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\LoginServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\LogoutServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ObtenerUsuarioServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\RegistrarReservaServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ReservaClienteServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ReservasVueloServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\ReservaVueloServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\UsuarioServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\VerificarEmailServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\VerificarPermisosVueloServlet.java\r\nC:\\Users\\Curbe\\OneDrive\\Escritorio\\prueba-tomcat\\WebAppApache\\src\\main\\java\\com\\example\\servlets\\VerInfoVueloServlet.java\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst b/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst
+--- a/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst	(revision 88ca6ef072dc2c3ac26c3eee8cf0cbad5966625a)
++++ b/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst	(date 1761191295725)
+@@ -1,28 +1,32 @@
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ActualizarUsuarioServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\AltaRutaServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\AltaUsuarioServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\AltaVueloServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\CargarDatosBD.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\CheckSessionServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ConsultaReservaServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\DebugVueloServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\FlightImageServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\GetRutaServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ImageServeServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ListarAerolineasServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ListarCategoriasServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ListarCiudadesServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ListarRutasPorAerolineaServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ListarRutasServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ListarVuelosPorRutaServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\LoginServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\LogoutServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ObtenerUsuarioServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\RegistrarReservaServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ReservaClienteServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ReservasVueloServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\ReservaVueloServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\UsuarioServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\VerificarEmailServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\VerificarPermisosVueloServlet.java
+-C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\java\com\example\servlets\VerInfoVueloServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ActualizarUsuarioServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\AltaRutaServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\AltaUsuarioServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\AltaVueloServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\CargarDatosBD.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\CheckSessionServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\CompraPaqueteServerlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ConsultaDePaqueteServerlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ConsultaReservaServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ConsultaUsuarioServerlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\DebugVueloServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\FlightImageServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\GetRutaServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\HomePageServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ImageServeServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ListarAerolineasServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ListarCategoriasServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ListarCiudadesServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ListarRutasPorAerolineaServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ListarRutasServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ListarVuelosPorRutaServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\LoginServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\LogoutServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ObtenerUsuarioServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\RegistrarReservaServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ReservaClienteServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ReservasVueloServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\ReservaVueloServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\UsuarioServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\VerificarEmailServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\VerificarPermisosVueloServlet.java
++C:\Users\Usuario\Desktop\Juegos Varios\NicoESwing\labPappHTML\WebAppApache\src\main\java\com\example\servlets\VerInfoVueloServlet.java
+Index: WebAppApache/target/WebAppApache-1.0-SNAPSHOT/META-INF/MANIFEST.MF
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>Manifest-Version: 1.0\r\nCreated-By: IntelliJ IDEA\r\nBuilt-By: Curbe\r\nBuild-Jdk: Oracle OpenJDK 21.0.7\r\n\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/META-INF/MANIFEST.MF b/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/META-INF/MANIFEST.MF
+--- a/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/META-INF/MANIFEST.MF	(revision 88ca6ef072dc2c3ac26c3eee8cf0cbad5966625a)
++++ b/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/META-INF/MANIFEST.MF	(date 1761191354726)
+@@ -1,5 +1,5 @@
+ Manifest-Version: 1.0
+ Created-By: IntelliJ IDEA
+-Built-By: Curbe
+-Build-Jdk: Oracle OpenJDK 21.0.7
++Built-By: Usuario
++Build-Jdk: Microsoft OpenJDK 21.0.8
+ 
