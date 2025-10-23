@@ -1,21 +1,16 @@
 // src/main/java/com/example/servlets/ReservaClienteServlet.java
 package com.example.servlets;
 
-import DataTypes.DtAerolinea;
-import DataTypes.DtRutaVuelo;
 import DataTypes.DtVuelo;
 import Logica.Fabrica;
 import Logica.ISistema;
 import DataTypes.DtReserva;
-import Logica.Reserva;
-import Logica.Vuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
-import java.util.Map;
 
 @WebServlet("/api/reserva-cliente")
 public class ReservaClienteServlet extends HttpServlet {
@@ -64,20 +59,22 @@ public class ReservaClienteServlet extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error al obtener reserva: " + e.getMessage() + "\"}");
+            log("Error en ReservaClienteServlet", e);
         }
     }
 
     private DtReserva buscarReservaEnVuelo(List<DtReserva> reservasCliente, String nombreVuelo, ISistema sistema) {
         try {
             // Obtener el vuelo específico
-            Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
+            DtVuelo vuelo = sistema.verInfoVueloDt(nombreVuelo);
             if (vuelo != null) {
-                // Obtener las reservas del vuelo como Map (clave Long)
-                Map<Long, Reserva> reservasVuelo = vuelo.getReservas();
+                // Obtener las reservas del vuelo como lista de DtReserva
+                List<DtReserva> reservasVuelo = vuelo.getReservas();
+                if (reservasVuelo == null) reservasVuelo = java.util.Collections.emptyList();
 
                 // Buscar si alguna reserva del cliente está en el vuelo
                 for (DtReserva reservaCliente : reservasCliente) {
-                    for (Reserva reservaVuelo : reservasVuelo.values()) {
+                    for (DtReserva reservaVuelo : reservasVuelo) {
                         // Comparar IDs convirtiéndolos a String para asegurarnos de compatibilidad entre tipos
                         if (String.valueOf(reservaVuelo.getId()).equals(String.valueOf(reservaCliente.getId()))) {
                             return reservaCliente;
@@ -86,7 +83,7 @@ public class ReservaClienteServlet extends HttpServlet {
                 }
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            log("Error en buscarReservaEnVuelo", e);
         }
         return null;
     }

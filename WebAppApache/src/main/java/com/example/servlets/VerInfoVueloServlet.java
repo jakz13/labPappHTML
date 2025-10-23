@@ -3,7 +3,6 @@ package com.example.servlets;
 
 import Logica.Fabrica;
 import Logica.ISistema;
-import Logica.Vuelo;
 import DataTypes.DtVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -22,14 +21,14 @@ public class VerInfoVueloServlet extends HttpServlet {
         String nombre = request.getParameter("nombre");
         ISistema sistema = Fabrica.getInstance().getISistema();
         sistema.cargarDesdeBd();
-        Vuelo vuelo = null;
-        try { vuelo = sistema.verInfoVuelo(nombre); } catch (Throwable t) { /* ignore */ }
+        DtVuelo vuelo = null;
+        try { vuelo = sistema.verInfoVueloDt(nombre); } catch (Throwable t) { /* ignore */ }
 
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
 
         if (vuelo != null) {
-            DtVuelo dt = vuelo.getDtVuelo();
+            DtVuelo dt = vuelo;
             out.print("{");
             out.print("\"nombre\":\"" + dt.getNombre() + "\",");
             out.print("\"fecha\":\"" + dt.getFecha() + "\",");

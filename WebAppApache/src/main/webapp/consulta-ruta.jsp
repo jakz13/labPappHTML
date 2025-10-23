@@ -37,16 +37,10 @@
                                 </select>
                             </div>
                             <div class="col-md-4">
-                                <label for="categoria" class="form-label">Categoría</label>
-                                <select class="form-select" id="categoria">
+                                <label for="categoria" class="form-label">Filtrar por categoría:</label>
+                                <select id="categoria" class="form-select">
                                     <option value="">Todas las categorías</option>
-                                    <option value="nacionales">Nacionales</option>
-                                    <option value="internacionales">Internacionales</option>
-                                    <option value="europa">Europa</option>
-                                    <option value="america">América</option>
-                                    <option value="caribe">Caribe</option>
-                                    <option value="cortos">Cortos</option>
-                                    <option value="exclusivos">Exclusivos</option>
+                                    <!-- Las opciones se cargarán dinámicamente -->
                                 </select>
                             </div>
                             <div class="col-md-4">
@@ -84,8 +78,14 @@
                             <div class="card-body">
                                 <div class="row">
                                     <div class="col-md-12">
-                                        <h4 id="rutaNombre" class="text-primary mb-3"></h4>
-                                        <p class="lead" id="rutaDescripcion"></p>
+                                        <!-- Imagen de la ruta -->
+                                        <div class="mb-3">
+                                            <p class="mb-0">RutaImg</p>
+                                            <img id="imagenRutaDetalle" src="" alt="Imagen de la ruta" class="img-fluid rounded w-100" style="max-height:300px; object-fit:cover; display:none;">
+                                        </div>
+
+                                         <h4 id="rutaNombre" class="text-primary mb-3"></h4>
+                                         <p class="lead" id="rutaDescripcion"></p>
 
                                         <div class="row mt-3">
                                             <div class="col-md-6">
@@ -242,6 +242,7 @@
 <div id="toastContainer"></div>
 
 <!-- Scripts -->
+<script>window.CONTEXT_PATH = '<%= request.getContextPath() %>';</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="JsLogica/session-manager.js"></script>
 <script src="JsLogica/consulta-ruta.js"></script>

@@ -356,9 +356,9 @@ function mostrarDetallesVuelo(vueloData) {
                             <i class="bi bi-person"></i> Iniciar Sesión para Reservar
                         </h6>
                         <p class="mb-2 text-light">Inicia sesión para realizar una reserva en este vuelo.</p>
-                        <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#loginModal">
+                        <a href="login.jsp" class="btn btn-sm btn-outline-warning">
                             <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-                        </button>
+                        </a>
                     </div>
                 </div>
 

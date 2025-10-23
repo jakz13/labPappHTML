@@ -218,6 +218,7 @@
 <div id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>window.CONTEXT_PATH = '<%= request.getContextPath() %>';</script>
 <script src="JsLogica/session-manager.js"></script>
 <script src="JsLogica/consulta-vuelo.js"></script>
 </body>

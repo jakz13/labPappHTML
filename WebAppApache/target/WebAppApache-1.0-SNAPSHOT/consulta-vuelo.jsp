@@ -189,9 +189,9 @@
                                             <i class="bi bi-person"></i> Iniciar Sesión para Reservar
                                         </h6>
                                         <p class="mb-2 text-light">Inicia sesión para realizar una reserva en este vuelo.</p>
-                                        <a href="login.jsp" class="btn btn-sm btn-outline-warning">
+                                        <button type="button" class="btn btn-sm btn-outline-warning" data-bs-toggle="modal" data-bs-target="#loginModal">
                                             <i class="bi bi-box-arrow-in-right"></i> Iniciar Sesión
-                                        </a>
+                                        </button>
                                     </div>
                                 </div>
 
@@ -218,6 +218,7 @@
 <div id="toastContainer"></div>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+<script>window.CONTEXT_PATH = '<%= request.getContextPath() %>';</script>
 <script src="JsLogica/session-manager.js"></script>
 <script src="JsLogica/consulta-vuelo.js"></script>
 </body>

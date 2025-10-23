@@ -2,7 +2,6 @@ package com.example.servlets;
 
 import Logica.Fabrica;
 import Logica.ISistema;
-import Logica.Vuelo;
 import DataTypes.DtVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
@@ -26,14 +25,14 @@ public class FlightImageServlet extends HttpServlet {
 
         ISistema sistema = Fabrica.getInstance().getISistema();
         try { sistema.cargarDesdeBd(); } catch (Exception ignore) {}
-        Vuelo vuelo = null;
-        try { vuelo = sistema.verInfoVuelo(nombre); } catch (Throwable t) { /* ignore */ }
+        DtVuelo vuelo = null;
+        try { vuelo = sistema.verInfoVueloDt(nombre); } catch (Throwable t) { /* ignore */ }
 
         String imagenVal = null;
         // intentar leer desde DtVuelo si existe
         if (vuelo != null) {
             try {
-                DtVuelo dt = vuelo.getDtVuelo();
+                DtVuelo dt = vuelo;
 
                 // Nuevo: intentar servir imagen binaria si el DTO la expone (getImagenBlob/getImagenBytes)
                 try {
@@ -126,7 +125,7 @@ public class FlightImageServlet extends HttpServlet {
                     // intentar obtener info del DtVuelo si existe
                     if (vuelo != null) {
                         try {
-                            Object dt = vuelo.getDtVuelo();
+                            Object dt = vuelo;
                             diag.put("dtClass", dt == null ? null : dt.getClass().getName());
                             // intentar extraer imagenUrl reflexivamente
                             try {

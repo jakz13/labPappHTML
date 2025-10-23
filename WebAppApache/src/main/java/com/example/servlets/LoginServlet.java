@@ -4,8 +4,6 @@ import DataTypes.DtAerolinea;
 import DataTypes.DtCliente;
 import Logica.Fabrica;
 import Logica.ISistema;
-import Logica.Cliente;
-import Logica.Aerolinea;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -32,8 +30,8 @@ public class LoginServlet extends HttpServlet {
             // Cargar datos desde BD
             sistema.cargarDesdeBd();
 
-            Cliente cliente = null;
-            Aerolinea aerolinea = null;
+            DtCliente cliente = null;
+            DtAerolinea aerolinea = null;
 
             // Buscar cliente por nickname o por email y verificar contraseña
             List<DtCliente> clientes = sistema.listarClientes();
@@ -56,7 +54,7 @@ public class LoginServlet extends HttpServlet {
                         continue;
                     }
 
-                    cliente = sistema.verInfoCliente(nick);
+                    cliente = sistema.obtenerCliente(nick);
                     System.out.println("Cliente autenticado: " + nick);
                     break;
                 } catch (Exception e) {
@@ -84,7 +82,7 @@ public class LoginServlet extends HttpServlet {
                             continue;
                         }
 
-                        aerolinea = sistema.verInfoAerolinea(nick);
+                        aerolinea = sistema.obtenerAerolinea(nick);
                         System.out.println("Aerolínea autenticada: " + nick);
                         break;
                     } catch (Exception e) {
@@ -98,6 +96,8 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("usuario", cliente.getNickname());
                 session.setAttribute("tipoUsuario", "cliente");
+                // Mantener compatibilidad con JSPs que usan 'tipo'
+                session.setAttribute("tipo", "cliente");
 
                 System.out.println("LOGIN EXITOSO - Cliente: " + cliente.getNickname());
 
@@ -109,6 +109,8 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("usuario", aerolinea.getNickname());
                 session.setAttribute("tipoUsuario", "aerolinea");
+                // Mantener compatibilidad con JSPs que usan 'tipo'
+                session.setAttribute("tipo", "aerolinea");
 
                 System.out.println("LOGIN EXITOSO - Aerolinea: " + aerolinea.getNickname());
 

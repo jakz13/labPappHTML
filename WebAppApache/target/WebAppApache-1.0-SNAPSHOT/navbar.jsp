@@ -38,6 +38,7 @@
                     <ul class="dropdown-menu" aria-labelledby="paquetesDropdown">
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-paquete.jsp"><i class="bi bi-box-seam"></i> Consulta de Paquete</a></li>
                         <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/compra-paquete.jsp"><i class="bi bi-cart-check"></i> Compra de Paquete</a></li>
+                        <!-- Alta de Paquete eliminada: antes visible solo para aerolínea -->
                     </ul>
                 </li>
 

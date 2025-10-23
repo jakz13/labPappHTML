@@ -3,7 +3,7 @@ package com.example.servlets;
 import Logica.Fabrica;
 import Logica.ISistema;
 import DataTypes.*;
-import Logica.Vuelo;
+import DataTypes.DtVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -62,7 +62,7 @@ public class ConsultaReservaServlet extends HttpServlet {
 
     private void obtenerReservasVuelo(ISistema sistema, String nombreVuelo, PrintWriter out) {
         try {
-            Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
+            DtVuelo vuelo = sistema.verInfoVueloDt(nombreVuelo);
             if (vuelo != null) {
                 Object reservasObj = vuelo.getReservas();
                 Collection<?> reservasColl = null;
@@ -151,7 +151,7 @@ public class ConsultaReservaServlet extends HttpServlet {
             List<DtReserva> reservasCliente = cliente.getReservas();
             if (reservasCliente == null) reservasCliente = Collections.emptyList();
 
-            Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
+            DtVuelo vuelo = sistema.verInfoVueloDt(nombreVuelo);
             if (vuelo == null) { out.print("{\"error\":\"Reserva no encontrada\"}"); return; }
 
             Object reservasObj = vuelo.getReservas();

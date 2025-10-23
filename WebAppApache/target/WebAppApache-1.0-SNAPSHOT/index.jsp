@@ -43,6 +43,7 @@
                         <ul class="dropdown-menu" aria-labelledby="paquetesDropdown">
                             <li><a class="dropdown-item" href="consulta-paquete.jsp"><i class="bi bi-box-seam"></i> Consulta de Paquete</a></li>
                             <li><a class="dropdown-item" href="compra-paquete.jsp"><i class="bi bi-cart-check"></i> Compra de Paquete</a></li>
+                            <!-- Alta de Paquete eliminada -->
                         </ul>
                     </li>
 

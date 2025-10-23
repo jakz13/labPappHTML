@@ -21,7 +21,6 @@ public class ListarCategoriasServlet extends HttpServlet {
 
         try {
             ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
             List<DtCategoria> categorias = sistema.listarCategorias();
 
             System.out.println("Cantidad de categorías encontradas: " + categorias.size());

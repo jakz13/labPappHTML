@@ -1,3 +1,19 @@
+<%
+// Control rápido de acceso: solo usuarios con tipo 'aerolinea' pueden acceder a esta página.
+// Se coloca antes de cualquier salida HTML para asegurar que el redirect funcione.
+String tipoSesion = null;
+Object t = session.getAttribute("tipo");
+if (t != null) tipoSesion = String.valueOf(t);
+if (tipoSesion == null || tipoSesion.trim().isEmpty()) {
+    Object tu = session.getAttribute("tipoUsuario");
+    if (tu != null) tipoSesion = String.valueOf(tu);
+}
+if (tipoSesion == null || !"aerolinea".equalsIgnoreCase(tipoSesion)) {
+    response.sendRedirect("PaginaPrincipal.jsp");
+    return;
+}
+%>
+
 <!DOCTYPE html>
 <html lang="es">
 <head>

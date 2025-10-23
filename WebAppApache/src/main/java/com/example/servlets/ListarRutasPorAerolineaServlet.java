@@ -23,50 +23,106 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
         sistema.cargarDesdeBd();
         List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea((aerolinea != null && !aerolinea.trim().isEmpty()) ? aerolinea : null);
 
-        // aplicar filtros adicionales en servidor (categoria y estado)
-        List<Object> rutasFiltradas = new ArrayList<>();
+        // Aplicar filtros
+        List<DtRutaVuelo> rutasFiltradas = new ArrayList<>();
         for (DtRutaVuelo r : rutas) {
-            try {
-                boolean pasaEstado = true;
-                if (estado != null && !estado.isEmpty() && !"todas".equalsIgnoreCase(estado)) {
-                    // intentar obtener estado mediante getter
-                    String estadoVal = invokeGetterSafe(r, new String[]{"getEstado", "getEstadoRuta", "estado"});
-                    if (estadoVal == null) estadoVal = "";
-                    pasaEstado = "confirmada".equalsIgnoreCase(estado) ? estadoVal.equalsIgnoreCase("Confirmada") || estadoVal.equalsIgnoreCase("confirmada") : true;
-                }
+            boolean pasaFiltros = true;
 
-                boolean pasaCategoria = true;
-                if (categoria != null && !categoria.isEmpty()) {
-                    // intentar obtener categorias como arreglo o lista vía reflexión
-                    Object catsObj = invokeGetterObjectSafe(r, new String[]{"getCategorias", "categorias", "getCategoria"});
-                    if (catsObj != null) {
-                        String catsStr = String.valueOf(catsObj).toLowerCase();
-                        pasaCategoria = catsStr.contains(categoria.toLowerCase());
-                    } else {
-                        pasaCategoria = true; // no hay info -> dejar pasar
+            // Filtro por categoría
+            if (categoria != null && !categoria.isEmpty() && !"todas".equalsIgnoreCase(categoria)) {
+                if (r.getCategorias() != null) {
+                    boolean tieneCategoria = false;
+                    for (String cat : r.getCategorias()) {
+                        if (cat.equalsIgnoreCase(categoria)) {
+                            tieneCategoria = true;
+                            break;
+                        }
                     }
+                    pasaFiltros = pasaFiltros && tieneCategoria;
+                } else {
+                    pasaFiltros = false; // Si no tiene categorías definidas, no pasa el filtro
                 }
+            }
 
-                if (pasaEstado && pasaCategoria) {
-                    rutasFiltradas.add(r);
-                }
-            } catch (Exception ex) {
-                // si hay error reflexivo, incluir la ruta por defecto
+            // Filtro por estado
+            if (estado != null && !estado.isEmpty() && !"todas".equalsIgnoreCase(estado)) {
+                String estadoRuta = r.getEstado() != null ? r.getEstado() : "";
+                pasaFiltros = pasaFiltros && estadoRuta.equalsIgnoreCase(estado);
+            }
+
+            if (pasaFiltros) {
                 rutasFiltradas.add(r);
             }
         }
 
+        // Convertir a JSON
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         StringBuilder sb = new StringBuilder();
         sb.append("[");
         for (int i = 0; i < rutasFiltradas.size(); i++) {
-            Object r = rutasFiltradas.get(i);
-            try {
-                appendObjectAsJson(r, sb, 0, new HashSet<>());
-            } catch (Exception e) {
-                sb.append("{}");
+            DtRutaVuelo r = rutasFiltradas.get(i);
+            sb.append("{");
+            sb.append("\"nombre\":\"").append(escapeJson(r.getNombre())).append("\",");
+            sb.append("\"descripcion\":\"").append(escapeJson(r.getDescripcion())).append("\",");
+            sb.append("\"origen\":\"").append(escapeJson(r.getCiudadOrigen())).append("\",");
+            sb.append("\"destino\":\"").append(escapeJson(r.getCiudadDestino())).append("\",");
+            sb.append("\"estado\":\"").append(escapeJson(r.getEstado())).append("\",");
+
+            // Categorías como array
+            sb.append("\"categorias\":[");
+            if (r.getCategorias() != null) {
+                for (int j = 0; j < r.getCategorias().size(); j++) {
+                    sb.append("\"").append(escapeJson(r.getCategorias().get(j))).append("\"");
+                    if (j < r.getCategorias().size() - 1) sb.append(",");
+                }
             }
+            sb.append("],");
+
+            sb.append("\"costoTurista\":").append(r.getCostoTurista()).append(",");
+            sb.append("\"costoEjecutivo\":").append(r.getCostoEjecutivo()).append(",");
+            sb.append("\"costoEquipaje\":").append(r.getCostoEquipajeExtra());
+
+            // intentar obtener una imagen (varios getters posibles) y normalizar a URL absoluta
+            try {
+                String imagenVal = invokeGetterSafe(r, new String[]{"getImagenUrl", "getImagen", "imagenUrl", "imagen", "getImagenPath", "imagenPath", "url"});
+                if (imagenVal != null && !imagenVal.isBlank()) {
+                    String tmp = imagenVal.trim();
+                    try {
+                        if (!tmp.matches("(?i)^(https?:)?//.*") && !tmp.startsWith("/") && !tmp.startsWith("data:") && !tmp.startsWith("Images/")) {
+                            String ctx = request.getContextPath();
+                            if (ctx == null) ctx = "";
+                            if (!ctx.endsWith("/")) tmp = ctx + "/Images/" + tmp; else tmp = ctx + "Images/" + tmp;
+                        }
+                    } catch (Exception ignore) {}
+
+                    try {
+                        if (!tmp.matches("(?i)^(https?:)?//.*")) {
+                            String scheme = request.getScheme();
+                            String serverName = request.getServerName();
+                            int serverPort = request.getServerPort();
+                            String portPart = "";
+                            if (!("http".equalsIgnoreCase(scheme) && serverPort == 80) && !("https".equalsIgnoreCase(scheme) && serverPort == 443)) {
+                                portPart = ":" + serverPort;
+                            }
+                            if (!tmp.startsWith("/")) tmp = "/" + tmp;
+                            String absolute = scheme + "://" + serverName + portPart + tmp;
+                            imagenVal = absolute;
+                        } else {
+                            imagenVal = tmp;
+                        }
+                    } catch (Exception ignore) {
+                        imagenVal = tmp;
+                    }
+
+                    if (imagenVal != null && !imagenVal.isBlank()) {
+                        sb.append(",\"imagenUrl\":\"").append(escapeJson(imagenVal)).append("\"");
+                    }
+                }
+            } catch (Exception ignore) {}
+
+            sb.append("}");
+
             if (i < rutasFiltradas.size() - 1) sb.append(",");
         }
         sb.append("]");

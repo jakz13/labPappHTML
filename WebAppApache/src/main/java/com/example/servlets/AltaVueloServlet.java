@@ -126,11 +126,10 @@ public class AltaVueloServlet extends HttpServlet {
                     Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
                 }
 
-                String baseUrl = request.getScheme() + "://" + request.getServerName();
-                int port = request.getServerPort();
-                if (port != 80 && port != 443) baseUrl += ":" + port;
-                baseUrl += request.getContextPath();
-                imagenUrl = baseUrl + "/Images/" + filename;
+                // Guardar la URL relativa basada en el contextPath para que quede en el formato /<context>/Images/<filename>
+                String ctx = request.getContextPath();
+                if (ctx == null) ctx = "";
+                imagenUrl = ctx + "/Images/" + filename;
             } else {
                 String dataUrl = request.getParameter("imagenVuelo");
                 if (dataUrl == null || dataUrl.trim().isEmpty()) dataUrl = request.getParameter("imagen");
@@ -170,18 +169,17 @@ public class AltaVueloServlet extends HttpServlet {
                         Path target = Paths.get(imagesDir.getAbsolutePath(), filename);
                         Files.write(target, imageBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
 
-                        String baseUrl2 = request.getScheme() + "://" + request.getServerName();
-                        int port2 = request.getServerPort();
-                        if (port2 != 80 && port2 != 443) baseUrl2 += ":" + port2;
-                        baseUrl2 += request.getContextPath();
-                        imagenUrl = baseUrl2 + "/Images/" + filename;
-                    } catch (IllegalArgumentException iae) {
+                        // Guardar la URL relativa basada en el contextPath
+                        String ctx2 = request.getContextPath();
+                        if (ctx2 == null) ctx2 = "";
+                        imagenUrl = ctx2 + "/Images/" + filename;
+                     } catch (IllegalArgumentException iae) {
                         imagenUrl = "";
-                    }
-                } else {
-                    imagenUrl = "";
-                }
-            }
+                     }
+                 } else {
+                     imagenUrl = "";
+                 }
+             }
 
             // Obtener aerolínea (DTO) desde la lógica
             DtAerolinea aerolinea = sistema.obtenerAerolinea(nombreAerolinea);

@@ -2,8 +2,6 @@ package com.example.servlets;
 
 import Logica.Fabrica;
 import Logica.ISistema;
-import Logica.Cliente;
-import Logica.Aerolinea;
 import DataTypes.DtCliente;
 import DataTypes.DtAerolinea;
 import jakarta.servlet.*;
