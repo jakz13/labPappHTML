@@ -394,8 +394,17 @@ function mostrarInfoAerolinea(usuario) {
     document.getElementById('aerolineaFechaRegistro').textContent = usuario.fechaRegistro;
     document.getElementById('totalRutas').textContent = usuario.rutas.length;
 
-    // Guardar rutas para filtrado
     rutasActuales = usuario.rutas;
+
+    usuarioActualId = usuario.nickname;
+
+    // Resetear sección de vuelos
+    document.getElementById('vuelosAerolinea').innerHTML = `
+        <div class="col-12">
+            <p class="text-muted">Haga clic en "Cargar Vuelos" para ver los vuelos disponibles de esta aerolínea.</p>
+        </div>
+    `;
+
     cargarRutasAerolineaInterfaz('todas');
 }
 

@@ -7,10 +7,26 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/consulta-usuario")
 public class ConsultaUsuarioServerlet extends HttpServlet {
+
+    private ISistema sistema;
+
+    @Override
+    public void init() throws ServletException {
+        // Cargar el sistema UNA SOLA VEZ al iniciar el servlet
+        sistema = Fabrica.getInstance().getISistema();
+        try {
+            sistema.cargarDesdeBd();
+            System.out.println("✅ Sistema cargado correctamente en init()");
+        } catch (Exception e) {
+            System.err.println("❌ Error cargando sistema en init(): " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -23,39 +39,89 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
+            System.out.println("=== CONSULTA USUARIO ===");
+            System.out.println("Action: " + action);
+            System.out.println("Usuario: " + usuarioId);
+            System.out.println("Tipo: " + tipoUsuario);
+
+            // NO llamar cargarDesdeBd() aquí - ya se cargó en init()
 
             if ("listar-usuarios".equals(action)) {
-                // Listar todos los usuarios (clientes y aerolíneas)
                 System.out.println("Listando todos los usuarios");
                 listarUsuarios(sistema, out);
             } else if ("obtener-usuario".equals(action) && usuarioId != null && tipoUsuario != null) {
-                // Obtener información específica de un usuario
                 System.out.println("Obteniendo información del usuario: " + usuarioId + " tipo: " + tipoUsuario);
                 obtenerUsuarioDetalle(sistema, usuarioId, tipoUsuario, out, response);
             } else if ("obtener-rutas-aerolinea".equals(action) && usuarioId != null) {
-                // Obtener rutas de una aerolínea
                 System.out.println("Obteniendo rutas de la aerolínea: " + usuarioId);
                 obtenerRutasAerolinea(sistema, usuarioId, out, response);
             } else if ("obtener-reservas-cliente".equals(action) && usuarioId != null) {
-                // Obtener reservas de un cliente
                 System.out.println("Obteniendo reservas del cliente: " + usuarioId);
                 obtenerReservasCliente(sistema, usuarioId, out, response);
             } else if ("obtener-paquetes-cliente".equals(action) && usuarioId != null) {
-                // Obtener paquetes de un cliente
                 System.out.println("Obteniendo paquetes del cliente: " + usuarioId);
                 obtenerPaquetesCliente(sistema, usuarioId, out, response);
+            } else if ("obtener-vuelos-aerolinea".equals(action) && usuarioId != null) {
+                System.out.println("Obteniendo vuelos de la aerolínea: " + usuarioId);
+                obtenerVuelosAerolinea(sistema, usuarioId, out, response);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.print("{\"error\":\"Parámetros inválidos. Acciones válidas: listar-usuarios, obtener-usuario, obtener-rutas-aerolinea, obtener-reservas-cliente, obtener-paquetes-cliente\"}");
+                out.print("{\"error\":\"Parámetros inválidos. Acciones válidas: listar-usuarios, obtener-usuario, obtener-rutas-aerolinea, obtener-reservas-cliente, obtener-paquetes-cliente, obtener-vuelos-aerolinea\"}");
             }
 
         } catch (Exception e) {
+            System.err.println("💥 ERROR EN SERVLET: " + e.getMessage());
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error interno: " + escapeJson(e.getMessage()) + "\"}");
-            e.printStackTrace();
         }
+    }
+
+    private void obtenerVuelosAerolinea(ISistema sistema, String aerolineaId, PrintWriter out, HttpServletResponse response) {
+        try {
+            // Obtener todas las rutas de la aerolínea
+            List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(aerolineaId);
+            List<DtVuelo> todosLosVuelos = new ArrayList<>();
+
+            // Para cada ruta, obtener sus vuelos
+            for (DtRutaVuelo ruta : rutas) {
+                try {
+                    List<DtVuelo> vuelosRuta = sistema.listarVuelosPorRuta(ruta.getNombre());
+                    if (vuelosRuta != null) {
+                        todosLosVuelos.addAll(vuelosRuta);
+                    }
+                } catch (Exception e) {
+                    System.err.println("⚠️ Error obteniendo vuelos para ruta " + ruta.getNombre() + ": " + e.getMessage());
+                    // Continuar con la siguiente ruta
+                }
+            }
+
+            escribirVuelosAerolineaJSON(todosLosVuelos, out);
+        } catch (Exception e) {
+            System.err.println("💥 ERROR obteniendo vuelos: " + e.getMessage());
+            e.printStackTrace();
+            // En lugar de error, devolver array vacío
+            out.print("[]");
+        }
+    }
+
+    private void escribirVuelosAerolineaJSON(List<DtVuelo> vuelos, PrintWriter out) {
+        out.print("[");
+        for (int i = 0; i < vuelos.size(); i++) {
+            DtVuelo vuelo = vuelos.get(i);
+            out.print("{");
+            out.print("\"id\":\"" + escapeJson(vuelo.getNombre()) + "\",");
+            out.print("\"nombre\":\"" + escapeJson(vuelo.getNombre()) + "\",");
+            out.print("\"aerolinea\":\"" + escapeJson(vuelo.getNombreAerolinea()) + "\",");
+            out.print("\"ruta\":\"" + (vuelo.getRutaVuelo() != null ? escapeJson(vuelo.getRutaVuelo().getNombre()) : "") + "\",");
+            out.print("\"fecha\":\"" + (vuelo.getFecha() != null ? vuelo.getFecha().toString() : "") + "\",");
+            out.print("\"duracion\":" + vuelo.getDuracion() + ",");
+            out.print("\"origen\":\"" + (vuelo.getRutaVuelo() != null ? escapeJson(vuelo.getRutaVuelo().getCiudadOrigen()) : "") + "\",");
+            out.print("\"destino\":\"" + (vuelo.getRutaVuelo() != null ? escapeJson(vuelo.getRutaVuelo().getCiudadDestino()) : "") + "\"");
+            out.print("}");
+            if (i < vuelos.size() - 1) out.print(",");
+        }
+        out.print("]");
     }
 
     private void listarUsuarios(ISistema sistema, PrintWriter out) {
@@ -65,41 +131,46 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             // Clientes
             out.print("\"clientes\":[");
             List<DtCliente> clientes = sistema.listarClientes();
-            for (int i = 0; i < clientes.size(); i++) {
-                DtCliente c = clientes.get(i);
-                out.print("{");
-                out.print("\"id\":\"" + escapeJson(c.getNickname()) + "\",");
-                out.print("\"nombre\":\"" + escapeJson(c.getNombre() + " " + c.getApellido()) + "\",");
-                out.print("\"tipo\":\"Cliente\",");
-                out.print("\"correo\":\"" + escapeJson(c.getEmail()) + "\",");
-                out.print("\"fechaRegistro\":\"" + escapeJson(c.getFechaAlta() != null ? c.getFechaAlta().toString() : "") + "\",");
-                out.print("\"imagen\":\"" + escapeJson(c.getImagenUrl()) + "\"");
-                out.print("}");
-                if (i < clientes.size() - 1) out.print(",");
+            if (clientes != null) {
+                for (int i = 0; i < clientes.size(); i++) {
+                    DtCliente c = clientes.get(i);
+                    out.print("{");
+                    out.print("\"id\":\"" + escapeJson(c.getNickname()) + "\",");
+                    out.print("\"nombre\":\"" + escapeJson(c.getNombre() + " " + c.getApellido()) + "\",");
+                    out.print("\"tipo\":\"Cliente\",");
+                    out.print("\"correo\":\"" + escapeJson(c.getEmail()) + "\",");
+                    out.print("\"fechaRegistro\":\"" + escapeJson(c.getFechaAlta() != null ? c.getFechaAlta().toString() : "") + "\",");
+                    out.print("\"imagen\":\"" + escapeJson(c.getImagenUrl()) + "\"");
+                    out.print("}");
+                    if (i < clientes.size() - 1) out.print(",");
+                }
             }
             out.print("],");
 
             // Aerolíneas
             out.print("\"aerolineas\":[");
             List<DtAerolinea> aerolineas = sistema.listarAerolineas();
-            for (int i = 0; i < aerolineas.size(); i++) {
-                DtAerolinea a = aerolineas.get(i);
-                out.print("{");
-                out.print("\"id\":\"" + escapeJson(a.getNickname()) + "\",");
-                out.print("\"nombre\":\"" + escapeJson(a.getNombre()) + "\",");
-                out.print("\"tipo\":\"Aerolinea\",");
-                out.print("\"correo\":\"" + escapeJson(a.getEmail()) + "\",");
-                out.print("\"fechaRegistro\":\"\",");
-                out.print("\"imagen\":\"" + escapeJson(a.getImagenUrl()) + "\"");
-                out.print("}");
-                if (i < aerolineas.size() - 1) out.print(",");
+            if (aerolineas != null) {
+                for (int i = 0; i < aerolineas.size(); i++) {
+                    DtAerolinea a = aerolineas.get(i);
+                    out.print("{");
+                    out.print("\"id\":\"" + escapeJson(a.getNickname()) + "\",");
+                    out.print("\"nombre\":\"" + escapeJson(a.getNombre()) + "\",");
+                    out.print("\"tipo\":\"Aerolinea\",");
+                    out.print("\"correo\":\"" + escapeJson(a.getEmail()) + "\",");
+                    out.print("\"fechaRegistro\":\"\",");
+                    out.print("\"imagen\":\"" + escapeJson(a.getImagenUrl()) + "\"");
+                    out.print("}");
+                    if (i < aerolineas.size() - 1) out.print(",");
+                }
             }
             out.print("]");
 
             out.print("}");
 
         } catch (Exception e) {
-            System.err.println("Error listando usuarios: " + e.getMessage());
+            System.err.println("💥 ERROR listando usuarios: " + e.getMessage());
+            e.printStackTrace();
             out.print("{\"clientes\":[],\"aerolineas\":[]}");
         }
     }
@@ -109,16 +180,18 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             if ("cliente".equals(tipoUsuario)) {
                 DtCliente cliente = sistema.obtenerCliente(usuarioId);
                 if (cliente != null) {
-                    escribirClienteDetalleJSON(cliente, out); // Cambiado a escribirInfoClienteJSON
+                    escribirClienteDetalleJSON(cliente, out);
                 } else {
+                    System.out.println("❌ Cliente no encontrado: " + usuarioId);
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     out.print("{\"error\":\"Cliente no encontrado\"}");
                 }
             } else if ("aerolinea".equals(tipoUsuario)) {
                 DtAerolinea aerolinea = sistema.obtenerAerolinea(usuarioId);
                 if (aerolinea != null) {
-                    escribirInfoAerolineaJSON(aerolinea, out); // Cambiado a escribirInfoAerolineaJSON
+                    escribirInfoAerolineaJSON(aerolinea, out);
                 } else {
+                    System.out.println("❌ Aerolínea no encontrada: " + usuarioId);
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     out.print("{\"error\":\"Aerolínea no encontrada\"}");
                 }
@@ -127,28 +200,40 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
                 out.print("{\"error\":\"Tipo de usuario no válido\"}");
             }
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            out.print("{\"error\":\"Usuario no encontrado: " + escapeJson(e.getMessage()) + "\"}");
+            System.err.println("💥 ERROR obteniendo usuario: " + e.getMessage());
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"error\":\"Error obteniendo usuario: " + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
     private void obtenerRutasAerolinea(ISistema sistema, String aerolineaId, PrintWriter out, HttpServletResponse response) {
         try {
             List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(aerolineaId);
-            escribirRutasAerolineaJSON(rutas, out);
+            if (rutas != null) {
+                escribirRutasAerolineaJSON(rutas, out);
+            } else {
+                out.print("[]");
+            }
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            out.print("{\"error\":\"Error obteniendo rutas: " + escapeJson(e.getMessage()) + "\"}");
+            System.err.println("💥 ERROR obteniendo rutas: " + e.getMessage());
+            e.printStackTrace();
+            out.print("[]");
         }
     }
 
     private void obtenerReservasCliente(ISistema sistema, String clienteId, PrintWriter out, HttpServletResponse response) {
         try {
             List<DtReserva> reservas = sistema.getReservasCliente(clienteId);
-            escribirReservasClienteJSON(reservas, out);
+            if (reservas != null) {
+                escribirReservasClienteJSON(reservas, out);
+            } else {
+                out.print("[]");
+            }
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            out.print("{\"error\":\"Error obteniendo reservas: " + escapeJson(e.getMessage()) + "\"}");
+            System.err.println("💥 ERROR obteniendo reservas: " + e.getMessage());
+            e.printStackTrace();
+            out.print("[]");
         }
     }
 
@@ -157,53 +242,20 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             DtCliente cliente = sistema.obtenerCliente(clienteId);
             if (cliente != null) {
                 List<DtPaquete> paquetes = cliente.getPaquetesComprados();
-                escribirPaquetesClienteJSON(paquetes, out);
+                if (paquetes != null) {
+                    escribirPaquetesClienteJSON(paquetes, out);
+                } else {
+                    out.print("[]");
+                }
             } else {
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                out.print("{\"error\":\"Cliente no encontrado\"}");
+                System.out.println("❌ Cliente no encontrado: " + clienteId);
+                out.print("[]");
             }
         } catch (Exception e) {
-            response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-            out.print("{\"error\":\"Error obteniendo paquetes: " + escapeJson(e.getMessage()) + "\"}");
+            System.err.println("💥 ERROR obteniendo paquetes: " + e.getMessage());
+            e.printStackTrace();
+            out.print("[]");
         }
-    }
-
-    private void escribirUsuariosJSON(List<DtCliente> clientes, List<DtAerolinea> aerolineas, PrintWriter out) {
-        out.print("{");
-
-        // Clientes
-        out.print("\"clientes\":[");
-        for (int i = 0; i < clientes.size(); i++) {
-            DtCliente c = clientes.get(i);
-            out.print("{");
-            out.print("\"id\":\"" + escapeJson(c.getNickname()) + "\",");
-            out.print("\"nombre\":\"" + escapeJson(c.getNombre() + " " + c.getApellido()) + "\",");
-            out.print("\"tipo\":\"Cliente\",");
-            out.print("\"correo\":\"" + escapeJson(c.getEmail()) + "\",");
-            out.print("\"fechaRegistro\":\"" + escapeJson(c.getFechaAlta() != null ? c.getFechaAlta().toString() : "") + "\",");
-            out.print("\"imagen\":\"" + escapeJson(c.getImagenUrl()) + "\"");
-            out.print("}");
-            if (i < clientes.size() - 1) out.print(",");
-        }
-        out.print("],");
-
-        // Aerolíneas
-        out.print("\"aerolineas\":[");
-        for (int i = 0; i < aerolineas.size(); i++) {
-            DtAerolinea a = aerolineas.get(i);
-            out.print("{");
-            out.print("\"id\":\"" + escapeJson(a.getNickname()) + "\",");
-            out.print("\"nombre\":\"" + escapeJson(a.getNombre()) + "\",");
-            out.print("\"tipo\":\"Aerolinea\",");
-            out.print("\"correo\":\"" + escapeJson(a.getEmail()) + "\",");
-            out.print("\"fechaRegistro\":\"\","); // Vacío para aerolíneas
-            out.print("\"imagen\":\"" + escapeJson(a.getImagenUrl()) + "\"");
-            out.print("}");
-            if (i < aerolineas.size() - 1) out.print(",");
-        }
-        out.print("]");
-
-        out.print("}");
     }
 
     private void escribirClienteDetalleJSON(DtCliente cliente, PrintWriter out) {
@@ -270,7 +322,7 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             out.print("{");
             out.print("\"id\":\"" + escapeJson(reserva.getId().toString()) + "\",");
             out.print("\"vuelo\":\"" + escapeJson(reserva.getVuelo()) + "\",");
-            out.print("\"fecha\":\"" + escapeJson(reserva.getFecha() != null ? reserva.getFecha().toString() : "") + "\","); // Cambiado a getFecha()
+            out.print("\"fecha\":\"" + escapeJson(reserva.getFecha() != null ? reserva.getFecha().toString() : "") + "\",");
             out.print("\"estado\":\"Confirmada\",");
             out.print("\"costo\":" + reserva.getCosto() + ",");
             out.print("\"tipoAsiento\":\"" + escapeJson(reserva.getTipoAsiento().toString()) + "\",");
