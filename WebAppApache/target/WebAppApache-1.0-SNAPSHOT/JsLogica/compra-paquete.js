@@ -313,14 +313,15 @@ function actualizarListaPaquetesDisponibles() {
     }
 
     paquetesDisponibles.forEach(paquete => {
-        const yaComprado = paquetesComprados.some(p => p.id === paquete.id && estaVigente(p));
+        // SOLO verificar si el usuario actual ya compró este paquete
+        const yaCompradoPorUsuario = paquetesComprados.some(p => p.id === paquete.id && estaVigente(p));
         const costoFinal = paquete.costoFinal || paquete.costoBase || 0;
 
         const paqueteHTML = `
             <div class="col-md-6">
-                <div class="card paquete-card ${yaComprado ? 'opacity-50' : ''} h-100"
-                     onclick="${yaComprado ? '' : `seleccionarPaquete('${paquete.id}')`}" 
-                     style="${yaComprado ? '' : 'cursor: pointer;'}">
+                <div class="card paquete-card ${yaCompradoPorUsuario ? 'opacity-50' : ''} h-100"
+                     onclick="${yaCompradoPorUsuario ? '' : `seleccionarPaquete('${paquete.id}')`}" 
+                     style="${yaCompradoPorUsuario ? '' : 'cursor: pointer;'}">
                     <div class="card-body">
                         <h6 class="card-title text-primary">${paquete.nombre || 'Sin nombre'}</h6>
                         <p class="card-text small text-muted">${paquete.descripcion || 'Sin descripción disponible'}</p>
@@ -334,7 +335,7 @@ function actualizarListaPaquetesDisponibles() {
                                 <strong>${paquete.descuento || 0}%</strong> descuento
                             </small>
                         </div>
-                        ${yaComprado ? '<div class="text-center mt-2"><span class="badge bg-warning">Ya comprado</span></div>' : ''}
+                        ${yaCompradoPorUsuario ? '<div class="text-center mt-2"><span class="badge bg-warning">Ya comprado por ti</span></div>' : ''}
                     </div>
                 </div>
             </div>

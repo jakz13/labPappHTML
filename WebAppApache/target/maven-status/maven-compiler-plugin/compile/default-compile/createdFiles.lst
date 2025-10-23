@@ -10,6 +10,7 @@ com\example\servlets\LoginServlet.class
 com\example\servlets\RegistrarReservaServlet.class
 com\example\servlets\GetRutaServlet.class
 com\example\servlets\ListarCiudadesServlet.class
+com\example\servlets\HomePageServlet.class
 com\example\servlets\CargarDatosBD.class
 com\example\servlets\DebugVueloServlet.class
 com\example\servlets\AltaUsuarioServlet.class
@@ -24,5 +25,8 @@ com\example\servlets\AltaRutaServlet.class
 com\example\servlets\ObtenerUsuarioServlet.class
 com\example\servlets\LogoutServlet.class
 com\example\servlets\ReservaVueloServlet.class
+com\example\servlets\ConsultaDePaqueteServerlet.class
+com\example\servlets\ConsultaUsuarioServerlet.class
 com\example\servlets\AltaVueloServlet.class
 com\example\servlets\VerInfoVueloServlet.class
+com\example\servlets\CompraPaqueteServerlet.class
