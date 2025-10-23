@@ -53,7 +53,7 @@
 
                 <!-- Ver todas las aerolíneas -->
                 <div class="text-center mt-3">
-                    <a href="consulta-vuelo.jsp" class="btn btn-outline-primary btn-sm">
+                    <a href="consulta-usuario.jsp" class="btn btn-outline-primary btn-sm">
                         Ver todas las aerolíneas
                     </a>
                 </div>
@@ -63,7 +63,7 @@
             <div class="sidebar-modern fade-in">
                 <h5 class="sidebar-title">Destinos Populares</h5>
                 <div class="card-modern mb-3">
-                    <img src="https://images.unsplash.com/photo-1502602898536-47ad22581b52?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="París" style="height: 120px; object-fit: cover;">
+                    <img src="https://tse3.mm.bing.net/th/id/OIP.RZ4w4H_gbOyMs8nuANQGjgHaE8?cb=12&rs=1&pid=ImgDetMain&o=7&rm=3" class="card-img-top" alt="París" style="height: 120px; object-fit: cover;">
                     <div class="card-body-modern">
                         <h6 class="card-title-modern">París, Francia</h6>
                         <p class="card-text-modern small">La ciudad del amor y la luz.</p>
@@ -87,7 +87,7 @@
                     </div>
                 </div>
                 <div class="card-modern">
-                    <img src="https://images.unsplash.com/photo-1531961463838-b2d6c87cd9e5?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=80" class="card-img-top" alt="Machu Picchu, Perú" style="height: 120px; object-fit: cover;">
+                    <img src="https://media.cntraveler.com/photos/5818a486b6f3d25e7b5c6a3e/master/pass/GettyImages-573103543.jpg" class="card-img-top" alt="Machu Picchu, Perú" style="height: 120px; object-fit: cover;">
                     <div class="card-body-modern">
                         <h6 class="card-title-modern">Machu Picchu, Perú</h6>
                         <p class="card-text-modern small">La ciudad perdida de los Incas.</p>
@@ -216,7 +216,7 @@
                 '<p class="small text-muted mb-0">' + descCorta + '</p>' +
                 '</div>' +
                 '</div>' +
-                '<a href="consulta-vuelo.jsp?aerolinea=' + aerolinea.nickname + '" class="stretched-link"></a>' +
+                '<a href="consulta-usuario.jsp?aerolinea=' + aerolinea.nickname + '" class="stretched-link"></a>' +
                 '</div>';
         });
 
@@ -268,7 +268,7 @@
                 '</div>' +
                 '</div>' +
                 '</div>' +
-                '<a href="consulta-vuelo.jsp?nombre=' + ruta.nombre + '" class="read-more">' +
+                '<a href="consulta-ruta.jsp?nombre=' + ruta.nombre + '" class="read-more">' +
                 'Ver detalles y reservar <i class="bi bi-arrow-right"></i>' +
                 '</a>' +
                 '</div>';
