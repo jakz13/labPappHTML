@@ -3,6 +3,9 @@ let usuarios = {};
 let rutasActuales = [];
 let usuarioActual = null;
 
+// Placeholder SVG (mismo que se usa en modificar-usuario.jsp)
+const DEFAULT_USER_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiByeD0iNzUiIGZpbGw9IiMzNDk4REIiLz4KPHN2ZyB4PSIzOCIgeT0iMzgiIHdpZHRoPSI3NCIgaGVpZ2h0PSI3NCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00cy0xLjc5LTQtNC00LTQgMS43OS00IDQgMS43OSA0IDQgNHptMCAyYy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIvPgo8L3N2Zz4KPC9zdmc+';
+
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
     console.log('🚀 Inicializando consulta de usuarios...');
@@ -70,7 +73,8 @@ async function cargarUsuariosDesdeBackend() {
                     nickname: cliente.id || 'Sin nickname',
                     correo: cliente.correo || 'Sin email',
                     fechaRegistro: cliente.fechaRegistro || 'No especificada',
-                    imagen: cliente.imagen || "https://via.placeholder.com/120/3498db/ffffff?text=C",
+                    // usar placeholder por defecto si no hay imagen
+                    imagen: (cliente.imagen && cliente.imagen.toString().trim()) ? cliente.imagen : DEFAULT_USER_PLACEHOLDER,
                     datosPersonales: {
                         apellido: cliente.nombre ? cliente.nombre.split(' ').slice(1).join(' ') : 'No especificado',
                         nacimiento: 'No especificada',
@@ -94,7 +98,7 @@ async function cargarUsuariosDesdeBackend() {
                     nickname: aerolinea.id || 'Sin nickname',
                     correo: aerolinea.correo || 'Sin email',
                     fechaRegistro: aerolinea.fechaRegistro || 'No especificada',
-                    imagen: aerolinea.imagen || "https://via.placeholder.com/120/2ecc71/ffffff?text=A",
+                    imagen: (aerolinea.imagen && aerolinea.imagen.toString().trim()) ? aerolinea.imagen : DEFAULT_USER_PLACEHOLDER,
                     descripcion: 'Sin descripción',
                     sitioWeb: '',
                     rutas: []
@@ -128,7 +132,7 @@ async function cargarUsuarioSeleccionado(usuarioId) {
         const usuarioDetalle = await response.json();
         console.log('📄 Detalle de usuario recibido:', usuarioDetalle);
 
-        // Actualizar usuario con información detallada
+        // Actualizar usuario with información detallada
         if (usuario.tipo === 'Cliente') {
             usuario.datosPersonales.nacimiento = usuarioDetalle.fechaNacimiento || usuario.datosPersonales.nacimiento;
             usuario.datosPersonales.nacionalidad = usuarioDetalle.nacionalidad || usuario.datosPersonales.nacionalidad;
@@ -308,7 +312,18 @@ function mostrarInformacionUsuario(usuario) {
     document.getElementById('correoUsuario').textContent = usuario.correo;
     document.getElementById('tipoUsuario').textContent = usuario.tipo;
     document.getElementById('fechaRegistro').textContent = usuario.fechaRegistro;
-    document.getElementById('imagenUsuario').src = usuario.imagen;
+
+    // Asegurarse de que siempre haya una imagen (si no, usar placeholder SVG)
+    const imgEl = document.getElementById('imagenUsuario');
+    // Si la imagen no existe o está en blanco, usar placeholder; si la carga falla, fallback al placeholder
+    imgEl.onerror = function() {
+        imgEl.src = DEFAULT_USER_PLACEHOLDER;
+        imgEl.style.objectFit = 'contain';
+    };
+    imgEl.src = (usuario.imagen && usuario.imagen.toString().trim()) ? usuario.imagen : DEFAULT_USER_PLACEHOLDER;
+    // Ajustes visuales por si acaso
+    imgEl.style.objectFit = 'cover';
+    imgEl.style.display = 'block';
 
     // Mostrar información específica según el tipo
     if (usuario.tipo === 'Cliente') {
@@ -369,7 +384,7 @@ function mostrarInfoCliente(usuario) {
                 <div class="col-md-6">
                     <div class="paquete-item">
                         <h6 class="mb-1">${paquete.nombre}</h6>
-                        <p class="mb-1 small">Comprado: ${paquete.compra}</p>
+                        <p class="mb-1 small">Comprado: ${paquete.fechaCompra}</p>
                         <p class="mb-1 small">Vence: ${paquete.vencimiento}</p>
                         <span class="badge ${paquete.estado === 'Vigente' ? 'bg-success' : 'bg-secondary'} badge-estado">
                             ${paquete.estado}

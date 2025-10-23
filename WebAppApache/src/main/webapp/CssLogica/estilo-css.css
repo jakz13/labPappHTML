@@ -1922,3 +1922,27 @@ button, .btn, .dropdown-item, .ruta-item, .paquete-card,
         font-size: 1.25rem;
     }
 }
+
+/* Imagen de usuario en consultas y formularios: centrar y normalizar tamaño */
+.usuario-imagen,
+.imagen-preview {
+    display: block;          /* permitir margin: 0 auto */
+    margin: 0 auto 1rem auto; /* centrar horizontalmente y separar abajo */
+    width: 140px;            /* tamaño por defecto cómodo */
+    max-width: 100%;         /* responsive */
+    height: 140px;           /* tamaño fijo para mantener proporción */
+    object-fit: cover;       /* recortar manteniendo el centro */
+    border-radius: 50%;      /* imagen circular */
+    border: 3px solid rgba(255,255,255,0.06);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.4);
+}
+
+/* Si está dentro de columnas muy chicas, reducir un poco */
+@media (max-width: 576px) {
+    .usuario-imagen,
+    .imagen-preview {
+        width: 110px;
+        height: 110px;
+    }
+}
+

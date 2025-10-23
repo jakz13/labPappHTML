@@ -44,7 +44,7 @@
                                 <div class="row">
                                     <!-- Imagen y datos básicos -->
                                     <div class="col-md-4 text-center">
-                                        <img id="imagenUsuario" src="" alt="Imagen de usuario" class="usuario-imagen mb-3">
+                                        <img id="imagenUsuario" src="data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUwIiBoZWlnaHQ9IjE1MCIgdmlld0JveD0iMCAwIDE1MCAxNTAiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxNTAiIGhlaWdodD0iMTUwIiByeD0iNzUiIGZpbGw9IiMzNDk4REIiLz4KPHN2ZyB4PSIzOCIgeT0iMzgiIHdpZHRoPSI3NCIgaGVpZ2h0PSI3NCIgdmlld0JveD0iMCAwIDI0IDI0IiBmaWxsPSJ3aGl0ZSIgeG1zbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj4KPHBhdGggZD0iTTEyIDEyYzIuMjEgMCA0LTEuNzkgNC00cy0xLjc5LTQtNC00LTQgMS43OS00IDQgMS43OSA0IDQgNHptMCAyYy0yLjY3IDAtOCAxLjM0LTggNHYyaDE2di0yYzAtMi42Ni01LjMzLTQtOC00eiIvPgo8L3N2Zz4KPC9zdmc+" alt="Imagen de usuario" class="usuario-imagen mb-3">
                                         <h4 id="nombreUsuario" class="text-white"></h4>
                                         <p class="mb-1 text-light"><strong>Nickname:</strong> <span id="nicknameUsuario" class="text-light"></span></p>
                                         <p class="mb-1 text-light"><strong>Tipo:</strong> <span id="tipoUsuario" class="badge bg-primary"></span></p>
@@ -60,7 +60,7 @@
                                             <div class="table-responsive">
                                                 <table class="table table-bordered tabla-datos">
                                                     <tr>
-                                                        <th width="30%">Apellido</th>
+                                                        <th>Apellido</th>
                                                         <td id="clienteApellido"></td>
                                                     </tr>
                                                     <tr>
@@ -97,7 +97,7 @@
                                             <div class="table-responsive">
                                                 <table class="table table-bordered tabla-datos">
                                                     <tr>
-                                                        <th width="30%">Descripción</th>
+                                                        <th>Descripción</th>
                                                         <td id="aerolineaDescripcion"></td>
                                                     </tr>
                                                     <tr>
