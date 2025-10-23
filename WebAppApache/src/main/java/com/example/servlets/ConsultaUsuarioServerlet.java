@@ -17,7 +17,6 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        // Cargar el sistema UNA SOLA VEZ al iniciar el servlet
         sistema = Fabrica.getInstance().getISistema();
         try {
             sistema.cargarDesdeBd();
@@ -79,11 +78,9 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
 
     private void obtenerVuelosAerolinea(ISistema sistema, String aerolineaId, PrintWriter out, HttpServletResponse response) {
         try {
-            // Obtener todas las rutas de la aerolínea
             List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(aerolineaId);
             List<DtVuelo> todosLosVuelos = new ArrayList<>();
 
-            // Para cada ruta, obtener sus vuelos
             for (DtRutaVuelo ruta : rutas) {
                 try {
                     List<DtVuelo> vuelosRuta = sistema.listarVuelosPorRuta(ruta.getNombre());
