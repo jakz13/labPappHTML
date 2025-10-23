@@ -48,9 +48,9 @@ public class CompraPaqueteServerlet extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error interno: " + escapeJson(e.getMessage()) + "\"}");
-            e.printStackTrace();
-        }
-    }
+            System.err.println("Error en CompraPaqueteServerlet.doGet: " + e.getMessage());
+         }
+     }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -88,9 +88,9 @@ public class CompraPaqueteServerlet extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error interno: " + escapeJson(e.getMessage()) + "\"}");
-            e.printStackTrace();
-        }
-    }
+            System.err.println("Error en CompraPaqueteServerlet.doPost: " + e.getMessage());
+         }
+     }
 
     private void listarPaquetesDisponibles(ISistema sistema, PrintWriter out) {
         try {
@@ -108,7 +108,16 @@ public class CompraPaqueteServerlet extends HttpServlet {
             DtCliente cliente = sistema.obtenerCliente(clienteId);
             if (cliente != null) {
                 List<DtPaquete> paquetesComprados = cliente.getPaquetesComprados();
-                escribirPaquetesCompradosJSON(paquetesComprados, out);
+                // Filtrar sólo paquetes que parecen realmente comprados (tienen fechaAlta no nula)
+                java.util.List<DtPaquete> filtrados = new java.util.ArrayList<>();
+                if (paquetesComprados != null) {
+                    for (DtPaquete p : paquetesComprados) {
+                        if (p != null && p.getFechaAlta() != null) {
+                            filtrados.add(p);
+                        }
+                    }
+                }
+                escribirPaquetesCompradosJSON(filtrados, out);
             } else {
                 out.print("[]");
             }
@@ -218,9 +227,16 @@ public class CompraPaqueteServerlet extends HttpServlet {
             out.print("\"nombre\":\"" + escapeJson(p.getNombre()) + "\",");
             out.print("\"descripcion\":\"" + escapeJson(p.getDescripcion()) + "\",");
             out.print("\"costo\":" + p.getCosto() + ",");
-            out.print("\"fechaCompra\":\"" + LocalDate.now().toString() + "\","); // Esto debería venir de la compra real
-            out.print("\"fechaVencimiento\":\"" + LocalDate.now().plusDays(p.getPeriodoValidezDias()).toString() + "\",");
-            out.print("\"cantidadRutas\":" + p.getItems().size());
+            // Usar la fecha de compra real del paquete si está disponible
+            String fechaCompraStr = p.getFechaAlta() != null ? p.getFechaAlta().toString() : "";
+            out.print("\"fechaCompra\":\"" + fechaCompraStr + "\",");
+            // Calcular fecha de vencimiento a partir de fechaAlta y periodoValidezDias
+            String fechaVencimientoStr = "";
+            if (p.getFechaAlta() != null && p.getPeriodoValidezDias() > 0) {
+                fechaVencimientoStr = p.getFechaAlta().plusDays(p.getPeriodoValidezDias()).toString();
+            }
+            out.print("\"fechaVencimiento\":\"" + fechaVencimientoStr + "\",");
+            out.print("\"cantidadRutas\":" + (p.getItems() != null ? p.getItems().size() : 0));
             out.print("}");
 
             if (i < paquetes.size() - 1) out.print(",");

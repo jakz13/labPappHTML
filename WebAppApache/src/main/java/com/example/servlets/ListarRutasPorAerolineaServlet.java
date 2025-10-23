@@ -86,6 +86,15 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
             // intentar obtener una imagen (varios getters posibles) y normalizar a URL absoluta
             try {
                 String imagenVal = invokeGetterSafe(r, new String[]{"getImagenUrl", "getImagen", "imagenUrl", "imagen", "getImagenPath", "imagenPath", "url"});
+
+                // DEBUG: imprimir en consola el valor bruto recibido desde el DTO/BD
+                try {
+                    String nombreRuta = r.getNombre();
+                    System.out.println("[DEBUG ListarRutas] ruta='" + nombreRuta + "' - valor imagen bruto: '" + (imagenVal == null ? "<null>" : imagenVal) + "'");
+                } catch (Exception e) {
+                    System.out.println("[DEBUG ListarRutas] error accediendo nombre de ruta: " + e.getMessage());
+                }
+
                 if (imagenVal != null && !imagenVal.isBlank()) {
                     String tmp = imagenVal.trim();
                     try {

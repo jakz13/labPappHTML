@@ -5,6 +5,8 @@ import Logica.ISistema;
 import Logica.Pasajero;
 import Logica.TipoAsiento;
 import DataTypes.DtCliente;
+import DataTypes.DtPaquete;
+import DataTypes.DtItemPaquete;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -13,6 +15,8 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.*;
+import java.lang.reflect.Method;
+import java.util.Map;
 
 @WebServlet("/api/reservas")
 public class RegistrarReservaServlet extends HttpServlet {
@@ -73,7 +77,7 @@ public class RegistrarReservaServlet extends HttpServlet {
             }
             System.out.println("encontrando en la sesion");
 
-            System.out.println(nicknameCliente+"encontrado en la sesion");
+            System.out.println(nicknameCliente + " encontrado en la sesion");
             // Pasajeros (opcional)
             List<Pasajero> pasajeros = new ArrayList<>();
 
@@ -95,7 +99,7 @@ public class RegistrarReservaServlet extends HttpServlet {
 
             // Si no se enviaron pasajeros o la cantidad no coincide con cantidadPasajes,
             // intentar autocompletar con el usuario en sesión solo si falta exactamente 1 pasajero
-            if (pasajeros.size() == 0 && cantidadPasajes == 1) {
+            if (pasajeros.isEmpty() && cantidadPasajes == 1) {
                 // caso: se pidió 1 pasaje y el cliente no envió pasajeros -> autocompletar con sesión
                 try {
                     DtCliente dt = sistema.obtenerCliente(nicknameCliente);
@@ -126,7 +130,7 @@ public class RegistrarReservaServlet extends HttpServlet {
             System.out.println("Pasajeros procesados final: " + pasajeros.size());
 
             // Validar que al menos un pasajero esté presente (caso de uso solicitado)
-            if (pasajeros.size() < 1) {
+            if (pasajeros.isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\":false, \"error\":\"Debe registrar al menos un pasajero\"}");
                 return;
@@ -147,27 +151,138 @@ public class RegistrarReservaServlet extends HttpServlet {
             TipoAsiento tipoAsiento = tipoAsientoStr.equalsIgnoreCase("ejecutivo") ? TipoAsiento.EJECUTIVO : TipoAsiento.TURISTA;
             LocalDate fechaReserva = LocalDate.now();
 
-            double costo = sistema.calcularCostoReserva(vuelo, tipoAsiento, cantidadPasajes, equipajeExtra);
+            // CALCULAR COSTO EN SERVIDOR y aplicar descuento de paquete si corresponde
+            double costoServidor = sistema.calcularCostoReserva(vuelo, tipoAsiento, cantidadPasajes, equipajeExtra);
+            String formaPagoReq = obj.optString("formaPago", "general");
+            String paqueteReq = obj.optString("paquete", null);
+
+            // Si se indicó pago con paquete, validar que el cliente posee el paquete y que el paquete contiene la ruta del vuelo
+            double costoFinal = costoServidor;
+            if ("paquete".equalsIgnoreCase(formaPagoReq)) {
+                // Obtener datos del cliente (si es posible) para listar/validar paquetes
+                DtCliente clienteDt;
+                try {
+                    clienteDt = sistema.obtenerCliente(nicknameCliente);
+                } catch (Exception e) {
+                    clienteDt = null;
+                }
+
+                // Construir lista de paquetes comprados que contienen la ruta del vuelo
+                org.json.JSONArray paquetesElegibles = new org.json.JSONArray();
+                if (clienteDt != null && clienteDt.getPaquetesComprados() != null) {
+                    for (DtPaquete dp : clienteDt.getPaquetesComprados()) {
+                        if (dp == null) continue;
+                        // Ignorar paquetes que no fueron realmente comprados (sin fecha de compra)
+                        if (dp.getFechaAlta() == null) continue;
+                        // Si el paquete tiene vigencia (periodoValidezDias > 0), comprobar que no esté vencido
+                        if (dp.getPeriodoValidezDias() > 0 && dp.getFechaAlta() != null) {
+                            java.time.LocalDate venc = dp.getFechaAlta().plusDays(dp.getPeriodoValidezDias());
+                            if (venc.isBefore(java.time.LocalDate.now())) continue; // paquete vencido
+                        }
+                        boolean contieneRuta = false;
+                        if (dp.getItems() != null) {
+                            for (DtItemPaquete it : dp.getItems()) {
+                                if (it != null && it.getRutaVuelo() != null && it.getRutaVuelo().getNombre() != null) {
+                                    if (it.getRutaVuelo().getNombre().equals(vuelo)) { contieneRuta = true; break; }
+                                }
+                            }
+                        }
+                        if (contieneRuta) {
+                            org.json.JSONObject pjo = new org.json.JSONObject();
+                            // Proveer id y campos útiles para el frontend
+                            pjo.put("id", dp.getNombre());
+                            pjo.put("nombre", dp.getNombre());
+                            pjo.put("descuentoPorc", dp.getDescuentoPorc());
+                            pjo.put("descripcion", dp.getDescripcion() != null ? dp.getDescripcion() : "");
+                            pjo.put("fechaCompra", dp.getFechaAlta() != null ? dp.getFechaAlta().toString() : "");
+                            if (dp.getPeriodoValidezDias() > 0 && dp.getFechaAlta() != null) {
+                                pjo.put("fechaVencimiento", dp.getFechaAlta().plusDays(dp.getPeriodoValidezDias()).toString());
+                            } else {
+                                pjo.put("fechaVencimiento", "");
+                            }
+                            pjo.put("vigenciaDias", dp.getPeriodoValidezDias());
+                            paquetesElegibles.put(pjo);
+                        }
+                    }
+                }
+
+                // Si no se especificó un paquete, devolver la lista de paquetes elegibles para que el cliente elija
+                if (paqueteReq == null || paqueteReq.trim().isEmpty()) {
+                    response.setStatus(HttpServletResponse.SC_OK);
+                    org.json.JSONObject respObj = new org.json.JSONObject();
+                    respObj.put("success", true);
+                    respObj.put("paquetesElegibles", paquetesElegibles);
+                    respObj.put("costoServidor", costoServidor);
+                    out.print(respObj);
+                    return;
+                }
+
+                // Si se especificó un paquete, validar que pertenece al cliente y que contiene la ruta
+                boolean pertenece = false;
+                if (clienteDt != null && clienteDt.getPaquetesComprados() != null) {
+                    for (DtPaquete dp : clienteDt.getPaquetesComprados()) {
+                        if (dp != null && dp.getNombre() != null && dp.getNombre().equals(paqueteReq)) { pertenece = true; break; }
+                    }
+                }
+                if (!pertenece) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    out.print("{\"success\":false, \"error\":\"Paquete no válido o no pertenece al cliente\"}");
+                    return;
+                }
+
+                // Obtener detalle del paquete desde el sistema y verificar que contiene la ruta asociada al vuelo
+                DtPaquete paqueteDt;
+                try { paqueteDt = sistema.obtenerDtPaquete(paqueteReq); } catch (Exception e) { paqueteDt = null; }
+                boolean contieneRuta = false;
+                if (paqueteDt != null && paqueteDt.getItems() != null) {
+                    for (DtItemPaquete it : paqueteDt.getItems()) {
+                        if (it != null && it.getRutaVuelo() != null && it.getRutaVuelo().getNombre() != null) {
+                            if (it.getRutaVuelo().getNombre().equals(vuelo)) { contieneRuta = true; break; }
+                        }
+                    }
+                }
+                if (!contieneRuta) {
+                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                    out.print("{\"success\":false, \"error\":\"El paquete seleccionado no contiene la ruta del vuelo\"}");
+                    return;
+                }
+
+                // Aplicar descuento porcentual del paquete sobre el costo calculado en servidor
+                double descuentoPorc = paqueteDt.getDescuentoPorc();
+                double descuento = (descuentoPorc / 100.0) * costoServidor;
+                costoFinal = Math.max(0.0, costoServidor - descuento);
+            }
 
             try {
                 sistema.crearYRegistrarReserva(
-                        nicknameCliente, vuelo, fechaReserva, costo, tipoAsiento, cantidadPasajes, equipajeExtra, pasajeros
+                        nicknameCliente, vuelo, fechaReserva, costoFinal, tipoAsiento, cantidadPasajes, equipajeExtra, pasajeros
                 );
+
+                // Si llegamos aquí, la creación no lanzó excepción -> devolver éxito
+                response.setStatus(HttpServletResponse.SC_OK);
+                org.json.JSONObject resp = new org.json.JSONObject();
+                resp.put("success", true);
+                resp.put("costoFinal", costoFinal);
+                if (paqueteReq != null && !paqueteReq.trim().isEmpty()) resp.put("paquete", paqueteReq);
+                resp.put("message", "Reserva creada correctamente");
+                out.print(resp);
+                return;
+
             } catch (IllegalArgumentException iae) {
                 // Intentar post-check: la lógica de negocio pudo crear la reserva y luego lanzar la excepción.
                 try {
-                    Object vueloObj = null;
+                    Object vueloObj;
                     try { vueloObj = sistema.obtenerVuelo(vuelo); } catch (Exception vx) { vueloObj = null; }
 
                     boolean found = false;
                     String reservaId = null;
                     if (vueloObj != null) {
-                        Object reservasObj = null;
+                        Object reservasObj;
                         try { reservasObj = vueloObj.getClass().getMethod("getReservas").invoke(vueloObj); } catch (Exception m) { reservasObj = null; }
 
                         Iterable<?> iterable = null;
-                        if (reservasObj instanceof java.util.Map) iterable = ((java.util.Map<?, ?>) reservasObj).values();
-                        else if (reservasObj instanceof java.lang.Iterable) iterable = (Iterable<?>) reservasObj;
+                        if (reservasObj instanceof Map) iterable = ((Map<?, ?>) reservasObj).values();
+                        else if (reservasObj instanceof Iterable) iterable = (Iterable<?>) reservasObj;
 
                         if (iterable != null) {
                             for (Object r : iterable) {
@@ -184,7 +299,12 @@ public class RegistrarReservaServlet extends HttpServlet {
                     if (found) {
                         response.setStatus(HttpServletResponse.SC_OK);
                         String codigo = (reservaId != null && !reservaId.isEmpty()) ? "RES-" + reservaId : "RES-" + System.currentTimeMillis();
-                        out.print("{\"success\":true, \"codigoReserva\":\"" + escapeForJson(codigo) + "\"}");
+                        org.json.JSONObject resp = new org.json.JSONObject();
+                        resp.put("success", true);
+                        resp.put("codigoReserva", codigo);
+                        resp.put("costoFinal", costoFinal);
+                        if (paqueteReq != null && !paqueteReq.trim().isEmpty()) resp.put("paquete", paqueteReq);
+                        out.print(resp);
                         System.out.println("Post-check (iae): reserva detectada tras IllegalArgumentException — devolviendo éxito. ID=" + reservaId);
                         return;
                     }
@@ -200,7 +320,7 @@ public class RegistrarReservaServlet extends HttpServlet {
                 // Si ocurre una excepción, comprobar si la reserva ya fue creada de todas formas
                 try {
                     // intentar detectar si ya existe una reserva del cliente en el vuelo
-                    Object vueloObj = null;
+                    Object vueloObj;
                     try {
                         vueloObj = sistema.obtenerVuelo(vuelo);
                     } catch (Exception vx) { vueloObj = null; }
@@ -208,7 +328,7 @@ public class RegistrarReservaServlet extends HttpServlet {
                     boolean found = false;
                     String reservaId = null;
                     if (vueloObj != null) {
-                        Object reservasObj = null;
+                        Object reservasObj;
                         try {
                             reservasObj = vueloObj.getClass().getMethod("getReservas").invoke(vueloObj);
                         } catch (Exception m) {
@@ -216,9 +336,9 @@ public class RegistrarReservaServlet extends HttpServlet {
                         }
 
                         Iterable<?> iterable = null;
-                        if (reservasObj instanceof java.util.Map) {
-                            iterable = ((java.util.Map<?, ?>) reservasObj).values();
-                        } else if (reservasObj instanceof java.lang.Iterable) {
+                        if (reservasObj instanceof Map) {
+                            iterable = ((Map<?, ?>) reservasObj).values();
+                        } else if (reservasObj instanceof Iterable) {
                             iterable = (Iterable<?>) reservasObj;
                         }
 
@@ -235,118 +355,97 @@ public class RegistrarReservaServlet extends HttpServlet {
                     }
 
                     if (found) {
-                        // Si se detectó que la reserva existe, devolver éxito para que el cliente muestre el modal
                         response.setStatus(HttpServletResponse.SC_OK);
                         String codigo = (reservaId != null && !reservaId.isEmpty()) ? "RES-" + reservaId : "RES-" + System.currentTimeMillis();
-                        out.print("{\"success\":true, \"codigoReserva\":\"" + escapeForJson(codigo) + "\"}");
-                        System.out.println("Reserva detectada tras excepción — devolviendo éxito para cliente. ID=" + reservaId);
+                        org.json.JSONObject resp = new org.json.JSONObject();
+                        resp.put("success", true);
+                        resp.put("codigoReserva", codigo);
+                        resp.put("costoFinal", costoFinal);
+                        if (paqueteReq != null && !paqueteReq.trim().isEmpty()) resp.put("paquete", paqueteReq);
+                        out.print(resp);
+                        System.out.println("Post-check (ex): reserva detectada tras excepción — devolviendo éxito. ID=" + reservaId);
                         return;
                     }
                 } catch (Throwable t) {
-                    System.err.println("Error verificando existencia de reserva tras excepción: " + t.getMessage());
+                    System.err.println("Error en post-check tras excepción: " + t.getMessage());
                 }
 
-                // Si no se detectó, devolver el mensaje original como 400 para que el cliente lo muestre
+                // Si no existe la reserva, devolver la excepción original
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print("{\"success\":false, \"error\":\"" + escapeForJson(ex.getMessage()) + "\"}");
+                return;
+            }
+
+        } catch (Exception e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"success\":false, \"error\":\"" + escapeForJson(e.getMessage()) + "\"}");
+            return;
+        }
+    }
+
+    // Intenta extraer el nickname del cliente desde el objeto reserva mediante reflexión
+    private String getClienteNicknameFromReserva(Object reservaObj) {
+        if (reservaObj == null) return null;
+        try {
+            // intentos de getters comunes
+            String[] candidateMethods = new String[]{"getCliente", "getUsuario", "getOwner", "getUsuarioCliente"};
+            for (String mName : candidateMethods) {
                 try {
-                    String msg = ex.getMessage() != null ? ex.getMessage() : "Error al procesar la reserva";
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    out.print("{\"success\":false, \"error\":\"" + escapeForJson(msg) + "\"}");
-                    return;
-                } catch (Exception inner) {
-                    // si algo falla aquí, caer al handler general
-                    throw ex;
+                    Method m = reservaObj.getClass().getMethod(mName);
+                    Object clienteObj = m.invoke(reservaObj);
+                    if (clienteObj == null) continue;
+                    // si ya es String, devolverlo
+                    if (clienteObj instanceof String) return (String) clienteObj;
+                    // sino intentar getters del cliente
+                    String nick = getPropAsString(clienteObj, "getNickname", "nickname");
+                    if (nick != null && !nick.isEmpty()) return nick;
+                    nick = getPropAsString(clienteObj, "getUsuario", "usuario");
+                    if (nick != null && !nick.isEmpty()) return nick;
+                    nick = getPropAsString(clienteObj, "getNick", "nick");
+                    if (nick != null && !nick.isEmpty()) return nick;
+                } catch (NoSuchMethodException nsme) {
+                    // ignore
                 }
             }
-            System.out.println("=== FIN PROCESO DE COMPRA ===");
-            out.print("{\"success\":true, \"codigoReserva\":\"RES-" + System.currentTimeMillis() + "\"}");
-        } catch (Exception e) {
-            // Log completo para debugging
-            System.err.println("Error en RegistrarReservaServlet: " + e.getMessage());
-            e.printStackTrace(System.err);
 
-            // Obtener causa raíz
-            Throwable root = e;
-            while (root.getCause() != null) root = root.getCause();
-            String causa = root.getClass().getSimpleName() + ": " + (root.getMessage() != null ? root.getMessage() : "(sin mensaje)");
+            // si no encontramos cliente por getter, intentar obtener directamente propiedades en la reserva
+            String direct = getPropAsString(reservaObj, "getClienteNickname", "clienteNickname");
+            if (direct != null && !direct.isEmpty()) return direct;
+            direct = getPropAsString(reservaObj, "getNickname", "nickname");
+            if (direct != null && !direct.isEmpty()) return direct;
 
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            // Devolver mensaje útil para debugging sin exponer stacktrace completo al cliente
-            out.print("{\"success\":false, \"error\":\"Error al agregar la reserva: " + escapeForJson(causa) + "\"}");
+        } catch (Throwable t) {
+            // no fallar por reflexión
         }
+        return null;
     }
 
-    private static String escapeForJson(String s) {
-        if (s == null) return "";
-        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
-    }
-
-    private static String readRequestBody(HttpServletRequest request) throws IOException {
-        StringBuilder sb = new StringBuilder();
-        try (BufferedReader br = request.getReader()) {
-            String line;
-            while ((line = br.readLine()) != null) sb.append(line);
-        }
-        return sb.toString();
-    }
-
-    // helper: usar reflexión para obtener propiedades comunes de objetos Reserva
-    private String getPropAsString(Object obj, String... names) {
+    // Intenta invocar un getter o acceder a un campo con el nombre dado y devolver su valor como String
+    private String getPropAsString(Object obj, String getterName, String fieldName) {
         if (obj == null) return null;
-        for (String name : names) {
+        try {
             try {
-                java.lang.reflect.Method m = obj.getClass().getMethod(name);
+                Method m = obj.getClass().getMethod(getterName);
                 Object val = m.invoke(obj);
                 if (val != null) return String.valueOf(val);
             } catch (NoSuchMethodException nsme) {
-                // intentar con 'is' prefix
+                // intentar campo público
                 try {
-                    String isName = "is" + Character.toUpperCase(name.charAt(0)) + name.substring(1);
-                    java.lang.reflect.Method m2 = obj.getClass().getMethod(isName);
-                    Object val2 = m2.invoke(obj);
-                    if (val2 != null) return String.valueOf(val2);
-                } catch (Exception e) { /* ignore */ }
-            } catch (Exception e) {
-                // si el método existe pero lanza, intentar siguiente
+                    java.lang.reflect.Field f = obj.getClass().getField(fieldName);
+                    Object val = f.get(obj);
+                    if (val != null) return String.valueOf(val);
+                } catch (NoSuchFieldException | IllegalAccessException ignore) {
+                    // ignore
+                }
             }
+        } catch (Throwable t) {
+            // ignore
         }
         return null;
     }
 
-    // helper: obtener nickname del cliente desde un objeto reserva de forma robusta
-    private String getClienteNicknameFromReserva(Object reservaObj) {
-        if (reservaObj == null) return null;
-        // intentar obtener cliente a través de varios getters
-        String[] clienteGetters = new String[] {"getCliente", "cliente", "getClienteNickname", "getClienteNick", "getClient", "getClienteNickName"};
-        for (String g : clienteGetters) {
-            try {
-                java.lang.reflect.Method m = reservaObj.getClass().getMethod(g);
-                Object clienteVal = m.invoke(reservaObj);
-                if (clienteVal == null) continue;
-                if (clienteVal instanceof String) return (String) clienteVal;
-                // si es objeto, intentar obtener nickname mediante getNickname, getNick, getNickname
-                try {
-                    java.lang.reflect.Method m2 = clienteVal.getClass().getMethod("getNickname");
-                    Object nick = m2.invoke(clienteVal);
-                    if (nick != null) return String.valueOf(nick);
-                } catch (Exception e) { /* ignore */ }
-                try {
-                    java.lang.reflect.Method m3 = clienteVal.getClass().getMethod("getNick");
-                    Object nick3 = m3.invoke(clienteVal);
-                    if (nick3 != null) return String.valueOf(nick3);
-                } catch (Exception e) { /* ignore */ }
-                try {
-                    java.lang.reflect.Method m4 = clienteVal.getClass().getMethod("getNicknameCliente");
-                    Object nick4 = m4.invoke(clienteVal);
-                    if (nick4 != null) return String.valueOf(nick4);
-                } catch (Exception e) { /* ignore */ }
-                // fallback a toString
-                return clienteVal.toString();
-            } catch (NoSuchMethodException ns) {
-                continue;
-            } catch (Exception ex) {
-                continue;
-            }
-        }
-        return null;
+    private String escapeForJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
 }

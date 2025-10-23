@@ -106,15 +106,15 @@
                                             <h6>Costos de la Ruta</h6>
                                             <div class="row text-center">
                                                 <div class="col-4">
-                                                    <div class="costo-destacado">$<span id="costoTurista"></span></div>
+                                                    <div class="costo-destacado"><span id="costoTurista"></span></div>
                                                     <small class="text-muted">Turista</small>
                                                 </div>
                                                 <div class="col-4">
-                                                    <div class="costo-destacado">$<span id="costoEjecutivo"></span></div>
+                                                    <div class="costo-destacado"><span id="costoEjecutivo"></span></div>
                                                     <small class="text-muted">Ejecutivo</small>
                                                 </div>
                                                 <div class="col-4">
-                                                    <div class="costo-destacado">$<span id="costoEquipaje"></span></div>
+                                                    <div class="costo-destacado"><span id="costoEquipaje"></span></div>
                                                     <small class="text-muted">Equipaje extra</small>
                                                 </div>
                                             </div>

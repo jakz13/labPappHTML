@@ -51,7 +51,7 @@
                                 <div class="col-md-4">
                                     <label for="aerolinea" class="form-label">Aerolínea *</label>
                                     <select class="form-select" id="aerolinea" required>
-                                        </select>
+                                    </select>
                                     <div class="invalid-feedback">Por favor seleccione una aerolínea.</div>
                                 </div>
 
@@ -165,8 +165,6 @@
                                     <label for="paqueteSelect" class="form-label">Seleccionar Paquete</label>
                                     <select class="form-select" id="paqueteSelect">
                                         <option value="">Seleccione un paquete...</option>
-                                        <option value="sudamerica">Paquete Sudamérica (3 rutas disponibles)</option>
-                                        <option value="europa">Paquete Europa (2 rutas disponibles)</option>
                                     </select>
                                     <div class="form-text">Solo se muestran paquetes vigentes con rutas disponibles</div>
                                 </div>

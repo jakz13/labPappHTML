@@ -5,15 +5,13 @@ import DataTypes.DtCliente;
 import DataTypes.DtReserva;
 import Logica.Fabrica;
 import Logica.ISistema;
-import DataTypes.DtVuelo;
+import Logica.Reserva;
+import Logica.Vuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
-import java.util.Collection;
-import java.util.List;
 import java.util.Map;
 
 @WebServlet("/api/reservas-vuelo")
@@ -36,9 +34,7 @@ public class ReservasVueloServlet extends HttpServlet {
             boolean primeraReserva = true;
 
             for (DtCliente cliente : sistema.listarClientes()) {
-                List<DtReserva> reservasCliente = cliente.getReservas();
-                if (reservasCliente == null) continue;
-                for (DtReserva reserva : reservasCliente) {
+                for (DtReserva reserva : cliente.getReservas()) {
                     // Verificar si esta reserva pertenece al vuelo solicitado
                     if (reservaPerteneceAVuelo(reserva, nombreVuelo, sistema)) {
                         if (!primeraReserva) {
@@ -67,63 +63,26 @@ public class ReservasVueloServlet extends HttpServlet {
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error al obtener reservas: " + e.getMessage() + "\"}");
-            log("Error en ReservasVueloServlet", e);
         }
     }
 
     private boolean reservaPerteneceAVuelo(DtReserva reserva, String nombreVuelo, ISistema sistema) {
         try {
-            DtVuelo vuelo = sistema.verInfoVueloDt(nombreVuelo);
+            // Obtener el vuelo específico
+            Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
             if (vuelo != null) {
-                Object reservasObj = vuelo.getReservas();
-                if (reservasObj == null) return false;
-
-                Collection<?> reservasCollection = null;
-                if (reservasObj instanceof Map) {
-                    reservasCollection = ((Map<?, ?>) reservasObj).values();
-                } else if (reservasObj instanceof Collection) {
-                    reservasCollection = (Collection<?>) reservasObj;
-                }
-
-                if (reservasCollection != null) {
-                    for (Object rObj : reservasCollection) {
-                        String idR = getPropAsString(rObj, "getId", "id");
-                        if (idR != null && idR.equals(String.valueOf(reserva.getId()))) return true;
+                // Verificar si el vuelo tiene esta reserva (Map con clave Long)
+                Map<Long, Reserva> reservasVuelo = vuelo.getReservas();
+                for (Reserva reservaVuelo : reservasVuelo.values()) {
+                    if (String.valueOf(reservaVuelo.getId()).equals(String.valueOf(reserva.getId()))) {
+                        return true;
                     }
-                } else {
-                    // Si no es colección ni map, intentar comparar directamente si es un DtReserva u objeto con id
-                    String idR = getPropAsString(reservasObj, "getId", "id");
-                    if (idR != null && idR.equals(String.valueOf(reserva.getId()))) return true;
                 }
             }
         } catch (Exception e) {
-            log("Error verificando si reserva pertenece a vuelo", e);
+            e.printStackTrace();
         }
         return false;
-    }
-
-    // helper reflexivo para obtener propiedades o métodos comunes
-    private String getPropAsString(Object obj, String... candidateMethods) {
-        if (obj == null) return null;
-        for (String mName : candidateMethods) {
-            try {
-                Method m = obj.getClass().getMethod(mName);
-                Object val = m.invoke(obj);
-                if (val != null) return String.valueOf(val);
-            } catch (NoSuchMethodException nsme) {
-                // ignore
-            } catch (Exception ignore) {}
-        }
-        // try fields
-        for (String fName : candidateMethods) {
-            try {
-                java.lang.reflect.Field f = obj.getClass().getDeclaredField(fName);
-                f.setAccessible(true);
-                Object val = f.get(obj);
-                if (val != null) return String.valueOf(val);
-            } catch (Exception ignore) {}
-        }
-        return null;
     }
 
     private String escapeJson(String value) {
