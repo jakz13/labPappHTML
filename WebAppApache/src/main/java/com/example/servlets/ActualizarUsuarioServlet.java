@@ -262,9 +262,7 @@ public class ActualizarUsuarioServlet extends HttpServlet {
         if (tipoDocStr == null) return null;
 
         switch (tipoDocStr.toLowerCase()) {
-            case "ci":
-            case "cedula":
-            case "dni":
+            case "CedulaIdentidad":
                 return TipoDoc.CEDULAIDENTIDAD;
             case "pasaporte":
                 return TipoDoc.PASAPORTE;

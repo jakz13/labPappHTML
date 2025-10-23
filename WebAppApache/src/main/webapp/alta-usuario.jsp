@@ -157,7 +157,7 @@
                                         <select class="form-select" id="tipoDocumento">
                                             <option value="">Seleccionar...</option>
                                             <option value="pasaporte">Pasaporte</option>
-                                            <option value="cedula">CédulaIdentidad</option>
+                                            <option value="CEDULAIDENTIDAD">CedulaIdentidad</option>
                                         </select>
                                         <div class="invalid-feedback">Por favor seleccione un tipo de documento.</div>
                                     </div>

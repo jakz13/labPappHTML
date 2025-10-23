@@ -294,8 +294,6 @@ function mostrarDetallesVuelo(vueloData) {
                                 <h6 class="card-title text-light">Información del Vuelo</h6>
                                 <p class="mb-1 text-light"><strong>Fecha:</strong> <span id="fechaVueloDetalle"></span></p>
                                 <p class="mb-1 text-light"><strong>Duración:</strong> <span id="duracionVueloDetalle"></span></p>
-                                <p class="mb-1 text-light"><strong>Hora salida:</strong> <span id="horaSalidaDetalle"></span></p>
-                                <p class="mb-1 text-light"><strong>Hora llegada:</strong> <span id="horaLlegadaDetalle"></span></p>
                             </div>
                         </div>
                     </div>
@@ -381,8 +379,6 @@ function mostrarDetallesVuelo(vueloData) {
     actualizarElementoSiExiste('rutaDetalle', document.getElementById('rutaVuelo').value);
     actualizarElementoSiExiste('fechaVueloDetalle', vueloData.fecha || '-');
     actualizarElementoSiExiste('duracionVueloDetalle', vueloData.duracion || '-');
-    actualizarElementoSiExiste('horaSalidaDetalle', vueloData.horaSalida || '-');
-    actualizarElementoSiExiste('horaLlegadaDetalle', vueloData.horaLlegada || '-');
     actualizarElementoSiExiste('asientosTuristaDetalle', vueloData.asientosTurista !== undefined ? vueloData.asientosTurista : '-');
     actualizarElementoSiExiste('asientosEjecutivoDetalle', vueloData.asientosEjecutivo !== undefined ? vueloData.asientosEjecutivo : '-');
     actualizarElementoSiExiste('estadoVueloDetalle', vueloData.estado || 'Confirmado');

@@ -134,15 +134,8 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
                 if (imagenVal != null && !imagenVal.isBlank()) {
                     String tmp = imagenVal.trim();
                     try {
-                        if (!tmp.matches("(?i)^(https?:)?//.*") && !tmp.startsWith("/") && !tmp.startsWith("data:") && !tmp.startsWith("Images/")) {
-                            String ctx = request.getContextPath();
-                            if (ctx == null) ctx = "";
-                            if (!ctx.endsWith("/")) tmp = ctx + "/Images/" + tmp; else tmp = ctx + "Images/" + tmp;
-                        }
-                    } catch (Exception ignore) {}
-
-                    try {
                         if (!tmp.matches("(?i)^(https?:)?//.*")) {
+                            // construir URL absoluta igual que en la JVM de consulta de vuelo
                             String scheme = request.getScheme();
                             String serverName = request.getServerName();
                             int serverPort = request.getServerPort();
@@ -289,4 +282,3 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
         return s.replace("\\","\\\\").replace("\"","\\\"").replace("\n","\\n").replace("\r","\\r").replace("\t","\\t");
     }
 }
-

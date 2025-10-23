@@ -77,9 +77,9 @@ async function cargarUsuariosDesdeBackend() {
                     imagen: (cliente.imagen && cliente.imagen.toString().trim()) ? cliente.imagen : DEFAULT_USER_PLACEHOLDER,
                     datosPersonales: {
                         apellido: cliente.nombre ? cliente.nombre.split(' ').slice(1).join(' ') : 'No especificado',
-                        nacimiento: 'No especificada',
-                        nacionalidad: 'No especificada',
-                        documento: 'No especificado'
+                        nacimiento: ciente.nacimiento ||'No especificada',
+                        nacionalidad: cliente.nacionalidad|| 'No especificada',
+                        documento: cliente.tipoDocumento ||'No especificado'
                     },
                     reservas: [],
                     paquetes: []
@@ -99,8 +99,8 @@ async function cargarUsuariosDesdeBackend() {
                     correo: aerolinea.correo || 'Sin email',
                     fechaRegistro: aerolinea.fechaRegistro || 'No especificada',
                     imagen: (aerolinea.imagen && aerolinea.imagen.toString().trim()) ? aerolinea.imagen : DEFAULT_USER_PLACEHOLDER,
-                    descripcion: 'Sin descripción',
-                    sitioWeb: '',
+                    descripcion: aerolinea.descripcion ||'Sin descripción',
+                    sitioWeb: aerolinea.sitioWeb|| 'No especificado',
                     rutas: []
                 };
             });
