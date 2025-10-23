@@ -572,8 +572,8 @@ function actualizarPaquetesComprados() {
         listaPaquetesComprados.innerHTML = `
             <div class="col-12">
                 <div class="alert alert-warning text-center">
-                    <p class="mb-0">No has comprado ningún paquete aún.</p>
-                    <small class="text-muted">Selecciona un paquete disponible para realizar tu primera compra.</small>
+                    <p class="mb-0 text-light">No has comprado ningún paquete aún.</p>
+                    <small class="text-light">Selecciona un paquete disponible para realizar tu primera compra.</small>
                 </div>
             </div>
         `;
@@ -585,37 +585,39 @@ function actualizarPaquetesComprados() {
         const fechaCompra = paquete.fechaCompra ? new Date(paquete.fechaCompra) : new Date();
         const fechaVencimiento = paquete.fechaVencimiento ? new Date(paquete.fechaVencimiento) : new Date();
 
-        const paqueteHTML = `
-            <div class="col-md-6">
-                <div class="card ${vigente ? 'border-success' : 'border-secondary'} h-100">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start">
-                            <h6 class="card-title">${paquete.nombre || 'Sin nombre'}</h6>
-                            <span class="badge ${vigente ? 'bg-success' : 'bg-secondary'}">${vigente ? 'Vigente' : 'Vencido'}</span>
-                        </div>
-                        <p class="small text-muted mb-2">
-                            <i class="bi bi-calendar-check"></i> Comprado: ${fechaCompra.toLocaleDateString()}
-                        </p>
-                        <p class="small text-muted mb-2">
-                            <i class="bi bi-calendar-x"></i> Vence: ${fechaVencimiento.toLocaleDateString()}
-                        </p>
-                        <div class="mt-2">
-                            <small><strong><i class="bi bi-geo-route"></i> Rutas:</strong> ${paquete.cantidadRutas || 0} incluidas</small>
-                        </div>
-                        <div class="mt-2">
-                            <small><strong><i class="bi bi-currency-dollar"></i> Costo:</strong> $${(paquete.costo || 0).toFixed(2)}</small>
-                        </div>
-                        ${vigente ?
-            `<div class="mt-3">
-                                <button class="btn btn-outline-primary btn-sm w-100" onclick="utilizarPaquete('${paquete.id}')">
-                                    <i class="bi bi-airplane"></i> Utilizar Paquete
-                                </button>
-                            </div>`
-            : ''}
-                    </div>
-                </div>
-            </div>
-        `;
+        // Usar costoFinal si está disponible, sino usar costo
+        const costoMostrar = paquete.costoFinal || paquete.costo || 0;
+
+        const paqueteHTML =
+            '<div class="col-md-6">' +
+            '    <div class="card ' + (vigente ? 'border-success' : 'border-secondary') + ' h-100">' +
+            '        <div class="card-body">' +
+            '            <div class="d-flex justify-content-between align-items-start">' +
+            '                <h6 class="card-title text-light">' + (paquete.nombre || 'Sin nombre') + '</h6>' +
+            '                <span class="badge ' + (vigente ? 'bg-success' : 'bg-secondary') + '">' + (vigente ? 'Vigente' : 'Vencido') + '</span>' +
+            '            </div>' +
+            '            <p class="small text-light mb-2">' +
+            '                <i class="bi bi-calendar-check text-light"></i> Comprado: ' + fechaCompra.toLocaleDateString() +
+            '            </p>' +
+            '            <p class="small text-light mb-2">' +
+            '                <i class="bi bi-calendar-x text-light"></i> Vence: ' + fechaVencimiento.toLocaleDateString() +
+            '            </p>' +
+            '            <div class="mt-2">' +
+            '                <small class="text-light"><strong><i class="bi bi-geo-route text-light"></i> Rutas:</strong> ' + (paquete.cantidadRutas || 0) + ' incluidas</small>' +
+            '            </div>' +
+            '            <div class="mt-2">' +
+            '                <small class="text-light"><strong><i class="bi bi-currency-dollar text-light"></i> Costo final:</strong> $' + costoMostrar.toFixed(2) + '</small>' +
+            '            </div>' +
+            (vigente ?
+                '            <div class="mt-3">' +
+                '                <button class="btn btn-outline-primary btn-sm w-100" onclick="utilizarPaquete(\'' + paquete.id + '\')">' +
+                '                    <i class="bi bi-airplane"></i> Utilizar Paquete' +
+                '                </button>' +
+                '            </div>'
+                : '') +
+            '        </div>' +
+            '    </div>' +
+            '</div>';
         listaPaquetesComprados.innerHTML += paqueteHTML;
     });
 }
