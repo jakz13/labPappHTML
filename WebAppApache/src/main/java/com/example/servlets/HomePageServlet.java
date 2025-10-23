@@ -55,6 +55,12 @@ public class HomePageServlet extends HttpServlet {
                 paquetesDestacados = paquetesDestacados.subList(0, 2);
             }
 
+            // Obtener aerolíneas recomendadas (máximo 4)
+            List<DtAerolinea> aerolineasRecomendadas = aerolineas;
+            if (aerolineasRecomendadas.size() > 4) {
+                aerolineasRecomendadas = aerolineasRecomendadas.subList(0, 4);
+            }
+
             // Construir JSON response
             StringBuilder json = new StringBuilder();
             json.append("{");
@@ -94,6 +100,22 @@ public class HomePageServlet extends HttpServlet {
                 json.append("}");
                 if (i < paquetesDestacados.size() - 1) json.append(",");
             }
+            json.append("],");
+
+            // Aerolíneas recomendadas
+            json.append("\"aerolineasRecomendadas\":[");
+            for (int i = 0; i < aerolineasRecomendadas.size(); i++) {
+                DtAerolinea aerolinea = aerolineasRecomendadas.get(i);
+                json.append("{");
+                json.append("\"nickname\":\"").append(escapeJson(aerolinea.getNickname())).append("\",");
+                json.append("\"nombre\":\"").append(escapeJson(aerolinea.getNombre())).append("\",");
+                json.append("\"descripcion\":\"").append(escapeJson(aerolinea.getDescripcion())).append("\",");
+                json.append("\"imagenUrl\":\"").append(escapeJson(aerolinea.getImagenUrl())).append("\",");
+                json.append("\"email\":\"").append(escapeJson(aerolinea.getEmail())).append("\",");
+                json.append("\"sitioWeb\":\"").append(escapeJson(aerolinea.getSitioWeb())).append("\"");
+                json.append("}");
+                if (i < aerolineasRecomendadas.size() - 1) json.append(",");
+            }
             json.append("]");
 
             json.append("}");
@@ -102,7 +124,7 @@ public class HomePageServlet extends HttpServlet {
 
         } catch (Exception e) {
             // En caso de error, devolver datos vacíos
-            out.print("{\"rutasDestacadas\":[],\"paquetesDestacados\":[]}");
+            out.print("{\"rutasDestacadas\":[],\"paquetesDestacados\":[],\"aerolineasRecomendadas\":[]}");
             e.printStackTrace();
         }
     }

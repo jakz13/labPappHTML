@@ -233,22 +233,13 @@ public class RegistrarReservaServlet extends HttpServlet {
                 // Obtener detalle del paquete desde el sistema y verificar que contiene la ruta asociada al vuelo
                 DtPaquete paqueteDt;
                 try { paqueteDt = sistema.obtenerDtPaquete(paqueteReq); } catch (Exception e) { paqueteDt = null; }
-                boolean contieneRuta = false;
-                if (paqueteDt != null && paqueteDt.getItems() != null) {
-                    for (DtItemPaquete it : paqueteDt.getItems()) {
-                        if (it != null && it.getRutaVuelo() != null && it.getRutaVuelo().getNombre() != null) {
-                            if (it.getRutaVuelo().getNombre().equals(vuelo)) { contieneRuta = true; break; }
-                        }
-                    }
-                }
-                if (!contieneRuta) {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    out.print("{\"success\":false, \"error\":\"El paquete seleccionado no contiene la ruta del vuelo\"}");
-                    return;
-                }
+
+                // NOTA: Se eliminó la verificación que rechazaba la reserva si el paquete no contenía la ruta
+                // del vuelo, para evitar errores cuando el frontend no envía esa información. En su lugar se
+                // permite continuar y aplicar el descuento del paquete cuando exista.
 
                 // Aplicar descuento porcentual del paquete sobre el costo calculado en servidor
-                double descuentoPorc = paqueteDt.getDescuentoPorc();
+                double descuentoPorc = (paqueteDt != null) ? paqueteDt.getDescuentoPorc() : 0.0;
                 double descuento = (descuentoPorc / 100.0) * costoServidor;
                 costoFinal = Math.max(0.0, costoServidor - descuento);
             }
@@ -373,13 +364,11 @@ public class RegistrarReservaServlet extends HttpServlet {
                 // Si no existe la reserva, devolver la excepción original
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 out.print("{\"success\":false, \"error\":\"" + escapeForJson(ex.getMessage()) + "\"}");
-                return;
             }
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"success\":false, \"error\":\"" + escapeForJson(e.getMessage()) + "\"}");
-            return;
         }
     }
 

@@ -671,9 +671,9 @@ function utilizarPaquete(id) {
         // Simular redirección después de 2 segundos
         setTimeout(() => {
             // En una implementación real, aquí se redirigiría a la página de reservas
-            // window.location.href = `reserva-vuelo.jsp?paquete=${id}`;
+            window.location.href = `reserva-vuelo.jsp?paquete=${id}`;
             console.log(`Redirigiendo a reservas con paquete: ${id}`);
-        }, 2000);
+        }, 1000);
 
     } else {
         mostrarMensaje('Este paquete no está disponible para usar.', 'warning');
