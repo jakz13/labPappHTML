@@ -12,6 +12,7 @@ import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 @WebServlet("/homeData")
 public class HomePageServlet extends HttpServlet {
@@ -48,9 +49,16 @@ public class HomePageServlet extends HttpServlet {
                 }
             }
 
-            // Obtener paquetes disponibles
+            // Obtener paquetes disponibles y filtrar los que tienen costo > 0
             List<DtPaquete> paquetesDestacados = sistema.listarPaquetes();
-            // Limitar a 2 paquetes
+            if (paquetesDestacados != null) {
+                paquetesDestacados = paquetesDestacados.stream()
+                        .filter(paquete -> paquete.getCosto() > 0)
+                        .collect(Collectors.toList());
+            } else {
+                paquetesDestacados = new ArrayList<>();
+            }
+
             if (paquetesDestacados.size() > 2) {
                 paquetesDestacados = paquetesDestacados.subList(0, 2);
             }
