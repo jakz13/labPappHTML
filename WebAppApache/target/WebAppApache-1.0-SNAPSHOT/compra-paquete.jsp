@@ -50,7 +50,7 @@
                     <div class="alert alert-info d-flex align-items-center">
                         <i class="bi bi-person-circle me-2 fs-5"></i>
                         <div>
-                            <strong>Cliente:</strong> <span id="nombreCliente">María González</span> |
+                            <strong>Cliente:</strong> <span id="nombreCliente">No hay cliente iniciado</span> |
                             <strong>Paquetes vigentes:</strong> <span id="contadorPaquetes">0/0</span>
                         </div>
                     </div>

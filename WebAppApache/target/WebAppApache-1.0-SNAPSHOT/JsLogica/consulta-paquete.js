@@ -321,33 +321,33 @@ function actualizarInterfazRuta(ruta) {
 
 function consultarVuelos() {
     const rutaNombre = document.getElementById("rutaNombre").textContent;
-    console.log('✈️ Consultando vuelos para:', rutaNombre);
+    const rutaAerolinea = document.getElementById("rutaAerolinea").textContent;
+    console.log('✈️ Consultando vuelos para:', rutaNombre, 'de', rutaAerolinea);
 
-    const modalHTML = `
-        <div class="modal fade" id="vuelosModal" tabindex="-1" aria-labelledby="vuelosModalLabel" aria-hidden="true">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header bg-primary text-white">
-                        <h5 class="modal-title" id="vuelosModalLabel">Consultar Vuelos</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                    </div>
-                    <div class="modal-body text-center">
-                        <div class="mb-3">
-                            <i class="bi bi-airplane text-primary" style="font-size: 3rem;"></i>
-                        </div>
-                        <h5>Redirigiendo a Consulta de Vuelos</h5>
-                        <p>Será redirigido a la página de consulta de vuelos para:</p>
-                        <p class="fw-bold">${rutaNombre}</p>
-                        <p class="text-muted small">Los filtros se aplicarán automáticamente para mostrar los vuelos disponibles en esta ruta.</p>
-                    </div>
-                    <div class="modal-footer justify-content-center">
-                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                        <a href="/consulta-vuelo.jsp" class="btn btn-primary">Continuar</a>
-                    </div>
-                </div>
-            </div>
-        </div>
-    `;
+    const modalHTML =
+        '<div class="modal fade" id="vuelosModal" tabindex="-1" aria-labelledby="vuelosModalLabel" aria-hidden="true">' +
+        '    <div class="modal-dialog">' +
+        '        <div class="modal-content">' +
+        '            <div class="modal-header bg-primary text-white">' +
+        '                <h5 class="modal-title" id="vuelosModalLabel">Consultar Vuelos</h5>' +
+        '                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>' +
+        '            </div>' +
+        '            <div class="modal-body text-center">' +
+        '                <div class="mb-3">' +
+        '                    <i class="bi bi-airplane text-primary" style="font-size: 3rem;"></i>' +
+        '                </div>' +
+        '                <h5>Redirigiendo a Consulta de Vuelos</h5>' +
+        '                <p>Será redirigido a la página de consulta de vuelos para:</p>' +
+        '                <p class="fw-bold">' + rutaNombre + '</p>' +
+        '                <p class="text-muted small">Los filtros se aplicarán automáticamente para mostrar los vuelos disponibles en esta ruta.</p>' +
+        '            </div>' +
+        '            <div class="modal-footer justify-content-center">' +
+        '                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>' +
+        '                <a href="consulta-vuelo.jsp" class="btn btn-primary">Continuar</a>' +
+        '            </div>' +
+        '        </div>' +
+        '    </div>' +
+        '</div>';
 
     if (!document.getElementById('vuelosModal')) {
         document.body.insertAdjacentHTML('beforeend', modalHTML);
