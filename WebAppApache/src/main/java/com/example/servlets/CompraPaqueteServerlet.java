@@ -362,11 +362,10 @@ public class CompraPaqueteServerlet extends HttpServlet {
                 out.print("\"id\":\"" + escapeJson(p.getNombre()) + "\",");
                 out.print("\"nombre\":\"" + escapeJson(p.getNombre()) + "\",");
                 out.print("\"descripcion\":\"" + escapeJson(p.getDescripcion()) + "\",");
-                out.print("\"costo\":" + p.getCosto() + ",");
-                // Usar la fecha de compra real del paquete si está disponible
+                out.print("\"costo\":" + p.getCosto() + ","); // ← ESTA LÍNEA
+                out.print("\"costoFinal\":" + calcularCostoFinal(p) + ",");
                 String fechaCompraStr = p.getFechaAlta() != null ? p.getFechaAlta().toString() : "";
                 out.print("\"fechaCompra\":\"" + fechaCompraStr + "\",");
-                // Calcular fecha de vencimiento a partir de fechaAlta y periodoValidezDias
                 String fechaVencimientoStr = "";
                 if (p.getFechaAlta() != null && p.getPeriodoValidezDias() > 0) {
                     fechaVencimientoStr = p.getFechaAlta().plusDays(p.getPeriodoValidezDias()).toString();
