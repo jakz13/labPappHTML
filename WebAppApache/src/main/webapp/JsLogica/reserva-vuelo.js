@@ -2,6 +2,7 @@
 let vueloSeleccionado = null;
 let sessionUser = null; // info de sesión (nombre, apellido, nickname, tipo)
 let paquetesElegiblesGlobal = []; // lista de paquetes reales que el backend indica como elegibles
+let paquetesUsuarioGlobal = []; // TODOS los paquetes del usuario (con detalle de rutas y si aplican)
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', async function() {
@@ -215,12 +216,13 @@ function configurarEventListeners() {
     document.getElementById('formaPago').addEventListener('change', function() {
         const selectorPaquete = document.getElementById('selectorPaquete');
         selectorPaquete.style.display = this.value === 'paquete' ? 'block' : 'none';
-        // Si el usuario selecciona pago con paquete, pedir al backend los paquetes reales elegibles
+        // Si el usuario selecciona pago con paquete, pedir al backend los paquetes del usuario
         if (this.value === 'paquete') {
-            fetchPaquetesElegibles();
+            fetchPaquetesUsuario();
         } else {
             // limpiar lista previa
             paquetesElegiblesGlobal = [];
+            paquetesUsuarioGlobal = [];
             const paqueteSelect = document.getElementById('paqueteSelect');
             if (paqueteSelect) {
                 paqueteSelect.innerHTML = '<option value="">Seleccione un paquete...</option>';
@@ -344,8 +346,8 @@ function configurarEventListeners() {
     });
 }
 
-// Nueva función: solicita paquetes elegibles al backend y puebla el select
-function fetchPaquetesElegibles() {
+// Nueva función: solicita TODOS los paquetes comprados del usuario y obtiene detalle de cada uno
+function fetchPaquetesUsuario() {
     const paqueteSelect = document.getElementById('paqueteSelect');
     if (!paqueteSelect) return;
 
@@ -360,7 +362,7 @@ function fetchPaquetesElegibles() {
                 return;
             } else {
                 // reintentar la función ahora que la sesión podría estar disponible
-                fetchPaquetesElegibles();
+                fetchPaquetesUsuario();
             }
         }).catch(() => {
             paqueteSelect.innerHTML = '<option value="">Debe iniciar sesión</option>';
@@ -370,88 +372,84 @@ function fetchPaquetesElegibles() {
         return;
     }
 
-    // Requerir que exista un vuelo seleccionado para pedir paquetes relevantes
-    if (!vueloSeleccionado || !vueloSeleccionado.nombre) {
-        paqueteSelect.innerHTML = '<option value="">Seleccione un vuelo primero</option>';
+    // Requerir que exista una ruta seleccionada para evaluar aplicabilidad
+    const rutaSeleccionada = (document.getElementById('rutaVuelo') && document.getElementById('rutaVuelo').value) || null;
+    if (!rutaSeleccionada) {
+        paqueteSelect.innerHTML = '<option value="">Seleccione una ruta primero</option>';
         paqueteSelect.disabled = true;
-        mostrarMensajeError('Seleccione un vuelo válido antes de elegir pago con paquete.');
+        mostrarMensajeError('Seleccione una ruta válida antes de elegir pago con paquete.');
         return;
     }
 
     paqueteSelect.innerHTML = '<option value="">Cargando paquetes...</option>';
     paqueteSelect.disabled = true;
 
-    const payload = {
-        vuelo: vueloSeleccionado.nombre,
-        tipoAsiento: document.getElementById('tipoAsiento').value || 'turista',
-        cantidadPasajes: parseInt(document.getElementById('cantidadPasajes').value, 10) || 1,
-        equipajeExtra: parseInt(document.getElementById('equipajeExtra').value, 10) || 0,
-        formaPago: 'paquete'
-    };
-
-    fetch('api/reservas', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(payload),
-        credentials: 'include'
-    })
-    .then(async res => {
-        const text = await res.text();
-        let json = null;
-        try { json = text ? JSON.parse(text) : null; } catch (e) { json = null; }
-
-        if (!res.ok) {
-            const errMsg = json && json.error ? json.error : 'No se pudieron obtener paquetes elegibles';
-            paquetesElegiblesGlobal = [];
-            paqueteSelect.innerHTML = '<option value="">No hay paquetes disponibles</option>';
-            paqueteSelect.disabled = true;
-            mostrarMensajeError(errMsg);
-            return;
-        }
-
-        if (json && json.success === true && Array.isArray(json.paquetesElegibles)) {
-            paquetesElegiblesGlobal = json.paquetesElegibles.map(p => ({
-                id: p.id || p.nombre,
-                nombre: p.nombre || p.id,
-                descuentoPorc: Number(p.descuentoPorc || 0),
-                descripcion: p.descripcion || '',
-                fechaCompra: p.fechaCompra || '',
-                fechaVencimiento: p.fechaVencimiento || ''
-            }));
-
-            // Poblar select
-            if (paquetesElegiblesGlobal.length === 0) {
-                paqueteSelect.innerHTML = '<option value="">No hay paquetes elegibles</option>';
+    const clienteId = encodeURIComponent(sessionUser.nickname || sessionUser.nickname || sessionUser.nick || '');
+    fetch('compra-paquete?action=paquetes-comprados&cliente=' + clienteId, { credentials: 'include' })
+        .then(res => res.json())
+        .then(async data => {
+            if (!Array.isArray(data) || data.length === 0) {
+                paquetesUsuarioGlobal = [];
+                paquetesElegiblesGlobal = [];
+                paqueteSelect.innerHTML = '<option value="">No posee paquetes</option>';
                 paqueteSelect.disabled = true;
-                mostrarMensajeError('No posee paquetes elegibles para este vuelo.');
-            } else {
-                paqueteSelect.innerHTML = '<option value="">Seleccione un paquete...</option>';
-                paquetesElegiblesGlobal.forEach(p => {
-                    const label = `${p.nombre} (${p.descuentoPorc}% - ${p.descripcion || 'sin descripción'})`;
-                    paqueteSelect.innerHTML += `<option value="${escapeHtml(p.id)}">${escapeHtml(label)}</option>`;
-                });
-                paqueteSelect.disabled = false;
+                mostrarMensajeError('No posee paquetes comprados.');
+                return;
             }
 
-            // actualizar costos en UI usando info del servidor
-            const costoServidor = (json.costoServidor !== undefined) ? Number(json.costoServidor) : null;
-            if (costoServidor !== null) {
-                // almacenar temporalmente si queremos mostrarlo (no necesario)
-            }
+            // Para cada paquete del usuario pedir detalle para conocer las rutas incluidas y el descuento
+            const detallePromises = data.map(p => {
+                const id = p.id || p.nombre;
+                return fetch('consulta-paquete?action=obtener-paquete&paquete=' + encodeURIComponent(id), { credentials: 'include' })
+                    .then(r => r.ok ? r.json() : null)
+                    .then(detalle => ({ base: p, detalle }))
+                    .catch(() => ({ base: p, detalle: null }));
+            });
+
+            const detalles = await Promise.all(detallePromises);
+
+            paquetesUsuarioGlobal = detalles.map(d => {
+                const base = d.base || {};
+                const det = d.detalle || {};
+                const rutas = Array.isArray(det.rutas) ? det.rutas : [];
+                const descuentoPorc = Number(det.descuento || det.descuentoPorc || base.descuento || 0);
+                const esAplicable = rutas.some(r => (r.id === rutaSeleccionada) || (r.nombre === rutaSeleccionada));
+
+                return {
+                    id: base.id || base.nombre || det.id || det.nombre,
+                    nombre: base.nombre || det.nombre || (base.id || det.id) || 'Paquete',
+                    descuentoPorc: descuentoPorc,
+                    descripcion: base.descripcion || det.descripcion || '',
+                    fechaCompra: base.fechaCompra || det.fechaCompra || '',
+                    fechaVencimiento: base.fechaVencimiento || det.fechaVencimiento || '',
+                    rutas: rutas,
+                    esAplicable: esAplicable
+                };
+            });
+
+            paquetesElegiblesGlobal = paquetesUsuarioGlobal.filter(p => p.esAplicable);
+
+            // Poblar select con todos los paquetes indicando si aplican o no
+            paqueteSelect.innerHTML = '<option value="">Seleccione un paquete...</option>';
+            paquetesUsuarioGlobal.forEach(p => {
+                const aplicText = p.esAplicable ? `${p.descuentoPorc}% aplicable` : 'no aplicable para la ruta seleccionada';
+                const label = `${p.nombre} (${aplicText} - ${p.descripcion || 'sin descripción'})`;
+                // Si no es aplicable, mostrar opción deshabilitada para claridad (no podrá seleccionarse)
+                const disabledAttr = p.esAplicable ? '' : ' disabled';
+                paqueteSelect.innerHTML += `<option value="${escapeHtml(p.id)}" data-aplicable="${p.esAplicable}"${disabledAttr}>${escapeHtml(label)}</option>`;
+            });
+            paqueteSelect.disabled = false;
+
+            // actualizar costos
             calcularCostos();
-        } else {
+        })
+        .catch(err => {
+            paquetesUsuarioGlobal = [];
             paquetesElegiblesGlobal = [];
-            paqueteSelect.innerHTML = '<option value="">No hay paquetes elegibles</option>';
+            paqueteSelect.innerHTML = '<option value="">Error al cargar paquetes</option>';
             paqueteSelect.disabled = true;
-            mostrarMensajeError('No posee paquetes elegibles para este vuelo.');
-        }
-    })
-    .catch(err => {
-        paquetesElegiblesGlobal = [];
-        paqueteSelect.innerHTML = '<option value="">Error al cargar paquetes</option>';
-        paqueteSelect.disabled = true;
-        mostrarMensajeError('Error al obtener paquetes elegibles. Intente nuevamente.');
-    });
+            mostrarMensajeError('Error al obtener paquetes del usuario. Intente nuevamente.');
+        });
 }
 
 // Función para renderizar los formularios de pasajeros
@@ -644,14 +642,14 @@ function calcularCostos() {
     const costoPasajes = Math.max(0, precioUnitario * cantidadPasajes);
     const costoEquipaje = Math.max(0, equipajeExtra * COSTO_EQUIPAJE_POR_UNIDAD);
 
-    // Descuento por paquete: usar valor real si el paquete está en paquetesElegiblesGlobal
+    // Descuento por paquete: usar valor real si el paquete seleccionado está entre los paquetes del usuario y es aplicable
     let descuento = 0;
     if (formaPago === 'paquete' && paqueteSeleccionado) {
-        const paqueteObj = paquetesElegiblesGlobal.find(p => p.id === paqueteSeleccionado || p.nombre === paqueteSeleccionado);
-        if (paqueteObj) {
+        const paqueteObj = paquetesUsuarioGlobal.find(p => p.id === paqueteSeleccionado || p.nombre === paqueteSeleccionado);
+        if (paqueteObj && paqueteObj.esAplicable) {
             descuento = (paqueteObj.descuentoPorc / 100.0) * costoPasajes;
         } else {
-            // si no está en la lista local, no aplicar descuento (el backend validará)
+            // si no está en la lista local o no aplica, no aplicar descuento (el backend validará)
             descuento = 0;
         }
     }
