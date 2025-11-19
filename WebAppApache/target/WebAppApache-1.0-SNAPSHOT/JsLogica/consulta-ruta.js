@@ -397,7 +397,6 @@ function mostrarDetallesVuelo(vueloData) {
     document.getElementById('rutaVueloDetalle').textContent = rutaSeleccionada ? rutaSeleccionada.nombre : '-';
     document.getElementById('fechaVueloDetalle').textContent = vueloData.fecha || '-';
     document.getElementById('duracionVueloDetalle').textContent = vueloData.duracion || '-';
-    document.getElementById('horaSalidaDetalle').textContent = vueloData.hora || '-';
     document.getElementById('asientosTuristaDetalle').textContent = vueloData.asientosTurista !== undefined ? vueloData.asientosTurista : '-';
     document.getElementById('asientosEjecutivoDetalle').textContent = vueloData.asientosEjecutivo !== undefined ? vueloData.asientosEjecutivo : '-';
     document.getElementById('estadoVueloDetalle').textContent = vueloData.estado || 'Confirmado';

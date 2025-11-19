@@ -77,9 +77,9 @@ async function cargarUsuariosDesdeBackend() {
                     imagen: (cliente.imagen && cliente.imagen.toString().trim()) ? cliente.imagen : DEFAULT_USER_PLACEHOLDER,
                     datosPersonales: {
                         apellido: cliente.nombre ? cliente.nombre.split(' ').slice(1).join(' ') : 'No especificado',
-                        nacimiento: ciente.nacimiento ||'No especificada',
-                        nacionalidad: cliente.nacionalidad|| 'No especificada',
-                        documento: cliente.tipoDocumento ||'No especificado'
+                        nacimiento: 'No especificada',
+                        nacionalidad:  'No especificada',
+                        documento: 'No especificado'
                     },
                     reservas: [],
                     paquetes: []

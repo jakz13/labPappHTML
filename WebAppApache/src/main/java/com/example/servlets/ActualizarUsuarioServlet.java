@@ -261,14 +261,19 @@ public class ActualizarUsuarioServlet extends HttpServlet {
     private TipoDoc convertirTipoDocumento(String tipoDocStr) {
         if (tipoDocStr == null) return null;
 
-        switch (tipoDocStr.toLowerCase()) {
-            case "CedulaIdentidad":
-                return TipoDoc.CEDULAIDENTIDAD;
-            case "pasaporte":
-                return TipoDoc.PASAPORTE;
-            default:
-                return null;
+        // Normalizar: quitar espacios, guiones, guiones bajos y pasar a minúsculas
+        String norm = tipoDocStr.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
+
+        // Match robusto por contenido
+        if (norm.contains("cedula") || norm.contains("cedulaidentidad") || norm.equals("ci") ) {
+            return TipoDoc.CEDULAIDENTIDAD;
         }
+        if (norm.contains("pasaporte") || norm.equals("passport")) {
+            return TipoDoc.PASAPORTE;
+        }
+
+        // No reconocido
+        return null;
     }
     // Mantén tus métodos actualizarCliente / actualizarAerolinea (idénticos a los actuales),
     // asegurándote de que las llamadas a sistema.* estén dentro de try/catch (ya lo hacen).

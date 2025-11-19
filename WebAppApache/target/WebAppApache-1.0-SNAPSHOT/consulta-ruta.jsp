@@ -92,7 +92,6 @@
                                                 <p class="mb-2"><strong>Aerolínea:</strong> <span id="rutaAerolinea"></span></p>
                                                 <p class="mb-2"><strong>Origen:</strong> <span id="rutaOrigen"></span></p>
                                                 <p class="mb-2"><strong>Destino:</strong> <span id="rutaDestino"></span></p>
-                                                <p class="mb-2"><strong>Hora salida:</strong> <span id="rutaHora"></span></p>
                                             </div>
                                             <div class="col-md-6">
                                                 <p class="mb-2"><strong>Estado:</strong> <span id="rutaEstado" class="badge bg-success"></span></p>
