@@ -4,7 +4,6 @@ document.addEventListener('DOMContentLoaded', function() {
     // Si la JSP ya inyectó window.SESSION_API_BASE, respetarla (evita solicitudes a /api sin context path)
     if (!window.SESSION_API_BASE) {
         // Incluir el origin para evitar problemas con rutas relativas que resuelven mal
-        // Ejemplo resultante: https://localhost:8080/miApp
         try {
             const origin = window.location.origin || (window.location.protocol + '//' + window.location.host);
             const contextPath = window.location.pathname.replace(/\/[^/]*$/, '');

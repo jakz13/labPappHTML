@@ -21,9 +21,9 @@
         <welcome-file>PaginaPrincipal.jsp</welcome-file>
     </welcome-file-list>
 
-    <!-- Listener que carga los datos desde la BD al iniciar el contexto (respaldo a @WebListener) -->
+    <!-- Listener que carga los datos desde la BD al iniciar el contexto (respaldo a @WebListener)
     <listener>
-        <listener-class>com.example.servlets.CargarDatosBD</listener-class>
+        <listener-class>com.examples.servlets.CargarDatosBD</listener-class>
     </listener>
-
+    -->
 </web-app>
