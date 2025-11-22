@@ -3,7 +3,6 @@ com\example\servlets\ListarVuelosPorRutaServlet.class
 com\example\servlets\ListarAerolineasServlet.class
 com\example\servlets\ActualizarUsuarioServlet.class
 com\example\servlets\ImageServeServlet.class
-com\example\servlets\ListarRutasServlet.class
 com\example\servlets\ListarCategoriasServlet.class
 com\example\servlets\LoginServlet.class
 com\example\servlets\RegistrarReservaServlet.class
@@ -27,5 +26,6 @@ com\example\servlets\ReservaVueloServlet.class
 com\example\servlets\ConsultaDePaqueteServerlet.class
 com\example\servlets\ConsultaUsuarioServerlet.class
 com\example\servlets\AltaVueloServlet.class
+com\example\servlets\ContadorVisitasRutas.class
 com\example\servlets\VerInfoVueloServlet.class
 com\example\servlets\CompraPaqueteServerlet.class

@@ -130,6 +130,11 @@ function cargarRutas(rutas) {
 }
 
 function seleccionarRuta(nombreRuta) {
+    console.log('🔍 Seleccionando ruta:', nombreRuta);
+
+    // ✅ NUEVO: Contar la visita ANTES de mostrar los detalles
+    contarVisitaRuta(nombreRuta);
+
     // Buscar la ruta seleccionada en el arreglo de rutas cargadas
     const ruta = rutasCargadas.find(r => r.nombre === nombreRuta);
 
@@ -146,12 +151,37 @@ function seleccionarRuta(nombreRuta) {
     document.querySelectorAll('.ruta-card').forEach(card => {
         card.classList.remove('border-primary', 'bg-light');
     });
-    // event puede no estar definido en algunos contextos; si falla, no romper
     try {
         event.currentTarget.classList.add('border-primary', 'bg-light');
     } catch (e) {
         // no hacemos nada si no existe event
     }
+}
+
+// ✅ NUEVA FUNCIÓN: Contar visita a ruta específica
+function contarVisitaRuta(nombreRuta) {
+    if (!nombreRuta || nombreRuta.trim() === '') {
+        console.warn('⚠️ No se puede contar visita: nombre de ruta vacío');
+        return;
+    }
+
+    const url = `${CONTEXT_PATH}/contadorVisitas/incrementar?ruta=${encodeURIComponent(nombreRuta)}`;
+    console.log('📊 Contando visita:', url);
+
+    fetch(url)
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`HTTP ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('✅ Visita contada para ruta:', data.ruta, 'Total:', data.total);
+        })
+        .catch(error => {
+            console.warn('⚠️ No se pudo contar la visita (continuando igual):', error);
+            // No mostramos error al usuario, solo log en consola
+        });
 }
 
 function mostrarDetallesRuta(ruta) {
