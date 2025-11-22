@@ -224,6 +224,10 @@ public class AltaRutaServlet extends HttpServlet {
                 }
             }
 
+            String videoUrl = request.getParameter("videoUrl");
+            if (videoUrl != null) videoUrl = videoUrl.trim();
+            if (videoUrl != null && videoUrl.isEmpty()) videoUrl = null;
+
             // Obtener aerolínea (DTO) desde la lógica
             DtAerolinea aerolinea = sistema.obtenerAerolinea(nombreAerolinea);
             if (aerolinea == null) {
@@ -231,12 +235,18 @@ public class AltaRutaServlet extends HttpServlet {
                 out.print("{\"success\": false, \"error\": \"Aerolínea no encontrada\"}");
                 return;
             }
-
+            System.out.println("AltaRutaServlet: Datos a persistir -");
+            System.out.println("  Nombre: " + nombre);
+            System.out.println("  Video URL: " + videoUrl);
+            System.out.println("  Imagen URL: " + imagenUrl);
+            System.out.println("  Aerolínea: " + aerolinea.getNombre());
             // Llamada a la lógica de negocio
             sistema.altaRutaVuelo(
                     nombre, descripcion, descripcionCorta, aerolinea, ciudadOrigen, ciudadDestino, hora,
-                    fechaAlta, costoTurista, costoEjecutivo, costoEquipajeExtra, categorias, imagenUrl
+                    fechaAlta, costoTurista, costoEjecutivo, costoEquipajeExtra, categorias, imagenUrl, videoUrl
             );
+
+            System.out.println("AltaRutaServlet: Video URL guardada: " + videoUrl);
 
             // Intentar persistir la URL de la imagen en la lógica de negocio (si existe alguna API)
             boolean imagenPersistida = false;

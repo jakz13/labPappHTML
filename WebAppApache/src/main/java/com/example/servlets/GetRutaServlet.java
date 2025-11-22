@@ -26,7 +26,7 @@ public class GetRutaServlet extends HttpServlet {
 
         ISistema sistema = Fabrica.getInstance().getISistema();
         sistema.cargarDesdeBd();
-        List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(null);
+        List<DtRutaVuelo> rutas = sistema.listarRutasConfirmadas(Integer.MAX_VALUE);
 
         Object found = null;
         if (rutas != null) {

@@ -77,6 +77,17 @@ document.addEventListener('DOMContentLoaded', function() {
             formData.append('nombre', document.getElementById('nombreRuta').value);
             formData.append('descripcion', document.getElementById('descripcionCorta').value);
             formData.append('descripcionDetallada', document.getElementById('descripcion').value);
+            // Validar y agregar videoUrl
+            const videoUrl = document.getElementById('videoRuta').value.trim();
+            if (videoUrl) {
+                // Validación básica de URL de video
+                if (!esUrlVideoValida(videoUrl)) {
+                    alert('Por favor ingrese una URL de video válida (YouTube, Vimeo o enlace directo a archivo de video).');
+                    document.getElementById('videoRuta').focus();
+                    return;
+                }
+                formData.append('videoUrl', videoUrl);
+            }
             formData.append('hora', document.getElementById('hora').value);
             formData.append('costoTurista', document.getElementById('costoTurista').value);
             formData.append('costoEjecutivo', document.getElementById('costoEjecutivo').value);
@@ -132,6 +143,49 @@ document.addEventListener('DOMContentLoaded', function() {
 
         this.classList.add('was-validated');
     });
+
+
+// Función auxiliar para validar URLs de video
+    function esUrlVideoValida(url) {
+        // YouTube
+        const youtubeRegex = /^(https?:\/\/)?(www\.)?(youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]{11})/;
+        // Vimeo
+        const vimeoRegex = /^(https?:\/\/)?(www\.)?vimeo\.com\/(\d+)/;
+        // Enlaces directos a archivos de video
+        const videoFileRegex = /\.(mp4|webm|ogg|mov|avi|wmv)(\?.*)?$/i;
+        // URLs genéricas (para otros servicios)
+        const urlRegex = /^https?:\/\/.+\..+/;
+
+        return youtubeRegex.test(url) || vimeoRegex.test(url) || videoFileRegex.test(url) || urlRegex.test(url);
+    }
+
+// Agregar validación en tiempo real para el campo de video
+    const videoInput = document.getElementById('videoRuta');
+    if (videoInput) {
+        videoInput.addEventListener('input', function() {
+            const url = this.value.trim();
+            if (url === '') {
+                this.classList.remove('is-valid', 'is-invalid');
+                return;
+            }
+
+            if (esUrlVideoValida(url)) {
+                this.classList.remove('is-invalid');
+                this.classList.add('is-valid');
+            } else {
+                this.classList.remove('is-valid');
+                this.classList.add('is-invalid');
+            }
+        });
+
+        // También validar al perder el foco
+        videoInput.addEventListener('blur', function() {
+            const url = this.value.trim();
+            if (url && !esUrlVideoValida(url)) {
+                this.classList.add('is-invalid');
+            }
+        });
+    }
 
     // Validaciones en tiempo real
     const camposRequeridos = formulario.querySelectorAll('[required]');

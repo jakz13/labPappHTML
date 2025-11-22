@@ -80,9 +80,39 @@
                                     <div class="col-md-12">
                                         <!-- Imagen de la ruta -->
                                         <div class="mb-3">
-                                            <p class="mb-0">RutaImg</p>
+                                            <p class="mb-0"></p>
                                             <img id="imagenRutaDetalle" src="" alt="Imagen de la ruta" class="img-fluid rounded w-100" style="max-height:300px; object-fit:cover; display:none;">
                                         </div>
+
+                                        <!-- Contenedor para video de la ruta -->
+                                        <div id="videoUrlContainer" class="mb-3" style="display: none;">
+                                            <div class="card bg-light">
+                                                <div class="card-body">
+                                                    <h6 class="card-title">
+                                                        <i class="bi bi-camera-video text-primary"></i>
+                                                        Enlace de Video de la Ruta
+                                                    </h6>
+                                                    <p class="mb-1"><strong>URL del video:</strong></p>
+                                                    <a id="videoUrlLink" href="#" target="_blank" class="text-break">
+                                                        <!-- Aquí se insertará la URL -->
+                                                    </a>
+                                                    <div class="mt-2">
+                                                        <small class="text-muted">
+                                                            <i class="bi bi-info-circle"></i>
+                                                            Haz clic para ver el video en una nueva pestaña
+                                                        </small>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Contenedor para video embebido (para YouTube/Vimeo) -->
+                                        <div id="videoContainer" class="mt-3">
+                                            <!-- El video embebido se cargará dinámicamente aquí -->
+                                        </div>
+
+                                        <h4 id="rutaNombre" class="text-primary mb-3"></h4>
+                                        <p class="lead" id="rutaDescripcion"></p>
 
                                          <h4 id="rutaNombre" class="text-primary mb-3"></h4>
                                          <p class="lead" id="rutaDescripcion"></p>

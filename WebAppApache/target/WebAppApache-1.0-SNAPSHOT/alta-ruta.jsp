@@ -114,6 +114,18 @@ if (tipoSesion == null || !"aerolinea".equalsIgnoreCase(tipoSesion)) {
                     <div class="form-text">Formatos: JPG, PNG. Máx. 2MB.</div>
                 </div>
 
+                <div class="mb-3">
+                    <label for="videoRuta" class="form-label">URL de video de la ruta (opcional)</label>
+                    <input type="url" class="form-control" id="videoRuta" name="videoRuta"
+                           placeholder="https://www.youtube.com/watch?v=... o https://vimeo.com/...">
+                    <div class="form-text">
+                        Soporta YouTube, Vimeo o enlaces directos a archivos de video (MP4, WebM).
+                        <br>Ejemplos:
+                        <code>https://www.youtube.com/watch?v=CODIGO</code> |
+                        <code>https://vimeo.com/CODIGO</code> |
+                        <code>https://tusitio.com/videos/ruta.mp4</code>
+                    </div>
+                </div>
 
                 <!-- Botones -->
                 <div class="d-flex gap-2 mt-4">

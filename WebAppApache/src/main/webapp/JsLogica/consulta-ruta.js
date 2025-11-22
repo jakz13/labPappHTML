@@ -132,6 +132,7 @@ function cargarRutas(rutas) {
 function seleccionarRuta(nombreRuta) {
     // Buscar la ruta seleccionada en el arreglo de rutas cargadas
     const ruta = rutasCargadas.find(r => r.nombre === nombreRuta);
+
     if (!ruta) {
         console.error("Ruta no encontrada:", nombreRuta);
         return;
@@ -155,6 +156,15 @@ function seleccionarRuta(nombreRuta) {
 
 function mostrarDetallesRuta(ruta) {
     // Actualizar información de la ruta con datos reales
+    console.log("Datos de la ruta recibidos:", ruta);
+    console.log("Video URL:", ruta.videoUrl);
+    console.log("Imagen URL:", ruta.imagenUrl);
+    // PRUEBA: Mostrar TODOS los campos de la ruta en la consola
+    console.log("=== TODOS LOS CAMPOS DE LA RUTA ===");
+    for (let key in ruta) {
+        console.log(`📌 ${key}:`, ruta[key]);
+    }
+    console.log("===================================");
     document.getElementById('rutaNombre').textContent = ruta.nombre || '-';
     document.getElementById('rutaDescripcion').textContent = ruta.descripcion || 'Sin descripción';
     // si el select de aerolinea no tiene texto (por ejemplo value ''), poner '-'
@@ -320,6 +330,9 @@ function mostrarDetallesRuta(ruta) {
         }
     }
 
+    // ---------- Renderizar video de la ruta ----------
+    renderizarVideo(ruta.videoUrl);
+
     // Mostrar sección de información de la ruta
     document.getElementById('infoRuta').style.display = 'block';
     document.getElementById('infoVuelo').style.display = 'none';
@@ -327,6 +340,150 @@ function mostrarDetallesRuta(ruta) {
     // Scroll a la información de la ruta
     document.getElementById('infoRuta').scrollIntoView({ behavior: 'smooth' });
 }
+
+function renderizarVideo(videoUrl) {
+    let cont = document.getElementById('videoContainer');
+    let urlCont = document.getElementById('videoUrlContainer'); // ✅ Nuevo contenedor
+
+    // Crear contenedores si no existen
+    if (!cont) {
+        cont = document.createElement('div');
+        cont.id = 'videoContainer';
+        cont.className = 'mt-3';
+        const infoRutaCard = document.querySelector('#infoRuta .card-body');
+        infoRutaCard.appendChild(cont);
+    }
+
+    if (!urlCont) {
+        urlCont = document.createElement('div');
+        urlCont.id = 'videoUrlContainer';
+        urlCont.className = 'mb-3';
+        const infoRutaCard = document.querySelector('#infoRuta .card-body');
+        // Insertar después de la imagen y antes del video embebido
+        const imagenContainer = document.getElementById('imagenRutaDetalle');
+        if (imagenContainer) {
+            imagenContainer.parentNode.insertBefore(urlCont, imagenContainer.nextSibling);
+        } else {
+            infoRutaCard.insertBefore(urlCont, cont);
+        }
+    }
+
+    cont.innerHTML = ""; // limpiar contenedor de video embebido
+    urlCont.style.display = 'none'; // ocultar contenedor de URL por defecto
+
+    if (!videoUrl || videoUrl.trim() === "") {
+        // Ocultar ambos contenedores si no hay video
+        cont.style.display = 'none';
+        urlCont.style.display = 'none';
+        return;
+    }
+
+    videoUrl = videoUrl.trim();
+    console.log("🎥 Procesando video URL:", videoUrl);
+
+    // SIEMPRE mostrar el enlace URL (incluso si es YouTube/Vimeo)
+    const videoUrlLink = document.getElementById('videoUrlLink') || (() => {
+        const link = document.createElement('a');
+        link.id = 'videoUrlLink';
+        link.target = '_blank';
+        link.className = 'text-break';
+        return link;
+    })();
+
+    videoUrlLink.href = videoUrl;
+    videoUrlLink.textContent = videoUrl;
+
+    // Configurar el contenedor de URL
+    urlCont.innerHTML = `
+        <div class="card bg-light">
+            <div class="card-body">
+                <h6 class="card-title">
+                    <i class="bi bi-camera-video text-primary"></i> 
+                    Enlace de Video de la Ruta
+                </h6>
+                <p class="mb-1"><strong>URL del video:</strong></p>
+                <a href="${videoUrl}" target="_blank" class="text-break">
+                    ${videoUrl}
+                </a>
+                <div class="mt-2">
+                    <small class="text-muted">
+                        <i class="bi bi-info-circle"></i> 
+                        Haz clic para ver el video en una nueva pestaña
+                    </small>
+                </div>
+            </div>
+        </div>
+    `;
+    urlCont.style.display = 'block';
+
+    // YouTube
+    if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
+        let videoId = '';
+
+        // ... (código existente para extraer videoId de YouTube) ...
+
+        if (videoId) {
+            cont.innerHTML = `
+                <div class="mb-2">
+                    <small class="text-muted"><i class="bi bi-youtube text-danger"></i> Video de YouTube (reproductor embebido)</small>
+                </div>
+                <div class="ratio ratio-16x9">
+                    <iframe 
+                        src="https://www.youtube.com/embed/${videoId}" 
+                        title="Video de la ruta ${rutaSeleccionada ? rutaSeleccionada.nombre : ''}"
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>`;
+            cont.style.display = 'block';
+            return;
+        }
+    }
+
+    // Vimeo
+    if (videoUrl.includes("vimeo.com")) {
+        let videoId = videoUrl.split("/").pop();
+        // ... (código existente para Vimeo) ...
+
+        if (videoId) {
+            cont.innerHTML = `
+                <div class="mb-2">
+                    <small class="text-muted"><i class="bi bi-camera-video text-primary"></i> Video de Vimeo (reproductor embebido)</small>
+                </div>
+                <div class="ratio ratio-16x9">
+                    <iframe 
+                        src="https://player.vimeo.com/video/${videoId}" 
+                        title="Video de la ruta ${rutaSeleccionada ? rutaSeleccionada.nombre : ''}"
+                        allow="autoplay; fullscreen; picture-in-picture" 
+                        allowfullscreen>
+                    </iframe>
+                </div>`;
+            cont.style.display = 'block';
+            return;
+        }
+    }
+
+    // Archivo MP4 u otro video directo
+    if (videoUrl.match(/\.(mp4|webm|ogg|mov|avi|wmv)(\?.*)?$/i)) {
+        cont.innerHTML = `
+            <div class="mb-2">
+                <small class="text-muted"><i class="bi bi-film text-info"></i> Video de la ruta (reproductor nativo)</small>
+            </div>
+            <video controls class="w-100 rounded" style="max-height:400px; background:#000;">
+                <source src="${videoUrl}" type="video/mp4">
+                <source src="${videoUrl}" type="video/webm">
+                <source src="${videoUrl}" type="video/ogg">
+                Tu navegador no soporta la reproducción de video.
+            </video>`;
+        cont.style.display = 'block';
+        return;
+    }
+
+    // Si no coincide con ningún formato conocido, solo mostrar el enlace (ya está visible)
+    cont.style.display = 'none'; // Ocultar contenedor de video embebido
+    console.log("ℹ️ Video URL no reconocido para embed, mostrando solo enlace:", videoUrl);
+}
+
 
 function cargarVuelosRuta(nombreRuta) {
     const vuelosContainer = document.getElementById('vuelosAsociados');

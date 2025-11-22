@@ -119,17 +119,9 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
             sb.append("\"costoEjecutivo\":").append(r.getCostoEjecutivo()).append(",");
             sb.append("\"costoEquipaje\":").append(r.getCostoEquipajeExtra());
 
-            // intentar obtener una imagen (varios getters posibles) y normalizar a URL absoluta
             try {
                 String imagenVal = invokeGetterSafe(r, new String[]{"getImagenUrl", "getImagen", "imagenUrl", "imagen", "getImagenPath", "imagenPath", "url"});
 
-                // DEBUG: imprimir en consola el valor bruto recibido desde el DTO/BD
-                try {
-                    String nombreRuta = r.getNombre();
-                    System.out.println("[DEBUG ListarRutas] ruta='" + nombreRuta + "' - valor imagen bruto: '" + (imagenVal == null ? "<null>" : imagenVal) + "'");
-                } catch (Exception e) {
-                    System.out.println("[DEBUG ListarRutas] error accediendo nombre de ruta: " + e.getMessage());
-                }
 
                 if (imagenVal != null && !imagenVal.isBlank()) {
                     String tmp = imagenVal.trim();
@@ -155,6 +147,38 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
 
                     if (imagenVal != null && !imagenVal.isBlank()) {
                         sb.append(",\"imagenUrl\":\"").append(escapeJson(imagenVal)).append("\"");
+                    }
+                }
+            } catch (Exception ignore) {}
+
+            // AÑADIR: Procesar videoUrl (NUEVO CÓDIGO)
+            try {
+                String videoVal = r.getVideoUrl();
+
+                if (videoVal != null && !videoVal.isBlank()) {
+                    String tmp = videoVal.trim();
+                    try {
+                        if (!tmp.matches("(?i)^(https?:)?//.*")) {
+                            // construir URL absoluta igual que para imágenes
+                            String scheme = request.getScheme();
+                            String serverName = request.getServerName();
+                            int serverPort = request.getServerPort();
+                            String portPart = "";
+                            if (!("http".equalsIgnoreCase(scheme) && serverPort == 80) && !("https".equalsIgnoreCase(scheme) && serverPort == 443)) {
+                                portPart = ":" + serverPort;
+                            }
+                            if (!tmp.startsWith("/")) tmp = "/" + tmp;
+                            String absolute = scheme + "://" + serverName + portPart + tmp;
+                            videoVal = absolute;
+                        } else {
+                            videoVal = tmp;
+                        }
+                    } catch (Exception ignore) {
+                        videoVal = tmp;
+                    }
+
+                    if (videoVal != null && !videoVal.isBlank()) {
+                        sb.append(",\"videoUrl\":\"").append(escapeJson(videoVal)).append("\"");
                     }
                 }
             } catch (Exception ignore) {}
