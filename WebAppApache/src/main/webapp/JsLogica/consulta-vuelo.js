@@ -981,3 +981,28 @@ function mostrarMensajeError(mensaje) {
     const toast = new bootstrap.Toast(toastElement);
     toast.show();
 }
+
+// Helper: convertir un valor devuelto por el backend en una URL pública de imagen
+function toPublicImageUrl(value) {
+    if (!value) return '';
+    const v = String(value).trim();
+    if (v.length === 0) return '';
+    if (/^(data:|https?:)?\/\//i.test(v)) return v;
+    if (v.startsWith('/')) return v;
+    if (v.startsWith('Images/')) {
+        const ctx = (typeof window !== 'undefined' && window.CONTEXT_PATH) ? window.CONTEXT_PATH : window.location.pathname.replace(/\/[^/]*$/, '');
+        return (ctx.endsWith('/') ? ctx.slice(0, -1) : ctx) + '/' + v;
+    }
+    if (v.indexOf('/') < 0) {
+        const ctx = (typeof window !== 'undefined' && window.CONTEXT_PATH) ? window.CONTEXT_PATH : window.location.pathname.replace(/\/[^/]*$/, '');
+        const prefix = (ctx.endsWith('/')) ? ctx.slice(0, -1) : ctx;
+        return prefix + '/Images/' + v;
+    }
+    try {
+        const origin = window.location.origin || (window.location.protocol + '//' + window.location.host);
+        const contextPath = (typeof window !== 'undefined' && window.CONTEXT_PATH) ? window.CONTEXT_PATH : window.location.pathname.replace(/\/[^/]*$/, '');
+        return new URL(v, origin + contextPath + '/').href;
+    } catch (e) {
+        return v;
+    }
+}

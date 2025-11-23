@@ -85,30 +85,21 @@ public class VerInfoVueloServlet extends HttpServlet {
 
             if (imagenVal != null && !imagenVal.isBlank()) {
                 // Normalizar/convertir a URL pública si necesario
-                String resolvedImagenUrl = imagenVal;
                 try {
-                    if (resolvedImagenUrl != null) {
-                        String tmp = resolvedImagenUrl.trim();
-                        // Si no es una URL absoluta, ni una ruta absoluta ni data:, asumir nombre de archivo y prefixar con contextPath/Images/
-                        if (!tmp.matches("(?i)^(https?:)?//.*") && !tmp.startsWith("/") && !tmp.startsWith("data:") && !tmp.startsWith("Images/")) {
-                            String ctx = request.getContextPath();
-                            if (ctx == null) ctx = "";
-                            if (!ctx.endsWith("/")) {
-                                resolvedImagenUrl = ctx + "/Images/" + tmp;
-                              } else {
-                                resolvedImagenUrl = ctx + "Images/" + tmp;
-                              }
-                        } else {
-                            resolvedImagenUrl = tmp;
-                        }
-                    }
+                    String tmp = imagenVal.trim();
+                    // eliminar query string
+                    int q = tmp.indexOf('?');
+                    if (q >= 0) tmp = tmp.substring(0, q);
+                    // extraer filename después del último slash o backslash
+                    int lastSlash = Math.max(tmp.lastIndexOf('/'), tmp.lastIndexOf('\\'));
+                    String filename = (lastSlash >= 0) ? tmp.substring(lastSlash + 1) : tmp;
+                    if (filename == null || filename.isBlank()) filename = tmp;
+                    String esc = filename.replace("\\", "\\\\").replace("\"", "\\\"");
+                    out.print(",\"imagenUrl\":\"" + esc + "\"");
                 } catch (Exception ex) {
-                    // si algo falla, usar el valor original
-                    resolvedImagenUrl = imagenVal;
+                    String esc = imagenVal.replace("\\", "\\\\").replace("\"", "\\\"");
+                    out.print(",\"imagenUrl\":\"" + esc + "\"");
                 }
-                // escapar caracteres que rompan el JSON
-                String esc = resolvedImagenUrl.replace("\\", "\\\\").replace("\"", "\\\"");
-                out.print(",\"imagenUrl\":\"" + esc + "\"");
              }
 
             out.print("}");

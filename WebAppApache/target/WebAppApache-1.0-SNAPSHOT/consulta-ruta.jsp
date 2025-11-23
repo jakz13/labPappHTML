@@ -9,6 +9,12 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="CssLogica/estilo-css.css">
+
+    <!-- Inyectar contexto para que los scripts puedan construir URLs públicas sin ambigüedad -->
+    <script type="text/javascript">
+        // CONTEXT_PATH usado por los scripts cliente para prefijar /Images/
+        window.CONTEXT_PATH = '<%= request.getContextPath() %>';
+    </script>
 </head>
 <body class="bg-dark">
 <header>
@@ -113,9 +119,6 @@
 
                                         <h4 id="rutaNombre" class="text-primary mb-3"></h4>
                                         <p class="lead" id="rutaDescripcion"></p>
-
-                                         <h4 id="rutaNombre" class="text-primary mb-3"></h4>
-                                         <p class="lead" id="rutaDescripcion"></p>
 
                                         <div class="row mt-3">
                                             <div class="col-md-6">
@@ -271,7 +274,6 @@
 <div id="toastContainer"></div>
 
 <!-- Scripts -->
-<script>window.CONTEXT_PATH = '<%= request.getContextPath() %>';</script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="JsLogica/session-manager.js"></script>
 <script src="JsLogica/consulta-ruta.js"></script>

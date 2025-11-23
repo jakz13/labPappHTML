@@ -9,7 +9,7 @@ import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.nio.file.*;
 import java.time.LocalDate;
-import java.util.UUID;
+import java.util.Base64;
 
 @WebServlet("/altaVuelo")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
@@ -69,7 +69,6 @@ public class AltaVueloServlet extends HttpServlet {
 
             // Comprobar duplicado por nombre en esta aerolínea (si existe API)
             try {
-                // si existe un método listarVuelosPorAerolinea similar a rutas, intentar usarlo
                 java.lang.reflect.Method m = sistema.getClass().getMethod("listarVuelosPorAerolinea", String.class);
                 Object listado = m.invoke(sistema, nombreAerolinea);
                 if (listado instanceof java.util.List) {
@@ -102,84 +101,40 @@ public class AltaVueloServlet extends HttpServlet {
                 try { submitted = Paths.get(imagePart.getSubmittedFileName()).getFileName().toString(); } catch (Exception ignored) {}
                 String ext = "";
                 int idx = submitted.lastIndexOf('.');
-                if (idx > 0) ext = submitted.substring(idx).toLowerCase();
-                if (!ext.matches("\\.(jpg|jpeg|png|gif|webp|svg)")) {
-                    ext = ".jpg";
-                }
+                if (idx > 0) ext = submitted.substring(idx + 1).toLowerCase();
+                if (ext.equals("jpeg")) ext = "jpg";
+                if (ext.contains("+xml")) ext = "svg";
+                if (ext.isBlank()) ext = "jpg";
 
-                String filename = UUID.randomUUID().toString() + ext;
-
-                String imagesDirPath = null;
-                try { imagesDirPath = (String) request.getServletContext().getAttribute("IMAGES_DIR"); } catch (Exception ignored) {}
-                if (imagesDirPath == null) {
-                    imagesDirPath = request.getServletContext().getRealPath("/Images");
+                byte[] bytes;
+                try (InputStream is = imagePart.getInputStream()) { bytes = is.readAllBytes(); }
+                try {
+                    // usar el nombre del vuelo como prefijo seguro (omitimos caracteres no válidos)
+                    String saved = saveBytesAsImage(bytes, ext, request, nombreVuelo);
+                    imagenUrl = saved != null ? saved : ""; // guardamos solo el filename
+                    System.out.println("AltaVueloServlet: Imagen guardada (multipart) -> " + imagenUrl);
+                } catch (Exception e) {
+                    System.err.println("AltaVueloServlet: fallo guardando multipart image: " + e.getMessage());
+                    imagenUrl = "";
                 }
-                if (imagesDirPath == null) {
-                    imagesDirPath = System.getProperty("java.io.tmpdir") + File.separator + "WebAppApache_Images";
-                }
-                File imagesDir = new File(imagesDirPath);
-                if (!imagesDir.exists()) imagesDir.mkdirs();
-                try { request.getServletContext().setAttribute("IMAGES_DIR", imagesDir.getAbsolutePath()); } catch (Exception ignore) {}
-
-                Path target = Paths.get(imagesDir.getAbsolutePath(), filename);
-                try (InputStream is = imagePart.getInputStream()) {
-                    Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
-                }
-
-                // Guardar la URL relativa basada en el contextPath para que quede en el formato /<context>/Images/<filename>
-                String ctx = request.getContextPath();
-                if (ctx == null) ctx = "";
-                imagenUrl = ctx + "/Images/" + filename;
             } else {
                 String dataUrl = request.getParameter("imagenVuelo");
                 if (dataUrl == null || dataUrl.trim().isEmpty()) dataUrl = request.getParameter("imagen");
                 if (dataUrl == null || dataUrl.trim().isEmpty()) dataUrl = request.getParameter("imagenUrl");
 
-                if (dataUrl != null && dataUrl.startsWith("data:") && dataUrl.contains(";base64,")) {
+                if (dataUrl != null && dataUrl.startsWith("data:")) {
                     try {
-                        String meta = dataUrl.substring(5, dataUrl.indexOf(";base64,"));
-                        String base64 = dataUrl.substring(dataUrl.indexOf(";base64,") + 8);
-                        String mime = meta;
-                        String ext = "";
-                        int slash = mime.indexOf('/');
-                        if (slash >= 0) {
-                            ext = "." + mime.substring(slash + 1).toLowerCase();
-                            if (ext.equals(".jpeg")) ext = ".jpg";
-                            if (ext.contains("+xml")) ext = ".svg";
-                        }
-                        if (!ext.matches("\\.(jpg|jpeg|png|gif|webp|svg)")) {
-                            ext = ".jpg";
-                        }
-
-                        byte[] imageBytes = java.util.Base64.getDecoder().decode(base64);
-                        String filename = UUID.randomUUID().toString() + ext;
-
-                        String imagesDirPath = null;
-                        try { imagesDirPath = (String) request.getServletContext().getAttribute("IMAGES_DIR"); } catch (Exception ignored) {}
-                        if (imagesDirPath == null) {
-                            imagesDirPath = request.getServletContext().getRealPath("/Images");
-                        }
-                        if (imagesDirPath == null) {
-                            imagesDirPath = System.getProperty("java.io.tmpdir") + File.separator + "WebAppApache_Images";
-                        }
-                        File imagesDir = new File(imagesDirPath);
-                        if (!imagesDir.exists()) imagesDir.mkdirs();
-                        try { request.getServletContext().setAttribute("IMAGES_DIR", imagesDir.getAbsolutePath()); } catch (Exception ignore) {}
-
-                        Path target = Paths.get(imagesDir.getAbsolutePath(), filename);
-                        Files.write(target, imageBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-                        // Guardar la URL relativa basada en el contextPath
-                        String ctx2 = request.getContextPath();
-                        if (ctx2 == null) ctx2 = "";
-                        imagenUrl = ctx2 + "/Images/" + filename;
-                     } catch (IllegalArgumentException iae) {
+                        String saved = saveImageFromDataUrl(dataUrl, request, nombreVuelo);
+                        imagenUrl = saved != null ? saved : "";
+                        System.out.println("AltaVueloServlet: Imagen guardada (dataURL) -> " + imagenUrl);
+                    } catch (Exception ex) {
+                        System.err.println("AltaVueloServlet: fallo guardando dataURL: " + ex.getMessage());
                         imagenUrl = "";
-                     }
-                 } else {
-                     imagenUrl = "";
-                 }
-             }
+                    }
+                } else {
+                    imagenUrl = "";
+                }
+            }
 
             // Obtener aerolínea (DTO) desde la lógica
             DtAerolinea aerolinea = sistema.obtenerAerolinea(nombreAerolinea);
@@ -190,21 +145,16 @@ public class AltaVueloServlet extends HttpServlet {
             }
 
             // Llamada a la lógica de negocio
-            // Intentar usar la instancia de ISistema si tiene altaVuelo con la firma esperada
             try {
-                // buscar método altaVuelo que coincida con muchos posibles tipos
                 java.lang.reflect.Method[] methods = sistema.getClass().getMethods();
                 boolean invoked = false;
                 for (java.lang.reflect.Method m : methods) {
                     if (!m.getName().equalsIgnoreCase("altaVuelo")) continue;
                     Class<?>[] pts = m.getParameterTypes();
                     try {
-                        // intentar firma común con imagenUrl al final (9 parámetros)
                         if (pts.length == 9) {
                             Object[] args = new Object[9];
-                            // asignar parámetros comunes donde coincida el tipo
                             args[0] = nombreVuelo;
-                            // pts[1] puede ser String o DtAerolinea
                             if (pts[1] == String.class) args[1] = nombreAerolinea; else args[1] = aerolinea;
                             args[2] = nombreRuta;
                             if (pts[3] == LocalDate.class) args[3] = fecha;
@@ -212,11 +162,9 @@ public class AltaVueloServlet extends HttpServlet {
                             if (pts[5] == int.class || pts[5] == Integer.class) args[5] = asientosTurista;
                             if (pts[6] == int.class || pts[6] == Integer.class) args[6] = asientosEjecutivo;
                             if (pts[7] == LocalDate.class) args[7] = fechaAlta;
-                            // último parámetro comúnmente es String para imagen
                             if (pts[8] == String.class) args[8] = imagenUrl; else args[8] = imagenUrl;
                             try { m.invoke(sistema, args); invoked = true; break; } catch (Exception ex) { /* continuar intentando */ }
                         }
-                        // intentar variantes antiguas sin imagen (compatibilidad)
                         if (pts.length == 8) {
                             Object[] args = new Object[]{nombreVuelo, nombreAerolinea, nombreRuta, fecha, duracion, asientosTurista, asientosEjecutivo, fechaAlta};
                             try { m.invoke(sistema, args); invoked = true; break; } catch (Exception ex) { /* continuar */ }
@@ -226,7 +174,6 @@ public class AltaVueloServlet extends HttpServlet {
                     }
                 }
                 if (!invoked) {
-                    // No se pudo encontrar una firma conocida para altaVuelo; devolver error con debug
                     response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     out.print("{\"success\": false, \"error\": \"No se pudo invocar altaVuelo en la lógica (firma no encontrada)\"}");
                     return;
@@ -251,7 +198,6 @@ public class AltaVueloServlet extends HttpServlet {
                                     imagenPersistida = true; persistenceDebug = "invoked " + m.getName(); break;
                                 }
                                 if (pts.length == 2 && !pts[0].isPrimitive() && pts[1] == String.class) {
-                                    // intentar obtener DTO de vuelo
                                     try {
                                         java.lang.reflect.Method getter = null;
                                         for (java.lang.reflect.Method gm : methods) {
@@ -310,5 +256,43 @@ public class AltaVueloServlet extends HttpServlet {
 
     private static int parseIntSafe(String s) {
         try { return Integer.parseInt(s); } catch (Exception e) { return 0; }
+    }
+
+    // Helpers similares a los de AltaRutaServlet/AltaUsuarioServlet
+    private String saveImageFromDataUrl(String dataUrl, HttpServletRequest request, String prefix) throws IOException {
+        if (dataUrl == null || !dataUrl.startsWith("data:")) return null;
+        int comma = dataUrl.indexOf(',');
+        if (comma < 0) return null;
+        String meta = dataUrl.substring(5, comma);
+        String base64 = dataUrl.substring(comma + 1);
+        if (!meta.contains("base64")) return null;
+        String mime = meta.split(";")[0];
+        String ext = "bin";
+        if (mime != null && mime.startsWith("image/")) {
+            ext = mime.substring("image/".length());
+            if (ext.equalsIgnoreCase("jpeg")) ext = "jpg";
+            if (ext.contains("+xml")) ext = "svg";
+        }
+        byte[] bytes;
+        try { bytes = Base64.getDecoder().decode(base64); } catch (IllegalArgumentException iae) { throw new IOException("Base64 inválido", iae); }
+        return saveBytesAsImage(bytes, ext, request, prefix);
+    }
+
+    private String saveBytesAsImage(byte[] bytes, String ext, HttpServletRequest request, String prefix) throws IOException {
+        if (ext == null || ext.isBlank()) ext = "bin";
+        String imagesDirPath = null;
+        try { imagesDirPath = (String) request.getServletContext().getAttribute("IMAGES_DIR"); } catch (Exception ignore) {}
+        if (imagesDirPath == null) imagesDirPath = request.getServletContext().getRealPath("/Images");
+        if (imagesDirPath == null) imagesDirPath = System.getProperty("java.io.tmpdir") + File.separator + "WebAppApache_Images";
+        File imagesDir = new File(imagesDirPath);
+        if (!imagesDir.exists()) imagesDir.mkdirs();
+        try { request.getServletContext().setAttribute("IMAGES_DIR", imagesDir.getAbsolutePath()); } catch (Exception ignore) {}
+
+        String safePrefix = (prefix == null || prefix.isBlank()) ? "vuelo" : prefix.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String filename = safePrefix + "_" + System.currentTimeMillis() + "." + ext;
+        File outFile = new File(imagesDir, filename);
+        try (FileOutputStream fos = new FileOutputStream(outFile)) { fos.write(bytes); }
+        System.out.println("AltaVueloServlet: Imagen guardada: " + outFile.getAbsolutePath() + " -> stored filename: " + filename + " (para servirla: <contextPath>/Images/" + filename + ")");
+        return filename;
     }
 }

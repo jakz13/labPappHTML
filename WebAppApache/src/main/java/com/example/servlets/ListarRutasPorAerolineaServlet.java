@@ -19,6 +19,9 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
         String categoria = request.getParameter("categoria");
         String estado = request.getParameter("estado");
 
+        // DEBUG: log del parámetro recibido para facilitar diagnóstico (por qué no lista rutas)
+        try { System.out.println("[DEBUG api/rutas] param aerolinea='" + aerolinea + "', categoria='" + categoria + "', estado='" + estado + "'"); } catch (Throwable ignore) {}
+
         ISistema sistema = Fabrica.getInstance().getISistema();
         sistema.cargarDesdeBd();
 
