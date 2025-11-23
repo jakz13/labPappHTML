@@ -1,5 +1,6 @@
 package com.example.servlets;
 
+import logica.EstadoRuta;
 import logica.Fabrica;
 import logica.ISistema;
 import DataTypes.DtRutaVuelo;
@@ -53,8 +54,8 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
             // filtrar sólo CONFIRMADA
             List<DtRutaVuelo> rutasConfirmadas = new ArrayList<>();
             for (DtRutaVuelo ruta : rutasTotales) {
-                String est = ruta.getEstado() != null ? ruta.getEstado() : "";
-                if ("CONFIRMADA".equalsIgnoreCase(est)) {
+                EstadoRuta est = ruta.getEstado() != null ? ruta.getEstado() : EstadoRuta.INGRESADA;
+                if ("CONFIRMADA".equalsIgnoreCase(String.valueOf(est))) {
                     rutasConfirmadas.add(ruta);
                     System.out.println("[DEBUG ListarRutas] ruta confirmada extraida: " + ruta.getNombre());
                 }
@@ -85,8 +86,8 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
 
             // Filtro por estado (si se solicita un estado distinto de "todas")
             if (estado != null && !estado.isEmpty() && !"todas".equalsIgnoreCase(estado)) {
-                String estadoRuta = r.getEstado() != null ? r.getEstado() : "";
-                pasaFiltros = pasaFiltros && estadoRuta.equalsIgnoreCase(estado);
+                EstadoRuta estadoRuta = r.getEstado() != null ? r.getEstado() : EstadoRuta.INGRESADA;
+                pasaFiltros = pasaFiltros && estadoRuta.equals(estado);
             }
 
             if (pasaFiltros) {
@@ -106,7 +107,7 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
             sb.append("\"descripcion\":\"").append(escapeJson(r.getDescripcion())).append("\",");
             sb.append("\"origen\":\"").append(escapeJson(r.getCiudadOrigen())).append("\",");
             sb.append("\"destino\":\"").append(escapeJson(r.getCiudadDestino())).append("\",");
-            sb.append("\"estado\":\"").append(escapeJson(r.getEstado())).append("\",");
+            sb.append("\"estado\":\"").append(escapeJson(String.valueOf(r.getEstado()))).append("\",");
 
             // Categorías como array
             sb.append("\"categorias\":[");

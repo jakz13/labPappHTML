@@ -130,28 +130,47 @@ function cargarRutas(rutas) {
 }
 
 function seleccionarRuta(nombreRuta) {
-    // Buscar la ruta seleccionada en el arreglo de rutas cargadas
-    const ruta = rutasCargadas.find(r => r.nombre === nombreRuta);
+    console.log('🔍 Seleccionando ruta:', nombreRuta);
 
-    if (!ruta) {
-        console.error("Ruta no encontrada:", nombreRuta);
-        return;
-    }
+    // ✅ UNA SOLA LLAMADA: Obtener detalles Y contar visita
+    fetch(`${CONTEXT_PATH}/consultaRuta?nombreRuta=${encodeURIComponent(nombreRuta)}`)
+        .then(response => {
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
+            return response.json();
+        })
+        .then(rutaDetallada => {
+            if (rutaDetallada.error) {
+                throw new Error(rutaDetallada.error);
+            }
 
-    rutaSeleccionada = ruta;
-    mostrarDetallesRuta(ruta);
-    cargarVuelosRuta(nombreRuta);
+            console.log('✅ Detalles de ruta obtenidos (visita contada):', rutaDetallada);
 
-    // Remover selección anterior y marcar actual
-    document.querySelectorAll('.ruta-card').forEach(card => {
-        card.classList.remove('border-primary', 'bg-light');
-    });
-    // event puede no estar definido en algunos contextos; si falla, no romper
-    try {
-        event.currentTarget.classList.add('border-primary', 'bg-light');
-    } catch (e) {
-        // no hacemos nada si no existe event
-    }
+            rutaSeleccionada = rutaDetallada;
+            mostrarDetallesRuta(rutaDetallada);
+            cargarVuelosRuta(nombreRuta);
+
+            // Remover selección anterior y marcar actual
+            document.querySelectorAll('.ruta-card').forEach(card => {
+                card.classList.remove('border-primary', 'bg-light');
+            });
+            try {
+                event.currentTarget.classList.add('border-primary', 'bg-light');
+            } catch (e) {
+                // no hacemos nada si no existe event
+            }
+        })
+        .catch(error => {
+            console.error('❌ Error consultando ruta:', error);
+            // Fallback a datos locales
+            const rutaLocal = rutasCargadas.find(r => r.nombre === nombreRuta);
+            if (rutaLocal) {
+                rutaSeleccionada = rutaLocal;
+                mostrarDetallesRuta(rutaLocal);
+                cargarVuelosRuta(nombreRuta);
+            } else {
+                mostrarMensajeError('No se pudieron cargar los detalles de la ruta');
+            }
+        });
 }
 
 function mostrarDetallesRuta(ruta) {
