@@ -51,6 +51,8 @@
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-ruta.jsp"><i class="bi bi-signpost"></i> Alta de Ruta</a></li>
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-ruta.jsp"><i class="bi bi-map"></i> Consulta de Ruta</a></li>
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-airplane"></i> Alta de Vuelo</a></li>
+                        <!-- NUEVO: Enlace para Finalizar Ruta -->
+                        <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/finalizar-ruta.jsp"><i class="bi bi-check-circle"></i> Finalizar Ruta</a></li>
                     </ul>
                 </li>
 
