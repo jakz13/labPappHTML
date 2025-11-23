@@ -22,6 +22,5 @@ com\example\servlets\ObtenerUsuarioServlet.class
 com\example\servlets\LogoutServlet.class
 com\example\servlets\ReservaVueloServlet.class
 com\example\servlets\AltaVueloServlet.class
-com\example\servlets\ContadorVisitasRutas.class
 com\example\servlets\VerInfoVueloServlet.class
 com\example\servlets\CompraPaqueteServerlet.class

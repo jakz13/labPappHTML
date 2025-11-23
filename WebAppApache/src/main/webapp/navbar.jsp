@@ -26,6 +26,8 @@
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-vuelo.jsp"><i class="bi bi-search"></i> Consulta de Vuelo</a></li>
                         <li data-visible-for="cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-reserva.jsp"><i class="bi bi-ticket-perforated"></i> Consulta de Reserva</a></li>
                         <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/reserva-vuelo.jsp"><i class="bi bi-calendar-check"></i> Reserva de Vuelo</a></li>
+                        <!--Consulta de Check-in -->
+                        <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-checkin.jsp"><i class="bi bi-check-circle"></i> Consulta de Check-in</a></li>
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-plus-circle"></i> Alta de Vuelo</a></li>
                     </ul>
                 </li>

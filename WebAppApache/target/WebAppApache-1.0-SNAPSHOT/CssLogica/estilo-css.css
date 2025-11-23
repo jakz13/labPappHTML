@@ -2077,3 +2077,247 @@ button, .btn, .dropdown-item, .ruta-item, .paquete-card,
     border-color: #dc3545;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.4.4.4-.4'/%3e%3cpath d='M6 7v2.5'/%3e%3c/svg%3e");
 }
+
+/* ===== ESTILOS ESPECÍFICOS PARA CONSULTA DE CHECK-IN ===== */
+
+/* Steps para check-in */
+.step-checkin {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    z-index: 2;
+}
+
+.step-number-checkin {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: var(--color-medium-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-weight: bold;
+    border: 2px solid var(--color-medium-gray);
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+    transition: var(--transition);
+}
+
+.step-checkin.active .step-number-checkin {
+    background-color: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+.step-checkin.completed .step-number-checkin {
+    background-color: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+.step-label-checkin {
+    color: var(--color-text-light);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.step-checkin.active .step-label-checkin {
+    color: var(--color-success);
+}
+
+.step-checkin.completed .step-label-checkin {
+    color: var(--color-success);
+}
+
+/* Secciones del formulario de check-in */
+.form-section-checkin {
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.form-section-checkin.active {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Tarjetas de reserva con check-in */
+.reserva-checkin-card {
+    border: 2px solid transparent;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    cursor: pointer;
+    height: 100%;
+}
+
+.reserva-checkin-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.reserva-checkin-card.border-primary {
+    border-color: var(--color-accent) !important;
+    background-color: rgba(220, 38, 38, 0.05) !important;
+}
+
+/* Badges específicos para check-in */
+.badge-checkin-realizado {
+    background: linear-gradient(135deg, var(--color-success), #15803d);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Grupo de badges para asientos */
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+/* Detalles del check-in */
+.checkin-detalle-item {
+    background-color: var(--color-medium-gray);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--color-success);
+}
+
+.checkin-pasajero-item {
+    background-color: var(--color-dark-gray);
+    border: 1px solid var(--color-medium-gray);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Información destacada del check-in */
+.checkin-info-destacada {
+    background: linear-gradient(135deg, var(--color-success), #15803d);
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+}
+
+.checkin-info-destacada h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Botones específicos para check-in */
+.btn-checkin {
+    background: linear-gradient(135deg, var(--color-success), #15803d);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-checkin:hover {
+    background: linear-gradient(135deg, var(--color-success-light), var(--color-success));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: white;
+}
+
+.btn-tarjeta-embarque {
+    background: linear-gradient(135deg, var(--color-info), #1d4ed8);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-tarjeta-embarque:hover {
+    background: linear-gradient(135deg, #60a5fa, var(--color-info));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: white;
+}
+
+/* Estados de los steps para check-in */
+.step-indicator-checkin {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.step-indicator-checkin::before {
+    content: '';
+    position: absolute;
+    top: 17px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-medium-gray);
+    z-index: 1;
+}
+
+/* Responsive para check-in */
+@media (max-width: 768px) {
+    .step-indicator-checkin {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .step-indicator-checkin::before {
+        display: none;
+    }
+
+    .step-checkin {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 10px;
+    }
+
+    .step-number-checkin {
+        margin: 0;
+    }
+
+    .reserva-checkin-card .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Animaciones específicas para check-in */
+@keyframes pulseCheckin {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.reserva-checkin-card:hover {
+    animation: pulseCheckin 0.5s ease;
+}
+
+/* Mejoras visuales para la información de check-in */
+.checkin-hora-emergente {
+    position: relative;
+}
+
+.checkin-hora-emergente:hover::after {
+    content: 'Hora de inicio de embarque';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-dark);
+    color: var(--color-text);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    border: 1px solid var(--color-accent);
+}
