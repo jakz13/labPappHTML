@@ -36,9 +36,8 @@ public class HomePageServlet extends HttpServlet {
                     List<DtRutaVuelo> rutasAerolinea = sistema.listarRutasPorAerolinea(aerolinea.getNickname());
                     // Filtrar solo rutas confirmadas
                     for (DtRutaVuelo ruta : rutasAerolinea) {
-                        if ("CONFIRMADA".equals(ruta.getEstado())) {
+                        if (ruta.getEstado() != null && "CONFIRMADA".equals(ruta.getEstado().name())) {
                             rutasDestacadas.add(ruta);
-                            // Solo tomar máximo 3 rutas
                             if (rutasDestacadas.size() >= 3) break;
                         }
                     }

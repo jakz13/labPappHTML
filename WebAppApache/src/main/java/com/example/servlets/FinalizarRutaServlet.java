@@ -10,13 +10,12 @@ import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 
-
 @WebServlet("/api/finalizar-ruta")
 public class FinalizarRutaServlet extends HttpServlet {
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nombreRuta = request.getParameter("nombreRuta");
 
-        // Validar parámetro requerido
         if (nombreRuta == null || nombreRuta.trim().isEmpty()) {
             sendErrorResponse(response, "Parámetro 'nombreRuta' requerido", HttpServletResponse.SC_BAD_REQUEST);
             return;
@@ -31,20 +30,42 @@ public class FinalizarRutaServlet extends HttpServlet {
         try {
             System.out.println("[DEBUG FinalizarRutaServlet] Intentando finalizar ruta: " + nombreRuta);
 
-            // Verificar si la ruta puede ser finalizada
-            boolean puedeFinalizar = sistema.puedeFinalizarRuta(nombreRuta);
+            // \[1] Validar estado de la ruta (no confirmada)
+            if (sistema.puedeFinalizarRuta(nombreRuta) == 1) {
+                sendErrorResponse(response,
+                        "La ruta no puede ser finalizada porque aún no está confirmada",
+                        HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
 
-            if (!puedeFinalizar) {
-                sendErrorResponse(response, "La ruta no puede ser finalizada en este momento", HttpServletResponse.SC_BAD_REQUEST);
+            // \[2] Validar si tiene vuelos pendientes
+            if (sistema.puedeFinalizarRuta(nombreRuta) == 2) {
+                sendErrorResponse(response,
+                        "La ruta no puede ser finalizada porque tiene vuelos pendientes",
+                        HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            // \[3] Validar si está en algún paquete
+            if (sistema.puedeFinalizarRuta(nombreRuta) == 3) {
+                sendErrorResponse(response,
+                        "La ruta no puede ser finalizada porque está asociada a un paquete",
+                        HttpServletResponse.SC_BAD_REQUEST);
+                return;
+            }
+
+            // \[4] Validación genérica extra por si mantienes `puedeFinalizarRuta`
+            if (sistema.puedeFinalizarRuta(nombreRuta) == 0) {
+                sendErrorResponse(response,
+                        "La ruta no puede ser finalizada en este momento",
+                        HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
 
             // Finalizar la ruta
             sistema.finalizarRutaVuelo(nombreRuta);
-
             System.out.println("[DEBUG FinalizarRutaServlet] Ruta finalizada exitosamente: " + nombreRuta);
 
-            // Enviar respuesta de éxito
             out.print("{\"success\":true,\"message\":\"Ruta finalizada exitosamente\"}");
 
         } catch (IllegalArgumentException e) {
@@ -53,7 +74,9 @@ public class FinalizarRutaServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("[ERROR FinalizarRutaServlet] Error interno: " + e.getMessage());
             e.printStackTrace();
-            sendErrorResponse(response, "Error interno del servidor: " + e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            sendErrorResponse(response,
+                    "Error interno del servidor: " + e.getMessage(),
+                    HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -66,6 +89,10 @@ public class FinalizarRutaServlet extends HttpServlet {
 
     private static String escapeJson(String s) {
         if (s == null) return "";
-        return s.replace("\\","\\\\").replace("\"","\\\"").replace("\n","\\n").replace("\r","\\r").replace("\t","\\t");
+        return s.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r")
+                .replace("\t", "\\t");
     }
 }

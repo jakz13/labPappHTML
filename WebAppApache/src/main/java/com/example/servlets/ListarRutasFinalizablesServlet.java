@@ -21,11 +21,18 @@ import java.util.Map;
 @WebServlet("/api/rutas-finalizables")
 public class ListarRutasFinalizablesServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        System.out.println("=== ListarRutasFinalizablesServlet INICIADO ===");
+        System.out.println("URL: " + request.getRequestURL());
+        System.out.println("Query String: " + request.getQueryString());
+
         String aerolinea = request.getParameter("aerolinea");
+        System.out.println("Aerolínea recibida: " + aerolinea);
 
         // Validar parámetro requerido
         if (aerolinea == null || aerolinea.trim().isEmpty()) {
-            sendErrorResponse(response, "Parámetro 'aerolinea' requerido");
+            System.out.println("ERROR: Parámetro aerolinea vacío");
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().print("{\"error\": \"Parámetro 'aerolinea' requerido\"}");
             return;
         }
 
@@ -36,14 +43,14 @@ public class ListarRutasFinalizablesServlet extends HttpServlet {
             // Obtener rutas finalizables usando el método específico
             List<DtRutaVuelo> rutasFinalizables = sistema.listarRutasFinalizables(aerolinea);
 
-            System.out.println("[DEBUG ListarRutasFinalizables] Aerolínea: " + aerolinea +
-                    ", Rutas finalizables encontradas: " + (rutasFinalizables != null ? rutasFinalizables.size() : 0));
+            System.out.println("[DEBUG] Rutas finalizables encontradas: " +
+                    (rutasFinalizables != null ? rutasFinalizables.size() : "null"));
 
-            // Convertir a JSON
             response.setContentType("application/json;charset=UTF-8");
             PrintWriter out = response.getWriter();
 
             if (rutasFinalizables == null || rutasFinalizables.isEmpty()) {
+                System.out.println("[DEBUG] No hay rutas finalizables, enviando array vacío");
                 out.print("[]");
                 return;
             }

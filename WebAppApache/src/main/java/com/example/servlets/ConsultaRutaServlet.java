@@ -33,7 +33,7 @@ public class ConsultaRutaServlet extends HttpServlet {
             sistema.cargarDesdeBd();
 
             // === CONTAR LA VISITA A ESTA RUTA ESPECÍFICA ===
-            sistema.incrementarVisitasRuta(nombreRuta.trim());
+            //sistema.incrementarVisitasRuta(nombreRuta.trim());
             System.out.println("[CONSULTA RUTA] ✅ Visita contada para: " + nombreRuta);
 
             // Buscar la ruta en todas las aerolíneas
