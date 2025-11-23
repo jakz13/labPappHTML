@@ -24,9 +24,6 @@ public class ConsultaRutaServlet extends HttpServlet {
             return;
         }
 
-        ContadorVisitasRutas.incrementarVisitaRuta(nombreRuta);
-        System.out.println("[CONTADOR] Visita registrada para ruta: " + nombreRuta);
-
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
@@ -36,11 +33,12 @@ public class ConsultaRutaServlet extends HttpServlet {
             sistema.cargarDesdeBd();
 
             // === CONTAR LA VISITA A ESTA RUTA ESPECÍFICA ===
-            ContadorVisitasRutas.incrementarVisitaRuta(nombreRuta);
+            sistema.incrementarVisitasRuta(nombreRuta.trim());
+            System.out.println("[CONSULTA RUTA] ✅ Visita contada para: " + nombreRuta);
 
             // Buscar la ruta en todas las aerolíneas
             DtRutaVuelo rutaEncontrada = null;
-            List<DtRutaVuelo> todasRutas = sistema.listarRutasConfirmadas(1000); // Número grande para obtener todas
+            List<DtRutaVuelo> todasRutas = sistema.listarRutasConfirmadas(1000);
 
             for (DtRutaVuelo ruta : todasRutas) {
                 if (ruta.getNombre().equals(nombreRuta)) {
@@ -51,20 +49,34 @@ public class ConsultaRutaServlet extends HttpServlet {
 
             if (rutaEncontrada == null) {
                 response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                out.print("{\"error\":\"Ruta no encontrada\"}");
+                out.print("{\"error\":\"Ruta no encontrada o no confirmada\"}");
                 return;
             }
 
-            // Generar JSON con la información de la ruta
+            // Generar JSON con la información completa de la ruta
             out.print("{");
             out.print("\"nombre\":\"" + escapeJson(rutaEncontrada.getNombre()) + "\",");
             out.print("\"descripcion\":\"" + escapeJson(rutaEncontrada.getDescripcion()) + "\",");
+            out.print("\"descripcionCorta\":\"" + escapeJson(rutaEncontrada.getDescripcionCorta()) + "\",");
             out.print("\"origen\":\"" + escapeJson(rutaEncontrada.getCiudadOrigen()) + "\",");
             out.print("\"destino\":\"" + escapeJson(rutaEncontrada.getCiudadDestino()) + "\",");
+            out.print("\"aerolinea\":\"" + escapeJson(rutaEncontrada.getAerolinea()) + "\",");
+            out.print("\"hora\":\"" + escapeJson(rutaEncontrada.getHora()) + "\",");
             out.print("\"estado\":\"" + escapeJson(String.valueOf(rutaEncontrada.getEstado())) + "\",");
             out.print("\"costoTurista\":" + rutaEncontrada.getCostoTurista() + ",");
             out.print("\"costoEjecutivo\":" + rutaEncontrada.getCostoEjecutivo() + ",");
-            out.print("\"costoEquipaje\":" + rutaEncontrada.getCostoEquipajeExtra());
+            out.print("\"costoEquipaje\":" + rutaEncontrada.getCostoEquipajeExtra() + ",");
+            out.print("\"contadorVisitas\":" + rutaEncontrada.getContadorVisitas());
+
+            // Categorías
+            out.print(",\"categorias\":[");
+            if (rutaEncontrada.getCategorias() != null && !rutaEncontrada.getCategorias().isEmpty()) {
+                for (int i = 0; i < rutaEncontrada.getCategorias().size(); i++) {
+                    if (i > 0) out.print(",");
+                    out.print("\"" + escapeJson(rutaEncontrada.getCategorias().get(i)) + "\"");
+                }
+            }
+            out.print("]");
 
             // Agregar imagen si existe
             try {
@@ -89,6 +101,8 @@ public class ConsultaRutaServlet extends HttpServlet {
             out.print("}");
 
         } catch (Exception e) {
+            System.err.println("[CONSULTA RUTA] ❌ Error: " + e.getMessage());
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error al consultar ruta: " + escapeJson(e.getMessage()) + "\"}");
         }
