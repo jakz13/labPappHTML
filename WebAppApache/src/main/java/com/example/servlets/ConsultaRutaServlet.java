@@ -61,7 +61,7 @@ public class ConsultaRutaServlet extends HttpServlet {
             out.print("\"descripcion\":\"" + escapeJson(rutaEncontrada.getDescripcion()) + "\",");
             out.print("\"origen\":\"" + escapeJson(rutaEncontrada.getCiudadOrigen()) + "\",");
             out.print("\"destino\":\"" + escapeJson(rutaEncontrada.getCiudadDestino()) + "\",");
-            out.print("\"estado\":\"" + escapeJson(rutaEncontrada.getEstado()) + "\",");
+            out.print("\"estado\":\"" + escapeJson(String.valueOf(rutaEncontrada.getEstado())) + "\",");
             out.print("\"costoTurista\":" + rutaEncontrada.getCostoTurista() + ",");
             out.print("\"costoEjecutivo\":" + rutaEncontrada.getCostoEjecutivo() + ",");
             out.print("\"costoEquipaje\":" + rutaEncontrada.getCostoEquipajeExtra());
