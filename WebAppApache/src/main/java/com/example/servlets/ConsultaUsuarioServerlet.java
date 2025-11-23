@@ -303,7 +303,7 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             out.print("\"costoTurista\":" + r.getCostoTurista() + ",");
             out.print("\"costoEjecutivo\":" + r.getCostoEjecutivo() + ",");
             out.print("\"costoEquipajeExtra\":" + r.getCostoEquipajeExtra() + ",");
-            out.print("\"estado\":\"" + escapeJson(r.getEstado()) + "\",");
+            out.print("\"estado\":\"" + escapeJson(String.valueOf(r.getEstado())) + "\",");
             out.print("\"fechaAlta\":\"" + (r.getFechaAlta() != null ? r.getFechaAlta().toString() : "") + "\"");
             out.print("}");
 

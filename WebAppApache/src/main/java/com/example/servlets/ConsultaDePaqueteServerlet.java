@@ -7,23 +7,35 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
+import java.util.ArrayList;
 import java.util.List;
 
 @WebServlet("/consulta-paquete")
-public class ConsultaDePaqueteServerlet extends HttpServlet {
+public class ConsultaDePaqueteServerlet extends HttpServlet { // Corregido: Servlet
 
     private ISistema sistema;
 
+    private void enviarError(HttpServletResponse response, String mensaje, int statusCode) throws IOException {
+        response.setStatus(statusCode);
+        try (PrintWriter out = response.getWriter()) {
+            out.print("{\"error\":\"" + escapeJson(mensaje) + "\"}");
+        }
+    }
+
     @Override
     public void init() throws ServletException {
-        // Cargar el sistema UNA SOLA VEZ al iniciar el servlet
-        sistema = Fabrica.getInstance().getISistema();
         try {
-            sistema.cargarDesdeBd();
-            System.out.println("✅ Sistema cargado correctamente en init() - Consulta Paquete");
+            sistema = Fabrica.getInstance().getISistema();
+            if (sistema != null) {
+                sistema.cargarDesdeBd();
+                System.out.println("✅ Sistema cargado correctamente en init() - Consulta Paquete");
+            } else {
+                System.err.println("❌ Error: Sistema es null en init()");
+            }
         } catch (Exception e) {
             System.err.println("❌ Error cargando sistema en init(): " + e.getMessage());
             e.printStackTrace();
+            throw new ServletException("No se pudo inicializar el sistema", e);
         }
     }
 
@@ -35,42 +47,47 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
 
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
-        PrintWriter out = response.getWriter();
 
-        try {
+        // Verificar que el sistema esté inicializado
+        if (sistema == null) {
+            enviarError(response, "Sistema no inicializado", HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return;
+        }
+
+        try (PrintWriter out = response.getWriter()) {
             System.out.println("=== CONSULTA PAQUETE ===");
             System.out.println("Action: " + action);
             System.out.println("Paquete: " + paqueteId);
             System.out.println("Ruta: " + rutaId);
 
-            // NO llamar cargarDesdeBd() aquí - ya se cargó en init()
-
             if ("listar-paquetes".equals(action)) {
                 System.out.println("Listando todos los paquetes con información básica de rutas");
-                listarPaquetesConRutas(sistema, out);
+                listarPaquetesConRutas(out);
             } else if ("obtener-paquete".equals(action) && paqueteId != null) {
                 System.out.println("Obteniendo información detallada del paquete: " + paqueteId);
-                obtenerPaqueteDetalle(sistema, paqueteId, out, response);
+                obtenerPaqueteDetalle(paqueteId, out, response);
             } else if ("obtener-ruta".equals(action) && paqueteId != null && rutaId != null) {
                 System.out.println("Obteniendo ruta " + rutaId + " del paquete " + paqueteId);
-                obtenerRutaDetalle(sistema, paqueteId, rutaId, out, response);
+                obtenerRutaDetalle(paqueteId, rutaId, out, response);
             } else {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.print("{\"error\":\"Parámetros inválidos. Acciones válidas: listar-paquetes, obtener-paquete, obtener-ruta\"}");
+                enviarError(response, "Parámetros inválidos. Acciones válidas: listar-paquetes, obtener-paquete, obtener-ruta",
+                        HttpServletResponse.SC_BAD_REQUEST);
             }
 
         } catch (Exception e) {
             System.err.println("💥 ERROR EN SERVLET CONSULTA PAQUETE: " + e.getMessage());
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"error\":\"Error interno: " + escapeJson(e.getMessage()) + "\"}");
+            enviarError(response, "Error interno: " + e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void listarPaquetesConRutas(ISistema sistema, PrintWriter out) {
+    private void listarPaquetesConRutas(PrintWriter out) {
         try {
             List<DtPaquete> paquetes = sistema.listarPaquetes();
-            System.out.println("📦 Número de paquetes encontrados: " + (paquetes != null ? paquetes.size() : "NULL"));
+            if (paquetes == null) {
+                paquetes = new ArrayList<>();
+            }
+            System.out.println("📦 Número de paquetes encontrados: " + paquetes.size());
             escribirPaquetesConRutasBasicasJSON(paquetes, out);
         } catch (Exception e) {
             System.err.println("💥 ERROR listando paquetes: " + e.getMessage());
@@ -79,50 +96,47 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
         }
     }
 
-    private void obtenerPaqueteDetalle(ISistema sistema, String paqueteId, PrintWriter out, HttpServletResponse response) {
+    private void obtenerPaqueteDetalle(String paqueteId, PrintWriter out, HttpServletResponse response) throws IOException {
         try {
             System.out.println("🔍 Buscando paquete: " + paqueteId);
             DtPaquete paquete = sistema.obtenerDtPaquete(paqueteId);
-            System.out.println("📋 Paquete obtenido: " + (paquete != null ? paquete.getNombre() : "NULL"));
 
             if (paquete != null) {
-                // Obtener los items (rutas) del paquete
+                System.out.println("📋 Paquete obtenido: " + paquete.getNombre());
                 List<DtItemPaquete> items = sistema.getDtItemRutasPaquete(paqueteId);
-                System.out.println("📋 Número de rutas en paquete: " + (items != null ? items.size() : "NULL"));
+                if (items == null) {
+                    items = new ArrayList<>();
+                }
+                System.out.println("Número de rutas en paquete: " + items.size());
                 escribirPaqueteDetalleJSON(paquete, items, out);
             } else {
                 System.out.println("❌ Paquete no encontrado: " + paqueteId);
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                out.print("{\"error\":\"Paquete no encontrado\"}");
+                enviarError(response, "Paquete no encontrado", HttpServletResponse.SC_NOT_FOUND);
             }
         } catch (Exception e) {
             System.err.println("💥 ERROR obteniendo paquete: " + e.getMessage());
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"error\":\"Error obteniendo paquete: " + escapeJson(e.getMessage()) + "\"}");
+            enviarError(response, "Error obteniendo paquete: " + e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
 
-    private void obtenerRutaDetalle(ISistema sistema, String paqueteId, String rutaId, PrintWriter out, HttpServletResponse response) {
+    private void obtenerRutaDetalle(String paqueteId, String rutaId, PrintWriter out, HttpServletResponse response) throws IOException {
         try {
             System.out.println("🔍 Buscando ruta " + rutaId + " en paquete " + paqueteId);
 
-            // Primero obtenemos el paquete para validar que existe
             DtPaquete paquete = sistema.obtenerDtPaquete(paqueteId);
             if (paquete == null) {
                 System.out.println("❌ Paquete no encontrado: " + paqueteId);
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                out.print("{\"error\":\"Paquete no encontrado\"}");
+                enviarError(response, "Paquete no encontrado", HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
-            // Buscar la ruta en los items del paquete
             List<DtItemPaquete> items = sistema.getDtItemRutasPaquete(paqueteId);
             DtItemPaquete itemEncontrado = null;
 
             if (items != null) {
                 for (DtItemPaquete item : items) {
-                    if (item.getRutaVuelo() != null && item.getRutaVuelo().getNombre().equals(rutaId)) {
+                    if (item.getRutaVuelo() != null && rutaId.equals(item.getRutaVuelo().getNombre())) {
                         itemEncontrado = item;
                         break;
                     }
@@ -130,23 +144,22 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
             }
 
             if (itemEncontrado != null) {
-                // Obtener información completa de la ruta
                 DtRutaVuelo ruta = itemEncontrado.getRutaVuelo();
                 System.out.println("📋 Ruta encontrada: " + ruta.getNombre());
                 escribirRutaDetalleJSON(ruta, itemEncontrado, out);
             } else {
                 System.out.println("❌ Ruta no encontrada en el paquete: " + rutaId);
-                response.setStatus(HttpServletResponse.SC_NOT_FOUND);
-                out.print("{\"error\":\"Ruta no encontrada en el paquete\"}");
+                enviarError(response, "Ruta no encontrada en el paquete", HttpServletResponse.SC_NOT_FOUND);
             }
 
         } catch (Exception e) {
             System.err.println("💥 ERROR obteniendo ruta: " + e.getMessage());
             e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"error\":\"Error obteniendo ruta: " + escapeJson(e.getMessage()) + "\"}");
+            enviarError(response, "Error obteniendo ruta: " + e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
+
+
 
 
     private void escribirPaquetesConRutasBasicasJSON(List<DtPaquete> paquetes, PrintWriter out) {
@@ -182,7 +195,7 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
                 out.print("\"costoTurista\":" + ruta.getCostoTurista() + ",");
                 out.print("\"costoEjecutivo\":" + ruta.getCostoEjecutivo() + ",");
                 out.print("\"costoEquipaje\":" + ruta.getCostoEquipajeExtra() + ",");
-                out.print("\"estado\":\"" + escapeJson(ruta.getEstado()) + "\",");
+                out.print("\"estado\":\"" + escapeJson(String.valueOf(ruta.getEstado())) + "\",");
                 out.print("\"imagen\":\"" + escapeJson(ruta.getImagenUrl()) + "\"");
                 out.print("}");
 
@@ -232,7 +245,7 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
             out.print("\"costoTurista\":" + ruta.getCostoTurista() + ",");
             out.print("\"costoEjecutivo\":" + ruta.getCostoEjecutivo() + ",");
             out.print("\"costoEquipaje\":" + ruta.getCostoEquipajeExtra() + ",");
-            out.print("\"estado\":\"" + escapeJson(ruta.getEstado()) + "\",");
+            out.print("\"estado\":\"" + escapeJson(String.valueOf(ruta.getEstado())) + "\",");
             out.print("\"categorias\":\"" + escapeJson(String.join(", ", ruta.getCategorias())) + "\",");
             out.print("\"imagen\":\"" + escapeJson(ruta.getImagenUrl()) + "\"");
             out.print("}");
@@ -260,7 +273,7 @@ public class ConsultaDePaqueteServerlet extends HttpServlet {
         out.print("\"cantidadAsientos\":" + item.getCantAsientos() + ",");
         out.print("\"tipoAsiento\":\"" + escapeJson(item.getTipoAsiento()) + "\",");
         out.print("\"categorias\":\"" + escapeJson(String.join(", ", ruta.getCategorias())) + "\",");
-        out.print("\"estado\":\"" + escapeJson(ruta.getEstado()) + "\",");
+        out.print("\"estado\":\"" + escapeJson(String.valueOf(ruta.getEstado())) + "\",");
         out.print("\"imagen\":\"" + escapeJson(ruta.getImagenUrl()) + "\"");
         out.print("}");
     }

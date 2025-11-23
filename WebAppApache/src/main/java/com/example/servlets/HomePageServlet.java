@@ -87,7 +87,7 @@ public class HomePageServlet extends HttpServlet {
                 json.append("\"hora\":\"").append(escapeJson(ruta.getHora())).append("\",");
                 json.append("\"costoTurista\":").append(ruta.getCostoTurista()).append(",");
                 json.append("\"costoEjecutivo\":").append(ruta.getCostoEjecutivo()).append(",");
-                json.append("\"estado\":\"").append(escapeJson(ruta.getEstado())).append("\",");
+                json.append("\"estado\":\"").append(escapeJson(String.valueOf(ruta.getEstado()))).append("\",");
                 json.append("\"tieneCategorias\":").append(ruta.getCategorias() != null && !ruta.getCategorias().isEmpty());
                 json.append("}");
                 if (i < rutasDestacadas.size() - 1) json.append(",");
