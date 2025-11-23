@@ -40,7 +40,6 @@
                     <ul class="dropdown-menu" aria-labelledby="paquetesDropdown">
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-paquete.jsp"><i class="bi bi-box-seam"></i> Consulta de Paquete</a></li>
                         <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/compra-paquete.jsp"><i class="bi bi-cart-check"></i> Compra de Paquete</a></li>
-                        <!-- Alta de Paquete eliminada: antes visible solo para aerolínea -->
                     </ul>
                 </li>
 
@@ -68,6 +67,44 @@
                     </ul>
                 </li>
             </ul>
+
+            <!-- BARRA DE BÚSQUEDA CON ICONO EXPANDIBLE -->
+            <div class="navbar-search">
+                <div class="search-container position-relative">
+                    <!-- Icono de búsqueda (estado inicial) -->
+                    <button class="btn btn-outline-light search-icon" id="searchToggle">
+                        <i class="bi bi-search"></i>
+                    </button>
+
+                    <!-- Barra de búsqueda expandible (oculta inicialmente) -->
+                    <div class="search-expandable" id="searchExpandable">
+                        <form id="searchForm" action="${pageContext.request.contextPath}/ResultadosBusqueda" method="get" class="d-flex">
+                            <div class="input-group">
+                                <input type="text"
+                                       class="form-control"
+                                       id="globalSearch"
+                                       name="q"
+                                       placeholder="Buscar rutas y paquetes..."
+                                       aria-label="Buscar"
+                                       autocomplete="off">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="bi bi-arrow-right"></i>
+                                </button>
+                            </div>
+                        </form>
+
+                        <!-- SUGERENCIAS EN TIEMPO REAL -->
+                        <div id="searchSuggestions" class="search-suggestions">
+                            <div class="suggestions-header">
+                                <small class="text-muted">Sugerencias</small>
+                            </div>
+                            <div id="suggestionsList" class="suggestions-list">
+                                <!-- Las sugerencias se cargan aquí dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Acciones de usuario -->
             <div class="user-actions">
@@ -108,3 +145,293 @@
         </div>
     </div>
 </div>
+
+<!-- JavaScript para el comportamiento expandible -->
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchToggle = document.getElementById('searchToggle');
+        const searchExpandable = document.getElementById('searchExpandable');
+        const searchInput = document.getElementById('globalSearch');
+        const suggestionsContainer = document.getElementById('searchSuggestions');
+        const suggestionsList = document.getElementById('suggestionsList');
+        const searchForm = document.getElementById('searchForm');
+        const navbarNav = document.getElementById('navbarNav');
+
+        let timeoutId;
+        let isSearchExpanded = false;
+
+        // Función para expandir la búsqueda
+        function expandSearch() {
+            searchExpandable.classList.add('expanded');
+            searchToggle.classList.add('hidden');
+            navbarNav.classList.add('search-active');
+            isSearchExpanded = true;
+
+            // Enfocar el input después de la animación
+            setTimeout(() => {
+                searchInput.focus();
+            }, 300);
+        }
+
+        // Función para contraer la búsqueda
+        function collapseSearch() {
+            searchExpandable.classList.remove('expanded');
+            searchToggle.classList.remove('hidden');
+            navbarNav.classList.remove('search-active');
+            isSearchExpanded = false;
+            hideSuggestions();
+            searchInput.value = '';
+        }
+
+        // Función para cargar sugerencias
+        function loadSuggestions(query) {
+            if (query.length < 2) {
+                hideSuggestions();
+                return;
+            }
+
+            fetch('${pageContext.request.contextPath}/ResultadosBusqueda?action=suggestions&q=' + encodeURIComponent(query))
+                .then(response => response.json())
+                .then(data => {
+                    displaySuggestions(data);
+                })
+                .catch(error => {
+                    console.error('Error cargando sugerencias:', error);
+                    hideSuggestions();
+                });
+        }
+
+        // Función para mostrar sugerencias
+        function displaySuggestions(suggestions) {
+            if (!suggestions || suggestions.length === 0) {
+                hideSuggestions();
+                return;
+            }
+
+            suggestionsList.innerHTML = '';
+
+            suggestions.forEach(item => {
+                const suggestionItem = document.createElement('a');
+                suggestionItem.className = 'suggestion-item';
+                suggestionItem.href = '#';
+                suggestionItem.innerHTML = `
+                    <div class="d-flex align-items-center">
+                        <i class="bi ${item.tipo == 'ruta' ? 'bi-geo-alt' : 'bi-box'} me-2 text-primary"></i>
+                        <div class="flex-grow-1">
+                            <div class="fw-semibold">${item.nombre}</div>
+                            <small class="text-muted text-truncate">${item.descripcion}</small>
+                        </div>
+                        <span class="badge bg-secondary badge-sm ms-2">${item.tipo}</span>
+                    </div>
+                `;
+
+                suggestionItem.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    searchInput.value = item.nombre;
+                    searchForm.submit();
+                });
+
+                suggestionsList.appendChild(suggestionItem);
+            });
+
+            showSuggestions();
+        }
+
+        function showSuggestions() {
+            suggestionsContainer.style.display = 'block';
+        }
+
+        function hideSuggestions() {
+            suggestionsContainer.style.display = 'none';
+        }
+
+        // Event listeners
+        searchToggle.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            expandSearch();
+        });
+
+        searchInput.addEventListener('input', function() {
+            clearTimeout(timeoutId);
+            timeoutId = setTimeout(() => {
+                loadSuggestions(this.value);
+            }, 300);
+        });
+
+        searchInput.addEventListener('focus', function() {
+            if (this.value.length >= 2) {
+                loadSuggestions(this.value);
+            }
+        });
+
+        // Cerrar búsqueda al hacer clic fuera
+        document.addEventListener('click', function(e) {
+            if (isSearchExpanded &&
+                !searchExpandable.contains(e.target) &&
+                !searchToggle.contains(e.target)) {
+                collapseSearch();
+            }
+        });
+
+        // Prevenir que se cierre al hacer clic dentro de la barra de búsqueda
+        searchExpandable.addEventListener('click', function(e) {
+            e.stopPropagation();
+        });
+
+        // Manejar teclas
+        searchInput.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                if (suggestionsContainer.style.display === 'block') {
+                    hideSuggestions();
+                } else {
+                    collapseSearch();
+                }
+            }
+        });
+
+        // Cerrar al enviar el formulario
+        searchForm.addEventListener('submit', function() {
+            collapseSearch();
+        });
+    });
+</script>
+
+<style>
+    .navbar-search {
+        position: relative;
+        margin-left: 1rem;
+    }
+
+    .search-container {
+        display: flex;
+        align-items: center;
+        position: relative;
+    }
+
+    .search-icon {
+        padding: 0.375rem 0.75rem;
+        border-radius: 0.375rem;
+        transition: all 0.3s ease;
+        z-index: 1001;
+        position: relative;
+    }
+
+    .search-icon.hidden {
+        opacity: 0;
+        visibility: hidden;
+        width: 0;
+        margin: 0;
+        padding: 0;
+    }
+
+    .search-expandable {
+        position: absolute;
+        top: 110%; /* aparece justo debajo del icono */
+        right: 0;
+        width: 0;
+        opacity: 0;
+        visibility: hidden;
+        transition: all 0.3s ease;
+        z-index: 1000;
+        overflow: hidden;
+        border-radius: 0.375rem;
+    }
+
+    .search-expandable.expanded {
+        width: 350px;
+        opacity: 1;
+        visibility: visible;
+        padding: 0.5rem 0; /* ajustado para no alterar el estilo base */
+    }
+
+    /* Ocultar otros elementos del navbar cuando la búsqueda está activa */
+    #navbarNav.search-active .navbar-nav,
+    #navbarNav.search-active .user-actions {
+        opacity: 0.3;
+        pointer-events: none;
+        transition: opacity 0.3s ease;
+    }
+
+    .search-suggestions {
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        z-index: 1002;
+        max-height: 200px;
+        overflow-y: auto;
+        background: white;
+        border-radius: 0.375rem;
+        box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+        display: none;
+        margin-top: 0.25rem;
+    }
+
+    .suggestions-header {
+        background-color: #f8f9fa;
+        border-bottom: 1px solid #dee2e6;
+        border-radius: 0.375rem 0.375rem 0 0;
+        padding: 0.5rem 0.75rem;
+    }
+
+    .suggestions-list {
+        padding: 0;
+    }
+
+    .suggestion-item {
+        display: block;
+        padding: 0.5rem 0.75rem;
+        color: #212529;
+        text-decoration: none;
+        border-bottom: 1px solid #f8f9fa;
+        transition: background-color 0.15s ease-in-out;
+        cursor: pointer;
+    }
+
+    .suggestion-item:hover {
+        background-color: #f8f9fa;
+        text-decoration: none;
+        color: #212529;
+    }
+
+    .suggestion-item:last-child {
+        border-bottom: none;
+        border-radius: 0 0 0.375rem 0.375rem;
+    }
+
+    .badge-sm {
+        font-size: 0.65em;
+        padding: 0.25em 0.4em;
+    }
+
+    /* Asegurar que el input se vea bien */
+    .search-expandable .input-group {
+        width: 100%;
+    }
+
+    .search-expandable .form-control {
+        border: 1px solid #dee2e6;
+        background: transparent; /* mantiene el fondo del navbar */
+        color: inherit;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+        .search-expandable.expanded {
+            width: 280px;
+            right: -50px;
+        }
+
+        .navbar-search {
+            margin-left: 0.5rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .search-expandable.expanded {
+            width: 220px;
+            right: -80px;
+        }
+    }
+</style>

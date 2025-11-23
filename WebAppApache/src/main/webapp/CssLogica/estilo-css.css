@@ -2321,3 +2321,146 @@ button, .btn, .dropdown-item, .ruta-item, .paquete-card,
     z-index: 1000;
     border: 1px solid var(--color-accent);
 }
+
+/* ===== ESTILOS ESPECÍFICOS PARA RESULTADOS DE BÚSQUEDA ===== */
+
+.search-header {
+    background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-dark-gray) 100%);
+    color: var(--color-text);
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--color-medium-gray);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23dc2626" opacity="0.03"><polygon points="0,0 1000,50 1000,100 0,100"/></svg>') no-repeat center bottom;
+    background-size: cover;
+}
+
+/* Cards de resultados */
+.result-card {
+    background-color: var(--color-dark-gray);
+    border: 1px solid var(--color-medium-gray);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.result-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent);
+}
+
+.ruta-card {
+    border-left: 4px solid var(--color-accent);
+}
+
+.paquete-card {
+    border-left: 4px solid var(--color-success);
+}
+
+.badge-ruta {
+    background: linear-gradient(135deg, var(--color-accent), #b91c1c);
+    color: white;
+    border: none;
+}
+
+.badge-paquete {
+    background: linear-gradient(135deg, var(--color-success), #15803d);
+    color: white;
+    border: none;
+}
+
+/* Estados vacíos */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--color-text-light);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+    color: var(--color-text-light);
+}
+
+/* Sección de filtros */
+.filter-section {
+    background-color: var(--color-dark-gray);
+    border: 1px solid var(--color-medium-gray);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.result-count {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+/* Resaltado de texto */
+.highlight {
+    background-color: rgba(220, 38, 38, 0.2);
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.2rem;
+    color: var(--color-accent-light);
+}
+
+/* Badges y etiquetas específicas para resultados */
+.category-badge {
+    font-size: 0.75rem;
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+    background-color: var(--color-medium-gray);
+    color: var(--color-text);
+    border: 1px solid var(--color-light-gray);
+}
+
+.stats-badge {
+    font-size: 0.7rem;
+    background-color: var(--color-medium-gray);
+    color: var(--color-text-light);
+    border: 1px solid var(--color-light-gray);
+}
+
+/* Botones de acción específicos */
+.action-btn {
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+/* Responsive para resultados */
+@media (max-width: 768px) {
+    .search-header {
+        padding: 2rem 0;
+    }
+
+    .search-header .display-5 {
+        font-size: 1.8rem;
+    }
+
+    .result-card .row {
+        flex-direction: column;
+    }
+
+    .ruta-image {
+        height: 150px;
+        border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    }
+}

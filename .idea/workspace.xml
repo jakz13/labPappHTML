@@ -3,23 +3,22 @@
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
       <artifact name="WebAppApache:war exploded" />
-      <artifact name="WebAppApache:war exploded" />
     </artifacts-to-build>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="Contador Finalizado">
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CheckinReservasServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-checkin.js" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/consulta-checkin.jsp" afterDir="false" />
+    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="Check in finalizado, falta testear cuando este listo el mobile">
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/BusquedaServlet.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ResultadosBusqueda.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/resultados-busqueda.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/CssLogica/estilo-css.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/CssLogica/estilo-css.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/CssLogica/estilo-css.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/CssLogica/estilo-css.css" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
@@ -31,9 +30,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Class" />
         <option value="JavaScript File" />
         <option value="Jsp File" />
+        <option value="Class" />
       </list>
     </option>
   </component>
@@ -55,7 +54,7 @@
   <component name="GithubPullRequestsUISettings">{
   &quot;selectedUrlAndAccountId&quot;: {
     &quot;url&quot;: &quot;https://github.com/jakz13/labPappHTML.git&quot;,
-    &quot;accountId&quot;: &quot;10babc81-a979-4c1c-b1b0-a80cb478bf77&quot;
+    &quot;accountId&quot;: &quot;9ccc7a2a-ebad-452a-9d8d-fb4a3fe791f9&quot;
   }
 }</component>
   <component name="HighlightingSettingsPerFile">
@@ -84,38 +83,38 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "Application.Main.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "SHELLCHECK.PATH": "C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe",
-    "Tomcat Server.Tomcat 11.0.11.executor": "Run",
-    "Tomcat Server.Tomcat 11.0.12.executor": "Run",
-    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
-    "git-widget-placeholder": "Felipe-Tarea3",
-    "ignore.virus.scanning.warn.message": "true",
-    "junie.onboarding.icon.badge.shown": "true",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/Laurita/IdeaProjects/labPappHTML/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "project.structure.last.edited": "Modules",
-    "project.structure.proportion": "0.15",
-    "project.structure.side.proportion": "0.29319373",
-    "run.code.analysis.last.selected.profile": "pProject Default",
-    "settings.editor.selected.configurable": "preferences.lookFeel",
-    "to.speed.mode.migration.done": "true",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
+    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe&quot;,
+    &quot;Tomcat Server.Tomcat 11.0.11.executor&quot;: &quot;Run&quot;,
+    &quot;Tomcat Server.Tomcat 11.0.12.executor&quot;: &quot;Run&quot;,
+    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;Felipe-Tarea3&quot;,
+    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
+    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/Laurita/IdeaProjects/labPappHTML/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
+    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
+    &quot;project.structure.side.proportion&quot;: &quot;0.29319373&quot;,
+    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Laurita\IdeaProjects\labPappHTML\WebAppApache\target\WebAppApache-1.0-SNAPSHOT\WEB-INF\lib" />
@@ -292,6 +291,8 @@
       <workItem from="1763768556913" duration="4543000" />
       <workItem from="1763773235669" duration="6593000" />
       <workItem from="1763783815030" duration="3101000" />
+      <workItem from="1763923571262" duration="109000" />
+      <workItem from="1763923696717" duration="9515000" />
     </task>
     <task id="LOCAL-00001" summary="fxg">
       <option name="closed" value="true" />
@@ -485,7 +486,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763862577801</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Check in finalizado, falta testear cuando este listo el mobile">
+      <option name="closed" value="true" />
+      <created>1763874369751</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1763874369751</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -527,7 +536,8 @@
     <MESSAGE value="Quedo pronto el contador de vistas, falta asociar con logica interna" />
     <MESSAGE value="Contador Modificado" />
     <MESSAGE value="Contador Finalizado" />
-    <option name="LAST_COMMIT_MESSAGE" value="Contador Finalizado" />
+    <MESSAGE value="Check in finalizado, falta testear cuando este listo el mobile" />
+    <option name="LAST_COMMIT_MESSAGE" value="Check in finalizado, falta testear cuando este listo el mobile" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

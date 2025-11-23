@@ -24,3 +24,4 @@ com\example\servlets\ReservaVueloServlet.class
 com\example\servlets\AltaVueloServlet.class
 com\example\servlets\VerInfoVueloServlet.class
 com\example\servlets\CompraPaqueteServerlet.class
+com\example\servlets\BusquedaServlet.class
