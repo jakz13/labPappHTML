@@ -259,15 +259,17 @@ function mostrarDetallesVuelo(vueloData) {
     // DEBUG: mostrar el objeto vueloData completo para facilitar diagnóstico de la URL de la imagen
     try { console.log('mostrarDetallesVuelo - vueloData:', vueloData); } catch (e) { /* ignore */ }
 
-    // Primero, restaurar el contenido original del resultadoConsulta
+    // Primero, restaurar el contenido original del resultadoConsulta (incluye contenedor multimedia)
     resultadoConsulta.innerHTML = `
         <hr>
         <h5 class="text-primary mb-4">Información del Vuelo</h5>
 
         <div class="row">
-            <!-- Imagen del vuelo -->
+            <!-- Contenedor multimedia: imagen y/o video -->
             <div class="col-md-6 mb-4">
-                <img id="imagenVueloDetalle" src="" alt="Imagen del vuelo" class="img-fluid flight-image w-100 rounded">
+                <div id="multimediaVueloDetalle" class="mb-3">
+                    <img id="imagenVueloDetalle" src="" alt="Imagen del vuelo" class="img-fluid flight-image w-100 rounded" style="display: none;">
+                </div>
             </div>
 
             <!-- Información principal -->
@@ -438,7 +440,7 @@ function mostrarDetallesVuelo(vueloData) {
             return Array.from(new Set(candidates.filter(Boolean)));
         }
 
-        // Función que prueba cada candidato (asíncrono con Image) y asigna la primera que carga
+        // Función que prueba cada candidato (asíncrono with Image) y asigna la primera que carga
         function tryLoadCandidates(candidates, imgEl, placeholderUrl) {
             let idx = 0;
             let finished = false;
@@ -493,6 +495,90 @@ function mostrarDetallesVuelo(vueloData) {
         };
     } else if (imagenVuelo) {
         imagenVuelo.style.display = 'none';
+    }
+
+    // --- Manejo de video: si el backend devuelve un campo de video, mostrarlo en el contenedor multimedia ---
+    try {
+        const multimediaContainer = document.getElementById('multimediaVueloDetalle');
+        const videoValue = vueloData.video || vueloData.videoUrl || vueloData.videoURL || vueloData.trailer || vueloData.linkVideo || vueloData.video_link || '';
+        if (multimediaContainer) {
+            // si vino un valor de video, construir un reproductor adecuado
+            if (videoValue && String(videoValue).trim()) {
+                const v = String(videoValue).trim();
+                console.log('🎥 Procesando video URL (consulta-vuelo):', v);
+                 // limpiar el contenedor (la imagen está presente en el DOM pero la ocultamos si mostramos video)
+                 multimediaContainer.innerHTML = '';
+
+                 // YouTube (varias formas) -> extraer id y usar embed
+                const ytMatch = v.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+                console.log('🎯 ytMatch:', ytMatch);
+                 if (ytMatch) {
+                     const iframe = document.createElement('iframe');
+                     iframe.width = '100%';
+                     iframe.height = '315';
+                     iframe.src = `https://www.youtube.com/embed/${ytMatch[1]}`;
+                     iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
+                     iframe.setAttribute('allowfullscreen', '');
+                     iframe.className = 'w-100 rounded';
+                     multimediaContainer.appendChild(iframe);
+                     if (imagenVuelo) imagenVuelo.style.display = 'none';
+                }
+                // Vimeo -> extraer id
+                else if (/vimeo\.com\/(\d+)/.test(v)) {
+                    const m = v.match(/vimeo\.com\/(\d+)/);
+                    const iframe = document.createElement('iframe');
+                    iframe.width = '100%'; iframe.height = '315';
+                    iframe.src = `https://player.vimeo.com/video/${m[1]}`;
+                    iframe.allow = 'autoplay; fullscreen; picture-in-picture';
+                    iframe.setAttribute('allowfullscreen', '');
+                    iframe.className = 'w-100 rounded';
+                    multimediaContainer.appendChild(iframe);
+                    if (imagenVuelo) imagenVuelo.style.display = 'none';
+                }
+                // Archivo de video directo -> usar <video>
+                else if (/\.(mp4|webm|ogg)(\?.*)?$/i.test(v) || v.startsWith('data:video')) {
+                    const videoEl = document.createElement('video');
+                    videoEl.controls = true;
+                    videoEl.className = 'w-100 rounded';
+                    videoEl.style.maxHeight = '400px';
+                    videoEl.src = v;
+                    // por accesibilidad, añadir texto alternativo debajo
+                    const wrapper = document.createElement('div');
+                    wrapper.appendChild(videoEl);
+                    multimediaContainer.appendChild(wrapper);
+                    if (imagenVuelo) imagenVuelo.style.display = 'none';
+                }
+                // Caso genérico: mostrar link y además intentar iframe (puede fallar por X-Frame-Options)
+                else {
+                    const link = document.createElement('a');
+                    link.href = v;
+                    link.target = '_blank';
+                    link.rel = 'noopener noreferrer';
+                    link.textContent = 'Ver video en nueva pestaña';
+                    link.className = 'btn btn-outline-light';
+                    multimediaContainer.appendChild(link);
+
+                    // Intentar iframe embebido como prueba (si el proveedor lo permite)
+                    try {
+                        const iframe = document.createElement('iframe');
+                        iframe.src = v;
+                        iframe.width = '100%'; iframe.height = '315';
+                        iframe.style.border = 'none';
+                        iframe.className = 'w-100 rounded mt-2';
+                        multimediaContainer.appendChild(iframe);
+                    } catch (e) {
+                        // ignorar
+                    }
+                    if (imagenVuelo) imagenVuelo.style.display = 'none';
+                }
+            } else {
+                // No hay video -> si la imagen ya fue asignada por la lógica anterior, asegurarse de mostrarla
+                const imgEl = document.getElementById('imagenVueloDetalle');
+                if (imgEl && imgEl.src) imgEl.style.display = 'block';
+            }
+        }
+    } catch (e) {
+        console.warn('Error al procesar video del vuelo:', e);
     }
 
     // Mostrar resultados con animación

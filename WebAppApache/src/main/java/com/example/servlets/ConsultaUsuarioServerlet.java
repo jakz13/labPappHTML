@@ -9,6 +9,7 @@ import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.nio.file.Paths;
 
 @WebServlet("/consulta-usuario")
 public class ConsultaUsuarioServerlet extends HttpServlet {
@@ -16,14 +17,13 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
     private ISistema sistema;
 
     @Override
-    public void init() throws ServletException {
+    public void init() {
         sistema = Fabrica.getInstance().getISistema();
         try {
             sistema.cargarDesdeBd();
             System.out.println("✅ Sistema cargado correctamente en init()");
         } catch (Exception e) {
-            System.err.println("❌ Error cargando sistema en init(): " + e.getMessage());
-            e.printStackTrace();
+            logError("❌ Error cargando sistema en init()", e);
         }
     }
 
@@ -47,22 +47,22 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
 
             if ("listar-usuarios".equals(action)) {
                 System.out.println("Listando todos los usuarios");
-                listarUsuarios(sistema, out);
+                listarUsuarios(sistema, out, request);
             } else if ("obtener-usuario".equals(action) && usuarioId != null && tipoUsuario != null) {
                 System.out.println("Obteniendo información del usuario: " + usuarioId + " tipo: " + tipoUsuario);
-                obtenerUsuarioDetalle(sistema, usuarioId, tipoUsuario, out, response);
+                obtenerUsuarioDetalle(sistema, usuarioId, tipoUsuario, out, response, request);
             } else if ("obtener-rutas-aerolinea".equals(action) && usuarioId != null) {
                 System.out.println("Obteniendo rutas de la aerolínea: " + usuarioId);
-                obtenerRutasAerolinea(sistema, usuarioId, out, response);
+                obtenerRutasAerolinea(sistema, usuarioId, out);
             } else if ("obtener-reservas-cliente".equals(action) && usuarioId != null) {
                 System.out.println("Obteniendo reservas del cliente: " + usuarioId);
-                obtenerReservasCliente(sistema, usuarioId, out, response);
+                obtenerReservasCliente(sistema, usuarioId, out);
             } else if ("obtener-paquetes-cliente".equals(action) && usuarioId != null) {
                 System.out.println("Obteniendo paquetes del cliente: " + usuarioId);
-                obtenerPaquetesCliente(sistema, usuarioId, out, response);
+                obtenerPaquetesCliente(sistema, usuarioId, out);
             } else if ("obtener-vuelos-aerolinea".equals(action) && usuarioId != null) {
                 System.out.println("Obteniendo vuelos de la aerolínea: " + usuarioId);
-                obtenerVuelosAerolinea(sistema, usuarioId, out, response);
+                obtenerVuelosAerolinea(sistema, usuarioId, out);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"error\":\"Parámetros inválidos. Acciones válidas: listar-usuarios, obtener-usuario, obtener-rutas-aerolinea, obtener-reservas-cliente, obtener-paquetes-cliente, obtener-vuelos-aerolinea\"}");
@@ -70,13 +70,98 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
 
         } catch (Exception e) {
             System.err.println("💥 ERROR EN SERVLET: " + e.getMessage());
-            e.printStackTrace();
+            logError("Detalle del error en doGet", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error interno: " + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
-    private void obtenerVuelosAerolinea(ISistema sistema, String aerolineaId, PrintWriter out, HttpServletResponse response) {
+    // Helper para obtener el valor de imagen desde un DTO probando varios getters por reflection
+    private String extractImageValue(Object dto) {
+        if (dto == null) return "";
+        String[] candidates = new String[]{"getImagenUrl", "getImagen", "getImage", "getFoto", "getFotoUrl", "getUrl", "imagenUrl", "imagen", "image", "foto", "url"};
+        for (String name : candidates) {
+            try {
+                java.lang.reflect.Method m = dto.getClass().getMethod(name);
+                Object v = m.invoke(dto);
+                if (v != null) {
+                    String sval = v.toString();
+                    System.out.println("extractImageValue: DTO=" + dto.getClass().getSimpleName() + " -> getter='" + name + "' returned (len=" + sval.length() + "): '" + truncate(sval,200) + "'");
+                    return sval;
+                }
+            } catch (NoSuchMethodException ns) {
+                // seguir probando
+            } catch (Throwable t) {
+                // ignora y continúa con el siguiente
+                System.err.println("extractImageValue: error al invocar " + name + " en " + dto.getClass().getName() + ": " + t.getMessage());
+            }
+        }
+        // Si no hay getter, intentar acceder a campos públicos por reflexión
+        try {
+            java.lang.reflect.Field[] fields = dto.getClass().getDeclaredFields();
+            for (java.lang.reflect.Field f : fields) {
+                String fname = f.getName().toLowerCase();
+                if (fname.contains("imagen") || fname.contains("foto") || fname.contains("image") || fname.contains("url")) {
+                    try {
+                        f.setAccessible(true);
+                        Object val = f.get(dto);
+                        if (val != null) {
+                            String sval = val.toString();
+                            System.out.println("extractImageValue: DTO=" + dto.getClass().getSimpleName() + " -> field='" + f.getName() + "' value (len=" + sval.length() + "): '" + truncate(sval,200) + "'");
+                            return sval;
+                        }
+                    } catch (Throwable tt) {
+                        System.err.println("extractImageValue: error leyendo campo " + f.getName() + ": " + tt.getMessage());
+                    }
+                }
+            }
+            // Si llegamos aquí, no se encontró valor relevante; listar campos para debug
+            StringBuilder sb = new StringBuilder();
+            for (java.lang.reflect.Field f : fields) {
+                try {
+                    f.setAccessible(true);
+                    Object val = f.get(dto);
+                    sb.append(f.getName()).append("=").append(val != null ? truncate(val.toString(),80) : "<null>").append("; ");
+                } catch (Throwable ignore) {}
+            }
+            System.out.println("extractImageValue: DTO=" + dto.getClass().getSimpleName() + " -> no image getter/field found. Fields: " + sb.toString());
+        } catch (Throwable t) {
+            System.err.println("extractImageValue: error inspeccionando campos: " + t.getMessage());
+        }
+        return "";
+    }
+
+    // Helper para truncar logs largos
+    private String truncate(String s, int max) {
+        if (s == null) return null;
+        if (s.length() <= max) return s;
+        return s.substring(0, max) + "...(" + s.length() + " chars)";
+    }
+
+    // Helper para construir la URL pública de la imagen usando el contexto
+    private String buildImageUrl(HttpServletRequest request, String stored) {
+        if (stored == null) return "";
+        stored = stored.trim();
+        if (stored.isEmpty()) return "";
+        // Si ya es data URI, devolver tal cual
+        if (stored.startsWith("data:")) return stored;
+        // Si ya es URL absoluta
+        if (stored.startsWith("http://") || stored.startsWith("https://")) return stored;
+        // Si ya es ruta absoluta en el servidor (empieza con '/'), devolver tal cual
+        if (stored.startsWith("/")) return stored;
+        // Si contiene separadores de archivos (ruta física), extraer filename
+        try {
+            String filename = Paths.get(stored).getFileName().toString();
+            if (filename.isEmpty()) filename = stored;
+            return request.getContextPath() + "/Images/" + filename;
+        } catch (Exception e) {
+            // fallback: tratar como filename
+            System.err.println("buildImageUrl: error procesando ruta de imagen '" + stored + "': " + e.getMessage());
+            return request.getContextPath() + "/Images/" + stored;
+        }
+    }
+
+    private void obtenerVuelosAerolinea(ISistema sistema, String aerolineaId, PrintWriter out) {
         try {
             List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(aerolineaId);
             List<DtVuelo> todosLosVuelos = new ArrayList<>();
@@ -96,7 +181,7 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             escribirVuelosAerolineaJSON(todosLosVuelos, out);
         } catch (Exception e) {
             System.err.println("💥 ERROR obteniendo vuelos: " + e.getMessage());
-            e.printStackTrace();
+            logError("Detalle del error obteniendo vuelos", e);
             // En lugar de error, devolver array vacío
             out.print("[]");
         }
@@ -121,7 +206,7 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
         out.print("]");
     }
 
-    private void listarUsuarios(ISistema sistema, PrintWriter out) {
+    private void listarUsuarios(ISistema sistema, PrintWriter out, HttpServletRequest request) {
         try {
             out.print("{");
 
@@ -137,7 +222,11 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
                     out.print("\"tipo\":\"Cliente\",");
                     out.print("\"correo\":\"" + escapeJson(c.getEmail()) + "\",");
                     out.print("\"fechaRegistro\":\"" + escapeJson(c.getFechaAlta() != null ? c.getFechaAlta().toString() : "") + "\",");
-                    out.print("\"imagen\":\"" + escapeJson(c.getImagenUrl()) + "\"");
+                    String rawImgC = extractImageValue(c);
+                    String imgC = buildImageUrl(request, rawImgC);
+                    // debug log cliente
+                    try { System.out.println("ConsultaUsuarioServerlet: cliente='" + c.getNickname() + "' rawImg='" + rawImgC + "' -> public='" + imgC + "'"); } catch (Throwable t) { System.err.println("Error log cliente: " + t.getMessage()); }
+                    out.print("\"imagen\":\"" + escapeJson(imgC) + "\"");
                     out.print("}");
                     if (i < clientes.size() - 1) out.print(",");
                 }
@@ -155,8 +244,22 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
                     out.print("\"nombre\":\"" + escapeJson(a.getNombre()) + "\",");
                     out.print("\"tipo\":\"Aerolinea\",");
                     out.print("\"correo\":\"" + escapeJson(a.getEmail()) + "\",");
-                    out.print("\"fechaRegistro\":\"\",");
-                    out.print("\"imagen\":\"" + escapeJson(a.getImagenUrl()) + "\"");
+                    // usar fechaAlta si existe
+                    String fechaAltaA = "";
+
+                    out.print("\"fechaRegistro\":\"" + escapeJson(fechaAltaA) + "\",");
+                    // Obtener la imagen directamente desde el DTO (misma convención que en otros servlets)
+                    String rawImgA = "";
+                    try { rawImgA = a.getImagenUrl() != null ? a.getImagenUrl() : ""; } catch (Throwable ignore) { rawImgA = ""; }
+                    // Fallback: si está vacío, intentar obtener por reflexión (por compatibilidad)
+                    if (rawImgA == null || rawImgA.trim().isEmpty()) {
+                        try {
+                            rawImgA = extractImageValue(a);
+                        } catch (Throwable ignore) { /* ignore */ }
+                    }
+                    String imgA = buildImageUrl(request, rawImgA);
+                    try { System.out.println("ConsultaUsuarioServerlet: aerolinea='" + a.getNickname() + "' rawImg='" + rawImgA + "' -> public='" + imgA + "'"); } catch (Throwable t) { System.err.println("Error log aerolinea: " + t.getMessage()); }
+                    out.print("\"imagen\":\"" + escapeJson(imgA) + "\"");
                     out.print("}");
                     if (i < aerolineas.size() - 1) out.print(",");
                 }
@@ -167,17 +270,17 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
 
         } catch (Exception e) {
             System.err.println("💥 ERROR listando usuarios: " + e.getMessage());
-            e.printStackTrace();
+            logError("Detalle del error listando usuarios", e);
             out.print("{\"clientes\":[],\"aerolineas\":[]}");
         }
     }
 
-    private void obtenerUsuarioDetalle(ISistema sistema, String usuarioId, String tipoUsuario, PrintWriter out, HttpServletResponse response) {
+    private void obtenerUsuarioDetalle(ISistema sistema, String usuarioId, String tipoUsuario, PrintWriter out, HttpServletResponse response, HttpServletRequest request) {
         try {
             if ("cliente".equals(tipoUsuario)) {
                 DtCliente cliente = sistema.obtenerCliente(usuarioId);
                 if (cliente != null) {
-                    escribirClienteDetalleJSON(cliente, out);
+                    escribirClienteDetalleJSON(cliente, out, request);
                 } else {
                     System.out.println("❌ Cliente no encontrado: " + usuarioId);
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -186,7 +289,7 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             } else if ("aerolinea".equals(tipoUsuario)) {
                 DtAerolinea aerolinea = sistema.obtenerAerolinea(usuarioId);
                 if (aerolinea != null) {
-                    escribirInfoAerolineaJSON(aerolinea, out);
+                    escribirInfoAerolineaJSON(aerolinea, out, request);
                 } else {
                     System.out.println("❌ Aerolínea no encontrada: " + usuarioId);
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
@@ -198,13 +301,13 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             }
         } catch (Exception e) {
             System.err.println("💥 ERROR obteniendo usuario: " + e.getMessage());
-            e.printStackTrace();
+            logError("Detalle del error obteniendo usuario", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error obteniendo usuario: " + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
-    private void obtenerRutasAerolinea(ISistema sistema, String aerolineaId, PrintWriter out, HttpServletResponse response) {
+    private void obtenerRutasAerolinea(ISistema sistema, String aerolineaId, PrintWriter out) {
         try {
             List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(aerolineaId);
             if (rutas != null) {
@@ -214,12 +317,12 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             }
         } catch (Exception e) {
             System.err.println("💥 ERROR obteniendo rutas: " + e.getMessage());
-            e.printStackTrace();
+            logError("Detalle del error obteniendo rutas", e);
             out.print("[]");
         }
     }
 
-    private void obtenerReservasCliente(ISistema sistema, String clienteId, PrintWriter out, HttpServletResponse response) {
+    private void obtenerReservasCliente(ISistema sistema, String clienteId, PrintWriter out) {
         try {
             List<DtReserva> reservas = sistema.getReservasCliente(clienteId);
             if (reservas != null) {
@@ -229,12 +332,12 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             }
         } catch (Exception e) {
             System.err.println("💥 ERROR obteniendo reservas: " + e.getMessage());
-            e.printStackTrace();
+            logError("Detalle del error obteniendo reservas", e);
             out.print("[]");
         }
     }
 
-    private void obtenerPaquetesCliente(ISistema sistema, String clienteId, PrintWriter out, HttpServletResponse response) {
+    private void obtenerPaquetesCliente(ISistema sistema, String clienteId, PrintWriter out) {
         try {
             DtCliente cliente = sistema.obtenerCliente(clienteId);
             if (cliente != null) {
@@ -250,12 +353,12 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
             }
         } catch (Exception e) {
             System.err.println("💥 ERROR obteniendo paquetes: " + e.getMessage());
-            e.printStackTrace();
+            logError("Detalle del error obteniendo paquetes", e);
             out.print("[]");
         }
     }
 
-    private void escribirClienteDetalleJSON(DtCliente cliente, PrintWriter out) {
+    private void escribirClienteDetalleJSON(DtCliente cliente, PrintWriter out, HttpServletRequest request) {
         out.print("{");
         out.print("\"tipo\":\"cliente\",");
         out.print("\"id\":\"" + escapeJson(cliente.getNickname()) + "\",");
@@ -270,10 +373,13 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
         out.print("\"fechaRegistro\":\"" + (cliente.getFechaAlta() != null ? cliente.getFechaAlta().toString() : "") + "\",");
         out.print("\"cantidadReservas\":" + (cliente.getReservas() != null ? cliente.getReservas().size() : 0) + ",");
         out.print("\"cantidadPaquetes\":" + (cliente.getPaquetesComprados() != null ? cliente.getPaquetesComprados().size() : 0));
+        // añadir imagen si existe
+        String img = buildImageUrl(request, cliente.getImagenUrl());
+        out.print(",\"imagenUrl\":\"" + escapeJson(img) + "\"");
         out.print("}");
     }
 
-    private void escribirInfoAerolineaJSON(DtAerolinea aerolinea, PrintWriter out) {
+    private void escribirInfoAerolineaJSON(DtAerolinea aerolinea, PrintWriter out, HttpServletRequest request) {
         out.print("{");
         out.print("\"tipo\":\"Aerolinea\",");
         out.print("\"id\":\"" + escapeJson(aerolinea.getNickname()) + "\",");
@@ -281,7 +387,8 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
         out.print("\"nombreCompleto\":\"" + escapeJson(aerolinea.getNombre()) + "\",");
         out.print("\"correo\":\"" + escapeJson(aerolinea.getEmail()) + "\",");
         out.print("\"fechaRegistro\":\"\",");
-        out.print("\"imagen\":\"" + escapeJson(aerolinea.getImagenUrl()) + "\",");
+        String img = buildImageUrl(request, aerolinea.getImagenUrl());
+        out.print("\"imagen\":\"" + escapeJson(img) + "\",");
         out.print("\"descripcion\":\"" + escapeJson(aerolinea.getDescripcion()) + "\",");
         out.print("\"sitioWeb\":\"" + escapeJson(aerolinea.getSitioWeb()) + "\",");
         out.print("\"cantidadRutas\":" + (aerolinea.getRutas() != null ? aerolinea.getRutas().size() : 0));
@@ -377,5 +484,17 @@ public class ConsultaUsuarioServerlet extends HttpServlet {
                 .replace("\n", "\\n")
                 .replace("\r", "\\r")
                 .replace("\t", "\\t");
+    }
+
+    // Utility para registrar excepciones with stacktrace en un solo lugar
+    private void logError(String message, Throwable t) {
+        if (message != null) System.err.println(message + (t != null ? ": " + t.getMessage() : ""));
+        if (t != null) {
+            StringWriter sw = new StringWriter();
+            PrintWriter pw = new PrintWriter(sw);
+            t.printStackTrace(pw);
+            pw.flush();
+            System.err.println(sw.toString());
+        }
     }
 }

@@ -100,7 +100,10 @@
                         <div class="row">
                             <!-- Imagen del vuelo -->
                             <div class="col-md-6 mb-4">
-                                <img id="imagenVueloDetalle" src="" alt="Imagen del vuelo" class="img-fluid flight-image w-100 rounded">
+                                <!-- Contenedor multimedia: aquí se puede mostrar la imagen y/o el video embebido -->
+                                <div id="multimediaVueloDetalle" class="mb-3">
+                                    <img id="imagenVueloDetalle" src="" alt="Imagen del vuelo" class="img-fluid flight-image w-100 rounded" style="display: none;">
+                                </div>
                             </div>
 
                             <!-- Información principal -->

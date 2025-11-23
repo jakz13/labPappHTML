@@ -215,6 +215,26 @@
     let saveBtn = null;
     let isUserLoaded = false;
 
+    // Helper para construir la URL de la imagen en frontend.
+    // Acepta: 1) URL absoluta (http(s)://...) -> se devuelve tal cual
+    //         2) ruta absoluta dentro del sitio (/... ) -> se devuelve tal cual
+    //         3) sólo nombre de archivo (ej: 'user_1234.jpg' o 'Images/user_1234.jpg') -> se convierte en CONTEXT + '/Images/<filename>'
+    function buildImageUrl(value) {
+        if (!value) return '';
+        value = String(value).trim();
+        if (value.length === 0) return '';
+        // Si ya es URL absoluta
+        if (/^https?:\/\//i.test(value)) return value;
+        // Si comienza con slash, usar tal cual (servidor servirá /Images/xxx)
+        if (value.startsWith('/')) return value;
+        // Si contiene 'Images/' ya, evitar duplicar y añadir contexto
+        if (value.startsWith('Images/')) return API_BASE + '/' + value;
+        // Si contiene algún path (e.g. folder/name.ext) pero no empieza con '/', dejarlo relativo al contexto
+        if (value.indexOf('/') >= 0) return API_BASE + '/' + value;
+        // Finalmente: sólo filename -> usar /Images/<filename>
+        return API_BASE + '/Images/' + value;
+    }
+
     async function fetchAndFill() {
         console.log('fetchAndFill: pidiendo datos de usuario a', API_BASE + '/api/usuario/actual');
         try {
@@ -369,8 +389,8 @@
 
         // Cargar imagen si viene
         if (sessionData.imagenUrl && sessionData.imagenUrl.length > 0) {
-            document.getElementById('imagenPreview').src = sessionData.imagenUrl;
-            document.getElementById('userProfileImage').src = sessionData.imagenUrl;
+            document.getElementById('imagenPreview').src = buildImageUrl(sessionData.imagenUrl);
+            document.getElementById('userProfileImage').src = buildImageUrl(sessionData.imagenUrl);
         }
 
         // Mostrar campos según el tipo de usuario

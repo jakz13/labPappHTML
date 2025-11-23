@@ -12,10 +12,10 @@ com\example\servlets\ListarCiudadesServlet.class
 com\example\servlets\HomePageServlet.class
 com\example\servlets\CargarDatosBD.class
 com\example\servlets\DebugVueloServlet.class
-com\example\servlets\AltaUsuarioServlet.class
 com\example\servlets\ReservasVueloServlet.class
 com\example\servlets\ReservaClienteServlet.class
 com\example\servlets\ConsultaReservaServlet.class
+com\example\utils\ImageStorageUtil.class
 com\example\servlets\CheckSessionServlet.class
 com\example\servlets\ListarRutasPorAerolineaServlet.class
 com\example\servlets\VerificarEmailServlet.class

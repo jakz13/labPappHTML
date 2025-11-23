@@ -10,7 +10,8 @@ import java.nio.file.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
-import java.util.UUID;
+import DataTypes.DtCliente;
+import DataTypes.DtAerolinea;
 
 @MultipartConfig
 @WebServlet("/altaUsuario")
@@ -43,38 +44,30 @@ public class AltaUsuarioServlet extends HttpServlet {
             }
 
             if (imagePart != null && imagePart.getSize() > 0) {
+                // Extraer extensión del nombre original y normalizar
                 String submitted = Paths.get(imagePart.getSubmittedFileName()).getFileName().toString();
                 String ext = "";
                 int idx = submitted.lastIndexOf('.');
-                if (idx > 0) ext = submitted.substring(idx).toLowerCase();
+                if (idx > 0) ext = submitted.substring(idx + 1).toLowerCase(); // sin punto
+                if (ext.equals("jpeg")) ext = "jpg";
+                if (ext.contains("+xml")) ext = "svg";
+                if (ext.isBlank()) ext = "jpg";
 
-                // validar extensión básica
-                if (!ext.matches("\\.(jpg|jpeg|png|gif|webp|svg)")) {
-                    // ignorar extensión no permitida, pero no abortar todo el registro
-                    ext = ".jpg";
-                }
-
-                String filename = UUID.randomUUID().toString() + ext;
-
-                // Intentar guardar en IMAGES_DIR (inicializado por CargarDatosBD) para coherencia con modificar
-                String imagesDirPath = null;
-                try { imagesDirPath = (String) request.getServletContext().getAttribute("IMAGES_DIR"); } catch (Exception ignored) {}
-                if (imagesDirPath == null) {
-                    imagesDirPath = request.getServletContext().getRealPath("/Images");
-                }
-                if (imagesDirPath == null) {
-                    imagesDirPath = System.getProperty("java.io.tmpdir") + File.separator + "WebAppApache_Images";
-                }
-                File imagesDir = new File(imagesDirPath);
-                if (!imagesDir.exists()) imagesDir.mkdirs();
-
-                Path target = Paths.get(imagesDir.getAbsolutePath(), filename);
+                // Leer bytes del Part y delegar en helper que usa la misma convención que ActualizarUsuarioServlet
+                byte[] bytes;
                 try (InputStream is = imagePart.getInputStream()) {
-                    Files.copy(is, target, StandardCopyOption.REPLACE_EXISTING);
+                    bytes = is.readAllBytes();
                 }
 
-                System.out.println("AltaUsuarioServlet: Imagen guardada (multipart): " + target.toAbsolutePath() + " -> URL: " + request.getContextPath() + "/Images/" + filename);
-                imagenPerfilUrl = request.getContextPath() + "/Images/" + filename;
+                try {
+                    String saved = saveBytesAsImage(bytes, ext, request, nickname);
+                    imagenPerfilUrl = saved != null ? saved : "";
+                    System.out.println("AltaUsuarioServlet: Imagen guardada (multipart) -> " + imagenPerfilUrl);
+                } catch (Exception e) {
+                    System.err.println("AltaUsuarioServlet: fallo guardando multipart image: " + e.getMessage());
+                    imagenPerfilUrl = "";
+                }
+
             } else {
                 // Fallback: verificar parámetro con data URL (imagen en base64) — útil si el frontend envía dataURL
                 String dataUrl = request.getParameter("imagen");
@@ -84,42 +77,14 @@ public class AltaUsuarioServlet extends HttpServlet {
                 if (dataUrl == null || dataUrl.trim().isEmpty()) {
                     dataUrl = request.getParameter("imagenUrl"); // otro nombre posible
                 }
-                if (dataUrl != null && dataUrl.startsWith("data:") && dataUrl.contains(";base64,")) {
+                if (dataUrl != null && dataUrl.startsWith("data:")) {
                     try {
-                        String meta = dataUrl.substring(5, dataUrl.indexOf(";base64,"));
-                        String base64 = dataUrl.substring(dataUrl.indexOf(";base64,") + 8);
-                        String mime = meta; // e.g. image/png
-                        String ext = "";
-                        int slash = mime.indexOf('/');
-                        if (slash >= 0) {
-                            ext = "." + mime.substring(slash + 1).toLowerCase();
-                            if (ext.equals(".jpeg")) ext = ".jpg";
-                            if (ext.contains("+xml")) ext = ".svg";
-                        }
-                        if (!ext.matches("\\.(jpg|jpeg|png|gif|webp|svg)")) {
-                            ext = ".jpg";
-                        }
-
-                        byte[] imageBytes = Base64.getDecoder().decode(base64);
-                        String filename = UUID.randomUUID().toString() + ext;
-
-                        String imagesDirPath = null;
-                        try { imagesDirPath = (String) request.getServletContext().getAttribute("IMAGES_DIR"); } catch (Exception ignored) {}
-                        if (imagesDirPath == null) {
-                            imagesDirPath = request.getServletContext().getRealPath("/Images");
-                        }
-                        if (imagesDirPath == null) {
-                            imagesDirPath = System.getProperty("java.io.tmpdir") + File.separator + "WebAppApache_Images";
-                        }
-                        File imagesDir = new File(imagesDirPath);
-                        if (!imagesDir.exists()) imagesDir.mkdirs();
-
-                        Path target = Paths.get(imagesDir.getAbsolutePath(), filename);
-                        Files.write(target, imageBytes, StandardOpenOption.CREATE, StandardOpenOption.TRUNCATE_EXISTING);
-
-                        System.out.println("AltaUsuarioServlet: Imagen guardada (dataURL): " + target.toAbsolutePath() + " -> URL: " + request.getContextPath() + "/Images/" + filename);
-                        imagenPerfilUrl = request.getContextPath() + "/Images/" + filename;
-                    } catch (IllegalArgumentException iae) {
+                        // Usar la misma implementación que ActualizarUsuarioServlet para guardar data URLs
+                        // (nombra con nickname_timestamp.ext y guarda en Images/)
+                        String saved = saveImageFromDataUrl(dataUrl, request, nickname);
+                        System.out.println("AltaUsuarioServlet: Imagen guardada (dataURL): " + saved);
+                        imagenPerfilUrl = saved != null ? saved : "";
+                    } catch (IllegalArgumentException | IOException iae) {
                         imagenPerfilUrl = "";
                     }
                 } else {
@@ -162,7 +127,17 @@ public class AltaUsuarioServlet extends HttpServlet {
                 }
 
                 // Alta cliente: pasar imagenPerfilUrl (puede ser "")
+                System.out.println("AltaUsuarioServlet: antes de altaCliente -> imagenPerfilUrl='" + imagenPerfilUrl + "'");
                 sistema.altaCliente(nickname, nombre, apellido, email, fechaNac, nacionalidad, tipoDoc, numeroDocumento, Password, imagenPerfilUrl);
+                // Verificar inmediatamente en la lógica si el valor quedó guardado
+                try {
+                    DtCliente dtc = sistema.obtenerCliente(nickname);
+                    String stored = "<null>";
+                    try { stored = dtc.getImagenUrl() != null ? dtc.getImagenUrl() : "<null>"; } catch (Throwable ignore) {}
+                    System.out.println("AltaUsuarioServlet: post-altaCliente -> sistema.obtenerCliente('" + nickname + "').imagenUrl='" + stored + "'");
+                } catch (Throwable t) {
+                    System.err.println("AltaUsuarioServlet: no se pudo verificar post-altaCliente: " + t.getMessage());
+                }
 
                 // Crear sesión automática tras registro
                 try {
@@ -187,7 +162,17 @@ public class AltaUsuarioServlet extends HttpServlet {
                 }
 
                 // Alta aerolinea: pasar imagenPerfilUrl (puede ser "")
+                System.out.println("AltaUsuarioServlet: antes de altaAerolinea -> imagenPerfilUrl='" + imagenPerfilUrl + "'");
                 sistema.altaAerolinea(nickname, nombre, descripcion, email, sitioWeb, Password, imagenPerfilUrl);
+                // Verificar inmediatamente en la lógica si el valor quedó guardado
+                try {
+                    DtAerolinea dta = sistema.obtenerAerolinea(nickname);
+                    String storedA = "<null>";
+                    try { storedA = dta.getImagenUrl() != null ? dta.getImagenUrl() : "<null>"; } catch (Throwable ignore) {}
+                    System.out.println("AltaUsuarioServlet: post-altaAerolinea -> sistema.obtenerAerolinea('" + nickname + "').imagenUrl='" + storedA + "'");
+                } catch (Throwable t) {
+                    System.err.println("AltaUsuarioServlet: no se pudo verificar post-altaAerolinea: " + t.getMessage());
+                }
 
                 // Crear sesión automática tras registro
                 try {
@@ -212,5 +197,53 @@ public class AltaUsuarioServlet extends HttpServlet {
             e.printStackTrace();
             out.print("{\"success\": false, \"error\": \"Error interno del servidor\"}");
         }
+    }
+
+    // Helpers adaptados desde ActualizarUsuarioServlet para mantener la misma convención de guardado
+    private String saveImageFromDataUrl(String dataUrl, HttpServletRequest request, String nickname) throws IOException {
+        int comma = dataUrl.indexOf(',');
+        if (comma < 0) return null;
+        String meta = dataUrl.substring(5, comma); // e.g. image/png;base64
+        String base64 = dataUrl.substring(comma + 1);
+        if (!meta.contains("base64")) return null;
+        String mime = meta.split(";")[0]; // image/png
+        String ext = "bin";
+        if (mime != null && mime.startsWith("image/")) {
+            ext = mime.substring("image/".length());
+            if (ext.equalsIgnoreCase("jpeg")) ext = "jpg";
+            if (ext.contains("+xml")) ext = "svg";
+        }
+
+        byte[] bytes;
+        try {
+            bytes = Base64.getDecoder().decode(base64);
+        } catch (IllegalArgumentException iae) {
+            throw new IOException("Base64 inválido", iae);
+        }
+
+        return saveBytesAsImage(bytes, ext, request, nickname);
+    }
+
+    private String saveBytesAsImage(byte[] bytes, String ext, HttpServletRequest request, String nickname) throws IOException {
+        if (ext == null || ext.isBlank()) ext = "bin";
+        // Ubicación para guardar: carpeta Images dentro del contexto web
+        String imagesDirPath = null;
+        try { imagesDirPath = (String) request.getServletContext().getAttribute("IMAGES_DIR"); } catch (Exception ignore) {}
+        if (imagesDirPath == null) imagesDirPath = request.getServletContext().getRealPath("/Images");
+        if (imagesDirPath == null) imagesDirPath = System.getProperty("java.io.tmpdir") + File.separator + "WebAppApache_Images";
+        File imagesDir = new File(imagesDirPath);
+        if (!imagesDir.exists()) imagesDir.mkdirs();
+        try { request.getServletContext().setAttribute("IMAGES_DIR", imagesDir.getAbsolutePath()); } catch (Exception ignore) {}
+
+        String safeNick = (nickname == null || nickname.isBlank()) ? "user" : nickname.replaceAll("[^a-zA-Z0-9_-]", "_");
+        String filename = safeNick + "_" + System.currentTimeMillis() + "." + ext;
+        File outFile = new File(imagesDir, filename);
+        try (FileOutputStream fos = new FileOutputStream(outFile)) {
+            fos.write(bytes);
+        }
+
+        String relative = filename;
+        System.out.println("Imagen guardada: " + outFile.getAbsolutePath() + " -> stored filename: " + relative + " (para servirla: <contextPath>/Images/" + filename + ")");
+        return relative;
     }
 }

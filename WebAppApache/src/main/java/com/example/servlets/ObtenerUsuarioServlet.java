@@ -8,6 +8,7 @@ import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
+import java.nio.file.Paths;
 
 @WebServlet("/api/usuario/actual")
 public class ObtenerUsuarioServlet extends HttpServlet {
@@ -36,6 +37,8 @@ public class ObtenerUsuarioServlet extends HttpServlet {
                     String imagen = "";
                     try { imagen = dtCliente.getImagenUrl() != null ? dtCliente.getImagenUrl() : ""; } catch (Throwable t) { imagen = ""; }
 
+                    String publicImg = buildImageUrl(request, imagen);
+
                     String json = String.format(
                             "{\"success\":true, \"tipo\":\"cliente\", " +
                                     "\"nickname\":\"%s\", \"email\":\"%s\", \"nombre\":\"%s\", " +
@@ -51,7 +54,7 @@ public class ObtenerUsuarioServlet extends HttpServlet {
                             escapeJson(dtCliente.getTipoDocumento() != null ? dtCliente.getTipoDocumento().toString() : ""),
                             escapeJson(dtCliente.getNumeroDocumento()),
                             dtCliente.getFechaAlta() != null ? dtCliente.getFechaAlta().toString() : "",
-                            escapeJson(imagen)
+                            escapeJson(publicImg)
                     );
                     out.print(json);
                 } else {
@@ -65,6 +68,8 @@ public class ObtenerUsuarioServlet extends HttpServlet {
                     String imagen = "";
                     try { imagen = dtAerolinea.getImagenUrl() != null ? dtAerolinea.getImagenUrl() : ""; } catch (Throwable t) { imagen = ""; }
 
+                    String publicImg = buildImageUrl(request, imagen);
+
                     String json = String.format(
                             "{\"success\":true, \"tipo\":\"aerolinea\", " +
                                     "\"nickname\":\"%s\", \"email\":\"%s\", \"nombre\":\"%s\", " +
@@ -74,7 +79,7 @@ public class ObtenerUsuarioServlet extends HttpServlet {
                             escapeJson(dtAerolinea.getNombre()),
                             escapeJson(dtAerolinea.getDescripcion() != null ? dtAerolinea.getDescripcion() : ""),
                             escapeJson(dtAerolinea.getSitioWeb() != null ? dtAerolinea.getSitioWeb() : ""),
-                            escapeJson(imagen)
+                            escapeJson(publicImg)
                     );
                     out.print(json);
                 } else {
@@ -91,6 +96,21 @@ public class ObtenerUsuarioServlet extends HttpServlet {
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"success\":false, \"error\":\"Error interno del servidor\"}");
+        }
+    }
+
+    private String buildImageUrl(HttpServletRequest request, String stored) {
+        if (stored == null) return "";
+        stored = stored.trim();
+        if (stored.isEmpty()) return "";
+        if (stored.startsWith("http://") || stored.startsWith("https://")) return stored;
+        if (stored.startsWith("/")) return stored;
+        try {
+            String filename = Paths.get(stored).getFileName().toString();
+            if (filename == null || filename.isEmpty()) filename = stored;
+            return request.getContextPath() + "/Images/" + filename;
+        } catch (Exception e) {
+            return request.getContextPath() + "/Images/" + stored;
         }
     }
 

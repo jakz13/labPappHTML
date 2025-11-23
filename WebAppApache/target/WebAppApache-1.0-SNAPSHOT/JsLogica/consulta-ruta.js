@@ -418,9 +418,35 @@ function renderizarVideo(videoUrl) {
 
     // YouTube
     if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
-        let videoId = '';
+        // función robusta para extraer ID de YouTube desde varias formas de URL
+        function getYouTubeId(url) {
+            if (!url) return null;
+            try {
+                const u = new URL(url);
+                const host = u.hostname.toLowerCase();
+                // youtu.be/ID
+                if (host === 'youtu.be') {
+                    return u.pathname.replace(/^\//, '');
+                }
+                // youtube.com - buscar parámetro v
+                if (host.includes('youtube.com')) {
+                    const v = u.searchParams.get('v');
+                    if (v) return v;
+                    // /embed/ID
+                    const parts = u.pathname.split('/').filter(Boolean);
+                    const embIdx = parts.indexOf('embed');
+                    if (embIdx !== -1 && parts.length > embIdx + 1) return parts[embIdx + 1];
+                }
+            } catch (e) {
+                // no es una URL válida: intentar fallback por regex
+                const m = url.match(/(?:v=|\/embed\/|youtu\.be\/)([A-Za-z0-9_-]{11})/);
+                if (m) return m[1];
+            }
+            return null;
+        }
 
-        // ... (código existente para extraer videoId de YouTube) ...
+        const videoId = getYouTubeId(videoUrl);
+        console.log('🎯 YouTube ID extraído (consulta-ruta):', videoId);
 
         if (videoId) {
             cont.innerHTML = `

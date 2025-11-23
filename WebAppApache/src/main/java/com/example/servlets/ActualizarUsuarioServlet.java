@@ -157,11 +157,10 @@ public class ActualizarUsuarioServlet extends HttpServlet {
             fos.write(bytes);
         }
 
-        // Devolver URL relativo que se pueda guardar en la BD y servir desde la app
-        String context = request.getContextPath();
-        if (context == null) context = "";
-        String relative = context + "/Images/" + filename;
-        System.out.println("Imagen guardada: " + outFile.getAbsolutePath() + " -> URL: " + relative);
+        // Devolver sólo el nombre de archivo para evitar prefijos generados por el contenedor (ej: /WebAppApache_war_exploded/...)
+        // Si prefieres almacenar la ruta relativa con carpeta, cambia a: "Images/" + filename
+        String relative = filename;
+        System.out.println("Imagen guardada: " + outFile.getAbsolutePath() + " -> stored filename: " + relative + " (para servirla: <contextPath>/Images/" + filename + ")");
         return relative;
     }
 

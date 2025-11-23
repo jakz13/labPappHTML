@@ -145,6 +145,19 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
 <script src="JsLogica/session-manager.js"></script>
 <script>
+    const CONTEXT_PATH = '<%= request.getContextPath() %>';
+
+    function buildImageUrl(value) {
+        if (!value) return '';
+        value = String(value).trim();
+        if (value.length === 0) return '';
+        if (/^https?:\/\//i.test(value)) return value;
+        if (value.startsWith('/')) return value;
+        if (value.startsWith('Images/')) return CONTEXT_PATH + '/' + value;
+        if (value.indexOf('/') >= 0) return CONTEXT_PATH + '/' + value;
+        return CONTEXT_PATH + '/Images/' + value;
+    }
+
     // Cargar datos de la página principal
     document.addEventListener('DOMContentLoaded', function() {
         cargarDatosHomePage();
@@ -191,8 +204,9 @@
 
             let imagenHTML = '';
             if (tieneImagen) {
+                const imgSrc = buildImageUrl(aerolinea.imagenUrl);
                 imagenHTML = '<div class="aerolinea-logo me-3">' +
-                    '<img src="' + aerolinea.imagenUrl + '" ' +
+                    '<img src="' + imgSrc + '" ' +
                     'alt="' + aerolinea.nombre + '" ' +
                     'class="aerolinea-img" ' +
                     'onerror="this.style.display=\'none\'; this.nextElementSibling.style.display=\'flex\';">' +

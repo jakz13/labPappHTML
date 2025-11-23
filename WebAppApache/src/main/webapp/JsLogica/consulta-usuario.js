@@ -133,6 +133,14 @@ async function cargarUsuarioSeleccionado(usuarioId) {
         console.log('📄 Detalle de usuario recibido:', usuarioDetalle);
 
         // Actualizar usuario with información detallada
+        // AÑADIDO: actualizar también la imagen desde el detalle si el servidor la devuelve como 'imagen' o 'imagenUrl'
+        try {
+            const possibleImg = usuarioDetalle.imagenUrl || usuarioDetalle.imagen || usuarioDetalle.imagenURL || usuarioDetalle.image || '';
+            if (possibleImg && possibleImg.toString().trim().length > 0) {
+                usuario.imagen = possibleImg;
+            }
+        } catch (e) { /* ignore */ }
+
         if (usuario.tipo === 'Cliente') {
             usuario.datosPersonales.nacimiento = usuarioDetalle.fechaNacimiento || usuario.datosPersonales.nacimiento;
             usuario.datosPersonales.nacionalidad = usuarioDetalle.nacionalidad || usuario.datosPersonales.nacionalidad;
