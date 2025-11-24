@@ -1,5 +1,6 @@
 package com.example.servlets;
 
+import DataTypes.DtAerolinea;
 import logica.Fabrica;
 import logica.ISistema;
 import DataTypes.DtRutaVuelo;
@@ -16,284 +17,233 @@ public class ResultadosBusquedaServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
-        String action = request.getParameter("action");
+        // Configurar encoding
+        request.setCharacterEncoding("UTF-8");
+        response.setCharacterEncoding("UTF-8");
+
         String query = request.getParameter("q");
         String orden = request.getParameter("orden");
 
         System.out.println("=== BÚSQUEDA INICIADA ===");
-        System.out.println("Action: " + action);
-        System.out.println("Query: " + query);
+        System.out.println("Query recibido: [" + query + "]");
         System.out.println("Orden: " + orden);
 
         try {
             ISistema sistema = Fabrica.getInstance().getISistema();
             sistema.cargarDesdeBd();
 
-            if ("suggestions".equals(action)) {
-                // 🔥 SUGERENCIAS EN TIEMPO REAL - Devuelve JSON
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                PrintWriter out = response.getWriter();
-                System.out.println("Procesando sugerencias...");
-                handleSuggestions(sistema, query, out);
+            // Normalizar query
+            String queryBusqueda = "";
+            boolean hayBusqueda = false;
+
+            if (query != null && !query.trim().isEmpty()) {
+                queryBusqueda = query.trim().toLowerCase();
+                hayBusqueda = true;
+                System.out.println("✅ Búsqueda activa con: '" + queryBusqueda + "'");
             } else {
-                // 🔍 BÚSQUEDA COMPLETA - Forward a JSP
-                System.out.println("Procesando búsqueda completa...");
-                handleFullSearch(request, response, sistema, query, orden);
+                System.out.println("📋 Mostrando todos los resultados");
             }
 
-        } catch (Exception e) {
-            System.err.println("[BÚSQUEDA] ❌ Error: " + e.getMessage());
-            e.printStackTrace();
-            
-            // Si es sugerencias, devolver JSON de error
-            if ("suggestions".equals(action)) {
-                response.setContentType("application/json");
-                response.setCharacterEncoding("UTF-8");
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                PrintWriter out = response.getWriter();
-                out.print("{\"error\":\"Error en la búsqueda: " + escapeJson(e.getMessage()) + "\"}");
+            // Obtener TODAS las rutas y paquetes
+            List<DtRutaVuelo> todasRutas = obtenerTodasLasRutasConfirmadas(sistema);
+            List<DtPaquete> todosPaquetes = sistema.listarPaquetes();
+            if (todosPaquetes == null) todosPaquetes = new ArrayList<>();
+
+            System.out.println("📊 Total rutas: " + todasRutas.size());
+            System.out.println("📦 Total paquetes: " + todosPaquetes.size());
+
+            // Separar en coincidentes y no coincidentes
+            List<DtRutaVuelo> rutasCoincidentes = new ArrayList<>();
+            List<DtRutaVuelo> rutasNoCoincidentes = new ArrayList<>();
+            List<DtPaquete> paquetesCoincidentes = new ArrayList<>();
+            List<DtPaquete> paquetesNoCoincidentes = new ArrayList<>();
+
+            if (!hayBusqueda) {
+                // Sin búsqueda: todo va a "no coincidentes"
+                rutasNoCoincidentes.addAll(todasRutas);
+                paquetesNoCoincidentes.addAll(todosPaquetes);
             } else {
-                // Si es búsqueda completa, redirigir a página de error o mostrar mensaje
-                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-                request.setAttribute("error", "Error en la búsqueda: " + e.getMessage());
-                RequestDispatcher dispatcher = request.getRequestDispatcher("/resultados-busqueda.jsp");
-                dispatcher.forward(request, response);
+                // CON búsqueda: filtrar
+                for (DtRutaVuelo ruta : todasRutas) {
+                    if (coincideRuta(ruta, queryBusqueda)) {
+                        rutasCoincidentes.add(ruta);
+                        System.out.println("✅ Ruta coincide: " + ruta.getNombre());
+                    } else {
+                        rutasNoCoincidentes.add(ruta);
+                    }
+                }
+
+                for (DtPaquete paquete : todosPaquetes) {
+                    if (coincidePaquete(paquete, queryBusqueda)) {
+                        paquetesCoincidentes.add(paquete);
+                        System.out.println("✅ Paquete coincide: " + paquete.getNombre());
+                    } else {
+                        paquetesNoCoincidentes.add(paquete);
+                    }
+                }
             }
+
+            // Ordenar según parámetro
+            if ("alfabetico".equals(orden)) {
+                ordenarAlfabeticamente(rutasCoincidentes, rutasNoCoincidentes,
+                        paquetesCoincidentes, paquetesNoCoincidentes);
+            } else {
+                // Por defecto: fecha descendente
+                ordenarPorFecha(rutasCoincidentes, rutasNoCoincidentes);
+            }
+
+            // Estadísticas
+            System.out.println("📈 Resultados:");
+            System.out.println("   Rutas coincidentes: " + rutasCoincidentes.size());
+            System.out.println("   Rutas no coincidentes: " + rutasNoCoincidentes.size());
+            System.out.println("   Paquetes coincidentes: " + paquetesCoincidentes.size());
+            System.out.println("   Paquetes no coincidentes: " + paquetesNoCoincidentes.size());
+
+            // Pasar al JSP
+            request.setAttribute("rutasCoincidentes", rutasCoincidentes);
+            request.setAttribute("rutasNoCoincidentes", rutasNoCoincidentes);
+            request.setAttribute("paquetesCoincidentes", paquetesCoincidentes);
+            request.setAttribute("paquetesNoCoincidentes", paquetesNoCoincidentes);
+            request.setAttribute("queryOriginal", query);
+            request.setAttribute("hayBusqueda", hayBusqueda);
+            request.setAttribute("totalCount",
+                    todasRutas.size() + todosPaquetes.size());
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/resultados-busqueda.jsp");
+            dispatcher.forward(request, response);
+
+        } catch (Exception e) {
+            System.err.println("❌ ERROR: " + e.getMessage());
+            e.printStackTrace();
+
+            request.setAttribute("error", "Error: " + e.getMessage());
+            request.setAttribute("rutasCoincidentes", new ArrayList<>());
+            request.setAttribute("rutasNoCoincidentes", new ArrayList<>());
+            request.setAttribute("paquetesCoincidentes", new ArrayList<>());
+            request.setAttribute("paquetesNoCoincidentes", new ArrayList<>());
+            request.setAttribute("totalCount", 0);
+
+            RequestDispatcher dispatcher = request.getRequestDispatcher("/resultados-busqueda.jsp");
+            dispatcher.forward(request, response);
         }
     }
 
-    private void handleSuggestions(ISistema sistema, String query, PrintWriter out) {
-        System.out.println("🔄 [SUGERENCIAS] Iniciando búsqueda para: '" + query + "'");
-
-        if (query == null || query.trim().length() < 2) {
-            System.out.println("❌ [SUGERENCIAS] Query demasiado corta o nula");
-            out.print("[]");
-            return;
+    /**
+     * Verifica si una ruta coincide con la búsqueda
+     */
+    private boolean coincideRuta(DtRutaVuelo ruta, String query) {
+        if (ruta.getNombre() != null &&
+                ruta.getNombre().toLowerCase().contains(query)) {
+            return true;
         }
+        if (ruta.getDescripcion() != null &&
+                ruta.getDescripcion().toLowerCase().contains(query)) {
+            return true;
+        }
+        if (ruta.getDescripcionCorta() != null &&
+                ruta.getDescripcionCorta().toLowerCase().contains(query)) {
+            return true;
+        }
+        if (ruta.getCiudadOrigen() != null &&
+                ruta.getCiudadOrigen().toLowerCase().contains(query)) {
+            return true;
+        }
+        if (ruta.getCiudadDestino() != null &&
+                ruta.getCiudadDestino().toLowerCase().contains(query)) {
+            return true;
+        }
+        return false;
+    }
 
-        List<Map<String, String>> suggestions = new ArrayList<>();
-        String queryLower = query.toLowerCase().trim();
+    /**
+     * Verifica si un paquete coincide con la búsqueda
+     */
+    private boolean coincidePaquete(DtPaquete paquete, String query) {
+        if (paquete.getNombre() != null &&
+                paquete.getNombre().toLowerCase().contains(query)) {
+            return true;
+        }
+        if (paquete.getDescripcion() != null &&
+                paquete.getDescripcion().toLowerCase().contains(query)) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Obtiene todas las rutas confirmadas del sistema
+     */
+    private List<DtRutaVuelo> obtenerTodasLasRutasConfirmadas(ISistema sistema) {
+        List<DtRutaVuelo> rutasConfirmadas = new ArrayList<>();
 
         try {
-            // Buscar rutas - Intentar usar buscarRutas, si no existe, filtrar manualmente
-            System.out.println("🔍 [SUGERENCIAS] Buscando rutas...");
-            List<DtRutaVuelo> rutas = null;
-            
-            try {
-                // Intentar usar el método buscarRutas si existe
-                java.lang.reflect.Method buscarRutasMethod = sistema.getClass().getMethod("buscarRutas", String.class, String.class);
-                rutas = (List<DtRutaVuelo>) buscarRutasMethod.invoke(sistema, query, "relevancia");
-            } catch (NoSuchMethodException e) {
-                // Si no existe, obtener todas las rutas y filtrar manualmente
-                System.out.println("⚠️ [SUGERENCIAS] Método buscarRutas no existe, filtrando manualmente...");
-                List<DtRutaVuelo> todasRutas = sistema.listarRutasConfirmadas(100);
-                if (todasRutas != null) {
-                    rutas = new ArrayList<>();
-                    for (DtRutaVuelo ruta : todasRutas) {
-                        String nombre = ruta.getNombre() != null ? ruta.getNombre().toLowerCase() : "";
-                        String descripcion = ruta.getDescripcionCorta() != null ? 
-                                ruta.getDescripcionCorta().toLowerCase() : 
-                                (ruta.getDescripcion() != null ? ruta.getDescripcion().toLowerCase() : "");
-                        String origen = ruta.getCiudadOrigen() != null ? ruta.getCiudadOrigen().toLowerCase() : "";
-                        String destino = ruta.getCiudadDestino() != null ? ruta.getCiudadDestino().toLowerCase() : "";
-                        
-                        if (nombre.contains(queryLower) || descripcion.contains(queryLower) || 
-                            origen.contains(queryLower) || destino.contains(queryLower)) {
-                            rutas.add(ruta);
+            List<DtAerolinea> aerolineas = sistema.listarAerolineas();
+
+            for (DtAerolinea aerolinea : aerolineas) {
+                try {
+                    List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(
+                            aerolinea.getNickname());
+
+                    for (DtRutaVuelo ruta : rutas) {
+                        if (ruta.getEstado() != null &&
+                                "CONFIRMADA".equalsIgnoreCase(ruta.getEstado().toString())) {
+                            rutasConfirmadas.add(ruta);
                         }
                     }
+                } catch (Exception e) {
+                    System.err.println("⚠️ Error con aerolínea " +
+                            aerolinea.getNickname());
                 }
             }
-            
-            System.out.println("📊 [SUGERENCIAS] Rutas encontradas: " + (rutas != null ? rutas.size() : "null"));
-
-            if (rutas != null) {
-                for (DtRutaVuelo ruta : rutas) {
-                    if (suggestions.size() >= 5) break;
-
-                    System.out.println("📍 [SUGERENCIAS] Procesando ruta: " + ruta.getNombre());
-
-                    Map<String, String> suggestion = new HashMap<>();
-                    suggestion.put("tipo", "ruta");
-                    suggestion.put("nombre", ruta.getNombre());
-                    suggestion.put("descripcion", ruta.getDescripcionCorta() != null ?
-                            ruta.getDescripcionCorta() : (ruta.getDescripcion() != null ? ruta.getDescripcion() : ""));
-                    suggestions.add(suggestion);
-                    System.out.println("✅ [SUGERENCIAS] Sugerencia ruta agregada: " + ruta.getNombre());
-                }
-            }
-
-            // Buscar paquetes - Intentar usar buscarPaquetes, si no existe, filtrar manualmente
-            System.out.println("🔍 [SUGERENCIAS] Buscando paquetes...");
-            List<DtPaquete> paquetes = null;
-            
-            try {
-                // Intentar usar el método buscarPaquetes si existe
-                java.lang.reflect.Method buscarPaquetesMethod = sistema.getClass().getMethod("buscarPaquetes", String.class, String.class);
-                paquetes = (List<DtPaquete>) buscarPaquetesMethod.invoke(sistema, query, "relevancia");
-            } catch (NoSuchMethodException e) {
-                // Si no existe, obtener todos los paquetes y filtrar manualmente
-                System.out.println("⚠️ [SUGERENCIAS] Método buscarPaquetes no existe, filtrando manualmente...");
-                List<DtPaquete> todosPaquetes = sistema.listarPaquetes();
-                if (todosPaquetes != null) {
-                    paquetes = new ArrayList<>();
-                    for (DtPaquete paquete : todosPaquetes) {
-                        String nombre = paquete.getNombre() != null ? paquete.getNombre().toLowerCase() : "";
-                        String descripcion = paquete.getDescripcion() != null ? paquete.getDescripcion().toLowerCase() : "";
-                        
-                        if (nombre.contains(queryLower) || descripcion.contains(queryLower)) {
-                            paquetes.add(paquete);
-                        }
-                    }
-                }
-            }
-            
-            System.out.println("📊 [SUGERENCIAS] Paquetes encontrados: " + (paquetes != null ? paquetes.size() : "null"));
-
-            if (paquetes != null) {
-                for (DtPaquete paquete : paquetes) {
-                    if (suggestions.size() >= 5) break;
-
-                    System.out.println("📦 [SUGERENCIAS] Procesando paquete: " + paquete.getNombre());
-
-                    Map<String, String> suggestion = new HashMap<>();
-                    suggestion.put("tipo", "paquete");
-                    suggestion.put("nombre", paquete.getNombre());
-                    suggestion.put("descripcion", paquete.getDescripcion() != null ? paquete.getDescripcion() : "");
-                    suggestions.add(suggestion);
-                    System.out.println("✅ [SUGERENCIAS] Sugerencia paquete agregada: " + paquete.getNombre());
-                }
-            }
-
         } catch (Exception e) {
-            System.err.println("❌ [SUGERENCIAS] Error durante la búsqueda: " + e.getMessage());
-            e.printStackTrace();
+            System.err.println("❌ Error obteniendo rutas: " + e.getMessage());
         }
 
-        System.out.println("🎯 [SUGERENCIAS] Total sugerencias generadas: " + suggestions.size());
-
-        // Convertir a JSON
-        out.print("[");
-        for (int i = 0; i < suggestions.size(); i++) {
-            Map<String, String> item = suggestions.get(i);
-            out.print("{");
-            out.print("\"tipo\":\"" + escapeJson(item.get("tipo")) + "\",");
-            out.print("\"nombre\":\"" + escapeJson(item.get("nombre")) + "\",");
-            out.print("\"descripcion\":\"" + escapeJson(item.get("descripcion")) + "\"");
-            out.print("}");
-            if (i < suggestions.size() - 1) out.print(",");
-        }
-        out.print("]");
-
-        System.out.println("📤 [SUGERENCIAS] Respuesta JSON enviada");
+        return rutasConfirmadas;
     }
 
-    private void handleFullSearch(HttpServletRequest request, HttpServletResponse response,
-                                  ISistema sistema, String query, String orden)
-            throws ServletException, IOException {
+    /**
+     * Ordena alfabéticamente
+     */
+    private void ordenarAlfabeticamente(List<DtRutaVuelo> rutas1,
+                                        List<DtRutaVuelo> rutas2,
+                                        List<DtPaquete> paq1,
+                                        List<DtPaquete> paq2) {
+        Comparator<DtRutaVuelo> rutaComp = (r1, r2) -> {
+            String n1 = r1.getNombre() != null ? r1.getNombre() : "";
+            String n2 = r2.getNombre() != null ? r2.getNombre() : "";
+            return n1.compareToIgnoreCase(n2);
+        };
 
-        System.out.println("Realizando búsqueda completa...");
+        Comparator<DtPaquete> paqComp = (p1, p2) -> {
+            String n1 = p1.getNombre() != null ? p1.getNombre() : "";
+            String n2 = p2.getNombre() != null ? p2.getNombre() : "";
+            return n1.compareToIgnoreCase(n2);
+        };
 
-        List<DtRutaVuelo> rutas = new ArrayList<>();
-        List<DtPaquete> paquetes = new ArrayList<>();
-        String queryLower = (query != null && !query.trim().isEmpty()) ? query.toLowerCase().trim() : null;
+        rutas1.sort(rutaComp);
+        rutas2.sort(rutaComp);
+        paq1.sort(paqComp);
+        paq2.sort(paqComp);
 
-        // Si no hay query, mostrar todos los resultados
-        if (queryLower == null || queryLower.isEmpty()) {
-            System.out.println("Query vacía, mostrando todos los resultados");
-            rutas = sistema.listarRutasConfirmadas(100);
-            paquetes = sistema.listarPaquetes();
-        } else {
-            // Buscar rutas y paquetes con filtro
-            try {
-                // Intentar usar buscarRutas si existe
-                try {
-                    java.lang.reflect.Method buscarRutasMethod = sistema.getClass().getMethod("buscarRutas", String.class, String.class);
-                    rutas = (List<DtRutaVuelo>) buscarRutasMethod.invoke(sistema, query, orden != null ? orden : "relevancia");
-                } catch (NoSuchMethodException e) {
-                    // Si no existe, filtrar manualmente
-                    System.out.println("⚠️ Método buscarRutas no existe, filtrando manualmente...");
-                    List<DtRutaVuelo> todasRutas = sistema.listarRutasConfirmadas(100);
-                    if (todasRutas != null) {
-                        for (DtRutaVuelo ruta : todasRutas) {
-                            String nombre = ruta.getNombre() != null ? ruta.getNombre().toLowerCase() : "";
-                            String descripcion = ruta.getDescripcionCorta() != null ? 
-                                    ruta.getDescripcionCorta().toLowerCase() : 
-                                    (ruta.getDescripcion() != null ? ruta.getDescripcion().toLowerCase() : "");
-                            String origen = ruta.getCiudadOrigen() != null ? ruta.getCiudadOrigen().toLowerCase() : "";
-                            String destino = ruta.getCiudadDestino() != null ? ruta.getCiudadDestino().toLowerCase() : "";
-                            
-                            if (nombre.contains(queryLower) || descripcion.contains(queryLower) || 
-                                origen.contains(queryLower) || destino.contains(queryLower)) {
-                                rutas.add(ruta);
-                            }
-                        }
-                    }
-                }
-
-                // Intentar usar buscarPaquetes si existe
-                try {
-                    java.lang.reflect.Method buscarPaquetesMethod = sistema.getClass().getMethod("buscarPaquetes", String.class, String.class);
-                    paquetes = (List<DtPaquete>) buscarPaquetesMethod.invoke(sistema, query, orden != null ? orden : "relevancia");
-                } catch (NoSuchMethodException e) {
-                    // Si no existe, filtrar manualmente
-                    System.out.println("⚠️ Método buscarPaquetes no existe, filtrando manualmente...");
-                    List<DtPaquete> todosPaquetes = sistema.listarPaquetes();
-                    if (todosPaquetes != null) {
-                        for (DtPaquete paquete : todosPaquetes) {
-                            String nombre = paquete.getNombre() != null ? paquete.getNombre().toLowerCase() : "";
-                            String descripcion = paquete.getDescripcion() != null ? paquete.getDescripcion().toLowerCase() : "";
-                            
-                            if (nombre.contains(queryLower) || descripcion.contains(queryLower)) {
-                                paquetes.add(paquete);
-                            }
-                        }
-                    }
-                }
-            } catch (Exception e) {
-                System.err.println("Error en búsqueda: " + e.getMessage());
-                e.printStackTrace();
-            }
-
-            System.out.println("Búsqueda completa - Rutas: " + (rutas != null ? rutas.size() : 0));
-            System.out.println("Búsqueda completa - Paquetes: " + (paquetes != null ? paquetes.size() : 0));
-        }
-
-        // Aplicar ordenamiento si es necesario
-        if (orden != null && "alfabetico".equals(orden)) {
-            if (rutas != null) {
-                rutas.sort((r1, r2) -> {
-                    String n1 = r1.getNombre() != null ? r1.getNombre() : "";
-                    String n2 = r2.getNombre() != null ? r2.getNombre() : "";
-                    return n1.compareToIgnoreCase(n2);
-                });
-            }
-            if (paquetes != null) {
-                paquetes.sort((p1, p2) -> {
-                    String n1 = p1.getNombre() != null ? p1.getNombre() : "";
-                    String n2 = p2.getNombre() != null ? p2.getNombre() : "";
-                    return n1.compareToIgnoreCase(n2);
-                });
-            }
-        }
-
-        request.setAttribute("rutas", rutas != null ? rutas : new ArrayList<>());
-        request.setAttribute("paquetes", paquetes != null ? paquetes : new ArrayList<>());
-        request.setAttribute("rutasCount", rutas != null ? rutas.size() : 0);
-        request.setAttribute("paquetesCount", paquetes != null ? paquetes.size() : 0);
-
-        // Redirigir a la página de resultados
-        RequestDispatcher dispatcher = request.getRequestDispatcher("/resultados-busqueda.jsp");
-        dispatcher.forward(request, response);
+        System.out.println("🔤 Ordenado alfabéticamente");
     }
 
-    private String escapeJson(String text) {
-        if (text == null) return "";
-        return text.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
+    /**
+     * Ordena por fecha descendente
+     */
+    private void ordenarPorFecha(List<DtRutaVuelo> rutas1,
+                                 List<DtRutaVuelo> rutas2) {
+        Comparator<DtRutaVuelo> fechaComp = (r1, r2) -> {
+            if (r1.getFechaAlta() != null && r2.getFechaAlta() != null) {
+                return r2.getFechaAlta().compareTo(r1.getFechaAlta());
+            }
+            return 0;
+        };
+
+        rutas1.sort(fechaComp);
+        rutas2.sort(fechaComp);
+
+        System.out.println("📅 Ordenado por fecha descendente");
     }
 }

@@ -2464,3 +2464,274 @@ button, .btn, .dropdown-item, .ruta-item, .paquete-card,
         border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
     }
 }
+
+/* ESTILOS PARA NAVBAR Y BÚSQUEDA */
+.navbar-search {
+    position: relative;
+    margin-left: 1rem;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-icon {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+    z-index: 1001;
+    position: relative;
+}
+
+.search-icon.hidden {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.search-expandable {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    width: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+    border-radius: 0.375rem;
+}
+
+.search-expandable.expanded {
+    width: 350px;
+    opacity: 1;
+    visibility: visible;
+    padding: 0.5rem 0;
+}
+
+/* Ocultar otros elementos del navbar cuando la búsqueda está activa */
+#navbarNav.search-active .navbar-nav,
+#navbarNav.search-active .user-actions {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1002;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    display: none;
+    margin-top: 0.5rem;
+}
+
+.suggestions-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.suggestions-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.suggestion-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    border-bottom: 1px solid #f8f9fa;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #e9ecef;
+    text-decoration: none;
+    color: #212529;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item .fw-semibold {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.suggestion-item .text-muted {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.badge-sm {
+    font-size: 0.7em;
+    padding: 0.3em 0.6em;
+}
+
+/* Mejorar la visibilidad del input de búsqueda */
+.search-expandable .form-control {
+    border: 1px solid #ced4da;
+    background: white;
+    color: #212529;
+}
+
+.search-expandable .form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-expandable.expanded {
+        width: 280px;
+        right: -50px;
+    }
+
+    .navbar-search {
+        margin-left: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-expandable.expanded {
+        width: 220px;
+        right: -80px;
+    }
+
+    .navbar-search {
+        margin: 0.5rem 0;
+    }
+}
+
+/* Toast notifications */
+.toast-container {
+    z-index: 9999;
+}
+
+
+/* Ultima implementacion para la barra de busqueda: */
+
+/* Estilos para el buscador en tiempo real */
+.buscador-container {
+    position: relative;
+    width: 100%;
+}
+
+.resultados-busqueda {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.sugerencia-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sugerencia-item:hover {
+    background-color: #f8f9fa;
+}
+
+.sugerencia-item:last-child {
+    border-bottom: none;
+}
+
+.sugerencia-icono {
+    margin-right: 12px;
+    color: #6c757d;
+    font-size: 1.2em;
+}
+
+.sugerencia-contenido {
+    flex: 1;
+}
+
+.sugerencia-titulo {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.sugerencia-descripcion {
+    font-size: 0.9em;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.sugerencia-badge {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+/* Animaciones */
+.sugerencia-item {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilos para sugerencias inteligentes */
+.highlight-suggestion {
+    background-color: #ffeb3b;
+    padding: 0.1em 0.2em;
+    border-radius: 0.25em;
+    font-weight: bold;
+}
+
+.suggestion-item .text-warning {
+    color: #ffc107 !important;
+}
+
+.suggestion-item .text-info {
+    font-size: 0.75em;
+    opacity: 0.8;
+}
+
+/* Badges según relevancia */
+.badge.bg-warning {
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
