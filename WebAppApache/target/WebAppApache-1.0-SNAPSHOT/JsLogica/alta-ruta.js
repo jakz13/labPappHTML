@@ -257,6 +257,8 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function mostrarMensajeExito() {
+    const base = window.CONTEXT_PATH || '';
+    const url = `${base}/consulta-ruta.jsp`;
     const modalHTML = `
         <div class="modal fade" id="successModal" tabindex="-1" aria-labelledby="successModalLabel" aria-hidden="true">
             <div class="modal-dialog">
@@ -274,7 +276,9 @@ function mostrarMensajeExito() {
                     </div>
                     <div class="modal-footer justify-content-center">
                         <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Continuar</button>
-                        <a href="/consulta-ruta.jsp" class="btn btn-outline-primary">Ver Rutas</a>
+                        <a href="${base}/consulta-ruta.jsp" class="btn btn-outline-primary">
+                            <i class="bi bi-search"></i> Ver Rutas
+                        </a>
                     </div>
                 </div>
             </div>
@@ -286,3 +290,5 @@ function mostrarMensajeExito() {
     const successModal = new bootstrap.Modal(document.getElementById('successModal'));
     successModal.show();
 }
+
+

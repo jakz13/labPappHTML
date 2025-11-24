@@ -100,9 +100,9 @@
                                     <div class="col-md-4">
                                         <img id="rutaImagen" src="" alt="Imagen de la ruta" class="img-fluid rounded">
                                         <div class="mt-3 text-center">
-                                            <button class="btn btn-outline-primary btn-sm" onclick="consultarVuelos()">
+                                            <a href="consulta-vuelo.jsp" class="btn btn-primary">
                                                 <i class="bi bi-search"></i> Ver Vuelos Disponibles
-                                            </button>
+                                            </a>
                                         </div>
                                     </div>
                                 </div>
