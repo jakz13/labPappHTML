@@ -2,6 +2,7 @@
 <%@ page import="java.util.List" %>
 <%@ page import="DataTypes.DtRutaVuelo" %>
 <%@ page import="DataTypes.DtPaquete" %>
+<%@ page import="java.lang.reflect.Method" %>
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -118,13 +119,47 @@
             <div class="row">
                 <%
                     for (DtRutaVuelo ruta : rutas) {
-                        String imagenUrl = ruta.getImagenUrl() != null ? ruta.getImagenUrl() : "https://via.placeholder.com/300x120/3498db/ffffff?text=Ruta+" + java.net.URLEncoder.encode(ruta.getNombre(), "UTF-8");
+                        String imagenUrl = null;
+                        
+                        // Intentar obtener la imagen real
+                        try {
+                            String imagenVal = null;
+                            try {
+                                imagenVal = ruta.getImagenUrl();
+                            } catch (Exception ex) {
+                                // Si getImagenUrl() no existe o lanza excepción, intentar con reflexión
+                                try {
+                                    java.lang.reflect.Method getImagenMethod = ruta.getClass().getMethod("getImagenUrl");
+                                    Object imagenObj = getImagenMethod.invoke(ruta);
+                                    if (imagenObj != null) {
+                                        imagenVal = imagenObj.toString();
+                                    }
+                                } catch (Exception rex) {
+                                    // Ignorar errores de reflexión
+                                }
+                            }
+                            
+                            if (imagenVal != null && !imagenVal.trim().isEmpty()) {
+                                imagenUrl = normalizarUrlImagen(imagenVal, request);
+                            }
+                        } catch (Exception e) {
+                            // Si hay error, continuar con placeholder
+                            System.err.println("Error obteniendo imagen de ruta: " + e.getMessage());
+                        }
+                        
+                        // Si no hay imagen, generar placeholder seguro usando el helper
+                        if (imagenUrl == null || imagenUrl.trim().isEmpty()) {
+                            imagenUrl = generarPlaceholderUrl("ruta", ruta.getNombre());
+                        }
                 %>
                 <div class="col-lg-6 mb-3">
                     <div class="card result-card ruta-card h-100">
                         <div class="row g-0 h-100">
                             <div class="col-md-4">
-                                <img src="<%= imagenUrl %>" class="ruta-image h-100" alt="<%= ruta.getNombre() %>">
+                                <img src="<%= imagenUrl %>" 
+                                     class="ruta-image h-100" 
+                                     alt="<%= ruta.getNombre() != null ? ruta.getNombre() : "Ruta" %>"
+                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x120/3498db/ffffff?text=Ruta'">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body d-flex flex-column h-100">
@@ -172,8 +207,34 @@
                                                         </span>
                                                 <% } } %>
 
+                                                <%
+                                                    // Intentar obtener el contador de visitas de forma segura
+                                                    int visitas = 0;
+                                                    try {
+                                                        java.lang.reflect.Method getContadorMethod = ruta.getClass().getMethod("getContadorVisitas");
+                                                        Object visitasObj = getContadorMethod.invoke(ruta);
+                                                        if (visitasObj instanceof Integer) {
+                                                            visitas = (Integer) visitasObj;
+                                                        } else if (visitasObj instanceof Number) {
+                                                            visitas = ((Number) visitasObj).intValue();
+                                                        }
+                                                    } catch (Exception e) {
+                                                        // Si no existe el método, usar 0 o intentar otro método
+                                                        try {
+                                                            java.lang.reflect.Method getVisitasMethod = ruta.getClass().getMethod("getVisitas");
+                                                            Object visitasObj = getVisitasMethod.invoke(ruta);
+                                                            if (visitasObj instanceof Integer) {
+                                                                visitas = (Integer) visitasObj;
+                                                            } else if (visitasObj instanceof Number) {
+                                                                visitas = ((Number) visitasObj).intValue();
+                                                            }
+                                                        } catch (Exception ex) {
+                                                            visitas = 0;
+                                                        }
+                                                    }
+                                                %>
                                                 <span class="badge stats-badge">
-                                                        <i class="bi bi-eye me-1"></i><%= ruta.getContadorVisitas() %> vistas
+                                                        <i class="bi bi-eye me-1"></i><%= visitas %> vistas
                                                     </span>
                                             </div>
                                             <a href="DetalleRuta?nombre=<%= java.net.URLEncoder.encode(ruta.getNombre(), "UTF-8") %>"
@@ -225,13 +286,32 @@
             <div class="row">
                 <%
                     for (DtPaquete paquete : paquetes) {
-                        String imagenUrl = "https://via.placeholder.com/300x120/22c55e/ffffff?text=Paquete+" + java.net.URLEncoder.encode(paquete.getNombre(), "UTF-8");
+                        // Intentar obtener la imagen real del paquete si existe
+                        String imagenUrl = null;
+                        try {
+                            java.lang.reflect.Method getImagenMethod = paquete.getClass().getMethod("getImagenUrl");
+                            Object imagenObj = getImagenMethod.invoke(paquete);
+                            if (imagenObj != null && !imagenObj.toString().trim().isEmpty()) {
+                                String imagenVal = imagenObj.toString();
+                                imagenUrl = normalizarUrlImagen(imagenVal, request);
+                            }
+                        } catch (Exception e) {
+                            // Si no existe el método, continuar con placeholder
+                        }
+                        
+                        // Si no hay imagen real, usar placeholder seguro usando el helper
+                        if (imagenUrl == null || imagenUrl.trim().isEmpty()) {
+                            imagenUrl = generarPlaceholderUrl("paquete", paquete.getNombre());
+                        }
                 %>
                 <div class="col-lg-6 mb-3">
                     <div class="card result-card paquete-card h-100">
                         <div class="row g-0 h-100">
                             <div class="col-md-4">
-                                <img src="<%= imagenUrl %>" class="ruta-image h-100" alt="<%= paquete.getNombre() %>">
+                                <img src="<%= imagenUrl %>" 
+                                     class="ruta-image h-100" 
+                                     alt="<%= paquete.getNombre() != null ? paquete.getNombre() : "Paquete" %>"
+                                     onerror="this.onerror=null; this.src='https://via.placeholder.com/300x120/22c55e/ffffff?text=Paquete'">
                             </div>
                             <div class="col-md-8">
                                 <div class="card-body d-flex flex-column h-100">
@@ -390,5 +470,113 @@
 
         result.append(text.substring(lastIndex));
         return result.toString();
+    }
+    
+    // Método helper para normalizar URLs de imágenes (similar a ListarRutasServlet y ConsultaRutaServlet)
+    private String normalizarUrlImagen(String imagenVal, Object requestObj) {
+        // requestObj es de tipo HttpServletRequest pero lo recibimos como Object para evitar problemas de import
+        jakarta.servlet.http.HttpServletRequest request = (jakarta.servlet.http.HttpServletRequest) requestObj;
+        if (imagenVal == null || imagenVal.trim().isEmpty()) {
+            return null;
+        }
+        
+        String tmp = imagenVal.trim();
+        
+        // Si ya es una URL absoluta (http/https), devolverla tal cual
+        if (tmp.matches("(?i)^(https?:)?//.*")) {
+            return tmp;
+        }
+        
+        // Si es una data URL, devolverla tal cual
+        if (tmp.startsWith("data:")) {
+            return tmp;
+        }
+        
+        // Normalizar rutas relativas
+        try {
+            // Si no comienza con /, agregar /Images/
+            if (!tmp.startsWith("/") && !tmp.startsWith("Images/")) {
+                String ctx = request.getContextPath();
+                if (ctx == null) ctx = "";
+                if (!ctx.endsWith("/")) {
+                    tmp = ctx + "/Images/" + tmp;
+                } else {
+                    tmp = ctx + "Images/" + tmp;
+                }
+            } else if (tmp.startsWith("Images/")) {
+                // Si comienza con Images/, agregar context path
+                String ctx = request.getContextPath();
+                if (ctx == null) ctx = "";
+                if (!ctx.endsWith("/")) {
+                    tmp = ctx + "/" + tmp;
+                } else {
+                    tmp = ctx + tmp;
+                }
+            }
+            
+            // Convertir a URL absoluta si no es absoluta
+            if (!tmp.matches("(?i)^(https?:)?//.*")) {
+                String scheme = request.getScheme();
+                String serverName = request.getServerName();
+                int serverPort = request.getServerPort();
+                
+                // Asegurar que tmp comience con /
+                if (!tmp.startsWith("/")) {
+                    tmp = "/" + tmp;
+                }
+                
+                // Construir puerto si es necesario
+                String portPart = "";
+                if (!("http".equalsIgnoreCase(scheme) && serverPort == 80) && 
+                    !("https".equalsIgnoreCase(scheme) && serverPort == 443)) {
+                    portPart = ":" + serverPort;
+                }
+                
+                return scheme + "://" + serverName + portPart + tmp;
+            }
+            
+            return tmp;
+        } catch (Exception e) {
+            // Si hay error, devolver el valor original
+            return imagenVal;
+        }
+    }
+    
+    // Método helper para generar URL de placeholder de forma segura
+    private String generarPlaceholderUrl(String tipo, String nombre) {
+        if (nombre == null) {
+            nombre = tipo;
+        }
+        
+        // Limpiar el nombre: remover caracteres especiales y espacios múltiples
+        String nombreLimpio = nombre
+            .replaceAll("[^a-zA-Z0-9\\s]", "")  // Remover caracteres especiales
+            .replaceAll("\\s+", " ")            // Normalizar espacios
+            .trim();
+        
+        // Si después de limpiar está vacío, usar el tipo
+        if (nombreLimpio.isEmpty()) {
+            nombreLimpio = tipo;
+        }
+        
+        // Limitar la longitud para evitar URLs muy largas
+        if (nombreLimpio.length() > 30) {
+            nombreLimpio = nombreLimpio.substring(0, 30);
+        }
+        
+        // Reemplazar espacios con +
+        nombreLimpio = nombreLimpio.replace(" ", "+");
+        
+        // Generar URL según el tipo
+        String color = "ruta".equalsIgnoreCase(tipo) ? "3498db" : "22c55e";
+        String texto = tipo + "+" + nombreLimpio;
+        
+        try {
+            return "https://via.placeholder.com/300x120/" + color + "/ffffff?text=" + 
+                   java.net.URLEncoder.encode(texto, "UTF-8");
+        } catch (Exception e) {
+            // Fallback si hay error en la codificación
+            return "https://via.placeholder.com/300x120/" + color + "/ffffff?text=" + tipo;
+        }
     }
 %>

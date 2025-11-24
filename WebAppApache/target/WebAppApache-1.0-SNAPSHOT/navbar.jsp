@@ -190,13 +190,31 @@
                 return;
             }
 
-            fetch('${pageContext.request.contextPath}/ResultadosBusqueda?action=suggestions&q=' + encodeURIComponent(query))
-                .then(response => response.json())
-                .then(data => {
-                    displaySuggestions(data);
+            const url = '${pageContext.request.contextPath}/ResultadosBusqueda?action=suggestions&q=' + encodeURIComponent(query);
+            console.log('🔍 Cargando sugerencias desde:', url);
+
+            fetch(url)
+                .then(response => {
+                    console.log('📥 Respuesta recibida, status:', response.status);
+                    if (!response.ok) {
+                        throw new Error('HTTP error! status: ' + response.status);
+                    }
+                    return response.text(); // Primero obtener como texto para debug
+                })
+                .then(text => {
+                    console.log('📄 Respuesta texto:', text);
+                    try {
+                        const data = JSON.parse(text);
+                        console.log('✅ JSON parseado correctamente:', data);
+                        displaySuggestions(data);
+                    } catch (e) {
+                        console.error('❌ Error parseando JSON:', e);
+                        console.error('Texto recibido:', text);
+                        hideSuggestions();
+                    }
                 })
                 .catch(error => {
-                    console.error('Error cargando sugerencias:', error);
+                    console.error('❌ Error cargando sugerencias:', error);
                     hideSuggestions();
                 });
         }

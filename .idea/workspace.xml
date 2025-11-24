@@ -3,24 +3,19 @@
   <component name="ArtifactsWorkspaceSettings">
     <artifacts-to-build>
       <artifact name="WebAppApache:war exploded" />
+      <artifact name="WebAppApache:war exploded" />
     </artifacts-to-build>
   </component>
   <component name="AutoImportSettings">
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="Check in finalizado, falta testear cuando este listo el mobile">
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/BusquedaServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ResultadosBusqueda.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/resultados-busqueda.jsp" afterDir="false" />
+    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="Inicie la barra">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/CssLogica/estilo-css.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/CssLogica/estilo-css.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ResultadosBusqueda.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ResultadosBusquedaServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/resultados-busqueda.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/resultados-busqueda.jsp" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/createdFiles.lst" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/maven-status/maven-compiler-plugin/compile/default-compile/inputFiles.lst" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -292,7 +287,7 @@
       <workItem from="1763773235669" duration="6593000" />
       <workItem from="1763783815030" duration="3101000" />
       <workItem from="1763923571262" duration="109000" />
-      <workItem from="1763923696717" duration="9515000" />
+      <workItem from="1763923696717" duration="16595000" />
     </task>
     <task id="LOCAL-00001" summary="fxg">
       <option name="closed" value="true" />
@@ -494,7 +489,15 @@
       <option name="project" value="LOCAL" />
       <updated>1763874369751</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="Inicie la barra">
+      <option name="closed" value="true" />
+      <created>1763937644419</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1763937644419</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -537,7 +540,8 @@
     <MESSAGE value="Contador Modificado" />
     <MESSAGE value="Contador Finalizado" />
     <MESSAGE value="Check in finalizado, falta testear cuando este listo el mobile" />
-    <option name="LAST_COMMIT_MESSAGE" value="Check in finalizado, falta testear cuando este listo el mobile" />
+    <MESSAGE value="Inicie la barra" />
+    <option name="LAST_COMMIT_MESSAGE" value="Inicie la barra" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
