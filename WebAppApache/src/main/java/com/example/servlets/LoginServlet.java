@@ -1,146 +1,180 @@
 package com.example.servlets;
 
-import DataTypes.DtAerolinea;
-import DataTypes.DtCliente;
-import logica.Fabrica;
-import logica.ISistema;
-import jakarta.servlet.*;
-import jakarta.servlet.http.*;
-import jakarta.servlet.annotation.*;
-import java.io.*;
-import java.util.List;
+import jakarta.servlet.annotation.WebInitParam;
+import jakarta.servlet.annotation.WebServlet;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpSession;
 
-@WebServlet("/api/login")
+import jakarta.xml.ws.BindingProvider;
+
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.List;
+import java.util.Map;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.WebServicesService;
+import serviciosweb.DtCliente;
+import serviciosweb.DtAerolinea;
+
+@WebServlet(
+        urlPatterns = "/api/login",
+        initParams = {
+                @WebInitParam(name = "wsEndpoint", value = "http://localhost:8081/JuanViajes")
+        }
+)
 public class LoginServlet extends HttpServlet {
+
+    private WebServicesService service;
+    private String endpointUrl;
+
+    @Override
+    public void init() {
+        // Inicializa la Service una vez
+        endpointUrl = getInitParameter("wsEndpoint");
+        if (endpointUrl == null || endpointUrl.isBlank()) {
+            endpointUrl = "http://localhost:8081/JuanViajes";
+        }
+
+        // Servicio generado por CXF/wsdl2java. Ajusta el constructor si el generado es distinto.
+        service = new WebServicesService();
+    }
+
+    // Crea un port por cada petición y fuerza la endpoint URL (y timeouts)
+    private JuanViajesWS createPort() {
+        JuanViajesWS port = service.getJuanViajesWSPort(); // método generado; revisa el nombre exacto
+        BindingProvider bp = (BindingProvider) port;
+        Map<String, Object> ctx = bp.getRequestContext();
+        ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
+
+        // Timeouts: ponemos varias claves para cubrir diferentes implementaciones (Metro/CXF)
+        // Valores en ms
+        ctx.put("javax.xml.ws.client.connectionTimeout", 10000);
+        ctx.put("javax.xml.ws.client.receiveTimeout", 20000);
+        // CXF-specific
+        ctx.put("org.apache.cxf.transport.http.client.connection.timeout", 10000);
+        ctx.put("org.apache.cxf.transport.http.client.receive.timeout", 20000);
+
+        // Metro / RI properties (fallback)
+        ctx.put("com.sun.xml.ws.connect.timeout", 10000);
+        ctx.put("com.sun.xml.ws.request.timeout", 20000);
+
+        return port;
+    }
+
+    @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
-        // El parámetro 'nickname' puede contener el nickname o el email (gmail)
         String user = request.getParameter("nickname");
-        String password = request.getParameter("password"); // No se usa por ahora
+        String password = request.getParameter("password");
 
-        System.out.println("=== INICIO PROCESO LOGIN ===");
-        System.out.println("Usuario recibido: " + user);
-
-        ISistema sistema = Fabrica.getInstance().getISistema();
-
-        try {
-            // Cargar datos desde BD
-            sistema.cargarDesdeBd();
-
-            DtCliente cliente = null;
-            DtAerolinea aerolinea = null;
-
-            // Buscar cliente por nickname o por email y verificar contraseña
-            List<DtCliente> clientes = sistema.listarClientes();
-            System.out.println("Clientes encontrados: " + clientes.size());
-            for (DtCliente c : clientes) {
-                try {
-                    String nick = c.getNickname();
-                    String mail = c.getEmail();
-                    boolean match = false;
-                    if (nick != null && nick.equalsIgnoreCase(user)) match = true;
-                    if (mail != null && mail.equalsIgnoreCase(user)) match = true;
-                    if (!match) continue;
-
-                    // verificar contraseña usando el email (clave en el sistema)
-                    boolean ok = false;
-                    try { ok = sistema.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
-                    if (!ok) {
-                        System.out.println("Contraseña incorrecta para cliente: " + nick + " (identificador: " + user + ")");
-                        // no autenticado, continuar buscando (por seguridad no revelamos si nickname/email existe)
-                        continue;
-                    }
-
-                    cliente = sistema.obtenerCliente(nick);
-                    System.out.println("Cliente autenticado: " + nick);
-                    break;
-                } catch (Exception e) {
-                    System.err.println("Error obteniendo info cliente: " + e.getMessage());
-                }
-            }
-
-            // Buscar aerolínea por nickname o email y verificar contraseña
-            if (cliente == null) {
-                List<DtAerolinea> aerolineas = sistema.listarAerolineas();
-                System.out.println("Aerolíneas encontradas: " + aerolineas.size());
-                for (DtAerolinea a : aerolineas) {
-                    try {
-                        String nick = a.getNickname();
-                        String mail = a.getEmail();
-                        boolean match = false;
-                        if (nick != null && nick.equalsIgnoreCase(user)) match = true;
-                        if (mail != null && mail.equalsIgnoreCase(user)) match = true;
-                        if (!match) continue;
-
-                        boolean ok = false;
-                        try { ok = sistema.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
-                        if (!ok) {
-                            System.out.println("Contraseña incorrecta para aerolínea: " + nick + " (identificador: " + user + ")");
-                            continue;
-                        }
-
-                        aerolinea = sistema.obtenerAerolinea(nick);
-                        System.out.println("Aerolínea autenticada: " + nick);
-                        break;
-                    } catch (Exception e) {
-                        System.err.println("Error obteniendo info aerolínea: " + e.getMessage());
-                    }
-                }
-            }
-
-            // Crear respuesta
-            if (cliente != null) {
-                HttpSession session = request.getSession(true);
-                session.setAttribute("usuario", cliente.getNickname());
-                session.setAttribute("tipoUsuario", "cliente");
-                // Mantener compatibilidad con JSPs que usan 'tipo'
-                session.setAttribute("tipo", "cliente");
-
-                System.out.println("LOGIN EXITOSO - Cliente: " + cliente.getNickname());
-
-                String jsonResponse = "{\"success\":true,\"nickname\":\"" +
-                        escapeJson(cliente.getNickname()) + "\",\"tipo\":\"cliente\"}";
-                out.print(jsonResponse);
-
-            } else if (aerolinea != null) {
-                HttpSession session = request.getSession(true);
-                session.setAttribute("usuario", aerolinea.getNickname());
-                session.setAttribute("tipoUsuario", "aerolinea");
-                // Mantener compatibilidad con JSPs que usan 'tipo'
-                session.setAttribute("tipo", "aerolinea");
-
-                System.out.println("LOGIN EXITOSO - Aerolinea: " + aerolinea.getNickname());
-
-                String jsonResponse = "{\"success\":true,\"nickname\":\"" +
-                        escapeJson(aerolinea.getNickname()) + "\",\"tipo\":\"aerolinea\"}";
-                out.print(jsonResponse);
-
-            } else {
-                System.out.println("LOGIN FALLIDO - Usuario no encontrado o contraseña inválida: " + user);
-                response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-                out.print("{\"success\":false,\"error\":\"Usuario no encontrado o credenciales inválidas\"}");
-            }
-
-        } catch (Exception e) {
-            System.err.println("ERROR CRÍTICO en login: " + e.getMessage());
-            e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"success\":false,\"error\":\"Error interno del servidor - " +
-                    e.getMessage().replace("\"", "'") + "\"}");
+        if (user == null || user.isBlank() || password == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            out.print("{\"success\":false,\"error\":\"Parámetros faltantes\"}");
+            return;
         }
 
-        System.out.println("=== FIN PROCESO LOGIN ===");
+        try {
+            JuanViajesWS port = createPort();
+
+            // Primero, intentamos autenticar como cliente:
+            List<DtCliente> clientes = null;
+            DtCliente clienteEncontrado = null;
+            try {
+                clientes = port.listarClientes(); // llamada remota
+            } catch (Exception ex) {
+                // si falla la llamada remota, lanzamos para entrar en el catch exterior
+                throw ex;
+            }
+            if (clientes != null) {
+                for (DtCliente c : clientes) {
+                    if (c == null) continue;
+                    String nick = c.getNickname();
+                    String mail = c.getEmail();
+                    boolean match = (nick != null && nick.equalsIgnoreCase(user))
+                            || (mail != null && mail.equalsIgnoreCase(user));
+                    if (!match) continue;
+
+                    // verificarLogin espera email y password según tu SEI; si usas nickname, ajusta
+                    boolean ok;
+                    try { ok = port.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
+                    if (!ok) continue;
+
+                    // Obtener datos completos del cliente
+                    clienteEncontrado = port.obtenerCliente(nick);
+                    break;
+                }
+            }
+
+            if (clienteEncontrado != null) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute("usuario", clienteEncontrado.getNickname());
+                session.setAttribute("tipoUsuario", "cliente");
+                session.setAttribute("tipo", "cliente");
+
+                String jsonResponse = "{\"success\":true,\"nickname\":\"" + escapeJson(clienteEncontrado.getNickname()) + "\",\"tipo\":\"cliente\"}";
+                out.print(jsonResponse);
+                return;
+            }
+
+            // Si no es cliente, intentamos aerolinea
+            List<DtAerolinea> aerolineas = null;
+            DtAerolinea aeroEncontrada = null;
+            try {
+                aerolineas = port.listarAerolineas();
+            } catch (Exception ex) {
+                throw ex;
+            }
+
+            if (aerolineas != null) {
+                for (DtAerolinea a : aerolineas) {
+                    if (a == null) continue;
+                    String nick = a.getNickname();
+                    String mail = a.getEmail();
+                    boolean match = (nick != null && nick.equalsIgnoreCase(user))
+                            || (mail != null && mail.equalsIgnoreCase(user));
+                    if (!match) continue;
+
+                    boolean ok = false;
+                    try { ok = port.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
+                    if (!ok) continue;
+
+                    aeroEncontrada = port.obtenerAerolinea(nick);
+                    break;
+                }
+            }
+
+            if (aeroEncontrada != null) {
+                HttpSession session = request.getSession(true);
+                session.setAttribute("usuario", aeroEncontrada.getNickname());
+                session.setAttribute("tipoUsuario", "aerolinea");
+                session.setAttribute("tipo", "aerolinea");
+
+                String jsonResponse = "{\"success\":true,\"nickname\":\"" + escapeJson(aeroEncontrada.getNickname()) + "\",\"tipo\":\"aerolinea\"}";
+                out.print(jsonResponse);
+                return;
+            }
+
+
+            // Si llegamos aquí: fallo de autenticación
+            response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            out.print("{\"success\":false,\"error\":\"Usuario no encontrado o credenciales inválidas\"}");
+
+        } catch (Exception e) {
+            // Error remoto / red / marshalling
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"success\":false,\"error\":\"Error interno: " + escapeJson(e.getMessage()) + "\"}");
+        }
     }
 
-    private String escapeJson(String input) {
-        if (input == null) return "";
-        return input.replace("\\", "\\\\")
-                .replace("\"", "\\\"")
-                .replace("\n", "\\n")
-                .replace("\r", "\\r")
-                .replace("\t", "\\t");
+    private String escapeJson(String s) {
+        if (s == null) return "";
+        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n","\\n").replace("\r","\\r");
     }
 }

@@ -1,0 +1,39 @@
+<changelist name="Uncommitted_changes_before_rebase_[Changes]1" date="1763871813598" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before rebase [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ObtenerUsuarioServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/ObtenerUsuarioServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/ObtenerUsuarioServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ConsultaReservaServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/ConsultaReservaServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/ConsultaReservaServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/RegistrarReservaServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/RegistrarReservaServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" />
+    <option name="AFTER_PATH" value="WebAppApache/src/main/webapp/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/MiProyectoSwing-1.0-SNAPSHOT.jar" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/FlightImageServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/FlightImageServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/FlightImageServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ConsultaRutaServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/ConsultaRutaServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/ConsultaRutaServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/DebugVueloServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/DebugVueloServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_rebase_[Changes]1/DebugVueloServlet.class" />
+  </binary>
+</changelist>

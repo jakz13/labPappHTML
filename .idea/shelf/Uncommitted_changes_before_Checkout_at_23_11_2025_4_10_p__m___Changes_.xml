@@ -1,0 +1,28 @@
+<changelist name="Uncommitted_changes_before_Checkout_at_23_11_2025_4_10_p_ m__[Changes]" date="1763925048889" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Checkout_at_23_11_2025_4_10_p_ m__[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Checkout at 23/11/2025 4:10 p. m. [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ObtenerUsuarioServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/VerInfoVueloServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/AltaVueloServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ActualizarUsuarioServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/AltaRutaServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/AltaUsuarioServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" />
+  </binary>
+</changelist>

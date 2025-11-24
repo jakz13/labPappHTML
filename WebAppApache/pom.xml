@@ -67,13 +67,40 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.11.0</version>
                 <configuration>
                     <source>16</source>
                     <target>16</target>
                 </configuration>
             </plugin>
             <!-- add the extra source directory where your Logica/DataTypes live -->
-
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>4.0.3</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                        <configuration>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <!-- Ruta corregida: usa slashes y apunta a donde descargaste el WSDL -->
+                                    <wsdl>${project.basedir}/src/main/java/com/example/wsdl/JuanViajes.wsdl</wsdl>
+                                    <!-- Opciones útiles: -exsh true para excepciones, -impl para skeleton impls, etc. -->
+                                    <extraargs>
+                                        <!-- example: generar implementaciones si las necesitas -->
+                                        <!-- <extraarg>-impl</extraarg> -->
+                                    </extraargs>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 </project>
