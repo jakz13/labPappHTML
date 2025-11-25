@@ -76,7 +76,6 @@
                         <i class="bi bi-search"></i>
                     </button>
 
-                    <!-- Barra de búsqueda expandible (oculta inicialmente) -->
                     <form action="${pageContext.request.contextPath}/ResultadosBusqueda"
                           method="get"
                           class="d-flex ms-3"
@@ -92,6 +91,19 @@
                             </button>
                         </div>
                     </form>
+
+                        <!-- SUGERENCIAS EN TIEMPO REAL -->
+                        <div id="searchSuggestions" class="search-suggestions">
+                            <div class="suggestions-header">
+                                <small class="text-muted">Sugerencias</small>
+                            </div>
+                            <div id="suggestionsList" class="suggestions-list">
+                                <!-- Las sugerencias se cargan aquí dinámicamente -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Acciones de usuario -->
             <div class="user-actions">

@@ -71,11 +71,6 @@
             <!-- BARRA DE BÚSQUEDA CON ICONO EXPANDIBLE -->
             <div class="navbar-search">
                 <div class="search-container position-relative">
-                    <!-- Icono de búsqueda (estado inicial) -->
-                    <button class="btn btn-outline-light search-icon" id="searchToggle">
-                        <i class="bi bi-search"></i>
-                    </button>
-
                     <form action="${pageContext.request.contextPath}/ResultadosBusqueda"
                           method="get"
                           class="d-flex ms-3"

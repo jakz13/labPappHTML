@@ -10,16 +10,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="no e podido hacer que ande">
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/IncrementarVisitasServlet.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/navbar.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/BusquedaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/BusquedaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ResultadosBusquedaServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/ResultadosBusquedaServlet.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/CssLogica/estilo-css.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/CssLogica/estilo-css.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/navbar.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/resultados-busqueda.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/resultados-busqueda.jsp" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/CssLogica/estilo-css.css" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/CssLogica/estilo-css.css" afterDir="false" />
+    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="⚠️ ANDA, PORFAVOR NO TOCAR NADA">
       <change beforePath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/WebAppApache-1.0-SNAPSHOT/navbar.jsp" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -297,7 +288,7 @@
       <workItem from="1763923571262" duration="109000" />
       <workItem from="1763923696717" duration="16595000" />
       <workItem from="1763954779595" duration="38000" />
-      <workItem from="1764016189635" duration="10318000" />
+      <workItem from="1764016189635" duration="10820000" />
     </task>
     <task id="LOCAL-00001" summary="fxg">
       <option name="closed" value="true" />
@@ -515,7 +506,23 @@
       <option name="project" value="LOCAL" />
       <updated>1763954813805</updated>
     </task>
-    <option name="localTasksCounter" value="28" />
+    <task id="LOCAL-00028" summary="⚠️ ANDA, PORFAVOR NO TOCAR NADA">
+      <option name="closed" value="true" />
+      <created>1764028526313</created>
+      <option name="number" value="00028" />
+      <option name="presentableId" value="LOCAL-00028" />
+      <option name="project" value="LOCAL" />
+      <updated>1764028526314</updated>
+    </task>
+    <task id="LOCAL-00029" summary="⚠️ ANDA, PORFAVOR NO TOCAR NADA">
+      <option name="closed" value="true" />
+      <created>1764028587204</created>
+      <option name="number" value="00029" />
+      <option name="presentableId" value="LOCAL-00029" />
+      <option name="project" value="LOCAL" />
+      <updated>1764028587204</updated>
+    </task>
+    <option name="localTasksCounter" value="30" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -560,7 +567,8 @@
     <MESSAGE value="Check in finalizado, falta testear cuando este listo el mobile" />
     <MESSAGE value="Inicie la barra" />
     <MESSAGE value="no e podido hacer que ande" />
-    <option name="LAST_COMMIT_MESSAGE" value="no e podido hacer que ande" />
+    <MESSAGE value="⚠️ ANDA, PORFAVOR NO TOCAR NADA" />
+    <option name="LAST_COMMIT_MESSAGE" value="⚠️ ANDA, PORFAVOR NO TOCAR NADA" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>
