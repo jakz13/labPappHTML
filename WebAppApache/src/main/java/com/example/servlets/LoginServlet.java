@@ -13,81 +13,107 @@ import java.util.List;
 @WebServlet("/api/login")
 public class LoginServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
-        // El parámetro 'nickname' puede contener el nickname o el email (gmail)
         String user = request.getParameter("nickname");
-        String password = request.getParameter("password"); // No se usa por ahora
+        String password = request.getParameter("password");
 
         System.out.println("=== INICIO PROCESO LOGIN ===");
-        System.out.println("Usuario recibido: " + user);
+        System.out.println("Usuario: " + user);
 
         ISistema sistema = Fabrica.getInstance().getISistema();
 
         try {
-            // Cargar datos desde BD
-            sistema.cargarDesdeBd();
+            // INTENTAR cargar desde BD, pero si falla continuar sin datos frescos
+            try {
+                sistema.cargarDesdeBd();
+                System.out.println("✓ Datos cargados desde BD exitosamente");
+            } catch (Exception dbError) {
+                System.err.println("⚠️ Error cargando desde BD: " + dbError.getMessage());
+                dbError.printStackTrace();
+                // Continuar sin datos frescos - usar datos en memoria
+            }
 
             DtCliente cliente = null;
             DtAerolinea aerolinea = null;
 
-            // Buscar cliente por nickname o por email y verificar contraseña
-            List<DtCliente> clientes = sistema.listarClientes();
-            System.out.println("Clientes encontrados: " + clientes.size());
-            for (DtCliente c : clientes) {
-                try {
-                    String nick = c.getNickname();
-                    String mail = c.getEmail();
-                    boolean match = false;
-                    if (nick != null && nick.equalsIgnoreCase(user)) match = true;
-                    if (mail != null && mail.equalsIgnoreCase(user)) match = true;
-                    if (!match) continue;
+            // Buscar cliente - con manejo robusto de errores
+            try {
+                List<DtCliente> clientes = sistema.listarClientes();
+                System.out.println("Clientes encontrados: " + clientes.size());
 
-                    // verificar contraseña usando el email (clave en el sistema)
-                    boolean ok = false;
-                    try { ok = sistema.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
-                    if (!ok) {
-                        System.out.println("Contraseña incorrecta para cliente: " + nick + " (identificador: " + user + ")");
-                        // no autenticado, continuar buscando (por seguridad no revelamos si nickname/email existe)
-                        continue;
-                    }
-
-                    cliente = sistema.obtenerCliente(nick);
-                    System.out.println("Cliente autenticado: " + nick);
-                    break;
-                } catch (Exception e) {
-                    System.err.println("Error obteniendo info cliente: " + e.getMessage());
-                }
-            }
-
-            // Buscar aerolínea por nickname o email y verificar contraseña
-            if (cliente == null) {
-                List<DtAerolinea> aerolineas = sistema.listarAerolineas();
-                System.out.println("Aerolíneas encontradas: " + aerolineas.size());
-                for (DtAerolinea a : aerolineas) {
+                for (DtCliente c : clientes) {
                     try {
-                        String nick = a.getNickname();
-                        String mail = a.getEmail();
-                        boolean match = false;
-                        if (nick != null && nick.equalsIgnoreCase(user)) match = true;
-                        if (mail != null && mail.equalsIgnoreCase(user)) match = true;
+                        String nick = c.getNickname();
+                        String mail = c.getEmail();
+
+                        boolean match = (nick != null && nick.equalsIgnoreCase(user)) ||
+                                (mail != null && mail.equalsIgnoreCase(user));
+
                         if (!match) continue;
 
+                        // Verificar contraseña
+                        String identificadorLogin = mail != null ? mail : user;
                         boolean ok = false;
-                        try { ok = sistema.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
-                        if (!ok) {
-                            System.out.println("Contraseña incorrecta para aerolínea: " + nick + " (identificador: " + user + ")");
+                        try {
+                            ok = sistema.verificarLogin(identificadorLogin, password);
+                        } catch (Exception ex) {
+                            System.out.println("Error en verificarLogin: " + ex.getMessage());
                             continue;
                         }
 
-                        aerolinea = sistema.obtenerAerolinea(nick);
-                        System.out.println("Aerolínea autenticada: " + nick);
+                        if (!ok) continue;
+
+                        cliente = c; // Usar el objeto que ya tenemos
                         break;
                     } catch (Exception e) {
-                        System.err.println("Error obteniendo info aerolínea: " + e.getMessage());
+                        System.err.println("Error procesando cliente individual: " + e.getMessage());
+                        continue;
                     }
+                }
+            } catch (Exception e) {
+                System.err.println("Error listando clientes: " + e.getMessage());
+            }
+
+            // Buscar aerolínea
+            if (cliente == null) {
+                try {
+                    List<DtAerolinea> aerolineas = sistema.listarAerolineas();
+                    System.out.println("Aerolíneas encontradas: " + aerolineas.size());
+
+                    for (DtAerolinea a : aerolineas) {
+                        try {
+                            String nick = a.getNickname();
+                            String mail = a.getEmail();
+
+                            boolean match = (nick != null && nick.equalsIgnoreCase(user)) ||
+                                    (mail != null && mail.equalsIgnoreCase(user));
+
+                            if (!match) continue;
+
+                            String identificadorLogin = mail != null ? mail : user;
+                            boolean ok = false;
+                            try {
+                                ok = sistema.verificarLogin(identificadorLogin, password);
+                            } catch (Exception ex) {
+                                System.out.println("Error en verificarLogin: " + ex.getMessage());
+                                continue;
+                            }
+
+                            if (!ok) continue;
+
+                            aerolinea = a;
+                            break;
+                        } catch (Exception e) {
+                            System.err.println("Error procesando aerolínea individual: " + e.getMessage());
+                            continue;
+                        }
+                    }
+                } catch (Exception e) {
+                    System.err.println("Error listando aerolíneas: " + e.getMessage());
                 }
             }
 
@@ -96,43 +122,38 @@ public class LoginServlet extends HttpServlet {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("usuario", cliente.getNickname());
                 session.setAttribute("tipoUsuario", "cliente");
-                // Mantener compatibilidad con JSPs que usan 'tipo'
                 session.setAttribute("tipo", "cliente");
 
-                System.out.println("LOGIN EXITOSO - Cliente: " + cliente.getNickname());
+                System.out.println("✓ LOGIN EXITOSO - Cliente: " + cliente.getNickname());
 
-                String jsonResponse = "{\"success\":true,\"nickname\":\"" +
-                        escapeJson(cliente.getNickname()) + "\",\"tipo\":\"cliente\"}";
-                out.print(jsonResponse);
+                out.print("{\"success\":true,\"nickname\":\"" +
+                        escapeJson(cliente.getNickname()) + "\",\"tipo\":\"cliente\"}");
 
             } else if (aerolinea != null) {
                 HttpSession session = request.getSession(true);
                 session.setAttribute("usuario", aerolinea.getNickname());
                 session.setAttribute("tipoUsuario", "aerolinea");
-                // Mantener compatibilidad con JSPs que usan 'tipo'
                 session.setAttribute("tipo", "aerolinea");
 
-                System.out.println("LOGIN EXITOSO - Aerolinea: " + aerolinea.getNickname());
+                System.out.println("✓ LOGIN EXITOSO - Aerolínea: " + aerolinea.getNickname());
 
-                String jsonResponse = "{\"success\":true,\"nickname\":\"" +
-                        escapeJson(aerolinea.getNickname()) + "\",\"tipo\":\"aerolinea\"}";
-                out.print(jsonResponse);
+                out.print("{\"success\":true,\"nickname\":\"" +
+                        escapeJson(aerolinea.getNickname()) + "\",\"tipo\":\"aerolinea\"}");
 
             } else {
-                System.out.println("LOGIN FALLIDO - Usuario no encontrado o contraseña inválida: " + user);
+                System.out.println("✗ LOGIN FALLIDO - Usuario no encontrado");
                 response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
                 out.print("{\"success\":false,\"error\":\"Usuario no encontrado o credenciales inválidas\"}");
             }
 
         } catch (Exception e) {
-            System.err.println("ERROR CRÍTICO en login: " + e.getMessage());
+            System.err.println("💥 ERROR CRÍTICO en login: " + e.getMessage());
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"success\":false,\"error\":\"Error interno del servidor - " +
-                    e.getMessage().replace("\"", "'") + "\"}");
+            out.print("{\"success\":false,\"error\":\"Error de conexión con la base de datos\"}");
         }
 
-        System.out.println("=== FIN PROCESO LOGIN ===");
+        System.out.println("=== FIN PROCESO LOGIN ===\n");
     }
 
     private String escapeJson(String input) {

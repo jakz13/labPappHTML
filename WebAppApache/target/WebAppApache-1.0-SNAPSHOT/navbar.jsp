@@ -52,6 +52,8 @@
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-ruta.jsp"><i class="bi bi-signpost"></i> Alta de Ruta</a></li>
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-ruta.jsp"><i class="bi bi-map"></i> Consulta de Ruta</a></li>
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-airplane"></i> Alta de Vuelo</a></li>
+                        <!-- NUEVO: Enlace para Finalizar Ruta -->
+                        <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/finalizar-ruta.jsp"><i class="bi bi-check-circle"></i> Finalizar Ruta</a></li>
                     </ul>
                 </li>
 
@@ -68,17 +70,12 @@
                 </li>
             </ul>
 
-            <!-- BARRA DE BÚSQUEDA CON ICONO EXPANDIBLE -->
-            <div class="navbar-search">
+            <!-- BARRA DE BÚSQUEDA CON ICONO EXPANDIBLE - ESTRUCTURA CORREGIDA -->
+            <div class="navbar-search me-3">
                 <div class="search-container position-relative">
-                    <!-- Icono de búsqueda (estado inicial) -->
-                    <button class="btn btn-outline-light search-icon" id="searchToggle">
-                        <i class="bi bi-search"></i>
-                    </button>
-
                     <form action="${pageContext.request.contextPath}/ResultadosBusqueda"
                           method="get"
-                          class="d-flex ms-3"
+                          class="d-flex"
                           style="min-width: 300px;">
                         <div class="input-group">
                             <input type="text"
@@ -92,14 +89,13 @@
                         </div>
                     </form>
 
-                        <!-- SUGERENCIAS EN TIEMPO REAL -->
-                        <div id="searchSuggestions" class="search-suggestions">
-                            <div class="suggestions-header">
-                                <small class="text-muted">Sugerencias</small>
-                            </div>
-                            <div id="suggestionsList" class="suggestions-list">
-                                <!-- Las sugerencias se cargan aquí dinámicamente -->
-                            </div>
+                    <!-- SUGERENCIAS EN TIEMPO REAL -->
+                    <div id="searchSuggestions" class="search-suggestions">
+                        <div class="suggestions-header">
+                            <small class="text-muted">Sugerencias</small>
+                        </div>
+                        <div id="suggestionsList" class="suggestions-list">
+                            <!-- Las sugerencias se cargan aquí dinámicamente -->
                         </div>
                     </div>
                 </div>
