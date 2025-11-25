@@ -7,8 +7,7 @@ import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.*;
 
-import serviciosweb.JuanViajesWS;
-import com.example.util.PortUtils;
+import com.example.usecases.CategoriasUseCase;
 
 @WebServlet("/listarCategorias")
 public class ListarCategoriasServlet extends HttpServlet {
@@ -20,41 +19,15 @@ public class ListarCategoriasServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            JuanViajesWS port = PortUtils.getPort(request);
-            // Intentar cargar desde BD para asegurar datos en el servicio
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+            // Obtener categorías siempre desde el port SOAP a través del caso de uso centralizado
+            List<String> categorias = CategoriasUseCase.getCategorias(request, true);
 
-            Object raw = null;
-            // Intentar invocar listarCategorias si el servicio lo expone (por reflexión)
+            // Añadir cabeceras diagnósticas para facilitar depuración desde el cliente
             try {
-                java.lang.reflect.Method m = port.getClass().getMethod("listarCategorias");
-                raw = m.invoke(port);
-            } catch (NoSuchMethodException nsme) {
-                // Si no existe el método en el servicio SOAP, devolver categorías por defecto
-                raw = Arrays.asList("nacionales", "internacionales", "europa", "america", "exclusivos", "temporada", "cortos");
-                System.out.println("ListarCategoriasServlet: listarCategorias no disponible en el servicio remoto; devolviendo categorías por defecto.");
-            } catch (Exception ex) {
-                System.err.println("ListarCategoriasServlet: error al invocar listarCategorias: " + ex.getMessage());
-                raw = Collections.emptyList();
-            }
-
-            List<String> categorias = new ArrayList<>();
-            if (raw instanceof List) {
-                for (Object elem : (List<?>) raw) {
-                    if (elem == null) continue;
-                    if (elem instanceof String) {
-                        categorias.add((String) elem);
-                    } else {
-                        try {
-                            java.lang.reflect.Method getter = elem.getClass().getMethod("getNombre");
-                            Object val = getter.invoke(elem);
-                            categorias.add(val != null ? String.valueOf(val) : "");
-                        } catch (Exception e) {
-                            categorias.add(elem.toString());
-                        }
-                    }
-                }
-            }
+                response.setHeader("X-Categorias-Count", String.valueOf(categorias.size()));
+                String sample = categorias.stream().limit(3).collect(java.util.stream.Collectors.joining(","));
+                response.setHeader("X-Categorias-Sample", sample);
+            } catch (Exception ignored) {}
 
             // Construir JSON array simple y enviarlo
             StringBuilder sb = new StringBuilder();
@@ -68,6 +41,7 @@ public class ListarCategoriasServlet extends HttpServlet {
 
         } catch (Exception e) {
             System.err.println("ListarCategoriasServlet: error al listar categorías: " + e.getMessage());
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("[]");
         }

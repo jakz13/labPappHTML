@@ -25,11 +25,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             categorias.forEach(cat => {
-                const nombre = (typeof cat === 'string') ? cat : (cat && (cat.nombre || cat.name) ? (cat.nombre || cat.name) : null);
-                if (!nombre) return;
+                // Normalizar valores: aceptar string directo o objeto con 'nombre'/'name'
+                let nombre = null;
+                if (typeof cat === 'string') nombre = cat;
+                else if (cat && (cat.nombre || cat.name)) nombre = (cat.nombre || cat.name);
+                // Evitar undefined/null/empty
+                if (nombre === undefined || nombre === null) {
+                    console.warn('listarCategorias: elemento inválido ignorado ->', cat);
+                    return;
+                }
+                const nombreStr = String(nombre).trim();
+                if (nombreStr.length === 0) {
+                    console.warn('listarCategorias: nombre vacío tras trim, se ignora ->', cat);
+                    return;
+                }
                 const option = document.createElement('option');
-                option.value = nombre;
-                option.textContent = nombre;
+                option.value = nombreStr;
+                option.textContent = nombreStr;
                 selectCategorias.appendChild(option);
             });
         })
@@ -53,11 +65,21 @@ document.addEventListener('DOMContentLoaded', function() {
                 return;
             }
             ciudades.forEach(ciudad => {
-                const nombre = (typeof ciudad === 'string') ? ciudad : (ciudad && (ciudad.nombre || ciudad.name) ? (ciudad.nombre || ciudad.name) : null);
-                if (!nombre) return;
+                let nombre = null;
+                if (typeof ciudad === 'string') nombre = ciudad;
+                else if (ciudad && (ciudad.nombre || ciudad.name)) nombre = (ciudad.nombre || ciudad.name);
+                if (nombre === undefined || nombre === null) {
+                    console.warn('listarCiudades: elemento inválido ignorado ->', ciudad);
+                    return;
+                }
+                const nombreStr = String(nombre).trim();
+                if (nombreStr.length === 0) {
+                    console.warn('listarCiudades: nombre vacío tras trim, se ignora ->', ciudad);
+                    return;
+                }
                 const opt = document.createElement('option');
-                opt.value = nombre;
-                opt.textContent = nombre;
+                opt.value = nombreStr;
+                opt.textContent = nombreStr;
                 // clonar para cada select
                 if (selectOrigen) selectOrigen.appendChild(opt.cloneNode(true));
                 if (selectDestino) selectDestino.appendChild(opt.cloneNode(true));
@@ -311,5 +333,3 @@ function mostrarMensajeExito() {
     const successModal = new bootstrap.Modal(document.getElementById('successModal'));
     successModal.show();
 }
-
-

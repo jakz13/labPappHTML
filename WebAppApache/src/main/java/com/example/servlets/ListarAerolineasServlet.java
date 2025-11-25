@@ -19,10 +19,20 @@ public class ListarAerolineasServlet extends HttpServlet {
         List<DtAerolinea> aerolineas = null;
         JuanViajesWS port = PortUtils.getPort(request);
         try {
+            // Asegurar que el servicio tenga datos
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+
             aerolineas = port.listarAerolineas();
         } catch (Exception e) {
-            // Si falla el WS, no recurrimos a la lógica local (package 'logica' removido)
-            System.err.println("ListarAerolineasServlet: error llamando al WS listarAerolineas: " + e.getMessage());
+            // Si falla el WS, registrar traza completa y devolver lista vacía
+            System.err.println("ListarAerolineasServlet: error llamando al WS listarAerolineas: " + (e == null ? "(null)" : e.getClass().getName() + ": " + e.getMessage()));
+            if (e != null) e.printStackTrace();
+            // Enviar un encabezado breve para facilitar diagnóstico desde el cliente (no exponer detalles sensibles)
+            try {
+                String hdr = e == null ? "unknown" : (e.getClass().getSimpleName() + ": " + (e.getMessage() != null ? e.getMessage().replaceAll("[\n\r]"," ") : "(no message)"));
+                if (hdr.length() > 200) hdr = hdr.substring(0,200);
+                response.setHeader("X-Backend-Error", hdr);
+            } catch (Exception ignore) {}
             aerolineas = java.util.Collections.emptyList();
         }
 

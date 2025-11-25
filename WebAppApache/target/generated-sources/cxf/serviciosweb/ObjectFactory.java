@@ -52,6 +52,8 @@ public class ObjectFactory {
     private final static QName _IncrementarVisitasRutaResponse_QNAME = new QName("http://ServiciosWeb/", "incrementarVisitasRutaResponse");
     private final static QName _ListarAerolineas_QNAME = new QName("http://ServiciosWeb/", "listarAerolineas");
     private final static QName _ListarAerolineasResponse_QNAME = new QName("http://ServiciosWeb/", "listarAerolineasResponse");
+    private final static QName _ListarCategorias_QNAME = new QName("http://ServiciosWeb/", "listarCategorias");
+    private final static QName _ListarCategoriasResponse_QNAME = new QName("http://ServiciosWeb/", "listarCategoriasResponse");
     private final static QName _ListarCiudades_QNAME = new QName("http://ServiciosWeb/", "listarCiudades");
     private final static QName _ListarCiudadesResponse_QNAME = new QName("http://ServiciosWeb/", "listarCiudadesResponse");
     private final static QName _ListarClientes_QNAME = new QName("http://ServiciosWeb/", "listarClientes");
@@ -318,6 +320,22 @@ public class ObjectFactory {
      */
     public ListarAerolineasResponse createListarAerolineasResponse() {
         return new ListarAerolineasResponse();
+    }
+
+    /**
+     * Create an instance of {@link ListarCategorias }
+     * 
+     */
+    public ListarCategorias createListarCategorias() {
+        return new ListarCategorias();
+    }
+
+    /**
+     * Create an instance of {@link ListarCategoriasResponse }
+     * 
+     */
+    public ListarCategoriasResponse createListarCategoriasResponse() {
+        return new ListarCategoriasResponse();
     }
 
     /**
@@ -678,6 +696,14 @@ public class ObjectFactory {
      */
     public DtPasajero createDtPasajero() {
         return new DtPasajero();
+    }
+
+    /**
+     * Create an instance of {@link DtCategoria }
+     * 
+     */
+    public DtCategoria createDtCategoria() {
+        return new DtCategoria();
     }
 
     /**
@@ -1066,6 +1092,32 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "listarAerolineasResponse")
     public JAXBElement<ListarAerolineasResponse> createListarAerolineasResponse(ListarAerolineasResponse value) {
         return new JAXBElement<ListarAerolineasResponse>(_ListarAerolineasResponse_QNAME, ListarAerolineasResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ListarCategorias }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ListarCategorias }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "listarCategorias")
+    public JAXBElement<ListarCategorias> createListarCategorias(ListarCategorias value) {
+        return new JAXBElement<ListarCategorias>(_ListarCategorias_QNAME, ListarCategorias.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ListarCategoriasResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ListarCategoriasResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "listarCategoriasResponse")
+    public JAXBElement<ListarCategoriasResponse> createListarCategoriasResponse(ListarCategoriasResponse value) {
+        return new JAXBElement<ListarCategoriasResponse>(_ListarCategoriasResponse_QNAME, ListarCategoriasResponse.class, null, value);
     }
 
     /**

@@ -58,6 +58,10 @@
 
             <xs:element name="listarAerolineasResponse" type="tns:listarAerolineasResponse"/>
 
+            <xs:element name="listarCategorias" type="tns:listarCategorias"/>
+
+            <xs:element name="listarCategoriasResponse" type="tns:listarCategoriasResponse"/>
+
             <xs:element name="listarCiudades" type="tns:listarCiudades"/>
 
             <xs:element name="listarCiudadesResponse" type="tns:listarCiudadesResponse"/>
@@ -269,6 +273,22 @@
             <xs:complexType name="listarRutasPorAerolineaResponse">
                 <xs:sequence>
                     <xs:element maxOccurs="unbounded" minOccurs="0" name="rutas" type="tns:dtRutaVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="listarCategorias">
+                <xs:sequence/>
+            </xs:complexType>
+
+            <xs:complexType name="listarCategoriasResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="categorias" type="tns:dtCategoria"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="dtCategoria">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
                 </xs:sequence>
             </xs:complexType>
 
@@ -500,18 +520,6 @@
                 <xs:sequence/>
             </xs:complexType>
 
-            <xs:complexType name="listarVuelosPorRuta">
-                <xs:sequence>
-                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
-                </xs:sequence>
-            </xs:complexType>
-
-            <xs:complexType name="listarVuelosPorRutaResponse">
-                <xs:sequence>
-                    <xs:element maxOccurs="unbounded" minOccurs="0" name="vuelos" type="tns:dtVuelo"/>
-                </xs:sequence>
-            </xs:complexType>
-
             <xs:complexType name="getDtItemRutasPaquete">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="paqueteId" type="xs:string"/>
@@ -521,6 +529,18 @@
             <xs:complexType name="getDtItemRutasPaqueteResponse">
                 <xs:sequence>
                     <xs:element maxOccurs="unbounded" minOccurs="0" name="items" type="tns:dtItemPaquete"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="listarVuelosPorRuta">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="listarVuelosPorRutaResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="vuelos" type="tns:dtVuelo"/>
                 </xs:sequence>
             </xs:complexType>
 
@@ -765,6 +785,10 @@
         <wsdl:part element="tns:obtenerVuelo" name="parameters">
         </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="listarCategoriasResponse">
+        <wsdl:part element="tns:listarCategoriasResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="listarRutasConfirmadasResponse">
         <wsdl:part element="tns:listarRutasConfirmadasResponse" name="parameters">
         </wsdl:part>
@@ -859,6 +883,10 @@
     </wsdl:message>
     <wsdl:message name="incrementarVisitasRutaResponse">
         <wsdl:part element="tns:incrementarVisitasRutaResponse" name="parameters">
+        </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarCategorias">
+        <wsdl:part element="tns:listarCategorias" name="parameters">
         </wsdl:part>
     </wsdl:message>
     <wsdl:message name="obtenerCliente">
@@ -1002,6 +1030,12 @@
             <wsdl:output message="tns:listarRutasPorAerolineaResponse" name="listarRutasPorAerolineaResponse">
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="listarCategorias">
+            <wsdl:input message="tns:listarCategorias" name="listarCategorias">
+            </wsdl:input>
+            <wsdl:output message="tns:listarCategoriasResponse" name="listarCategoriasResponse">
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="ping">
             <wsdl:input message="tns:ping" name="ping">
             </wsdl:input>
@@ -1086,16 +1120,16 @@
             <wsdl:output message="tns:compraPaqueteResponse" name="compraPaqueteResponse">
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="listarVuelosPorRuta">
-            <wsdl:input message="tns:listarVuelosPorRuta" name="listarVuelosPorRuta">
-            </wsdl:input>
-            <wsdl:output message="tns:listarVuelosPorRutaResponse" name="listarVuelosPorRutaResponse">
-            </wsdl:output>
-        </wsdl:operation>
         <wsdl:operation name="getDtItemRutasPaquete">
             <wsdl:input message="tns:getDtItemRutasPaquete" name="getDtItemRutasPaquete">
             </wsdl:input>
             <wsdl:output message="tns:getDtItemRutasPaqueteResponse" name="getDtItemRutasPaqueteResponse">
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarVuelosPorRuta">
+            <wsdl:input message="tns:listarVuelosPorRuta" name="listarVuelosPorRuta">
+            </wsdl:input>
+            <wsdl:output message="tns:listarVuelosPorRutaResponse" name="listarVuelosPorRutaResponse">
             </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="realizarCheckinReserva">
@@ -1206,6 +1240,15 @@
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="listarRutasPorAerolineaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarCategorias">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarCategorias">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarCategoriasResponse">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
@@ -1335,21 +1378,21 @@
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
-        <wsdl:operation name="listarVuelosPorRuta">
-            <soap:operation soapAction="" style="document"/>
-            <wsdl:input name="listarVuelosPorRuta">
-                <soap:body use="literal"/>
-            </wsdl:input>
-            <wsdl:output name="listarVuelosPorRutaResponse">
-                <soap:body use="literal"/>
-            </wsdl:output>
-        </wsdl:operation>
         <wsdl:operation name="getDtItemRutasPaquete">
             <soap:operation soapAction="" style="document"/>
             <wsdl:input name="getDtItemRutasPaquete">
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="getDtItemRutasPaqueteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarVuelosPorRuta">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarVuelosPorRuta">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarVuelosPorRutaResponse">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
