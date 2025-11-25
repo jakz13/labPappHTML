@@ -1,15 +1,16 @@
 // src/main/java/com/example/servlets/VerificarPermisosVueloServlet.java
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtReserva;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtReserva;
+import com.example.util.PortUtils;
 
 @WebServlet("/api/verificar-permisos-vuelo")
 public class VerificarPermisosVueloServlet extends HttpServlet {
@@ -31,24 +32,25 @@ public class VerificarPermisosVueloServlet extends HttpServlet {
                 String tipoUsuario = (String) session.getAttribute("tipoUsuario");
 
                 if (usuarioNickname != null && tipoUsuario != null) {
-                    ISistema sistema = Fabrica.getInstance().getISistema();
-                    sistema.cargarDesdeBd();
+                    JuanViajesWS port = PortUtils.getPort(request);
+                    try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
-                    // Verificar si es aerolínea dueña del vuelo
                     boolean esAerolineaDueña = false;
                     boolean tieneReservaCliente = false;
                     String idReservaCliente = null;
 
-                    if ("aerolinea".equals(tipoUsuario) && aerolineaSeleccionada != null) {
-                        esAerolineaDueña = usuarioNickname.equals(aerolineaSeleccionada);
-                    } else if ("cliente".equals(tipoUsuario) && nombreVuelo != null) {
-                        // Verificar si el cliente tiene reserva en este vuelo usando getReservasCliente
-                        List<DtReserva> reservasCliente = sistema.getReservasCliente(usuarioNickname);
-                        for (DtReserva reserva : reservasCliente) {
-                            if (String.valueOf(reserva.getVuelo()).equals(String.valueOf(nombreVuelo))) {
-                                tieneReservaCliente = true;
-                                idReservaCliente = String.valueOf(reserva.getId());
-                                break;
+                    if ("aerolinea".equalsIgnoreCase(tipoUsuario) && aerolineaSeleccionada != null) {
+                        esAerolineaDueña = usuarioNickname.equalsIgnoreCase(aerolineaSeleccionada);
+                    } else if ("cliente".equalsIgnoreCase(tipoUsuario) && nombreVuelo != null) {
+                        List<DtReserva> reservasCliente = null;
+                        try { reservasCliente = port.getReservasCliente(usuarioNickname); } catch (Exception ex) { reservasCliente = null; }
+                        if (reservasCliente != null) {
+                            for (DtReserva reserva : reservasCliente) {
+                                if (reserva != null && reserva.getVuelo() != null && reserva.getVuelo().equalsIgnoreCase(nombreVuelo)) {
+                                    tieneReservaCliente = true;
+                                    idReservaCliente = reserva.getId() != null ? String.valueOf(reserva.getId()) : null;
+                                    break;
+                                }
                             }
                         }
                     }
@@ -56,19 +58,18 @@ public class VerificarPermisosVueloServlet extends HttpServlet {
                     out.print("{");
                     out.print("\"autenticado\": true,");
                     out.print("\"tipoUsuario\": \"" + escapeJson(tipoUsuario) + "\",");
-                    out.print("\"esAerolineaDueña\": " + esAerolineaDueña + ",");
+                    out.print("\"esAerolineaDue\": " + esAerolineaDueña + ",");
                     out.print("\"tieneReservaCliente\": " + tieneReservaCliente + ",");
-                    out.print("\"idReservaCliente\": \"" + (idReservaCliente != null ? escapeJson(String.valueOf(idReservaCliente)) : "") + "\"");
+                    out.print("\"idReservaCliente\": \"" + (idReservaCliente != null ? escapeJson(idReservaCliente) : "") + "\"");
                     out.print("}");
                     return;
                 }
             }
 
-            // Usuario no autenticado
             out.print("{\"autenticado\": false}");
 
         } catch (Exception e) {
-            out.print("{\"autenticado\": false, \"error\": \"" + e.getMessage() + "\"}");
+            out.print("{\"autenticado\": false, \"error\": \"" + escapeJson(e.getMessage()) + "\"}");
         }
     }
 

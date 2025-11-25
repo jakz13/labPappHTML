@@ -1,8 +1,5 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -11,6 +8,10 @@ import java.io.PrintWriter;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtVuelo;
+import com.example.util.PortUtils;
 
 @WebServlet("/api/debug-vuelo")
 public class DebugVueloServlet extends HttpServlet {
@@ -24,17 +25,11 @@ public class DebugVueloServlet extends HttpServlet {
             return;
         }
 
-        ISistema sistema = null;
-        try {
-            sistema = Fabrica.getInstance().getISistema();
-            try { sistema.cargarDesdeBd(); } catch (Exception ignore) {}
-        } catch (Throwable t) {
-            out.print("{\"error\":\"No se pudo obtener ISistema: " + t.getMessage() + "\"}");
-            return;
-        }
+        JuanViajesWS port = PortUtils.getPort(request);
+        try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
         DtVuelo vuelo = null;
-        try { vuelo = sistema.verInfoVueloDt(nombre); } catch (Throwable t) { /* ignore */ }
+        try { vuelo = port.verInfoVueloDt(nombre); } catch (Throwable t) { /* ignore */ }
         if (vuelo == null) {
             out.print("{\"error\":\"Vuelo no encontrado\"}");
             return;
@@ -79,4 +74,3 @@ public class DebugVueloServlet extends HttpServlet {
         out.print(sb.toString());
     }
 }
-

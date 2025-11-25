@@ -1,8 +1,5 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -10,34 +7,14 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtPaquete;
+import serviciosweb.DtItemPaquete;
+import serviciosweb.DtRutaVuelo;
+import com.example.util.PortUtils;
+
 @WebServlet("/consulta-paquete")
 public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servlet
-
-    private ISistema sistema;
-
-    private void enviarError(HttpServletResponse response, String mensaje, int statusCode) throws IOException {
-        response.setStatus(statusCode);
-        try (PrintWriter out = response.getWriter()) {
-            out.print("{\"error\":\"" + escapeJson(mensaje) + "\"}");
-        }
-    }
-
-    @Override
-    public void init() throws ServletException {
-        try {
-            sistema = Fabrica.getInstance().getISistema();
-            if (sistema != null) {
-                sistema.cargarDesdeBd();
-                System.out.println("✅ Sistema cargado correctamente en init() - Consulta Paquete");
-            } else {
-                System.err.println("❌ Error: Sistema es null en init()");
-            }
-        } catch (Exception e) {
-            System.err.println("❌ Error cargando sistema en init(): " + e.getMessage());
-            e.printStackTrace();
-            throw new ServletException("No se pudo inicializar el sistema", e);
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -48,13 +25,10 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        // Verificar que el sistema esté inicializado
-        if (sistema == null) {
-            enviarError(response, "Sistema no inicializado", HttpServletResponse.SC_SERVICE_UNAVAILABLE);
-            return;
-        }
-
         try (PrintWriter out = response.getWriter()) {
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+
             System.out.println("=== CONSULTA PAQUETE ===");
             System.out.println("Action: " + action);
             System.out.println("Paquete: " + paqueteId);
@@ -62,13 +36,13 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
 
             if ("listar-paquetes".equals(action)) {
                 System.out.println("Listando todos los paquetes con información básica de rutas");
-                listarPaquetesConRutas(out);
+                listarPaquetesConRutas(out, port);
             } else if ("obtener-paquete".equals(action) && paqueteId != null) {
                 System.out.println("Obteniendo información detallada del paquete: " + paqueteId);
-                obtenerPaqueteDetalle(paqueteId, out, response);
+                obtenerPaqueteDetalle(paqueteId, out, response, port);
             } else if ("obtener-ruta".equals(action) && paqueteId != null && rutaId != null) {
                 System.out.println("Obteniendo ruta " + rutaId + " del paquete " + paqueteId);
-                obtenerRutaDetalle(paqueteId, rutaId, out, response);
+                obtenerRutaDetalle(paqueteId, rutaId, out, response, port);
             } else {
                 enviarError(response, "Parámetros inválidos. Acciones válidas: listar-paquetes, obtener-paquete, obtener-ruta",
                         HttpServletResponse.SC_BAD_REQUEST);
@@ -81,9 +55,9 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
         }
     }
 
-    private void listarPaquetesConRutas(PrintWriter out) {
+    private void listarPaquetesConRutas(PrintWriter out, JuanViajesWS port) {
         try {
-            List<DtPaquete> paquetes = sistema.listarPaquetes();
+            List<DtPaquete> paquetes = port.listarPaquetes();
             if (paquetes == null) {
                 paquetes = new ArrayList<>();
             }
@@ -96,14 +70,14 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
         }
     }
 
-    private void obtenerPaqueteDetalle(String paqueteId, PrintWriter out, HttpServletResponse response) throws IOException {
+    private void obtenerPaqueteDetalle(String paqueteId, PrintWriter out, HttpServletResponse response, JuanViajesWS port) throws IOException {
         try {
             System.out.println("🔍 Buscando paquete: " + paqueteId);
-            DtPaquete paquete = sistema.obtenerDtPaquete(paqueteId);
+            DtPaquete paquete = port.obtenerDtPaquete(paqueteId);
 
             if (paquete != null) {
                 System.out.println("📋 Paquete obtenido: " + paquete.getNombre());
-                List<DtItemPaquete> items = sistema.getDtItemRutasPaquete(paqueteId);
+                List<DtItemPaquete> items = port.getDtItemRutasPaquete(paqueteId);
                 if (items == null) {
                     items = new ArrayList<>();
                 }
@@ -120,18 +94,18 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
         }
     }
 
-    private void obtenerRutaDetalle(String paqueteId, String rutaId, PrintWriter out, HttpServletResponse response) throws IOException {
+    private void obtenerRutaDetalle(String paqueteId, String rutaId, PrintWriter out, HttpServletResponse response, JuanViajesWS port) throws IOException {
         try {
             System.out.println("🔍 Buscando ruta " + rutaId + " en paquete " + paqueteId);
 
-            DtPaquete paquete = sistema.obtenerDtPaquete(paqueteId);
+            DtPaquete paquete = port.obtenerDtPaquete(paqueteId);
             if (paquete == null) {
                 System.out.println("❌ Paquete no encontrado: " + paqueteId);
                 enviarError(response, "Paquete no encontrado", HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
-            List<DtItemPaquete> items = sistema.getDtItemRutasPaquete(paqueteId);
+            List<DtItemPaquete> items = port.getDtItemRutasPaquete(paqueteId);
             DtItemPaquete itemEncontrado = null;
 
             if (items != null) {
@@ -292,4 +266,12 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
                 .replace("\r", "\\r")
                 .replace("\t", "\\t");
     }
+
+    private void enviarError(HttpServletResponse response, String mensaje, int statusCode) throws IOException {
+        response.setStatus(statusCode);
+        try (PrintWriter out = response.getWriter()) {
+            out.print("{\"error\":" + (mensaje == null ? "\"\"" : ("\"" + escapeJson(mensaje) + "\"")) + "}");
+        }
+    }
 }
+

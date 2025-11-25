@@ -1,8 +1,5 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.*;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -12,23 +9,15 @@ import java.util.Enumeration;
 import java.util.List;
 import java.util.ArrayList;
 
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtPaquete;
+import serviciosweb.DtItemPaquete;
+import serviciosweb.DtRutaVuelo;
+import serviciosweb.DtCliente;
+import com.example.util.PortUtils;
+
 @WebServlet("/compra-paquete")
 public class CompraPaqueteServlet extends HttpServlet {
-
-    private ISistema sistema;
-
-    @Override
-    public void init() throws ServletException {
-        // Cargar el sistema UNA SOLA VEZ al iniciar el servlet
-        sistema = Fabrica.getInstance().getISistema();
-        try {
-            sistema.cargarDesdeBd();
-            System.out.println("✅ Sistema cargado correctamente en init() - Compra Paquete");
-        } catch (Exception e) {
-            System.err.println("❌ Error cargando sistema en init(): " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -44,21 +33,19 @@ public class CompraPaqueteServlet extends HttpServlet {
             System.out.println("Action: " + action);
             System.out.println("Cliente: " + clienteId);
 
-            // NO llamar cargarDesdeBd() aquí - ya se cargó en init()
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
             if ("listar-paquetes-disponibles".equals(action)) {
-                // Listar TODOS los paquetes VÁLIDOS (filtrados)
                 System.out.println("Listando paquetes VÁLIDOS para compra");
-                listarPaquetesValidos(sistema, out);
+                listarPaquetesValidos(port, out);
             } else if ("paquetes-comprados".equals(action) && clienteId != null) {
-                // Listar paquetes comprados por un cliente específico
                 System.out.println("Listando paquetes comprados por: " + clienteId);
-                listarPaquetesComprados(sistema, clienteId, out);
+                listarPaquetesComprados(port, clienteId, out);
             } else if ("info-paquete".equals(action)) {
-                // Obtener información detallada de un paquete específico
                 String paqueteId = request.getParameter("paquete");
                 System.out.println("Obteniendo información del paquete: " + paqueteId);
-                obtenerInfoPaquete(sistema, paqueteId, out, response);
+                obtenerInfoPaquete(port, paqueteId, out, response);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"error\":\"Parámetros inválidos. Acciones válidas: listar-paquetes-disponibles, paquetes-comprados, info-paquete\"}");
@@ -76,7 +63,6 @@ public class CompraPaqueteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
 
-        // DEBUG: Log los parámetros recibidos
         System.out.println("=== DEBUG COMPRA PAQUETE POST ===");
         System.out.println("Action recibido: " + action);
         System.out.println("Método: " + request.getMethod());
@@ -94,11 +80,11 @@ public class CompraPaqueteServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            // NO llamar cargarDesdeBd() aquí - ya se cargó en init()
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
             if ("realizar-compra".equals(action)) {
-                // Realizar compra de paquete
-                realizarCompraPaquete(sistema, request, out, response);
+                realizarCompraPaquete(port, request, out, response);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"error\":\"Acción no válida. Action recibido: " + (action != null ? action : "null") + "\"}");
@@ -112,26 +98,19 @@ public class CompraPaqueteServlet extends HttpServlet {
         }
     }
 
-    // NUEVO MÉTODO: Filtrar paquetes válidos (con costo > 0 y con rutas)
-    private void listarPaquetesValidos(ISistema sistema, PrintWriter out) {
+    private void listarPaquetesValidos(JuanViajesWS port, PrintWriter out) {
         try {
-            // Obtener TODOS los paquetes
-            List<DtPaquete> todosLosPaquetes = sistema.listarPaquetes();
+            List<DtPaquete> todosLosPaquetes = port.listarPaquetes();
             System.out.println("📦 Número total de paquetes encontrados: " + (todosLosPaquetes != null ? todosLosPaquetes.size() : "NULL"));
 
-            // Filtrar paquetes válidos
             List<DtPaquete> paquetesValidos = new ArrayList<>();
             if (todosLosPaquetes != null) {
                 for (DtPaquete paquete : todosLosPaquetes) {
                     if (esPaqueteValido(paquete)) {
                         paquetesValidos.add(paquete);
-                        System.out.println("✅ Paquete VÁLIDO: " + paquete.getNombre() +
-                                " - Costo: $" + paquete.getCosto() +
-                                " - Rutas: " + (paquete.getItems() != null ? paquete.getItems().size() : 0));
+                        System.out.println("✅ Paquete VÁLIDO: " + paquete.getNombre() + " - Costo: $" + paquete.getCosto() + " - Rutas: " + (paquete.getItems() != null ? paquete.getItems().size() : 0));
                     } else {
-                        System.out.println("❌ Paquete INVÁLIDO (filtrado): " + paquete.getNombre() +
-                                " - Costo: $" + paquete.getCosto() +
-                                " - Rutas: " + (paquete.getItems() != null ? paquete.getItems().size() : 0));
+                        System.out.println("❌ Paquete INVÁLIDO (filtrado): " + paquete.getNombre() + " - Costo: $" + paquete.getCosto() + " - Rutas: " + (paquete.getItems() != null ? paquete.getItems().size() : 0));
                     }
                 }
             }
@@ -146,66 +125,46 @@ public class CompraPaqueteServlet extends HttpServlet {
         }
     }
 
-    // MÉTODO PARA VALIDAR PAQUETES
     private boolean esPaqueteValido(DtPaquete paquete) {
-        if (paquete == null) {
-            return false;
-        }
-
-        // 1. Validar que tenga costo mayor a 0
+        if (paquete == null) return false;
         if (paquete.getCosto() <= 0) {
             System.out.println("   ❌ Filtrado por costo: $" + paquete.getCosto());
             return false;
         }
-
-        // 2. Validar que tenga rutas
         if (paquete.getItems() == null || paquete.getItems().isEmpty()) {
             System.out.println("   ❌ Filtrado por falta de rutas");
             return false;
         }
-
-        // 3. Validar que tenga al menos una ruta válida
         boolean tieneRutasValidas = false;
         for (DtItemPaquete item : paquete.getItems()) {
-            if (item != null && item.getRutaVuelo() != null) {
-                tieneRutasValidas = true;
-                break;
-            }
+            if (item != null && item.getRutaVuelo() != null) { tieneRutasValidas = true; break; }
         }
-
         if (!tieneRutasValidas) {
             System.out.println("   ❌ Filtrado por rutas inválidas");
             return false;
         }
-
-        // 4. Validar que tenga nombre
         if (paquete.getNombre() == null || paquete.getNombre().trim().isEmpty()) {
             System.out.println("   ❌ Filtrado por nombre vacío");
             return false;
         }
-
         System.out.println("   ✅ Paquete cumple todos los criterios de validación");
         return true;
     }
 
-    private void listarPaquetesComprados(ISistema sistema, String clienteId, PrintWriter out) {
+    private void listarPaquetesComprados(JuanViajesWS port, String clienteId, PrintWriter out) {
         try {
             System.out.println("🔍 Buscando cliente: " + clienteId);
-            // Obtener información del cliente y sus paquetes comprados
-            DtCliente cliente = sistema.obtenerCliente(clienteId);
+            DtCliente cliente = port.obtenerCliente(clienteId);
             System.out.println("📋 Cliente obtenido: " + (cliente != null ? cliente.getNickname() : "NULL"));
 
             if (cliente != null) {
                 List<DtPaquete> paquetesComprados = cliente.getPaquetesComprados();
                 System.out.println("📦 Número de paquetes comprados: " + (paquetesComprados != null ? paquetesComprados.size() : "NULL"));
 
-                // Filtrar sólo paquetes que parecen realmente comprados (tienen fechaAlta no nula)
                 java.util.List<DtPaquete> filtrados = new java.util.ArrayList<>();
                 if (paquetesComprados != null) {
                     for (DtPaquete p : paquetesComprados) {
-                        if (p != null && p.getFechaAlta() != null) {
-                            filtrados.add(p);
-                        }
+                        if (p != null && p.getFechaAlta() != null) filtrados.add(p);
                     }
                 }
                 escribirPaquetesCompradosJSON(filtrados, out);
@@ -220,10 +179,10 @@ public class CompraPaqueteServlet extends HttpServlet {
         }
     }
 
-    private void obtenerInfoPaquete(ISistema sistema, String paqueteId, PrintWriter out, HttpServletResponse response) {
+    private void obtenerInfoPaquete(JuanViajesWS port, String paqueteId, PrintWriter out, HttpServletResponse response) {
         try {
             System.out.println("🔍 Buscando paquete: " + paqueteId);
-            DtPaquete paquete = sistema.obtenerDtPaquete(paqueteId);
+            DtPaquete paquete = port.obtenerDtPaquete(paqueteId);
             System.out.println("📋 Paquete obtenido: " + (paquete != null ? paquete.getNombre() : "NULL"));
 
             if (paquete != null) {
@@ -241,7 +200,7 @@ public class CompraPaqueteServlet extends HttpServlet {
         }
     }
 
-    private void realizarCompraPaquete(ISistema sistema, HttpServletRequest request, PrintWriter out, HttpServletResponse response) {
+    private void realizarCompraPaquete(JuanViajesWS port, HttpServletRequest request, PrintWriter out, HttpServletResponse response) {
         try {
             String paqueteId = request.getParameter("paquete");
             String clienteId = request.getParameter("cliente");
@@ -256,7 +215,6 @@ public class CompraPaqueteServlet extends HttpServlet {
             System.out.println("  - Fecha compra: " + fechaCompraStr);
             System.out.println("  - Costo: " + costoStr);
 
-            // Validar parámetros
             if (paqueteId == null || clienteId == null || validezDiasStr == null || fechaCompraStr == null || costoStr == null) {
                 System.out.println("❌ Parámetros incompletos");
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -268,8 +226,7 @@ public class CompraPaqueteServlet extends HttpServlet {
             LocalDate fechaCompra = LocalDate.parse(fechaCompraStr);
             double costo = Double.parseDouble(costoStr);
 
-            // Verificar que el paquete existe
-            DtPaquete paquete = sistema.obtenerDtPaquete(paqueteId);
+            DtPaquete paquete = port.obtenerDtPaquete(paqueteId);
             if (paquete == null) {
                 System.out.println("❌ Paquete no existe: " + paqueteId);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -277,8 +234,7 @@ public class CompraPaqueteServlet extends HttpServlet {
                 return;
             }
 
-            // Verificar que el cliente existe
-            DtCliente cliente = sistema.obtenerCliente(clienteId);
+            DtCliente cliente = port.obtenerCliente(clienteId);
             if (cliente == null) {
                 System.out.println("❌ Cliente no existe: " + clienteId);
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -286,9 +242,8 @@ public class CompraPaqueteServlet extends HttpServlet {
                 return;
             }
 
-            // Realizar la compra
             System.out.println("🛒 Ejecutando compraPaquete...");
-            sistema.compraPaquete(paqueteId, clienteId, validezDias, fechaCompra, costo);
+            port.compraPaquete(paqueteId, clienteId, validezDias, fechaCompra.toString(), costo);
 
             System.out.println("✅ Compra realizada exitosamente");
             out.print("{\"success\":true, \"message\":\"Compra realizada exitosamente\"}");
@@ -324,7 +279,6 @@ public class CompraPaqueteServlet extends HttpServlet {
                 out.print("\"cantidadRutas\":" + p.getItems().size() + ",");
                 out.print("\"costoFinal\":" + calcularCostoFinal(p) + ",");
 
-                // Información básica de las rutas
                 out.print("\"rutas\":[");
                 List<DtItemPaquete> items = p.getItems();
                 if (items != null) {
@@ -362,13 +316,17 @@ public class CompraPaqueteServlet extends HttpServlet {
                 out.print("\"id\":\"" + escapeJson(p.getNombre()) + "\",");
                 out.print("\"nombre\":\"" + escapeJson(p.getNombre()) + "\",");
                 out.print("\"descripcion\":\"" + escapeJson(p.getDescripcion()) + "\",");
-                out.print("\"costo\":" + p.getCosto() + ","); // ← ESTA LÍNEA
+                out.print("\"costo\":" + p.getCosto() + ",");
                 out.print("\"costoFinal\":" + calcularCostoFinal(p) + ",");
                 String fechaCompraStr = p.getFechaAlta() != null ? p.getFechaAlta().toString() : "";
                 out.print("\"fechaCompra\":\"" + fechaCompraStr + "\",");
                 String fechaVencimientoStr = "";
                 if (p.getFechaAlta() != null && p.getPeriodoValidezDias() > 0) {
-                    fechaVencimientoStr = p.getFechaAlta().plusDays(p.getPeriodoValidezDias()).toString();
+                    // convertir DTO LocalDate a java.time.LocalDate antes de sumar días
+                    java.time.LocalDate ld = toLocalDate(p.getFechaAlta());
+                    if (ld != null) {
+                        fechaVencimientoStr = ld.plusDays(p.getPeriodoValidezDias()).toString();
+                    }
                 }
                 out.print("\"fechaVencimiento\":\"" + fechaVencimientoStr + "\",");
                 out.print("\"cantidadRutas\":" + (p.getItems() != null ? p.getItems().size() : 0));
@@ -407,4 +365,18 @@ public class CompraPaqueteServlet extends HttpServlet {
                 .replace("\r", "\\r")
                 .replace("\t", "\\t");
     }
+
+    // Utility para convertir el DTO generado serviciosweb.LocalDate a java.time.LocalDate de forma segura
+    private java.time.LocalDate toLocalDate(serviciosweb.LocalDate ld) {
+        if (ld == null) return null;
+        try {
+            String s = ld.toString();
+            if (s == null || s.isBlank()) return null;
+            return java.time.LocalDate.parse(s);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
 }
+

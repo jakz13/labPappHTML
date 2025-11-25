@@ -1,9 +1,6 @@
 // java
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -15,14 +12,19 @@ import java.nio.charset.StandardCharsets;
 import java.util.Map;
 import java.util.HashMap;
 
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtVuelo;
+import com.example.util.PortUtils;
+
 @WebServlet("/api/vuelo")
 public class VerInfoVueloServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nombre = request.getParameter("nombre");
-        ISistema sistema = Fabrica.getInstance().getISistema();
-        sistema.cargarDesdeBd();
+
+        JuanViajesWS port = PortUtils.getPort(request);
+        try { port.cargarDesdeBd(); } catch (Exception ignored) {}
         DtVuelo vuelo = null;
-        try { vuelo = sistema.verInfoVueloDt(nombre); } catch (Throwable t) { /* ignore */ }
+        try { vuelo = port.verInfoVueloDt(nombre); } catch (Throwable t) { /* ignore */ }
 
         response.setContentType("application/json");
         PrintWriter out = response.getWriter();
@@ -30,8 +32,8 @@ public class VerInfoVueloServlet extends HttpServlet {
         if (vuelo != null) {
             DtVuelo dt = vuelo;
             out.print("{");
-            out.print("\"nombre\":\"" + dt.getNombre() + "\",");
-            out.print("\"fecha\":\"" + dt.getFecha() + "\",");
+            out.print("\"nombre\":\"" + (dt.getNombre()!=null?dt.getNombre():"") + "\",");
+            out.print("\"fecha\":\"" + (dt.getFecha()!=null?dt.getFecha():"") + "\",");
             out.print("\"duracion\":\"" + dt.getDuracion() + "\",");
             out.print("\"asientosTurista\":" + dt.getAsientosTurista() + ",");
             out.print("\"asientosEjecutivo\":" + dt.getAsientosEjecutivo());
@@ -191,21 +193,23 @@ public class VerInfoVueloServlet extends HttpServlet {
                 if (obj.endsWith("}")) obj = obj.substring(0, obj.length()-1);
                 Map<String, Object> map = new HashMap<>();
                 String[] fields = obj.split(",\\s*");
-                for (String fentry : fields) {
-                    int c2 = fentry.indexOf(':');
+                for (String field : fields) {
+                    field = field.trim();
+                    if (field.isBlank()) continue;
+                    int c2 = field.indexOf(':');
                     if (c2 <= 0) continue;
-                    String k2 = fentry.substring(0, c2).trim();
-                    String v2 = fentry.substring(c2+1).trim();
-                    if (k2.startsWith("\"") && k2.endsWith("\"")) k2 = k2.substring(1, k2.length()-1);
-                    if (v2.startsWith("\"") && v2.endsWith("\"")) v2 = v2.substring(1, v2.length()-1);
-                    map.put(k2, v2);
+                    String fk = field.substring(0, c2).trim();
+                    String fv = field.substring(c2 + 1).trim();
+                    if (fk.startsWith("\"") && fk.endsWith("\"")) fk = fk.substring(1, fk.length()-1);
+                    if (fv.startsWith("\"") && fv.endsWith("\"")) fv = fv.substring(1, fv.length()-1);
+                    fv = fv.replace("\\\"", "\"").replace("\\\\", "\\");
+                    map.put(fk, fv);
                 }
                 result.put(key, map);
             }
         } catch (Exception ex) {
-            System.err.println("VerInfoVueloServlet: Error leyendo flights.json -> " + ex.getMessage());
+            System.err.println("No se pudo leer flights.json: " + ex.getMessage());
         }
         return result;
     }
-
 }

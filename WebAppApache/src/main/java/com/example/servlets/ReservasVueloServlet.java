@@ -1,18 +1,17 @@
 // src/main/java/com/example/servlets/ReservasVueloServlet.java
 package com.example.servlets;
 
-import DataTypes.DtCliente;
-import DataTypes.DtReserva;
-import logica.Fabrica;
-import logica.ISistema;
-import logica.Reserva;
-import logica.Vuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.Map;
+import java.util.List;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtCliente;
+import serviciosweb.DtReserva;
+import com.example.util.PortUtils;
 
 @WebServlet("/api/reservas-vuelo")
 public class ReservasVueloServlet extends HttpServlet {
@@ -24,35 +23,44 @@ public class ReservasVueloServlet extends HttpServlet {
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
-        try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
+        if (nombreVuelo == null || nombreVuelo.trim().isEmpty()) {
+            out.print("[]");
+            return;
+        }
 
-            // Enfoque simple: buscar en todos los clientes quiénes tienen reservas en este vuelo
+        try {
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+
+            List<DtCliente> clientes = null;
+            try { clientes = port.listarClientes(); } catch (Exception e) { clientes = null; }
+
             StringBuilder jsonBuilder = new StringBuilder();
             jsonBuilder.append("[");
-            boolean primeraReserva = true;
+            boolean primera = true;
 
-            for (DtCliente cliente : sistema.listarClientes()) {
-                for (DtReserva reserva : cliente.getReservas()) {
-                    // Verificar si esta reserva pertenece al vuelo solicitado
-                    if (reservaPerteneceAVuelo(reserva, nombreVuelo, sistema)) {
-                        if (!primeraReserva) {
-                            jsonBuilder.append(",");
+            if (clientes != null) {
+                for (DtCliente cliente : clientes) {
+                    if (cliente == null) continue;
+                    List<DtReserva> reservas = cliente.getReservas();
+                    if (reservas == null) continue;
+                    for (DtReserva reserva : reservas) {
+                        if (reserva == null) continue;
+                        String vuelo = reserva.getVuelo();
+                        if (vuelo != null && vuelo.equalsIgnoreCase(nombreVuelo)) {
+                            if (!primera) jsonBuilder.append(",");
+                            jsonBuilder.append("{");
+                            jsonBuilder.append("\"id\":\"").append(reserva.getId()!=null?reserva.getId().toString():"").append("\",");
+                            String clienteNombre = (cliente.getNombre()!=null?cliente.getNombre():"") + " " + (cliente.getApellido()!=null?cliente.getApellido():"");
+                            jsonBuilder.append("\"clienteNombre\":\"").append(escapeJson(clienteNombre.trim())).append("\",");
+                            jsonBuilder.append("\"tipoAsiento\":\"").append(reserva.getTipoAsiento()!=null?reserva.getTipoAsiento().toString():"").append("\",");
+                            jsonBuilder.append("\"cantidadPasajes\":").append(reserva.getCantidadPasajes()).append(",");
+                            jsonBuilder.append("\"equipajeExtra\":").append(reserva.getUnidadesEquipajeExtra()).append(",");
+                            jsonBuilder.append("\"costoTotal\":").append(reserva.getCosto()).append(",");
+                            jsonBuilder.append("\"fechaReserva\":\"").append(reserva.getFecha()!=null?reserva.getFecha().toString():"").append("\"");
+                            jsonBuilder.append("}");
+                            primera = false;
                         }
-
-                        jsonBuilder.append("{");
-                        jsonBuilder.append("\"id\":\"").append(escapeJson(String.valueOf(reserva.getId()))).append("\",");
-                        jsonBuilder.append("\"clienteNombre\":\"").append(escapeJson(cliente.getNombre() + " " + cliente.getApellido())).append("\",");
-                        jsonBuilder.append("\"tipoAsiento\":\"").append(escapeJson(String.valueOf(reserva.getTipoAsiento()))).append("\",");
-                        jsonBuilder.append("\"cantidadPasajes\":").append(reserva.getCantidadPasajes()).append(",");
-                        jsonBuilder.append("\"equipajeExtra\":").append(reserva.getUnidadesEquipajeExtra()).append(",");
-                        jsonBuilder.append("\"costoTotal\":").append(reserva.getCosto()).append(",");
-                        jsonBuilder.append("\"fechaReserva\":\"").append(escapeJson(String.valueOf(reserva.getFecha()))).append("\"");
-
-                        jsonBuilder.append("}");
-
-                        primeraReserva = false;
                     }
                 }
             }
@@ -62,27 +70,8 @@ public class ReservasVueloServlet extends HttpServlet {
 
         } catch (Exception e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"error\":\"Error al obtener reservas: " + e.getMessage() + "\"}");
+            out.print("[]");
         }
-    }
-
-    private boolean reservaPerteneceAVuelo(DtReserva reserva, String nombreVuelo, ISistema sistema) {
-        try {
-            // Obtener el vuelo específico
-            Vuelo vuelo = sistema.obtenerVuelo(nombreVuelo);
-            if (vuelo != null) {
-                // Verificar si el vuelo tiene esta reserva (Map con clave Long)
-                Map<Long, Reserva> reservasVuelo = vuelo.getReservas();
-                for (Reserva reservaVuelo : reservasVuelo.values()) {
-                    if (String.valueOf(reservaVuelo.getId()).equals(String.valueOf(reserva.getId()))) {
-                        return true;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return false;
     }
 
     private String escapeJson(String value) {

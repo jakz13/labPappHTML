@@ -1,7 +1,5 @@
 package com.example.servlets;
 
-import logica.Sistema;
-import logica.TipoDoc;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -10,8 +8,11 @@ import java.nio.file.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
-import DataTypes.DtCliente;
-import DataTypes.DtAerolinea;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtCliente;
+import serviciosweb.DtAerolinea;
+import com.example.util.PortUtils;
 
 @MultipartConfig
 @WebServlet("/altaUsuario")
@@ -92,7 +93,7 @@ public class AltaUsuarioServlet extends HttpServlet {
                 }
             }
 
-            Sistema sistema = new Sistema();
+            JuanViajesWS port = PortUtils.getPort(request);
 
             if ("cliente".equals(tipoUsuario)) {
                 String apellido = request.getParameter("apellido");
@@ -118,23 +119,24 @@ public class AltaUsuarioServlet extends HttpServlet {
                     return;
                 }
 
-                TipoDoc tipoDoc;
+                // tipoDocumento se envía como String al port (se usa tal cual)
+
+                // Alta cliente vía web service: pasar fecha como ISO string
+                System.out.println("AltaUsuarioServlet: antes de altaCliente -> imagenPerfilUrl='" + imagenPerfilUrl + "'");
                 try {
-                    tipoDoc = TipoDoc.valueOf(tipoDocumento.toUpperCase());
-                } catch (Exception e) {
-                    out.print("{\"success\": false, \"error\": \"Tipo de documento inválido\"}");
+                    port.altaCliente(nickname, nombre, apellido, email, fechaNac.toString(), nacionalidad, tipoDocumento, numeroDocumento, Password, imagenPerfilUrl);
+                } catch (Exception svcEx) {
+                    System.err.println("Error al invocar port.altaCliente: " + svcEx.getMessage());
+                    out.print("{\"success\": false, \"error\": \"Error al registrar cliente\"}");
                     return;
                 }
 
-                // Alta cliente: pasar imagenPerfilUrl (puede ser "")
-                System.out.println("AltaUsuarioServlet: antes de altaCliente -> imagenPerfilUrl='" + imagenPerfilUrl + "'");
-                sistema.altaCliente(nickname, nombre, apellido, email, fechaNac, nacionalidad, tipoDoc, numeroDocumento, Password, imagenPerfilUrl);
-                // Verificar inmediatamente en la lógica si el valor quedó guardado
+                // Verificar inmediatamente obteniendo DTO desde el port
                 try {
-                    DtCliente dtc = sistema.obtenerCliente(nickname);
+                    DtCliente dtc = port.obtenerCliente(nickname);
                     String stored = "<null>";
                     try { stored = dtc.getImagenUrl() != null ? dtc.getImagenUrl() : "<null>"; } catch (Throwable ignore) {}
-                    System.out.println("AltaUsuarioServlet: post-altaCliente -> sistema.obtenerCliente('" + nickname + "').imagenUrl='" + stored + "'");
+                    System.out.println("AltaUsuarioServlet: post-altaCliente -> port.obtenerCliente('" + nickname + "').imagenUrl='" + stored + "'");
                 } catch (Throwable t) {
                     System.err.println("AltaUsuarioServlet: no se pudo verificar post-altaCliente: " + t.getMessage());
                 }
@@ -161,15 +163,22 @@ public class AltaUsuarioServlet extends HttpServlet {
                     return;
                 }
 
-                // Alta aerolinea: pasar imagenPerfilUrl (puede ser "")
+                // Alta aerolinea vía web service: pasar imagenPerfilUrl (puede ser "")
                 System.out.println("AltaUsuarioServlet: antes de altaAerolinea -> imagenPerfilUrl='" + imagenPerfilUrl + "'");
-                sistema.altaAerolinea(nickname, nombre, descripcion, email, sitioWeb, Password, imagenPerfilUrl);
-                // Verificar inmediatamente en la lógica si el valor quedó guardado
                 try {
-                    DtAerolinea dta = sistema.obtenerAerolinea(nickname);
+                    port.altaAerolinea(nickname, nombre, descripcion, email, sitioWeb, Password, imagenPerfilUrl);
+                } catch (Exception svcEx) {
+                    System.err.println("Error al invocar port.altaAerolinea: " + svcEx.getMessage());
+                    out.print("{\"success\": false, \"error\": \"Error al registrar aerolinea\"}");
+                    return;
+                }
+
+                // Verificar inmediatamente en el port
+                try {
+                    DtAerolinea dta = port.obtenerAerolinea(nickname);
                     String storedA = "<null>";
                     try { storedA = dta.getImagenUrl() != null ? dta.getImagenUrl() : "<null>"; } catch (Throwable ignore) {}
-                    System.out.println("AltaUsuarioServlet: post-altaAerolinea -> sistema.obtenerAerolinea('" + nickname + "').imagenUrl='" + storedA + "'");
+                    System.out.println("AltaUsuarioServlet: post-altaAerolinea -> port.obtenerAerolinea('" + nickname + "').imagenUrl='" + storedA + "'");
                 } catch (Throwable t) {
                     System.err.println("AltaUsuarioServlet: no se pudo verificar post-altaAerolinea: " + t.getMessage());
                 }

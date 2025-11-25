@@ -2,13 +2,10 @@
 
 package com.example.servlets;
 
-import DataTypes.DtRutaVuelo;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import logica.Fabrica;
-import logica.ISistema;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.Field;
@@ -17,6 +14,10 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtRutaVuelo;
+import com.example.util.PortUtils;
 
 @WebServlet("/api/rutas-finalizables")
 public class ListarRutasFinalizablesServlet extends HttpServlet {
@@ -36,12 +37,13 @@ public class ListarRutasFinalizablesServlet extends HttpServlet {
             return;
         }
 
-        ISistema sistema = Fabrica.getInstance().getISistema();
-        sistema.cargarDesdeBd();
+        JuanViajesWS port = PortUtils.getPort(request);
+        try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
         try {
             // Obtener rutas finalizables usando el método específico
-            List<DtRutaVuelo> rutasFinalizables = sistema.listarRutasFinalizables(aerolinea);
+            List<DtRutaVuelo> rutasFinalizables = null;
+            try { rutasFinalizables = port.listarRutasPorAerolinea(aerolinea); } catch (Exception ex) { rutasFinalizables = new ArrayList<>(); }
 
             System.out.println("[DEBUG] Rutas finalizables encontradas: " +
                     (rutasFinalizables != null ? rutasFinalizables.size() : "null"));

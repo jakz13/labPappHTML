@@ -1,16 +1,28 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtRutaVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.List;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.WebServicesService;
+import serviciosweb.DtRutaVuelo;
+
 // src/main/java/com/example/servlets/ListarRutasServlet.java
 @WebServlet("/listarRutas")
 public class ListarRutasServlet extends HttpServlet {
+
+    private JuanViajesWS getPort(HttpServletRequest request) {
+        try {
+            Object o = request.getServletContext().getAttribute("port");
+            if (o instanceof JuanViajesWS) return (JuanViajesWS) o;
+        } catch (Exception ignored) {}
+        WebServicesService svc = new WebServicesService();
+        return svc.getJuanViajesWSPort();
+    }
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -19,8 +31,6 @@ public class ListarRutasServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
-
             // Priorizar aerolinea en sesión si existe
             HttpSession session = request.getSession(false);
             String nombreAerolinea = null;
@@ -32,7 +42,7 @@ public class ListarRutasServlet extends HttpServlet {
                 }
             }
 
-            // Fallback: permitir pasar ?aerolinea=XXX (por ejemplo tras registro antes de que la cookie esté activa)
+            // Fallback: permitir pasar ?aerolinea=XXX
             if (nombreAerolinea == null || nombreAerolinea.trim().isEmpty()) {
                 String param = request.getParameter("aerolinea");
                 if (param != null && !param.trim().isEmpty()) {
@@ -40,19 +50,26 @@ public class ListarRutasServlet extends HttpServlet {
                 }
             }
 
-            // Si no hay aerolínea disponible, devolver lista vacía
             if (nombreAerolinea == null || nombreAerolinea.trim().isEmpty()) {
                 out.print("[]");
                 return;
             }
 
-            sistema.cargarDesdeBd();
-            List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(nombreAerolinea);
+            JuanViajesWS port = getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+
+            List<DtRutaVuelo> rutas = null;
+            try {
+                rutas = port.listarRutasPorAerolinea(nombreAerolinea);
+            } catch (Exception ex) {
+                // si falla la llamada remota, devolvemos array vacío
+                rutas = java.util.Collections.emptyList();
+            }
+
             out.print("[");
             for (int i = 0; i < rutas.size(); i++) {
                 DtRutaVuelo r = rutas.get(i);
 
-                // intentar obtener imagenUrl mediante reflexión (si el DTO lo expone)
                 String imagenVal = null;
                 try {
                     java.lang.reflect.Method m = r.getClass().getMethod("getImagenUrl");
@@ -64,7 +81,6 @@ public class ListarRutasServlet extends HttpServlet {
                     // ignorar errores reflectivos
                 }
 
-                // Normalizar imagenVal si es un nombre de archivo
                 if (imagenVal != null && !imagenVal.isBlank()) {
                     String tmp = imagenVal.trim();
                     try {
@@ -77,31 +93,23 @@ public class ListarRutasServlet extends HttpServlet {
                         // si algo falla, usar el valor original
                     }
 
-                    // Si tmp no es ya absoluta, convertir a URL absoluta usando request info
                     try {
                         if (!tmp.matches("(?i)^(https?:)?//.*")) {
                             String scheme = request.getScheme();
                             String serverName = request.getServerName();
                             int serverPort = request.getServerPort();
-                            String ctx = "";
-                            if (tmp.startsWith("/")) {
-                                // tmp ya incluye context path
-                                // dejar ctx vacío
-                            } else {
-                                // tmp comienza sin '/', añadir '/'
-                                tmp = tmp.startsWith("/") ? tmp : "/" + tmp;
-                            }
                             String portPart = "";
                             if (!("http".equalsIgnoreCase(scheme) && serverPort == 80) && !("https".equalsIgnoreCase(scheme) && serverPort == 443)) {
                                 portPart = ":" + serverPort;
                             }
+                            if (!tmp.startsWith("/")) tmp = tmp.startsWith("/") ? tmp : "/" + tmp;
                             String absolute = scheme + "://" + serverName + portPart + tmp;
                             imagenVal = absolute;
                         } else {
                             imagenVal = tmp;
                         }
                     } catch (Exception ex) {
-                        imagenVal = tmp; // fallback
+                        imagenVal = tmp;
                     }
                 }
 

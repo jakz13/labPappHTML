@@ -1,19 +1,46 @@
-// java
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import logica.TipoDoc;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+import jakarta.xml.ws.BindingProvider;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.WebServicesService;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.Base64;
+import java.util.List;
+import java.util.Map;
 import org.json.*;
 
 @WebServlet("/api/usuario/actualizar")
 public class ActualizarUsuarioServlet extends HttpServlet {
+
+    private WebServicesService service;
+    private String endpointUrl;
+
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        endpointUrl = getInitParameter("wsEndpoint");
+        if (endpointUrl == null || endpointUrl.isBlank()) endpointUrl = "http://localhost:8081/JuanViajes";
+        service = new WebServicesService();
+    }
+
+    private JuanViajesWS createPort() {
+        JuanViajesWS port = service.getJuanViajesWSPort();
+        BindingProvider bp = (BindingProvider) port;
+        Map<String,Object> ctx = bp.getRequestContext();
+        ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
+        ctx.put("javax.xml.ws.client.connectionTimeout", 10000);
+        ctx.put("javax.xml.ws.client.receiveTimeout", 20000);
+        ctx.put("org.apache.cxf.transport.http.client.connection.timeout", 10000);
+        ctx.put("org.apache.cxf.transport.http.client.receive.timeout", 20000);
+        ctx.put("com.sun.xml.ws.connect.timeout", 10000);
+        ctx.put("com.sun.xml.ws.request.timeout", 20000);
+        return port;
+    }
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -78,16 +105,13 @@ public class ActualizarUsuarioServlet extends HttpServlet {
             System.err.println("Advertencia: no se pudo procesar imagen entrante: " + tx.getMessage());
         }
 
-        ISistema sistema = Fabrica.getInstance().getISistema();
-        // opcional: intentar cargar si tu implementación lo requiere
-        try { sistema.cargarDesdeBd(); } catch (Exception e) { System.err.println("Warning: cargarDesdeBd() falló: " + e.getMessage()); }
-
         boolean actualizado = false;
         try {
+            JuanViajesWS port = createPort();
             if ("cliente".equalsIgnoreCase(tipoUsuario)) {
-                actualizado = actualizarCliente(sistema, nickname, obj);
+                actualizado = actualizarCliente(port, nickname, obj);
             } else if ("aerolinea".equalsIgnoreCase(tipoUsuario) || "aerolínea".equalsIgnoreCase(tipoUsuario)) {
-                actualizado = actualizarAerolinea(sistema, nickname, obj);
+                actualizado = actualizarAerolinea(port, nickname, obj);
             } else {
                 writeJson(response, HttpServletResponse.SC_BAD_REQUEST, new JSONObject().put("success", false).put("error", "Tipo de usuario desconocido"));
                 return;
@@ -191,8 +215,8 @@ public class ActualizarUsuarioServlet extends HttpServlet {
     }
 
     // java
-    private boolean actualizarCliente(ISistema sistema, String nickname, JSONObject datos) throws Exception {
-        var cliente = sistema.obtenerCliente(nickname);
+    private boolean actualizarCliente(JuanViajesWS port, String nickname, JSONObject datos) throws Exception {
+        var cliente = port.obtenerCliente(nickname);
         if (cliente == null) {
             throw new IllegalStateException("Cliente no encontrado: " + nickname);
         }
@@ -205,7 +229,7 @@ public class ActualizarUsuarioServlet extends HttpServlet {
         String imagenUrl = datos.optString("imagenUrl", null);
         String nuevaPassword = datos.optString("password", null);
 
-        TipoDoc tipoDoc = convertirTipoDocumento(tipoDocumentoStr);
+        String tipoDoc = convertirTipoDocumentoString(tipoDocumentoStr);
         if (tipoDocumentoStr != null && !tipoDocumentoStr.isBlank() && tipoDoc == null) {
             throw new IllegalArgumentException("Tipo de documento no válido: " + tipoDocumentoStr);
         }
@@ -220,21 +244,27 @@ public class ActualizarUsuarioServlet extends HttpServlet {
             }
         }
 
-        System.out.println("Llamando a modificarDatosClienteCompleto con: nickname=" + nickname +
+        System.out.println("Llamando a modificarDatosClienteCompleto (port) con: nickname=" + nickname +
                 ", nombre=" + nombre + ", apellido=" + apellido + ", nacionalidad=" + nacionalidad +
                 ", fechaNacimiento=" + fechaNacimiento + ", tipoDoc=" + tipoDoc + ", numeroDocumento=" + numeroDocumento +
                 ", nuevaPassword=" + (nuevaPassword != null ? "[PROVIDED]" : "null") +
                 ", imagenUrl=" + (imagenUrl != null ? "[data-or-url]" : "null"));
 
-        // Llamada a la lógica; si lanza excepción, se propagará y el doPost la devolverá con stacktrace
-        sistema.modificarDatosClienteCompleto(nickname, nombre, apellido, nacionalidad,
-                fechaNacimiento, tipoDoc, numeroDocumento, nuevaPassword, imagenUrl);
+        // Llamada al port SOAP: el servicio espera strings; convertimos fecha a ISO (yyyy-MM-dd)
+        String fechaStr = fechaNacimiento != null ? fechaNacimiento.toString() : null;
+        port.modificarDatosClienteCompleto(nickname,
+                nombre, apellido, nacionalidad,
+                fechaStr,
+                tipoDoc,
+                numeroDocumento,
+                nuevaPassword,
+                imagenUrl);
 
         return true;
     }
 
-    private boolean actualizarAerolinea(ISistema sistema, String nickname, JSONObject datos) throws Exception {
-        var aerolinea = sistema.obtenerAerolinea(nickname);
+    private boolean actualizarAerolinea(JuanViajesWS port, String nickname, JSONObject datos) throws Exception {
+        var aerolinea = port.obtenerAerolinea(nickname);
         if (aerolinea == null) {
             throw new IllegalStateException("Aerolínea no encontrada: " + nickname);
         }
@@ -245,36 +275,24 @@ public class ActualizarUsuarioServlet extends HttpServlet {
         String nuevaPassword = datos.optString("password", null);
         String imagenUrl = datos.optString("imagenUrl", null);
 
-        System.out.println("Llamando a modificarDatosAerolineaCompleto con: nickname=" + nickname +
+        System.out.println("Llamando a modificarDatosAerolineaCompleto (port) con: nickname=" + nickname +
                 ", nombre=" + nombre + ", descripcion=" + descripcion + ", sitioWeb=" + sitioWeb +
                 ", nuevaPassword=" + (nuevaPassword != null ? "[PROVIDED]" : "null") +
                 ", imagenUrl=" + (imagenUrl != null ? "[data-or-url]" : "null"));
 
-        // Llamada a la lógica; propaga excepción si ocurre
-        sistema.modificarDatosAerolineaCompleto(nickname, nombre, descripcion, sitioWeb, nuevaPassword, imagenUrl);
+        port.modificarDatosAerolineaCompleto(nickname, nombre, descripcion, sitioWeb, nuevaPassword, imagenUrl);
 
         return true;
     }
 
 
-    private TipoDoc convertirTipoDocumento(String tipoDocStr) {
+    private String convertirTipoDocumentoString(String tipoDocStr) {
         if (tipoDocStr == null) return null;
-
-        // Normalizar: quitar espacios, guiones, guiones bajos y pasar a minúsculas
         String norm = tipoDocStr.replaceAll("[^a-zA-Z0-9]", "").toLowerCase();
-
-        // Match robusto por contenido
-        if (norm.contains("cedula") || norm.contains("cedulaidentidad") || norm.equals("ci") ) {
-            return TipoDoc.CEDULAIDENTIDAD;
-        }
-        if (norm.contains("pasaporte") || norm.equals("passport")) {
-            return TipoDoc.PASAPORTE;
-        }
-
-        // No reconocido
+        if (norm.isBlank()) return null;
+        if (norm.contains("cedula") || norm.contains("cedulaidentidad") || norm.equals("ci")) return "CEDULAIDENTIDAD";
+        if (norm.contains("pasaporte") || norm.equals("passport")) return "PASAPORTE";
         return null;
     }
-    // Mantén tus métodos actualizarCliente / actualizarAerolinea (idénticos a los actuales),
-    // asegurándote de que las llamadas a sistema.* estén dentro de try/catch (ya lo hacen).
-    // ...
+
 }

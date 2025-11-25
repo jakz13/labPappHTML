@@ -1,9 +1,5 @@
 package com.example.servlets;
 
-import logica.EstadoRuta;
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtRutaVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -13,21 +9,33 @@ import java.lang.reflect.*;
 import java.time.temporal.Temporal;
 import java.util.*;
 
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtRutaVuelo;
+import serviciosweb.EstadoRuta;
+import com.example.util.PortUtils;
+
 @WebServlet("/api/rutas")
 public class ListarRutasPorAerolineaServlet extends HttpServlet {
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String aerolinea = request.getParameter("aerolinea");
         String categoria = request.getParameter("categoria");
         String estado = request.getParameter("estado");
 
-        // DEBUG: log del parámetro recibido para facilitar diagnóstico (por qué no lista rutas)
         try { System.out.println("[DEBUG api/rutas] param aerolinea='" + aerolinea + "', categoria='" + categoria + "', estado='" + estado + "'"); } catch (Throwable ignore) {}
 
-        ISistema sistema = Fabrica.getInstance().getISistema();
-        sistema.cargarDesdeBd();
+        // Intentar usar WS remoto
+        JuanViajesWS port = PortUtils.getPort(request);
+        try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
-        sistema.obtenerAerolinea(aerolinea);
-        List<DtRutaVuelo> rutasTotales = sistema.listarRutasPorAerolinea((aerolinea != null && !aerolinea.trim().isEmpty()) ? aerolinea : null);
+        List<DtRutaVuelo> rutasTotales = new ArrayList<>();
+        try {
+            rutasTotales = port.listarRutasPorAerolinea((aerolinea != null && !aerolinea.trim().isEmpty()) ? aerolinea : null);
+            if (rutasTotales == null) rutasTotales = new ArrayList<>();
+        } catch (Exception e) {
+            // fallback: si falla el WS, devolver lista vacía
+            rutasTotales = new ArrayList<>();
+        }
 
         // Determinar si el usuario en sesión es la aerolínea propietaria solicitada
         HttpSession session = request.getSession(false);
@@ -42,22 +50,19 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
             }
         }
 
-        // Si el que pide es la aerolínea dueña, le mostramos todas sus rutas (incluidas no confirmadas).
-        // En caso contrario, exponemos solo las rutas confirmadas.
         List<DtRutaVuelo> rutas;
         if (rutasTotales == null) {
             rutas = new ArrayList<>();
         } else if (ownerIsRequesting) {
-            rutas = rutasTotales; // dueño: ver todas sus rutas
+            rutas = rutasTotales;
             System.out.println("[DEBUG ListarRutas] usuario dueño detectado, mostrando todas las rutas para: " + aerolinea);
         } else {
-            // filtrar sólo CONFIRMADA
             List<DtRutaVuelo> rutasConfirmadas = new ArrayList<>();
             for (DtRutaVuelo ruta : rutasTotales) {
                 EstadoRuta est = ruta.getEstado() != null ? ruta.getEstado() : EstadoRuta.INGRESADA;
                 if ("CONFIRMADA".equalsIgnoreCase(String.valueOf(est))) {
                     rutasConfirmadas.add(ruta);
-                    System.out.println("[DEBUG ListarRutas] ruta confirmada extraida: " + ruta.getNombre());
+                    try { System.out.println("[DEBUG ListarRutas] ruta confirmada extraida: " + ruta.getNombre()); } catch (Throwable ignore) {}
                 }
             }
             rutas = rutasConfirmadas;
@@ -68,7 +73,6 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
         for (DtRutaVuelo r : rutas) {
             boolean pasaFiltros = true;
 
-            // Filtro por categoría
             if (categoria != null && !categoria.isEmpty() && !"todas".equalsIgnoreCase(categoria)) {
                 if (r.getCategorias() != null) {
                     boolean tieneCategoria = false;
@@ -80,14 +84,13 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
                     }
                     pasaFiltros = pasaFiltros && tieneCategoria;
                 } else {
-                    pasaFiltros = false; // Si no tiene categorías definidas, no pasa el filtro
+                    pasaFiltros = false;
                 }
             }
 
-            // Filtro por estado (si se solicita un estado distinto de "todas")
             if (estado != null && !estado.isEmpty() && !"todas".equalsIgnoreCase(estado)) {
                 EstadoRuta estadoRuta = r.getEstado() != null ? r.getEstado() : EstadoRuta.INGRESADA;
-                pasaFiltros = pasaFiltros && estadoRuta.equals(estado);
+                pasaFiltros = pasaFiltros && estadoRuta.toString().equalsIgnoreCase(estado);
             }
 
             if (pasaFiltros) {
@@ -95,7 +98,6 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
             }
         }
 
-        // Convertir a JSON
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
         StringBuilder sb = new StringBuilder();
@@ -109,7 +111,6 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
             sb.append("\"destino\":\"").append(escapeJson(r.getCiudadDestino())).append("\",");
             sb.append("\"estado\":\"").append(escapeJson(String.valueOf(r.getEstado()))).append("\",");
 
-            // Categorías como array
             sb.append("\"categorias\":[");
             if (r.getCategorias() != null) {
                 for (int j = 0; j < r.getCategorias().size(); j++) {
@@ -126,12 +127,10 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
             try {
                 String imagenVal = invokeGetterSafe(r, new String[]{"getImagenUrl", "getImagen", "imagenUrl", "imagen", "getImagenPath", "imagenPath", "url"});
 
-
                 if (imagenVal != null && !imagenVal.isBlank()) {
                     String tmp = imagenVal.trim();
                     try {
                         if (!tmp.matches("(?i)^(https?:)?//.*")) {
-                            // construir URL absoluta igual que en la JVM de consulta de vuelo
                             String scheme = request.getScheme();
                             String serverName = request.getServerName();
                             int serverPort = request.getServerPort();
@@ -155,7 +154,6 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
                 }
             } catch (Exception ignore) {}
 
-            // AÑADIR: Procesar videoUrl (NUEVO CÓDIGO)
             try {
                 String videoVal = r.getVideoUrl();
 
@@ -163,7 +161,6 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
                     String tmp = videoVal.trim();
                     try {
                         if (!tmp.matches("(?i)^(https?:)?//.*")) {
-                            // construir URL absoluta igual que para imágenes
                             String scheme = request.getScheme();
                             String serverName = request.getServerName();
                             int serverPort = request.getServerPort();
@@ -233,7 +230,6 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
         return null;
     }
 
-    // convertir objeto a JSON via reflexión, profundidad limitada
     private static void appendObjectAsJson(Object obj, StringBuilder sb, int depth, Set<Object> seen) {
         if (obj == null) { sb.append("null"); return; }
         if (seen.contains(obj)) { sb.append("null"); return; }

@@ -1,12 +1,5 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import logica.Pasajero;
-import logica.TipoAsiento;
-import DataTypes.DtCliente;
-import DataTypes.DtPaquete;
-import DataTypes.DtItemPaquete;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -15,8 +8,13 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.json.*;
-import java.lang.reflect.Method;
-import java.util.Map;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtCliente;
+import serviciosweb.DtPaquete;
+import serviciosweb.DtItemPaquete;
+import serviciosweb.DtReserva;
+import com.example.util.PortUtils;
 
 @WebServlet("/api/reservas")
 public class RegistrarReservaServlet extends HttpServlet {
@@ -32,8 +30,6 @@ public class RegistrarReservaServlet extends HttpServlet {
             String line;
             while ((line = reader.readLine()) != null) sb.append(line);
             String body = sb.toString();
-            System.out.println("=== comienza reserva ===");
-            System.out.println("Request body: " + body);
             JSONObject obj = new JSONObject(body);
 
             // Leer campos con tolerancia a valores faltantes
@@ -42,7 +38,6 @@ public class RegistrarReservaServlet extends HttpServlet {
             int cantidadPasajes = obj.has("cantidadPasajes") ? obj.optInt("cantidadPasajes", 0) : 0;
             int equipajeExtra = obj.has("equipajeExtra") ? obj.optInt("equipajeExtra", 0) : 0;
 
-            // Validar campos obligatorios y devolver errores claros
             if (vuelo == null || vuelo.trim().isEmpty()) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\":false, \"error\":\"Campo 'vuelo' es obligatorio\"}");
@@ -59,7 +54,6 @@ public class RegistrarReservaServlet extends HttpServlet {
                 return;
             }
 
-            // Obtener usuario de la sesión
             HttpSession session = request.getSession(false);
             String nicknameCliente = (session != null) ? (String) session.getAttribute("usuario") : null;
             String tipoUsuario = (session != null) ? (String) session.getAttribute("tipoUsuario") : null;
@@ -68,116 +62,75 @@ public class RegistrarReservaServlet extends HttpServlet {
                 out.print("{\"success\":false, \"error\":\"Usuario no autenticado\"}");
                 return;
             }
-
-            // No permitir que aerolíneas reserven (solo clientes)
             if (tipoUsuario != null && tipoUsuario.equalsIgnoreCase("aerolinea")) {
                 response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 out.print("{\"success\":false, \"error\":\"Las aerolíneas no pueden realizar reservas\"}");
                 return;
             }
-            System.out.println("encontrando en la sesion");
 
-            System.out.println(nicknameCliente + " encontrado en la sesion");
-            // Pasajeros (opcional)
-            List<Pasajero> pasajeros = new ArrayList<>();
-
-            ISistema sistema = Fabrica.getInstance().getISistema();
-            // cargar datos necesarios desde BD para poder obtener info del cliente si es necesario
-            sistema.cargarDesdeBd();
-
+            // procesar pasajeros: solo necesitamos listas de nombres y apellidos para el WS
+            List<String> pasajerosNombres = new ArrayList<>();
+            List<String> pasajerosApellidos = new ArrayList<>();
             if (obj.has("pasajeros")) {
                 JSONArray pasajerosArr = obj.getJSONArray("pasajeros");
                 for (int i = 0; i < pasajerosArr.length(); i++) {
                     JSONObject p = pasajerosArr.getJSONObject(i);
-                    pasajeros.add(sistema.crearPasajero(
-                            p.optString("nombre", ""), p.optString("apellido", "")
-                    ));
+                    pasajerosNombres.add(p.optString("nombre", ""));
+                    pasajerosApellidos.add(p.optString("apellido", ""));
                 }
             }
 
-            System.out.println("Pasajeros procesados inicialmente: " + pasajeros.size());
+            // autocompletar si falta exactamente 1 pasajero y no se envió ninguno
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
-            // Si no se enviaron pasajeros o la cantidad no coincide con cantidadPasajes,
-            // intentar autocompletar con el usuario en sesión solo si falta exactamente 1 pasajero
-            if (pasajeros.isEmpty() && cantidadPasajes == 1) {
-                // caso: se pidió 1 pasaje y el cliente no envió pasajeros -> autocompletar con sesión
-                try {
-                    DtCliente dt = sistema.obtenerCliente(nicknameCliente);
-                    if (dt != null) {
-                        String nombreSesion = dt.getNombre() != null ? dt.getNombre() : "";
-                        String apellidoSesion = dt.getApellido() != null ? dt.getApellido() : "";
-                        pasajeros.add(sistema.crearPasajero(nombreSesion, apellidoSesion));
-                        System.out.println("Autocompletado pasajero desde sesión (1 pasajero): " + nombreSesion + " " + apellidoSesion);
-                    }
-                } catch (Exception e) {
-                    System.err.println("No se pudo autocompletar pasajero desde sesión: " + e.getMessage());
-                }
-            } else if (pasajeros.size() == cantidadPasajes - 1) {
-                // caso común: cliente envió N-1 formularios para N pasajes -> añadir usuario en sesión
-                try {
-                    DtCliente dt = sistema.obtenerCliente(nicknameCliente);
-                    if (dt != null) {
-                        String nombreSesion = dt.getNombre() != null ? dt.getNombre() : "";
-                        String apellidoSesion = dt.getApellido() != null ? dt.getApellido() : "";
-                        pasajeros.add(sistema.crearPasajero(nombreSesion, apellidoSesion));
-                        System.out.println("Autocompletado pasajero desde sesión: " + nombreSesion + " " + apellidoSesion);
-                    }
-                } catch (Exception e) {
-                    System.err.println("No se pudo autocompletar pasajero desde sesión: " + e.getMessage());
+            if (pasajerosNombres.isEmpty() && cantidadPasajes == 1) {
+                DtCliente dt = null;
+                try { dt = port.obtenerCliente(nicknameCliente); } catch (Exception ex) { dt = null; }
+                if (dt != null) {
+                    pasajerosNombres.add(dt.getNombre()!=null?dt.getNombre():"");
+                    pasajerosApellidos.add(dt.getApellido()!=null?dt.getApellido():"");
                 }
             }
 
-            System.out.println("Pasajeros procesados final: " + pasajeros.size());
-
-            // Validar que al menos un pasajero esté presente (caso de uso solicitado)
-            if (pasajeros.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.print("{\"success\":false, \"error\":\"Debe registrar al menos un pasajero\"}");
-                return;
-            }
-
-            // Validar la correspondencia entre cantidad de pasajes y pasajeros recibidos
-            if (pasajeros.size() != cantidadPasajes) {
+            if (pasajerosNombres.size() != cantidadPasajes) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\":false, \"error\":\"La cantidad de pasajeros no coincide con la cantidad de pasajes\"}");
                 return;
             }
 
-            // Nota: se removió el pre-check que intentaba detectar reservas previas del cliente
-            // porque estaba generando falsos positivos (detectaba reservas inexistentes). Confiamos
-            // en la lógica de negocio en crearYRegistrarReserva y en el post-check que sigue si hay excepción.
-            System.out.println("Pre-check de reservas omitido (evitar falsos positivos)");
+            // calcular costo en el servidor usando el WS
+            double costoServidor = 0.0;
+            try {
+                costoServidor = port.calcularCostoReserva(vuelo, tipoAsientoStr, cantidadPasajes, equipajeExtra);
+            } catch (Exception ex) {
+                // si falla, devolver error
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print("{\"success\":false, \"error\":\"Error calculando costo de reserva: " + escapeForJson(ex.getMessage()) + "\"}");
+                return;
+            }
 
-            TipoAsiento tipoAsiento = tipoAsientoStr.equalsIgnoreCase("ejecutivo") ? TipoAsiento.EJECUTIVO : TipoAsiento.TURISTA;
-            LocalDate fechaReserva = LocalDate.now();
-
-            // CALCULAR COSTO EN SERVIDOR y aplicar descuento de paquete si corresponde
-            double costoServidor = sistema.calcularCostoReserva(vuelo, tipoAsiento, cantidadPasajes, equipajeExtra);
             String formaPagoReq = obj.optString("formaPago", "general");
             String paqueteReq = obj.optString("paquete", null);
 
-            // Si se indicó pago con paquete, validar que el cliente posee el paquete y que el paquete contiene la ruta del vuelo
             double costoFinal = costoServidor;
-            if ("paquete".equalsIgnoreCase(formaPagoReq)) {
-                // Obtener datos del cliente (si es posible) para listar/validar paquetes
-                DtCliente clienteDt;
-                try {
-                    clienteDt = sistema.obtenerCliente(nicknameCliente);
-                } catch (Exception e) {
-                    clienteDt = null;
-                }
 
-                // Construir lista de paquetes comprados que contienen la ruta del vuelo
-                org.json.JSONArray paquetesElegibles = new org.json.JSONArray();
+            if ("paquete".equalsIgnoreCase(formaPagoReq)) {
+                DtCliente clienteDt = null;
+                try { clienteDt = port.obtenerCliente(nicknameCliente); } catch (Exception e) { clienteDt = null; }
+
+                // listar paquetes elegibles
+                JSONArray paquetesElegibles = new JSONArray();
                 if (clienteDt != null && clienteDt.getPaquetesComprados() != null) {
                     for (DtPaquete dp : clienteDt.getPaquetesComprados()) {
                         if (dp == null) continue;
-                        // Ignorar paquetes que no fueron realmente comprados (sin fecha de compra)
                         if (dp.getFechaAlta() == null) continue;
-                        // Si el paquete tiene vigencia (periodoValidezDias > 0), comprobar que no esté vencido
                         if (dp.getPeriodoValidezDias() > 0 && dp.getFechaAlta() != null) {
-                            java.time.LocalDate venc = dp.getFechaAlta().plusDays(dp.getPeriodoValidezDias());
-                            if (venc.isBefore(java.time.LocalDate.now())) continue; // paquete vencido
+                            java.time.LocalDate ld = toLocalDate(dp.getFechaAlta());
+                            if (ld != null) {
+                                java.time.LocalDate venc = ld.plusDays(dp.getPeriodoValidezDias());
+                                if (venc.isBefore(java.time.LocalDate.now())) continue;
+                            }
                         }
                         boolean contieneRuta = false;
                         if (dp.getItems() != null) {
@@ -188,15 +141,16 @@ public class RegistrarReservaServlet extends HttpServlet {
                             }
                         }
                         if (contieneRuta) {
-                            org.json.JSONObject pjo = new org.json.JSONObject();
-                            // Proveer id y campos útiles para el frontend
+                            JSONObject pjo = new JSONObject();
                             pjo.put("id", dp.getNombre());
                             pjo.put("nombre", dp.getNombre());
                             pjo.put("descuentoPorc", dp.getDescuentoPorc());
                             pjo.put("descripcion", dp.getDescripcion() != null ? dp.getDescripcion() : "");
                             pjo.put("fechaCompra", dp.getFechaAlta() != null ? dp.getFechaAlta().toString() : "");
                             if (dp.getPeriodoValidezDias() > 0 && dp.getFechaAlta() != null) {
-                                pjo.put("fechaVencimiento", dp.getFechaAlta().plusDays(dp.getPeriodoValidezDias()).toString());
+                                java.time.LocalDate ld2 = toLocalDate(dp.getFechaAlta());
+                                if (ld2 != null) pjo.put("fechaVencimiento", ld2.plusDays(dp.getPeriodoValidezDias()).toString());
+                                else pjo.put("fechaVencimiento", "");
                             } else {
                                 pjo.put("fechaVencimiento", "");
                             }
@@ -206,10 +160,9 @@ public class RegistrarReservaServlet extends HttpServlet {
                     }
                 }
 
-                // Si no se especificó un paquete, devolver la lista de paquetes elegibles para que el cliente elija
                 if (paqueteReq == null || paqueteReq.trim().isEmpty()) {
                     response.setStatus(HttpServletResponse.SC_OK);
-                    org.json.JSONObject respObj = new org.json.JSONObject();
+                    JSONObject respObj = new JSONObject();
                     respObj.put("success", true);
                     respObj.put("paquetesElegibles", paquetesElegibles);
                     respObj.put("costoServidor", costoServidor);
@@ -217,214 +170,66 @@ public class RegistrarReservaServlet extends HttpServlet {
                     return;
                 }
 
-                // Si se especificó un paquete, validar que pertenece al cliente y que contiene la ruta
-                boolean pertenece = false;
-                if (clienteDt != null && clienteDt.getPaquetesComprados() != null) {
-                    for (DtPaquete dp : clienteDt.getPaquetesComprados()) {
-                        if (dp != null && dp.getNombre() != null && dp.getNombre().equals(paqueteReq)) { pertenece = true; break; }
-                    }
-                }
-                if (!pertenece) {
-                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                    out.print("{\"success\":false, \"error\":\"Paquete no válido o no pertenece al cliente\"}");
-                    return;
-                }
-
-                // Obtener detalle del paquete desde el sistema y verificar que contiene la ruta asociada al vuelo
-                DtPaquete paqueteDt;
-                try { paqueteDt = sistema.obtenerDtPaquete(paqueteReq); } catch (Exception e) { paqueteDt = null; }
-
-                // NOTA: Se eliminó la verificación que rechazaba la reserva si el paquete no contenía la ruta
-                // del vuelo, para evitar errores cuando el frontend no envía esa información. En su lugar se
-                // permite continuar y aplicar el descuento del paquete cuando exista.
-
-                // Aplicar descuento porcentual del paquete sobre el costo calculado en servidor
+                DtPaquete paqueteDt = null;
+                try { paqueteDt = port.obtenerDtPaquete(paqueteReq); } catch (Exception ex) { paqueteDt = null; }
                 double descuentoPorc = (paqueteDt != null) ? paqueteDt.getDescuentoPorc() : 0.0;
                 double descuento = (descuentoPorc / 100.0) * costoServidor;
                 costoFinal = Math.max(0.0, costoServidor - descuento);
             }
 
-            // PRE-CHECK: evitar que un mismo usuario tenga más de una reserva en el mismo vuelo
+            // PRE-CHECK: evitar que el usuario ya tenga reserva en el vuelo
             try {
-                Object vueloObj = null;
-                try { vueloObj = sistema.obtenerVuelo(vuelo); } catch (Exception vx) { /* ignore */ }
-
-                if (vueloObj != null) {
-                    Object reservasObj = null;
-                    try { reservasObj = vueloObj.getClass().getMethod("getReservas").invoke(vueloObj); } catch (Exception m) { /* ignore */ }
-
-                    Iterable<?> iterable = null;
-                    if (reservasObj instanceof Map) iterable = ((Map<?, ?>) reservasObj).values();
-                    else if (reservasObj instanceof Iterable) iterable = (Iterable<?>) reservasObj;
-
-                    if (iterable != null) {
-                        for (Object r : iterable) {
-                            String clienteProp = getClienteNicknameFromReserva(r);
-                            if (clienteProp != null && clienteProp.equalsIgnoreCase(nicknameCliente)) {
-                                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                                out.print("{\"success\":false, \"error\":\"El usuario ya tiene una reserva en este vuelo\"}");
-                                // salir del método devolviendo la respuesta
-                                return;
-                            }
+                List<DtReserva> reservasCliente = port.getReservasCliente(nicknameCliente);
+                if (reservasCliente != null) {
+                    for (DtReserva r : reservasCliente) {
+                        if (r != null && r.getVuelo() != null && r.getVuelo().equalsIgnoreCase(vuelo)) {
+                            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+                            out.print("{\"success\":false, \"error\":\"El usuario ya tiene una reserva en este vuelo\"}");
+                            return;
                         }
                     }
                 }
-            } catch (Throwable t) {
-                // No bloquear la operación si falla el pre-check; la lógica de negocio decidirá.
-                System.err.println("Warning: pre-check reserva falló: " + t.getMessage());
+            } catch (Exception ex) {
+                // no bloquear la operación si falla el pre-check
             }
 
-            // Intentar crear y registrar reserva; si se puede obtener el objeto vuelo, sincronizar sobre él para evitar race conditions en la misma JVM
+            // Llamar al WS para crear y registrar la reserva
             try {
-                Object vueloObjForLock = null;
-                try { vueloObjForLock = sistema.obtenerVuelo(vuelo); } catch (Exception vx) { /* ignore */ }
+                port.crearYRegistrarReserva(nicknameCliente, vuelo, LocalDate.now().toString(), costoFinal, tipoAsientoStr, cantidadPasajes, equipajeExtra, pasajerosNombres, pasajerosApellidos);
 
-                if (vueloObjForLock != null) {
-                    synchronized (vueloObjForLock) {
-                        // re-check dentro del lock
-                        Object reservasObjInner = null;
-                        try { reservasObjInner = vueloObjForLock.getClass().getMethod("getReservas").invoke(vueloObjForLock); } catch (Exception m) { /* ignore */ }
-                        Iterable<?> iterableInner = null;
-                        if (reservasObjInner instanceof Map) iterableInner = ((Map<?, ?>) reservasObjInner).values();
-                        else if (reservasObjInner instanceof Iterable) iterableInner = (Iterable<?>) reservasObjInner;
-
-                        if (iterableInner != null) {
-                            for (Object r : iterableInner) {
-                                String clienteProp = getClienteNicknameFromReserva(r);
-                                if (clienteProp != null && clienteProp.equalsIgnoreCase(nicknameCliente)) {
-                                    response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                                    out.print("{\"success\":false, \"error\":\"El usuario ya tiene una reserva en este vuelo\"}");
-                                    return;
-                                }
-                            }
-                        }
-
-                        // No hay reserva previa detectada dentro del lock -> crear la reserva
-                        sistema.crearYRegistrarReserva(
-                                nicknameCliente, vuelo, fechaReserva, costoFinal, tipoAsiento, cantidadPasajes, equipajeExtra, pasajeros
-                        );
-                    }
-                } else {
-                    // No se pudo obtener el objeto vuelo; proceder de forma normal
-                    sistema.crearYRegistrarReserva(
-                            nicknameCliente, vuelo, fechaReserva, costoFinal, tipoAsiento, cantidadPasajes, equipajeExtra, pasajeros
-                    );
-                }
-
-                // Si llegamos aquí, la creación no lanzó excepción -> devolver éxito
                 response.setStatus(HttpServletResponse.SC_OK);
-                org.json.JSONObject resp = new org.json.JSONObject();
+                JSONObject resp = new JSONObject();
                 resp.put("success", true);
                 resp.put("costoFinal", costoFinal);
                 if (paqueteReq != null && !paqueteReq.trim().isEmpty()) resp.put("paquete", paqueteReq);
                 resp.put("message", "Reserva creada correctamente");
                 out.print(resp);
-
-            } catch (IllegalArgumentException iae) {
-                // Intentar post-check: la lógica de negocio pudo crear la reserva y luego lanzar la excepción.
-                try {
-                    Object vueloObj;
-                    try { vueloObj = sistema.obtenerVuelo(vuelo); } catch (Exception vx) { vueloObj = null; }
-
-                    boolean found = false;
-                    String reservaId = null;
-                    if (vueloObj != null) {
-                        Object reservasObj;
-                        try { reservasObj = vueloObj.getClass().getMethod("getReservas").invoke(vueloObj); } catch (Exception m) { reservasObj = null; }
-
-                        Iterable<?> iterable = null;
-                        if (reservasObj instanceof Map) iterable = ((Map<?, ?>) reservasObj).values();
-                        else if (reservasObj instanceof Iterable) iterable = (Iterable<?>) reservasObj;
-
-                        if (iterable != null) {
-                            for (Object r : iterable) {
-                                String clienteProp = getClienteNicknameFromReserva(r);
-                                if (clienteProp != null && clienteProp.equalsIgnoreCase(nicknameCliente)) {
-                                    found = true;
-                                    reservaId = getPropAsString(r, "getId", "id");
-                                    break;
-                                }
-                            }
-                        }
-                    }
-
-                    if (found) {
-                        response.setStatus(HttpServletResponse.SC_OK);
-                        String codigo = (reservaId != null && !reservaId.isEmpty()) ? "RES-" + reservaId : "RES-" + System.currentTimeMillis();
-                        org.json.JSONObject resp = new org.json.JSONObject();
-                        resp.put("success", true);
-                        resp.put("codigoReserva", codigo);
-                        resp.put("costoFinal", costoFinal);
-                        if (paqueteReq != null && !paqueteReq.trim().isEmpty()) resp.put("paquete", paqueteReq);
-                        out.print(resp);
-                        System.out.println("Post-check (iae): reserva detectada tras IllegalArgumentException — devolviendo éxito. ID=" + reservaId);
-                        return;
-                    }
-                } catch (Throwable t) {
-                    System.err.println("Error en post-check tras IllegalArgumentException: " + t.getMessage());
-                }
-
-                // Si no se detectó la reserva, devolver el mensaje de negocio original
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-                out.print("{\"success\":false, \"error\":\"" + escapeForJson(iae.getMessage()) + "\"}");
                 return;
+
             } catch (Exception ex) {
-                // Si ocurre una excepción, comprobar si la reserva ya fue creada de todas formas
+                // post-check: puede que la reserva se haya creado de todas formas
                 try {
-                    // intentar detectar si ya existe una reserva del cliente en el vuelo
-                    Object vueloObj;
-                    try {
-                        vueloObj = sistema.obtenerVuelo(vuelo);
-                    } catch (Exception vx) { vueloObj = null; }
-
-                    boolean found = false;
-                    String reservaId = null;
-                    if (vueloObj != null) {
-                        Object reservasObj;
-                        try {
-                            reservasObj = vueloObj.getClass().getMethod("getReservas").invoke(vueloObj);
-                        } catch (Exception m) {
-                            reservasObj = null;
-                        }
-
-                        Iterable<?> iterable = null;
-                        if (reservasObj instanceof Map) {
-                            iterable = ((Map<?, ?>) reservasObj).values();
-                        } else if (reservasObj instanceof Iterable) {
-                            iterable = (Iterable<?>) reservasObj;
-                        }
-
-                        if (iterable != null) {
-                            for (Object r : iterable) {
-                                String clienteProp = getClienteNicknameFromReserva(r);
-                                if (clienteProp != null && clienteProp.equalsIgnoreCase(nicknameCliente)) {
-                                    found = true;
-                                    reservaId = getPropAsString(r, "getId", "id");
-                                    break;
-                                }
+                    List<DtReserva> reservasCliente = port.getReservasCliente(nicknameCliente);
+                    if (reservasCliente != null) {
+                        for (DtReserva r : reservasCliente) {
+                            if (r != null && r.getVuelo() != null && r.getVuelo().equalsIgnoreCase(vuelo)) {
+                                response.setStatus(HttpServletResponse.SC_OK);
+                                JSONObject resp = new JSONObject();
+                                resp.put("success", true);
+                                resp.put("costoFinal", costoFinal);
+                                resp.put("message", "Reserva creada correctamente (detectada en post-check)");
+                                out.print(resp);
+                                return;
                             }
                         }
                     }
-
-                    if (found) {
-                        response.setStatus(HttpServletResponse.SC_OK);
-                        String codigo = (reservaId != null && !reservaId.isEmpty()) ? "RES-" + reservaId : "RES-" + System.currentTimeMillis();
-                        org.json.JSONObject resp = new org.json.JSONObject();
-                        resp.put("success", true);
-                        resp.put("codigoReserva", codigo);
-                        resp.put("costoFinal", costoFinal);
-                        if (paqueteReq != null && !paqueteReq.trim().isEmpty()) resp.put("paquete", paqueteReq);
-                        out.print(resp);
-                        System.out.println("Post-check (ex): reserva detectada tras excepción — devolviendo éxito. ID=" + reservaId);
-                        return;
-                    }
-                } catch (Throwable t) {
-                    System.err.println("Error en post-check tras excepción: " + t.getMessage());
+                } catch (Exception ex2) {
+                    // ignore
                 }
 
-                // Si no existe la reserva, devolver la excepción original
                 response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                 out.print("{\"success\":false, \"error\":\"" + escapeForJson(ex.getMessage()) + "\"}");
+                return;
             }
 
         } catch (Exception e) {
@@ -433,69 +238,20 @@ public class RegistrarReservaServlet extends HttpServlet {
         }
     }
 
-    // Intenta extraer el nickname del cliente desde el objeto reserva mediante reflexión
-    private String getClienteNicknameFromReserva(Object reservaObj) {
-        if (reservaObj == null) return null;
-        try {
-            // intentos de getters comunes
-            String[] candidateMethods = new String[]{"getCliente", "getUsuario", "getOwner", "getUsuarioCliente"};
-            for (String mName : candidateMethods) {
-                try {
-                    Method m = reservaObj.getClass().getMethod(mName);
-                    Object clienteObj = m.invoke(reservaObj);
-                    if (clienteObj == null) continue;
-                    // si ya es String, devolverlo
-                    if (clienteObj instanceof String) return (String) clienteObj;
-                    // sino intentar getters del cliente
-                    String nick = getPropAsString(clienteObj, "getNickname", "nickname");
-                    if (nick != null && !nick.isEmpty()) return nick;
-                    nick = getPropAsString(clienteObj, "getUsuario", "usuario");
-                    if (nick != null && !nick.isEmpty()) return nick;
-                    nick = getPropAsString(clienteObj, "getNick", "nick");
-                    if (nick != null && !nick.isEmpty()) return nick;
-                } catch (NoSuchMethodException nsme) {
-                    // ignore
-                }
-            }
-
-            // si no encontramos cliente por getter, intentar obtener directamente propiedades en la reserva
-            String direct = getPropAsString(reservaObj, "getClienteNickname", "clienteNickname");
-            if (direct != null && !direct.isEmpty()) return direct;
-            direct = getPropAsString(reservaObj, "getNickname", "nickname");
-            if (direct != null && !direct.isEmpty()) return direct;
-
-        } catch (Throwable t) {
-            // no fallar por reflexión
-        }
-        return null;
-    }
-
-    // Intenta invocar un getter o acceder a un campo con el nombre dado y devolver su valor como String
-    private String getPropAsString(Object obj, String getterName, String fieldName) {
-        if (obj == null) return null;
-        try {
-            try {
-                Method m = obj.getClass().getMethod(getterName);
-                Object val = m.invoke(obj);
-                if (val != null) return String.valueOf(val);
-            } catch (NoSuchMethodException nsme) {
-                // intentar campo público
-                try {
-                    java.lang.reflect.Field f = obj.getClass().getField(fieldName);
-                    Object val = f.get(obj);
-                    if (val != null) return String.valueOf(val);
-                } catch (NoSuchFieldException | IllegalAccessException ignore) {
-                    // ignore
-                }
-            }
-        } catch (Throwable t) {
-            // ignore
-        }
-        return null;
-    }
-
     private String escapeForJson(String s) {
         if (s == null) return "";
         return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
+    }
+
+    // Helper para convertir DTO LocalDate a java.time.LocalDate
+    private java.time.LocalDate toLocalDate(serviciosweb.LocalDate ld) {
+        if (ld == null) return null;
+        try {
+            String s = ld.toString();
+            if (s == null || s.isBlank()) return null;
+            return java.time.LocalDate.parse(s);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }

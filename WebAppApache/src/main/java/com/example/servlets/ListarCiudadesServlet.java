@@ -1,45 +1,44 @@
 // java
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import serviciosweb.JuanViajesWS;
+import serviciosweb.WebServicesService;
+import com.example.util.PortUtils;
+
 @WebServlet("/listarCiudades")
 public class ListarCiudadesServlet extends HttpServlet {
+    // Usar PortUtils para obtener el puerto del servicio web
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
         try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
+            // Usar el port del servicio web en lugar de la lógica local
+            JuanViajesWS port = PortUtils.getPort(request);
 
-            // No llamar a sistema.cargarDesdeBd() aquí (se ejecuta en contextInitialized).
-            // Intentar invocar listarCiudades() o, si no existe, intentar getCiudades()
+            // Intentar cargar desde BD para tener datos en el servicio
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+
             List<String> ciudadesNombres = new ArrayList<>();
             Object raw = null;
             try {
-                Method m = sistema.getClass().getMethod("listarCiudades");
-                raw = m.invoke(sistema);
-            } catch (NoSuchMethodException nsme) {
-                try {
-                    Method m2 = sistema.getClass().getMethod("getCiudades");
-                    raw = m2.invoke(sistema);
-                } catch (NoSuchMethodException ignored) {
-                    System.out.println("ListarCiudadesServlet: no existe listarCiudades() ni getCiudades() en la implementación de ISistema.");
-                }
+                raw = port.listarCiudades();
+            } catch (Exception ex) {
+                // Si falla el WS, devolver lista vacía en lugar de depender de la lógica local
+                raw = java.util.Collections.emptyList();
             }
 
             if (raw instanceof List) {
                 List<?> rawList = (List<?>) raw;
-                System.out.println("ListarCiudadesServlet: ciudades leídas desde la lógica. count=" + rawList.size());
                 for (Object elem : rawList) {
                     String nombre = null;
                     if (elem == null) {
@@ -49,7 +48,7 @@ public class ListarCiudadesServlet extends HttpServlet {
                     } else {
                         // intentar obtener un campo nombre vía método getNombre()
                         try {
-                            Method getter = elem.getClass().getMethod("getNombre");
+                            java.lang.reflect.Method getter = elem.getClass().getMethod("getNombre");
                             Object val = getter.invoke(elem);
                             nombre = val != null ? String.valueOf(val) : "";
                         } catch (Exception ex) {
@@ -57,11 +56,8 @@ public class ListarCiudadesServlet extends HttpServlet {
                             nombre = elem.toString();
                         }
                     }
-                    System.out.println(" - " + nombre);
                     ciudadesNombres.add(nombre);
                 }
-            } else {
-                System.out.println("ListarCiudadesServlet: resultado de listar/getCiudades es nulo o no es lista -> enviando []");
             }
 
             // Construir JSON array simple y enviarlo

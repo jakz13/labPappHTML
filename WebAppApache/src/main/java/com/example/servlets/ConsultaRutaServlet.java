@@ -1,14 +1,15 @@
 // src/main/java/com/example/servlets/ConsultaRutaServlet.java
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtRutaVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.List;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtRutaVuelo;
+import com.example.util.PortUtils;
 
 @WebServlet("/consultaRuta")
 public class ConsultaRutaServlet extends HttpServlet {
@@ -29,16 +30,16 @@ public class ConsultaRutaServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
             // === CONTAR LA VISITA A ESTA RUTA ESPECÍFICA ===
-            //sistema.incrementarVisitasRuta(nombreRuta.trim());
+            //port.incrementarVisitasRuta(nombreRuta.trim());
             System.out.println("[CONSULTA RUTA] ✅ Visita contada para: " + nombreRuta);
 
             // Buscar la ruta en todas las aerolíneas
             DtRutaVuelo rutaEncontrada = null;
-            List<DtRutaVuelo> todasRutas = sistema.listarRutasConfirmadas(1000);
+            List<DtRutaVuelo> todasRutas = port.listarRutasConfirmadas(1000);
 
             for (DtRutaVuelo ruta : todasRutas) {
                 if (ruta.getNombre().equals(nombreRuta)) {

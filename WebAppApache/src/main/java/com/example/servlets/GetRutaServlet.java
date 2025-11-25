@@ -1,8 +1,6 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtRutaVuelo;
+
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -17,16 +15,37 @@ import java.lang.reflect.Method;
 import java.time.temporal.Temporal;
 import java.util.*;
 
+import serviciosweb.JuanViajesWS;
+import serviciosweb.WebServicesService;
+import serviciosweb.DtRutaVuelo;
+
 @WebServlet("/api/ruta")
 public class GetRutaServlet extends HttpServlet {
+    private JuanViajesWS getPort(HttpServletRequest request) {
+        try {
+            Object o = request.getServletContext().getAttribute("port");
+            if (o instanceof JuanViajesWS) return (JuanViajesWS) o;
+        } catch (Exception ignored) {}
+        WebServicesService svc = new WebServicesService();
+        return svc.getJuanViajesWSPort();
+    }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String id = request.getParameter("id");
         String nombre = request.getParameter("nombre");
 
-        ISistema sistema = Fabrica.getInstance().getISistema();
-        sistema.cargarDesdeBd();
-        List<DtRutaVuelo> rutas = sistema.listarRutasConfirmadas(Integer.MAX_VALUE);
+        // Usar WS remoto
+        JuanViajesWS port = getPort(request);
+        try {
+            port.cargarDesdeBd();
+        } catch (Exception ignored) {}
+        List<DtRutaVuelo> rutas = null;
+        try {
+            rutas = port.listarRutasConfirmadas(Integer.MAX_VALUE);
+        } catch (Exception e) {
+            rutas = Collections.emptyList();
+        }
 
         Object found = null;
         if (rutas != null) {
@@ -147,4 +166,3 @@ public class GetRutaServlet extends HttpServlet {
         return s.replace("\\","\\\\").replace("\"","\\\"").replace("\n","\\n").replace("\r","\\r").replace("\t","\\t");
     }
 }
-

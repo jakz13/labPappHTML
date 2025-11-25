@@ -1,8 +1,5 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
@@ -10,20 +7,28 @@ import java.util.ArrayList;
 import java.util.List;
 import java.nio.file.Paths;
 
+import serviciosweb.JuanViajesWS;
+import serviciosweb.WebServicesService;
+import serviciosweb.DtCliente;
+import serviciosweb.DtAerolinea;
+import serviciosweb.DtRutaVuelo;
+import serviciosweb.DtVuelo;
+import serviciosweb.DtReserva;
+import serviciosweb.DtPaquete;
+import serviciosweb.DtItemPaquete;
+
 @WebServlet("/consulta-usuario")
 public class ConsultaUsuarioServlet extends HttpServlet {
 
-    private ISistema sistema;
+    // Ya no se usa ISistema/local logic; todo se obtiene vía WS
 
-    @Override
-    public void init() {
-        sistema = Fabrica.getInstance().getISistema();
+    private JuanViajesWS getPort(HttpServletRequest request) {
         try {
-            sistema.cargarDesdeBd();
-            System.out.println("✅ Sistema cargado correctamente en init()");
-        } catch (Exception e) {
-            logError("❌ Error cargando sistema en init()", e);
-        }
+            Object o = request.getServletContext().getAttribute("port");
+            if (o instanceof JuanViajesWS) return (JuanViajesWS) o;
+        } catch (Exception ignored) {}
+        WebServicesService svc = new WebServicesService();
+        return svc.getJuanViajesWSPort();
     }
 
     @Override
@@ -42,26 +47,24 @@ public class ConsultaUsuarioServlet extends HttpServlet {
             System.out.println("Usuario: " + usuarioId);
             System.out.println("Tipo: " + tipoUsuario);
 
-            // NO llamar cargarDesdeBd() aquí - ya se cargó en init()
-
             if ("listar-usuarios".equals(action)) {
                 System.out.println("Listando todos los usuarios");
-                listarUsuarios(sistema, out, request);
+                listarUsuarios(out, request);
             } else if ("obtener-usuario".equals(action) && usuarioId != null && tipoUsuario != null) {
                 System.out.println("Obteniendo información del usuario: " + usuarioId + " tipo: " + tipoUsuario);
-                obtenerUsuarioDetalle(sistema, usuarioId, tipoUsuario, out, response, request);
+                obtenerUsuarioDetalle(usuarioId, tipoUsuario, out, response, request);
             } else if ("obtener-rutas-aerolinea".equals(action) && usuarioId != null) {
                 System.out.println("Obteniendo rutas de la aerolínea: " + usuarioId);
-                obtenerRutasAerolinea(sistema, usuarioId, out);
+                obtenerRutasAerolinea(usuarioId, out, request);
             } else if ("obtener-reservas-cliente".equals(action) && usuarioId != null) {
                 System.out.println("Obteniendo reservas del cliente: " + usuarioId);
-                obtenerReservasCliente(sistema, usuarioId, out);
+                obtenerReservasCliente(usuarioId, out, request);
             } else if ("obtener-paquetes-cliente".equals(action) && usuarioId != null) {
                 System.out.println("Obteniendo paquetes del cliente: " + usuarioId);
-                obtenerPaquetesCliente(sistema, usuarioId, out);
+                obtenerPaquetesCliente(usuarioId, out, request);
             } else if ("obtener-vuelos-aerolinea".equals(action) && usuarioId != null) {
                 System.out.println("Obteniendo vuelos de la aerolínea: " + usuarioId);
-                obtenerVuelosAerolinea(sistema, usuarioId, out);
+                obtenerVuelosAerolinea(usuarioId, out, request);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"error\":\"Parámetros inválidos. Acciones válidas: listar-usuarios, obtener-usuario, obtener-rutas-aerolinea, obtener-reservas-cliente, obtener-paquetes-cliente, obtener-vuelos-aerolinea\"}");
@@ -85,14 +88,12 @@ public class ConsultaUsuarioServlet extends HttpServlet {
                 Object v = m.invoke(dto);
                 if (v != null) {
                     String sval = v.toString();
-                    System.out.println("extractImageValue: DTO=" + dto.getClass().getSimpleName() + " -> getter='" + name + "' returned (len=" + sval.length() + "): '" + truncate(sval,200) + "'");
                     return sval;
                 }
             } catch (NoSuchMethodException ns) {
                 // seguir probando
             } catch (Throwable t) {
                 // ignora y continúa con el siguiente
-                System.err.println("extractImageValue: error al invocar " + name + " en " + dto.getClass().getName() + ": " + t.getMessage());
             }
         }
         // Si no hay getter, intentar acceder a campos públicos por reflexión
@@ -105,36 +106,13 @@ public class ConsultaUsuarioServlet extends HttpServlet {
                         f.setAccessible(true);
                         Object val = f.get(dto);
                         if (val != null) {
-                            String sval = val.toString();
-                            System.out.println("extractImageValue: DTO=" + dto.getClass().getSimpleName() + " -> field='" + f.getName() + "' value (len=" + sval.length() + "): '" + truncate(sval,200) + "'");
-                            return sval;
+                            return val.toString();
                         }
-                    } catch (Throwable tt) {
-                        System.err.println("extractImageValue: error leyendo campo " + f.getName() + ": " + tt.getMessage());
-                    }
+                    } catch (Throwable tt) {}
                 }
             }
-            // Si llegamos aquí, no se encontró valor relevante; listar campos para debug
-            StringBuilder sb = new StringBuilder();
-            for (java.lang.reflect.Field f : fields) {
-                try {
-                    f.setAccessible(true);
-                    Object val = f.get(dto);
-                    sb.append(f.getName()).append("=").append(val != null ? truncate(val.toString(),80) : "<null>").append("; ");
-                } catch (Throwable ignore) {}
-            }
-            System.out.println("extractImageValue: DTO=" + dto.getClass().getSimpleName() + " -> no image getter/field found. Fields: " + sb.toString());
-        } catch (Throwable t) {
-            System.err.println("extractImageValue: error inspeccionando campos: " + t.getMessage());
-        }
+        } catch (Throwable t) {}
         return "";
-    }
-
-    // Helper para truncar logs largos
-    private String truncate(String s, int max) {
-        if (s == null) return null;
-        if (s.length() <= max) return s;
-        return s.substring(0, max) + "...(" + s.length() + " chars)";
     }
 
     // Helper para construir la URL pública de la imagen usando el contexto
@@ -142,51 +120,40 @@ public class ConsultaUsuarioServlet extends HttpServlet {
         if (stored == null) return "";
         stored = stored.trim();
         if (stored.isEmpty()) return "";
-        // Si ya es data URI, devolver tal cual
         if (stored.startsWith("data:")) return stored;
-        // Si ya es URL absoluta
         if (stored.startsWith("http://") || stored.startsWith("https://")) return stored;
-        // Si ya es ruta absoluta en el servidor (empieza con '/'), devolver tal cual
         if (stored.startsWith("/")) return stored;
-        // Si contiene separadores de archivos (ruta física), extraer filename
         try {
             String filename = Paths.get(stored).getFileName().toString();
             if (filename.isEmpty()) filename = stored;
             return request.getContextPath() + "/Images/" + filename;
         } catch (Exception e) {
-            // fallback: tratar como filename
-            System.err.println("buildImageUrl: error procesando ruta de imagen '" + stored + "': " + e.getMessage());
             return request.getContextPath() + "/Images/" + stored;
         }
     }
 
-    private void obtenerVuelosAerolinea(ISistema sistema, String aerolineaId, PrintWriter out) {
+    private void obtenerVuelosAerolinea(String aerolineaId, PrintWriter out, HttpServletRequest request) {
         try {
-            List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(aerolineaId);
-            List<DtVuelo> todosLosVuelos = new ArrayList<>();
+            JuanViajesWS port = getPort(request);
+            List<DtRutaVuelo> rutas = null;
+            try { rutas = port.listarRutasPorAerolinea(aerolineaId); } catch (Exception ex) { rutas = null; }
 
-            for (DtRutaVuelo ruta : rutas) {
-                try {
-                    List<DtVuelo> vuelosRuta = sistema.listarVuelosPorRuta(ruta.getNombre());
-                    if (vuelosRuta != null) {
-                        todosLosVuelos.addAll(vuelosRuta);
-                    }
-                } catch (Exception e) {
-                    System.err.println("⚠️ Error obteniendo vuelos para ruta " + ruta.getNombre() + ": " + e.getMessage());
-                    // Continuar con la siguiente ruta
+            List<DtVuelo> todosLosVuelos = new ArrayList<>();
+            if (rutas != null) {
+                for (DtRutaVuelo ruta : rutas) {
+                    try {
+                        List<DtVuelo> vuelosRuta = port.listarVuelosPorRuta(ruta.getNombre());
+                        if (vuelosRuta != null) todosLosVuelos.addAll(vuelosRuta);
+                    } catch (Exception e) {}
                 }
             }
-
-            escribirVuelosAerolineaJSON(todosLosVuelos, out);
+            escribirVuelosAerolineaJSONConvert(todosLosVuelos, out, request);
         } catch (Exception e) {
-            System.err.println("💥 ERROR obteniendo vuelos: " + e.getMessage());
-            logError("Detalle del error obteniendo vuelos", e);
-            // En lugar de error, devolver array vacío
             out.print("[]");
         }
     }
 
-    private void escribirVuelosAerolineaJSON(List<DtVuelo> vuelos, PrintWriter out) {
+    private void escribirVuelosAerolineaJSONConvert(List<DtVuelo> vuelos, PrintWriter out, HttpServletRequest request) {
         out.print("[");
         for (int i = 0; i < vuelos.size(); i++) {
             DtVuelo vuelo = vuelos.get(i);
@@ -205,92 +172,84 @@ public class ConsultaUsuarioServlet extends HttpServlet {
         out.print("]");
     }
 
-    private void listarUsuarios(ISistema sistema, PrintWriter out, HttpServletRequest request) {
+    private void listarUsuarios(PrintWriter out, HttpServletRequest request) {
         try {
             out.print("{");
+            JuanViajesWS port = getPort(request);
+            List<DtCliente> clientes = null;
+            List<DtAerolinea> aerolineas = null;
+            try {
+                clientes = port.listarClientes();
+                aerolineas = port.listarAerolineas();
+            } catch (Exception e) {
+                clientes = new ArrayList<>();
+                aerolineas = new ArrayList<>();
+            }
 
             // Clientes
             out.print("\"clientes\":[");
-            List<DtCliente> clientes = sistema.listarClientes();
-            if (clientes != null) {
-                for (int i = 0; i < clientes.size(); i++) {
-                    DtCliente c = clientes.get(i);
-                    out.print("{");
-                    out.print("\"id\":\"" + escapeJson(c.getNickname()) + "\",");
-                    out.print("\"nombre\":\"" + escapeJson(c.getNombre() + " " + c.getApellido()) + "\",");
-                    out.print("\"tipo\":\"Cliente\",");
-                    out.print("\"correo\":\"" + escapeJson(c.getEmail()) + "\",");
-                    out.print("\"fechaRegistro\":\"" + escapeJson(c.getFechaAlta() != null ? c.getFechaAlta().toString() : "") + "\",");
-                    String rawImgC = extractImageValue(c);
-                    String imgC = buildImageUrl(request, rawImgC);
-                    // debug log cliente
-                    try { System.out.println("ConsultaUsuarioServlet: cliente='" + c.getNickname() + "' rawImg='" + rawImgC + "' -> public='" + imgC + "'"); } catch (Throwable t) { System.err.println("Error log cliente: " + t.getMessage()); }
-                    out.print("\"imagen\":\"" + escapeJson(imgC) + "\"");
-                    out.print("}");
-                    if (i < clientes.size() - 1) out.print(",");
-                }
+            for (int i = 0; i < clientes.size(); i++) {
+                DtCliente c = clientes.get(i);
+                out.print("{");
+                out.print("\"id\":\"" + escapeJson(c.getNickname()) + "\",");
+                out.print("\"nombre\":\"" + escapeJson(c.getNombre() + " " + c.getApellido()) + "\",");
+                out.print("\"tipo\":\"Cliente\",");
+                out.print("\"correo\":\"" + escapeJson(c.getEmail()) + "\",");
+                out.print("\"fechaRegistro\":\"" + escapeJson(c.getFechaAlta() != null ? c.getFechaAlta().toString() : "") + "\",");
+                String rawImgC = extractImageValue(c);
+                String imgC = buildImageUrl(request, rawImgC);
+                out.print("\"imagen\":\"" + escapeJson(imgC) + "\"");
+                out.print("}");
+                if (i < clientes.size() - 1) out.print(",");
             }
             out.print("],");
 
             // Aerolíneas
             out.print("\"aerolineas\":[");
-            List<DtAerolinea> aerolineas = sistema.listarAerolineas();
-            if (aerolineas != null) {
-                for (int i = 0; i < aerolineas.size(); i++) {
-                    DtAerolinea a = aerolineas.get(i);
-                    out.print("{");
-                    out.print("\"id\":\"" + escapeJson(a.getNickname()) + "\",");
-                    out.print("\"nombre\":\"" + escapeJson(a.getNombre()) + "\",");
-                    out.print("\"tipo\":\"Aerolinea\",");
-                    out.print("\"correo\":\"" + escapeJson(a.getEmail()) + "\",");
-                    // usar fechaAlta si existe
-                    String fechaAltaA = "";
-
-                    out.print("\"fechaRegistro\":\"" + escapeJson(fechaAltaA) + "\",");
-                    // Obtener la imagen directamente desde el DTO (misma convención que en otros servlets)
-                    String rawImgA = "";
-                    try { rawImgA = a.getImagenUrl() != null ? a.getImagenUrl() : ""; } catch (Throwable ignore) { rawImgA = ""; }
-                    // Fallback: si está vacío, intentar obtener por reflexión (por compatibilidad)
-                    if (rawImgA == null || rawImgA.trim().isEmpty()) {
-                        try {
-                            rawImgA = extractImageValue(a);
-                        } catch (Throwable ignore) { /* ignore */ }
-                    }
-                    String imgA = buildImageUrl(request, rawImgA);
-                    try { System.out.println("ConsultaUsuarioServlet: aerolinea='" + a.getNickname() + "' rawImg='" + rawImgA + "' -> public='" + imgA + "'"); } catch (Throwable t) { System.err.println("Error log aerolinea: " + t.getMessage()); }
-                    out.print("\"imagen\":\"" + escapeJson(imgA) + "\"");
-                    out.print("}");
-                    if (i < aerolineas.size() - 1) out.print(",");
+            for (int i = 0; i < aerolineas.size(); i++) {
+                DtAerolinea a = aerolineas.get(i);
+                out.print("{");
+                out.print("\"id\":\"" + escapeJson(a.getNickname()) + "\",");
+                out.print("\"nombre\":\"" + escapeJson(a.getNombre()) + "\",");
+                out.print("\"tipo\":\"Aerolinea\",");
+                out.print("\"correo\":\"" + escapeJson(a.getEmail()) + "\",");
+                String rawImgA = "";
+                try { rawImgA = a.getImagenUrl() != null ? a.getImagenUrl() : ""; } catch (Throwable ignore) { rawImgA = ""; }
+                if (rawImgA == null || rawImgA.trim().isEmpty()) {
+                    try { rawImgA = extractImageValue(a); } catch (Throwable ignore) {}
                 }
+                String imgA = buildImageUrl(request, rawImgA);
+                out.print("\"imagen\":\"" + escapeJson(imgA) + "\"");
+                out.print("}");
+                if (i < aerolineas.size() - 1) out.print(",");
             }
             out.print("]");
 
             out.print("}");
 
         } catch (Exception e) {
-            System.err.println("💥 ERROR listando usuarios: " + e.getMessage());
-            logError("Detalle del error listando usuarios", e);
             out.print("{\"clientes\":[],\"aerolineas\":[]}");
         }
     }
 
-    private void obtenerUsuarioDetalle(ISistema sistema, String usuarioId, String tipoUsuario, PrintWriter out, HttpServletResponse response, HttpServletRequest request) {
+    private void obtenerUsuarioDetalle(String usuarioId, String tipoUsuario, PrintWriter out, HttpServletResponse response, HttpServletRequest request) {
         try {
+            JuanViajesWS port = getPort(request);
             if ("cliente".equals(tipoUsuario)) {
-                DtCliente cliente = sistema.obtenerCliente(usuarioId);
-                if (cliente != null) {
-                    escribirClienteDetalleJSON(cliente, out, request);
+                DtCliente clienteWs = null;
+                try { clienteWs = port.obtenerCliente(usuarioId); } catch (Exception ex) { clienteWs = null; }
+                if (clienteWs != null) {
+                    escribirClienteDetalleJSON(clienteWs, out, request);
                 } else {
-                    System.out.println("❌ Cliente no encontrado: " + usuarioId);
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     out.print("{\"error\":\"Cliente no encontrado\"}");
                 }
             } else if ("aerolinea".equals(tipoUsuario)) {
-                DtAerolinea aerolinea = sistema.obtenerAerolinea(usuarioId);
-                if (aerolinea != null) {
-                    escribirInfoAerolineaJSON(aerolinea, out, request);
+                DtAerolinea aerolineaWs = null;
+                try { aerolineaWs = port.obtenerAerolinea(usuarioId); } catch (Exception ex) { aerolineaWs = null; }
+                if (aerolineaWs != null) {
+                    escribirInfoAerolineaJSON(aerolineaWs, out, request);
                 } else {
-                    System.out.println("❌ Aerolínea no encontrada: " + usuarioId);
                     response.setStatus(HttpServletResponse.SC_NOT_FOUND);
                     out.print("{\"error\":\"Aerolínea no encontrada\"}");
                 }
@@ -299,60 +258,49 @@ public class ConsultaUsuarioServlet extends HttpServlet {
                 out.print("{\"error\":\"Tipo de usuario no válido\"}");
             }
         } catch (Exception e) {
-            System.err.println("💥 ERROR obteniendo usuario: " + e.getMessage());
-            logError("Detalle del error obteniendo usuario", e);
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error obteniendo usuario: " + escapeJson(e.getMessage()) + "\"}");
         }
     }
 
-    private void obtenerRutasAerolinea(ISistema sistema, String aerolineaId, PrintWriter out) {
+    private void obtenerRutasAerolinea(String aerolineaId, PrintWriter out, HttpServletRequest request) {
         try {
-            List<DtRutaVuelo> rutas = sistema.listarRutasPorAerolinea(aerolineaId);
+            JuanViajesWS port = getPort(request);
+            List<DtRutaVuelo> rutas = null;
+            try { rutas = port.listarRutasPorAerolinea(aerolineaId); } catch (Exception ex) { rutas = null; }
             if (rutas != null) {
                 escribirRutasAerolineaJSON(rutas, out);
             } else {
                 out.print("[]");
             }
         } catch (Exception e) {
-            System.err.println("💥 ERROR obteniendo rutas: " + e.getMessage());
-            logError("Detalle del error obteniendo rutas", e);
             out.print("[]");
         }
     }
 
-    private void obtenerReservasCliente(ISistema sistema, String clienteId, PrintWriter out) {
+    private void obtenerReservasCliente(String clienteId, PrintWriter out, HttpServletRequest request) {
         try {
-            List<DtReserva> reservas = sistema.getReservasCliente(clienteId);
-            if (reservas != null) {
-                escribirReservasClienteJSON(reservas, out);
-            } else {
-                out.print("[]");
-            }
+            JuanViajesWS port = getPort(request);
+            List<DtReserva> reservas = null;
+            try { reservas = port.getReservasCliente(clienteId); } catch (Exception ex) { reservas = new ArrayList<>(); }
+            if (reservas != null) escribirReservasClienteJSON(reservas, out); else out.print("[]");
         } catch (Exception e) {
-            System.err.println("💥 ERROR obteniendo reservas: " + e.getMessage());
-            logError("Detalle del error obteniendo reservas", e);
             out.print("[]");
         }
     }
 
-    private void obtenerPaquetesCliente(ISistema sistema, String clienteId, PrintWriter out) {
+    private void obtenerPaquetesCliente(String clienteId, PrintWriter out, HttpServletRequest request) {
         try {
-            DtCliente cliente = sistema.obtenerCliente(clienteId);
+            JuanViajesWS port = getPort(request);
+            DtCliente cliente = null;
+            try { cliente = port.obtenerCliente(clienteId); } catch (Exception ex) { cliente = null; }
             if (cliente != null) {
                 List<DtPaquete> paquetes = cliente.getPaquetesComprados();
-                if (paquetes != null) {
-                    escribirPaquetesClienteJSON(paquetes, out);
-                } else {
-                    out.print("[]");
-                }
+                if (paquetes != null) escribirPaquetesClienteJSON(paquetes, out); else out.print("[]");
             } else {
-                System.out.println("❌ Cliente no encontrado: " + clienteId);
                 out.print("[]");
             }
         } catch (Exception e) {
-            System.err.println("💥 ERROR obteniendo paquetes: " + e.getMessage());
-            logError("Detalle del error obteniendo paquetes", e);
             out.print("[]");
         }
     }
@@ -372,7 +320,6 @@ public class ConsultaUsuarioServlet extends HttpServlet {
         out.print("\"fechaRegistro\":\"" + (cliente.getFechaAlta() != null ? cliente.getFechaAlta().toString() : "") + "\",");
         out.print("\"cantidadReservas\":" + (cliente.getReservas() != null ? cliente.getReservas().size() : 0) + ",");
         out.print("\"cantidadPaquetes\":" + (cliente.getPaquetesComprados() != null ? cliente.getPaquetesComprados().size() : 0));
-        // añadir imagen si existe
         String img = buildImageUrl(request, cliente.getImagenUrl());
         out.print(",\"imagenUrl\":\"" + escapeJson(img) + "\"");
         out.print("}");
@@ -412,7 +359,6 @@ public class ConsultaUsuarioServlet extends HttpServlet {
             out.print("\"estado\":\"" + escapeJson(String.valueOf(r.getEstado())) + "\",");
             out.print("\"fechaAlta\":\"" + (r.getFechaAlta() != null ? r.getFechaAlta().toString() : "") + "\"");
             out.print("}");
-
             if (i < rutas.size() - 1) out.print(",");
         }
         out.print("]");
@@ -462,7 +408,14 @@ public class ConsultaUsuarioServlet extends HttpServlet {
         if (paquete.getFechaAlta() == null || paquete.getPeriodoValidezDias() == 0) {
             return "";
         }
-        return paquete.getFechaAlta().plusDays(paquete.getPeriodoValidezDias()).toString();
+        try {
+            java.time.LocalDate ld = toLocalDate(paquete.getFechaAlta());
+            if (ld == null) return "";
+            return ld.plusDays(paquete.getPeriodoValidezDias()).toString();
+        } catch (Exception e) {
+            // Si no podemos parsear, devolver cadena vacía en lugar de lanzar
+            return "";
+        }
     }
 
     private String calcularEstadoPaquete(DtPaquete paquete) {
@@ -470,10 +423,28 @@ public class ConsultaUsuarioServlet extends HttpServlet {
             return "Vigente";
         }
 
-        java.time.LocalDate vencimiento = paquete.getFechaAlta().plusDays(paquete.getPeriodoValidezDias());
-        java.time.LocalDate hoy = java.time.LocalDate.now();
+        try {
+            java.time.LocalDate ld = toLocalDate(paquete.getFechaAlta());
+            if (ld == null) return "Vigente";
+            java.time.LocalDate vencimiento = ld.plusDays(paquete.getPeriodoValidezDias());
+            java.time.LocalDate hoy = java.time.LocalDate.now();
+            return vencimiento.isAfter(hoy) ? "Vigente" : "Vencido";
+        } catch (Exception e) {
+            // Si no podemos calcular, asumir vigente para no bloquear funcionalidades
+            return "Vigente";
+        }
+    }
 
-        return vencimiento.isAfter(hoy) ? "Vigente" : "Vencido";
+    // convert DTO LocalDate to java.time.LocalDate
+    private java.time.LocalDate toLocalDate(serviciosweb.LocalDate ld) {
+        if (ld == null) return null;
+        try {
+            String s = ld.toString();
+            if (s == null || s.isBlank()) return null;
+            return java.time.LocalDate.parse(s);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     private String escapeJson(String value) {
@@ -497,3 +468,4 @@ public class ConsultaUsuarioServlet extends HttpServlet {
         }
     }
 }
+

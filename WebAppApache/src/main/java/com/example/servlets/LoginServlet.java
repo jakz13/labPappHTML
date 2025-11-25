@@ -51,17 +51,45 @@ public class LoginServlet extends HttpServlet {
 
         // Timeouts: ponemos varias claves para cubrir diferentes implementaciones (Metro/CXF)
         // Valores en ms
-        ctx.put("javax.xml.ws.client.connectionTimeout", 10000);
-        ctx.put("javax.xml.ws.client.receiveTimeout", 20000);
+        ctx.put("javax.xml.ws.client.connectionTimeout", 1000);
+        ctx.put("javax.xml.ws.client.receiveTimeout", 2000);
         // CXF-specific
-        ctx.put("org.apache.cxf.transport.http.client.connection.timeout", 10000);
-        ctx.put("org.apache.cxf.transport.http.client.receive.timeout", 20000);
+        ctx.put("org.apache.cxf.transport.http.client.connection.timeout", 1000);
+        ctx.put("org.apache.cxf.transport.http.client.receive.timeout", 2000);
 
         // Metro / RI properties (fallback)
-        ctx.put("com.sun.xml.ws.connect.timeout", 10000);
-        ctx.put("com.sun.xml.ws.request.timeout", 20000);
+        ctx.put("com.sun.xml.ws.connect.timeout", 1000);
+        ctx.put("com.sun.xml.ws.request.timeout", 2000);
 
         return port;
+    }
+
+    // Obtener port preferentemente desde ServletContext, si existe; si no, crear uno nuevo.
+    private JuanViajesWS getPort(HttpServletRequest request) {
+        try {
+            Object obj = request.getServletContext().getAttribute("port");
+            if (obj instanceof JuanViajesWS) {
+                JuanViajesWS port = (JuanViajesWS) obj;
+                // Asegurar que tenga el endpoint y timeouts configurados
+                try {
+                    BindingProvider bp = (BindingProvider) port;
+                    Map<String, Object> ctx = bp.getRequestContext();
+                    ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
+                    ctx.put("javax.xml.ws.client.connectionTimeout", 1000);
+                    ctx.put("javax.xml.ws.client.receiveTimeout", 2000);
+                    ctx.put("org.apache.cxf.transport.http.client.connection.timeout", 1000);
+                    ctx.put("org.apache.cxf.transport.http.client.receive.timeout", 2000);
+                    ctx.put("com.sun.xml.ws.connect.timeout", 1000);
+                    ctx.put("com.sun.xml.ws.request.timeout", 2000);
+                } catch (Exception e) {
+                    // si no es BindingProvider o falla, ignorar y fallback a createPort
+                }
+                return port;
+            }
+        } catch (Exception e) {
+            // Ignorar y crear un port nuevo
+        }
+        return createPort();
     }
 
     @Override
@@ -80,7 +108,7 @@ public class LoginServlet extends HttpServlet {
         }
 
         try {
-            JuanViajesWS port = createPort();
+            JuanViajesWS port = getPort(request);
 
             // Primero, intentamos autenticar como cliente:
             List<DtCliente> clientes = null;

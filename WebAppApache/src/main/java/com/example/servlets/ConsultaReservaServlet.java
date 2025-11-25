@@ -1,9 +1,5 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.*;
-import DataTypes.DtVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -11,8 +7,20 @@ import java.io.*;
 import java.lang.reflect.Method;
 import java.util.*;
 
+import serviciosweb.JuanViajesWS;
+import serviciosweb.WebServicesService;
+
 @WebServlet("/api/consulta-reserva")
 public class ConsultaReservaServlet extends HttpServlet {
+
+    private JuanViajesWS getPort(HttpServletRequest request) {
+        try {
+            Object o = request.getServletContext().getAttribute("port");
+            if (o instanceof JuanViajesWS) return (JuanViajesWS) o;
+        } catch (Exception ignored) {}
+        WebServicesService svc = new WebServicesService();
+        return svc.getJuanViajesWSPort();
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
@@ -25,15 +33,15 @@ public class ConsultaReservaServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
+            JuanViajesWS port = getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
             if ("reservas-cliente".equals(action) && usuario != null) {
-                obtenerReservasCliente(sistema, usuario, out);
+                obtenerReservasCliente(usuario, out, request);
             } else if ("reservas-vuelo".equals(action) && vuelo != null) {
-                obtenerReservasVuelo(sistema, vuelo, out);
+                obtenerReservasVuelo(vuelo, out, request);
             } else if ("reserva-cliente-vuelo".equals(action) && usuario != null && vuelo != null) {
-                obtenerReservaClienteEnVuelo(sistema, usuario, vuelo, out);
+                obtenerReservaClienteEnVuelo(usuario, vuelo, out, request);
             } else {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"error\":\"Parámetros inválidos\"}");
@@ -45,26 +53,25 @@ public class ConsultaReservaServlet extends HttpServlet {
         }
     }
 
-    private void obtenerReservasCliente(ISistema sistema, String usuario, PrintWriter out) {
+    private void obtenerReservasCliente(String usuario, PrintWriter out, HttpServletRequest request) {
         try {
-            DtCliente cliente = sistema.obtenerCliente(usuario);
-            if (cliente != null) {
-                List<DtReserva> reservas = cliente.getReservas();
-                if (reservas == null) reservas = Collections.emptyList();
-                escribirReservasJSON(reservas, out);
-            } else {
-                out.print("[]");
-            }
+            JuanViajesWS port = getPort(request);
+            List<?> reservas;
+            try { reservas = port.getReservasCliente(usuario); } catch (Exception ex) { reservas = Collections.emptyList(); }
+            if (reservas == null) reservas = Collections.emptyList();
+            escribirReservasGeneric(reservas, out);
         } catch (Exception e) {
             out.print("[]");
         }
     }
 
-    private void obtenerReservasVuelo(ISistema sistema, String nombreVuelo, PrintWriter out) {
+    private void obtenerReservasVuelo(String nombreVuelo, PrintWriter out, HttpServletRequest request) {
         try {
-            DtVuelo vuelo = sistema.verInfoVueloDt(nombreVuelo);
+            JuanViajesWS port = getPort(request);
+            Object vuelo;
+            try { vuelo = port.verInfoVueloDt(nombreVuelo); } catch (Exception ex) { vuelo = null; }
             if (vuelo != null) {
-                Object reservasObj = vuelo.getReservas();
+                Object reservasObj = getPropAsObject(vuelo, "getReservas", "reservas");
                 Collection<?> reservasColl = null;
                 if (reservasObj instanceof Collection) {
                     reservasColl = (Collection<?>) reservasObj;
@@ -73,68 +80,7 @@ public class ConsultaReservaServlet extends HttpServlet {
                 }
                 if (reservasColl == null) reservasColl = Collections.emptyList();
 
-                List<Map<String, Object>> reservasCompletas = new ArrayList<>();
-
-                for (Object reservaObj : reservasColl) {
-                    Map<String, Object> reservaInfo = new HashMap<>();
-
-                    // Obtener información básica de la reserva
-                    String idReserva = getPropAsString(reservaObj, "getId", "id");
-                    String tipoAsiento = getPropAsString(reservaObj, "getTipoAsiento", "getTipo", "tipoAsiento");
-                    String cantidadPasajes = getPropAsString(reservaObj, "getCantidadPasajes", "cantidadPasajes");
-                    String equipaje = getPropAsString(reservaObj, "getUnidadesEquipajeExtra", "getEquipajeExtra", "equipajeExtra");
-                    String costo = getPropAsString(reservaObj, "getCosto", "costo");
-                    String fecha = getPropAsString(reservaObj, "getFecha", "fecha");
-
-                    // Obtener información del cliente - CORREGIDO
-                    String clienteNickname = getPropAsString(reservaObj, "getCliente", "cliente");
-                    String clienteNombre = "Cliente no disponible";
-
-                    if (clienteNickname != null && !clienteNickname.isEmpty() && !clienteNickname.equals("N/A")) {
-                        try {
-                            // Intentar obtener el DtCliente para obtener nombre y apellido
-                            DtCliente cliente = sistema.obtenerCliente(clienteNickname);
-                            if (cliente != null) {
-                                clienteNombre = cliente.getNombre() + " " + cliente.getApellido();
-                            } else {
-                                // Si no se puede obtener el cliente, usar el nickname
-                                clienteNombre = clienteNickname;
-                            }
-                        } catch (Exception e) {
-                            // Si hay error, usar el nickname
-                            clienteNombre = clienteNickname;
-                        }
-                    }
-
-                    reservaInfo.put("id", idReserva != null ? idReserva : "N/A");
-                    reservaInfo.put("cliente", clienteNombre); // Nombre completo del cliente
-                    reservaInfo.put("clienteNickname", clienteNickname != null ? clienteNickname : "N/A");
-                    reservaInfo.put("tipoAsiento", tipoAsiento != null ? tipoAsiento : "N/A");
-                    reservaInfo.put("cantidadPasajes", cantidadPasajes != null ? cantidadPasajes : "0");
-                    reservaInfo.put("equipajeExtra", equipaje != null ? equipaje : "0");
-                    reservaInfo.put("costo", costo != null ? costo : "0"); // Usar "costo" en lugar de "costoTotal"
-                    reservaInfo.put("fechaReserva", fecha != null ? fecha : "N/A");
-
-                    reservasCompletas.add(reservaInfo);
-                }
-
-                // Convertir a JSON
-                out.print("[");
-                for (int i = 0; i < reservasCompletas.size(); i++) {
-                    Map<String, Object> reserva = reservasCompletas.get(i);
-                    if (i > 0) out.print(",");
-                    out.print("{");
-                    out.print("\"id\":\"" + escapeJson(String.valueOf(reserva.get("id"))) + "\",");
-                    out.print("\"cliente\":\"" + escapeJson(String.valueOf(reserva.get("cliente"))) + "\",");
-                    out.print("\"clienteNickname\":\"" + escapeJson(String.valueOf(reserva.get("clienteNickname"))) + "\",");
-                    out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(reserva.get("tipoAsiento"))) + "\",");
-                    out.print("\"cantidadPasajes\":" + reserva.get("cantidadPasajes") + ",");
-                    out.print("\"equipajeExtra\":" + reserva.get("equipajeExtra") + ",");
-                    out.print("\"costo\":" + reserva.get("costo") + ","); // Mantener como "costo"
-                    out.print("\"fechaReserva\":\"" + escapeJson(String.valueOf(reserva.get("fechaReserva"))) + "\"");
-                    out.print("}");
-                }
-                out.print("]");
+                escribirReservasGeneric(reservasColl, out);
             } else {
                 out.print("[]");
             }
@@ -143,25 +89,23 @@ public class ConsultaReservaServlet extends HttpServlet {
         }
     }
 
-    private void obtenerReservaClienteEnVuelo(ISistema sistema, String usuario, String nombreVuelo, PrintWriter out) {
+    private void obtenerReservaClienteEnVuelo(String usuario, String nombreVuelo, PrintWriter out, HttpServletRequest request) {
         try {
-            DtCliente cliente = sistema.obtenerCliente(usuario);
-            if (cliente == null) { out.print("{\"error\":\"Reserva no encontrada\"}"); return; }
+            JuanViajesWS port = getPort(request);
+            List<?> reservasCliente;
+            try { reservasCliente = port.getReservasCliente(usuario); } catch (Exception ex) { reservasCliente = Collections.emptyList(); }
 
-            List<DtReserva> reservasCliente = cliente.getReservas();
-            if (reservasCliente == null) reservasCliente = Collections.emptyList();
-
-            DtVuelo vuelo = sistema.verInfoVueloDt(nombreVuelo);
+            Object vuelo;
+            try { vuelo = port.verInfoVueloDt(nombreVuelo); } catch (Exception ex) { vuelo = null; }
             if (vuelo == null) { out.print("{\"error\":\"Reserva no encontrada\"}"); return; }
 
-            Object reservasObj = vuelo.getReservas();
+            Object reservasObj = getPropAsObject(vuelo, "getReservas", "reservas");
             Collection<?> reservasVueloColl = reservasObj instanceof Map ? ((Map<?, ?>) reservasObj).values() : (reservasObj instanceof Collection ? (Collection<?>) reservasObj : Collections.emptyList());
 
-            // comparar por id y otros campos
-            for (DtReserva reservaCliente : reservasCliente) {
+            for (Object reservaCliente : reservasCliente) {
+                String idCliente = getPropAsString(reservaCliente, "getId", "id");
                 for (Object rv : reservasVueloColl) {
                     String idRv = getPropAsString(rv, "getId", "id");
-                    String idCliente = String.valueOf(reservaCliente.getId());
                     if (idRv != null && idRv.equals(idCliente)) {
                         escribirReservaDetalleJSON(reservaCliente, out);
                         return;
@@ -175,26 +119,8 @@ public class ConsultaReservaServlet extends HttpServlet {
         }
     }
 
-    // serializar lista de DtReserva
-    private void escribirReservasJSON(List<DtReserva> reservas, PrintWriter out) {
-        out.print("[");
-        for (int i = 0; i < reservas.size(); i++) {
-            DtReserva r = reservas.get(i);
-            if (i > 0) out.print(",");
-            out.print("{");
-            out.print("\"id\":\"" + escapeJson(String.valueOf(r.getId())) + "\",");
-            out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(r.getTipoAsiento())) + "\",");
-            out.print("\"cantidadPasajes\":" + r.getCantidadPasajes() + ",");
-            out.print("\"equipajeExtra\":" + r.getUnidadesEquipajeExtra() + ",");
-            out.print("\"costoTotal\":" + r.getCosto() + ",");
-            out.print("\"fechaReserva\":\"" + escapeJson(String.valueOf(r.getFecha())) + "\"");
-            out.print("}");
-        }
-        out.print("]");
-    }
-
-    // serializar colección genérica de reservas (puede contener DtReserva o Reserva u otros)
-    private void escribirReservasVueloGeneric(Collection<?> reservas, ISistema sistema, PrintWriter out) {
+    // serializar lista/colección de reservas (genérico)
+    private void escribirReservasGeneric(Collection<?> reservas, PrintWriter out) {
         out.print("[");
         boolean first = true;
         for (Object obj : reservas) {
@@ -211,7 +137,6 @@ public class ConsultaReservaServlet extends HttpServlet {
             out.print("{");
             out.print("\"id\":\"" + escapeJson(String.valueOf(id)) + "\",");
             out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(tipoAsiento)) + "\",");
-            // cantidadPasajes and similar try to print as number if possible
             if (isInteger(cantidadPasajes)) out.print("\"cantidadPasajes\":" + cantidadPasajes + ","); else out.print("\"cantidadPasajes\":0,");
             if (isInteger(equipaje)) out.print("\"equipajeExtra\":" + equipaje + ","); else out.print("\"equipajeExtra\":0,");
             if (isDouble(costo)) out.print("\"costoTotal\":" + costo + ","); else out.print("\"costoTotal\":0,");
@@ -221,14 +146,21 @@ public class ConsultaReservaServlet extends HttpServlet {
         out.print("]");
     }
 
-    private void escribirReservaDetalleJSON(DtReserva reserva, PrintWriter out) {
+    private void escribirReservaDetalleJSON(Object reserva, PrintWriter out) {
         out.print("{");
-        out.print("\"id\":\"" + escapeJson(String.valueOf(reserva.getId())) + "\",");
-        out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(reserva.getTipoAsiento())) + "\",");
-        out.print("\"cantidadPasajes\":" + reserva.getCantidadPasajes() + ",");
-        out.print("\"equipajeExtra\":" + reserva.getUnidadesEquipajeExtra() + ",");
-        out.print("\"costoTotal\":" + reserva.getCosto() + ",");
-        out.print("\"fechaReserva\":\"" + escapeJson(String.valueOf(reserva.getFecha())) + "\"");
+        String id = getPropAsString(reserva, "getId", "id");
+        String tipoAsiento = getPropAsString(reserva, "getTipoAsiento", "getTipo", "tipoAsiento");
+        String cantidadPasajes = getPropAsString(reserva, "getCantidadPasajes", "cantidadPasajes");
+        String equipaje = getPropAsString(reserva, "getUnidadesEquipajeExtra", "getEquipajeExtra", "equipajeExtra");
+        String costo = getPropAsString(reserva, "getCosto", "costo");
+        String fecha = getPropAsString(reserva, "getFecha", "fecha");
+
+        out.print("\"id\":\"" + escapeJson(String.valueOf(id)) + "\",");
+        out.print("\"tipoAsiento\":\"" + escapeJson(String.valueOf(tipoAsiento)) + "\",");
+        if (isInteger(cantidadPasajes)) out.print("\"cantidadPasajes\":" + cantidadPasajes + ","); else out.print("\"cantidadPasajes\":0,");
+        if (isInteger(equipaje)) out.print("\"equipajeExtra\":" + equipaje + ","); else out.print("\"equipajeExtra\":0,");
+        if (isDouble(costo)) out.print("\"costoTotal\":" + costo + ","); else out.print("\"costoTotal\":0,");
+        out.print("\"fechaReserva\":\"" + escapeJson(String.valueOf(fecha)) + "\"");
         out.print("}");
     }
 
@@ -251,6 +183,29 @@ public class ConsultaReservaServlet extends HttpServlet {
                 f.setAccessible(true);
                 Object val = f.get(obj);
                 if (val != null) return String.valueOf(val);
+            } catch (Exception ignore) {}
+        }
+        return null;
+    }
+
+    private Object getPropAsObject(Object obj, String... candidateMethods) {
+        if (obj == null) return null;
+        for (String mName : candidateMethods) {
+            try {
+                Method m = obj.getClass().getMethod(mName);
+                Object val = m.invoke(obj);
+                if (val != null) return val;
+            } catch (NoSuchMethodException nsme) {
+                // ignore
+            } catch (Exception ignore) {}
+        }
+        // try fields
+        for (String fName : candidateMethods) {
+            try {
+                java.lang.reflect.Field f = obj.getClass().getDeclaredField(fName);
+                f.setAccessible(true);
+                Object val = f.get(obj);
+                if (val != null) return val;
             } catch (Exception ignore) {}
         }
         return null;

@@ -1,13 +1,14 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtRutaVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.List;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtRutaVuelo;
+import com.example.util.PortUtils;
 
 @WebServlet("/rutasMasVisitadas")
 public class RutasMasVisitadasServlet extends HttpServlet {
@@ -20,18 +21,17 @@ public class RutasMasVisitadasServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
-            //Obtener las rutas más visitadas como DTOs
-            List<DtRutaVuelo> rutasTop = sistema.obtenerTopRutasMasVisitadas(5);
+            List<DtRutaVuelo> rutasTop = null;
+            try { rutasTop = port.obtenerTopRutasMasVisitadas(5); } catch (Exception ex) { rutasTop = java.util.Collections.emptyList(); }
+            if (rutasTop == null) rutasTop = java.util.Collections.emptyList();
 
-            // Convertir a JSON manualmente
             out.print("[");
             for (int i = 0; i < rutasTop.size(); i++) {
                 DtRutaVuelo ruta = rutasTop.get(i);
-
                 if (i > 0) out.print(",");
-
                 out.print("{");
                 out.print("\"nombreRuta\":\"" + escapeJson(ruta.getNombre()) + "\",");
                 out.print("\"visitas\":" + ruta.getContadorVisitas() + ",");

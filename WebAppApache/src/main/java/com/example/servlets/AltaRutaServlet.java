@@ -1,10 +1,6 @@
 // java
 package com.example.servlets;
 
-import DataTypes.DtAerolinea;
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtRutaVuelo;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
@@ -16,6 +12,12 @@ import java.time.LocalDate;
 import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
+import java.util.Arrays;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtAerolinea;
+import serviciosweb.DtRutaVuelo;
+import com.example.util.PortUtils;
 
 @WebServlet("/altaRuta")
 @MultipartConfig(fileSizeThreshold = 1024 * 1024, // 1MB
@@ -31,8 +33,8 @@ public class AltaRutaServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
             // Obtener aerolínea desde la sesión
             HttpSession session = request.getSession(false);
@@ -107,9 +109,9 @@ public class AltaRutaServlet extends HttpServlet {
             }
 
             // Comprobar duplicado por nombre en esta aerolínea
-            List<DtRutaVuelo> rutasExistentes = sistema.listarRutasPorAerolinea(nombreAerolinea);
+            List<serviciosweb.DtRutaVuelo> rutasExistentes = port.listarRutasPorAerolinea(nombreAerolinea);
             if (rutasExistentes != null) {
-                for (DtRutaVuelo r : rutasExistentes) {
+                for (serviciosweb.DtRutaVuelo r : rutasExistentes) {
                     if (r.getNombre() != null && r.getNombre().equalsIgnoreCase(nombre)) {
                         response.setStatus(HttpServletResponse.SC_CONFLICT);
                         out.print("{\"success\": false, \"error\": \"Ya existe una ruta con ese nombre para la aerolínea\"}");
@@ -172,8 +174,8 @@ public class AltaRutaServlet extends HttpServlet {
             if (videoUrl != null) videoUrl = videoUrl.trim();
             if (videoUrl != null && videoUrl.isEmpty()) videoUrl = null;
 
-            // Obtener aerolínea (DTO) desde la lógica
-            DtAerolinea aerolinea = sistema.obtenerAerolinea(nombreAerolinea);
+            // Obtener aerolínea (DTO) desde el port
+            DtAerolinea aerolinea = port.obtenerAerolinea(nombreAerolinea);
             if (aerolinea == null) {
                 response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\": false, \"error\": \"Aerolínea no encontrada\"}");
@@ -237,83 +239,24 @@ public class AltaRutaServlet extends HttpServlet {
                 } catch (Throwable ignore) { /* no bloquear la operación por esto */ }
             }
 
-            // Llamada a la lógica de negocio
-            sistema.altaRutaVuelo(
-                    nombre, descripcion, descripcionCorta, aerolinea, ciudadOrigen, ciudadDestino, hora,
-                    fechaAlta, costoTurista, costoEjecutivo, costoEquipajeExtra, categorias, imagenUrl, videoUrl
-            );
+            // Llamada al web service para altaRutaVuelo
+            try {
+                java.util.List<String> cats = categorias == null ? null : Arrays.asList(categorias);
+                port.altaRutaVuelo(nombre, descripcion, descripcionCorta, nombreAerolinea, ciudadOrigen, ciudadDestino, hora, fechaAlta.toString(), costoTurista, costoEjecutivo, costoEquipajeExtra, cats, imagenUrl, videoUrl);
+            } catch (Exception svcEx) {
+                System.err.println("AltaRutaServlet: error al invocar port.altaRutaVuelo -> " + svcEx.getMessage());
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print("{\"success\": false, \"error\": \"No se pudo crear la ruta\"}");
+                return;
+            }
 
             System.out.println("AltaRutaServlet: Video URL guardada: " + videoUrl);
 
-            // Intentar persistir la URL de la imagen en la lógica de negocio (si existe alguna API)
+            // Intentar persistir la URL de la imagen en la lógica de negocio (si existe alguna API) - no hay método específico en el servicio, marcar como no persistida
             boolean imagenPersistida = false;
-            String persistenceDebug = "";
-            if (imagenUrl != null && !imagenUrl.isEmpty()) {
-                try {
-                    Class<?> sysClass = sistema.getClass();
-                    java.lang.reflect.Method[] methods = sysClass.getMethods();
-                    for (java.lang.reflect.Method m : methods) {
-                        String mname = m.getName().toLowerCase();
-                        // heurística: métodos que manejen imagenes o rutas
-                        if (mname.contains("imagen") || mname.contains("ruta") || mname.contains("setimagen") || mname.contains("setimagenurl") || mname.contains("agregarimagen")) {
-                            Class<?>[] pts = m.getParameterTypes();
-                            try {
-                                // intentar (String nombre, String imagenUrl)
-                                if (pts.length == 2 && pts[0] == String.class && pts[1] == String.class) {
-                                    m.invoke(sistema, nombre, imagenUrl);
-                                    imagenPersistida = true;
-                                    persistenceDebug = "invoked " + m.getName() + "(nombre, imagenUrl)";
-                                    break;
-                                }
-                                // intentar (String imagenUrl, String nombre)
-                                if (pts.length == 2 && pts[0] == String.class && pts[1] == String.class) {
-                                    // already covered
-                                }
-                                // intentar (Object rutaDTO, String url) usando verInfoRuta
-                                if (pts.length == 2 && !pts[0].isPrimitive() && pts[1] == String.class) {
-                                    // intentar obtener DTO de ruta
-                                    try {
-                                        java.lang.reflect.Method getter = null;
-                                        for (java.lang.reflect.Method gm : methods) {
-                                            String gmn = gm.getName().toLowerCase();
-                                            if (gmn.contains("ver") && gmn.contains("ruta")) { getter = gm; break; }
-                                            if (gmn.contains("get") && gmn.contains("ruta")) { getter = gm; break; }
-                                        }
-                                        if (getter != null) {
-                                            Object rutaDto = null;
-                                            try { rutaDto = getter.invoke(sistema, nombre); } catch (IllegalArgumentException ia) {
-                                                // quizás getter solo toma otro tipo; intentar sin args
-                                                try { rutaDto = getter.invoke(sistema); } catch (Exception ex) { rutaDto = null; }
-                                            }
-                                            if (rutaDto != null) {
-                                                m.invoke(sistema, rutaDto, imagenUrl);
-                                                imagenPersistida = true;
-                                                persistenceDebug = "invoked " + m.getName() + "(rutaDto, imagenUrl) via " + getter.getName();
-                                                break;
-                                            }
-                                        }
-                                    } catch (Exception ex2) {
-                                        // ignorar
-                                    }
-                                }
-                            } catch (Exception invokeEx) {
-                                // no detenerse; registrar debug
-                                System.out.println("AltaRutaServlet: fallo al invocar " + m.getName() + " -> " + invokeEx.getMessage());
-                            }
-                        }
-                    }
-                    if (!imagenPersistida) persistenceDebug = "no suitable method found or all invocations failed";
-                } catch (Throwable e) {
-                    System.out.println("AltaRutaServlet: error buscando métodos para persistir imagen -> " + e.getMessage());
-                    persistenceDebug = "error: " + e.getMessage();
-                }
-            } else {
-                persistenceDebug = "no imagenUrl to persist";
-            }
+            String persistenceDebug = "no suitable method in port to persist route image";
 
             // Devolver éxito e imagenUrl (si se guardó)
-            // incluir debug opcional sobre persistencia de imagen
-            // Asegurar que se devuelva SOLO el filename
             try {
                 imagenUrl = extractFilenameFromAnyPath(imagenUrl);
             } catch (Throwable ignore) {}

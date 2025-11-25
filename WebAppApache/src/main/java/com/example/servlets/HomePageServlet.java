@@ -1,11 +1,6 @@
 // src/main/java/com/example/servlets/HomePageServlet.java
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtRutaVuelo;
-import DataTypes.DtPaquete;
-import DataTypes.DtAerolinea;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -13,6 +8,13 @@ import java.io.*;
 import java.util.List;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtRutaVuelo;
+import serviciosweb.DtPaquete;
+import serviciosweb.DtAerolinea;
+import com.example.util.PortUtils;
+import serviciosweb.EstadoRuta;
 
 @WebServlet("/homeData")
 public class HomePageServlet extends HttpServlet {
@@ -24,55 +26,43 @@ public class HomePageServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
-            // Obtener rutas de todas las aerolíneas
             List<DtRutaVuelo> rutasDestacadas = new ArrayList<>();
-            List<DtAerolinea> aerolineas = sistema.listarAerolineas();
+
+            List<DtAerolinea> aerolineas = null;
+            try { aerolineas = port.listarAerolineas(); } catch (Exception e) { aerolineas = new ArrayList<>(); }
+            if (aerolineas == null) aerolineas = new ArrayList<>();
 
             for (DtAerolinea aerolinea : aerolineas) {
                 try {
-                    List<DtRutaVuelo> rutasAerolinea = sistema.listarRutasPorAerolinea(aerolinea.getNickname());
-                    // Filtrar solo rutas confirmadas
+                    List<serviciosweb.DtRutaVuelo> rutasAerolinea = port.listarRutasPorAerolinea(aerolinea.getNickname());
+                    if (rutasAerolinea == null) continue;
                     for (DtRutaVuelo ruta : rutasAerolinea) {
-                        if (ruta.getEstado() != null && "CONFIRMADA".equals(ruta.getEstado().name())) {
+                        if (ruta.getEstado() != null && "CONFIRMADA".equalsIgnoreCase(String.valueOf(ruta.getEstado()))) {
                             rutasDestacadas.add(ruta);
                             if (rutasDestacadas.size() >= 3) break;
                         }
                     }
                     if (rutasDestacadas.size() >= 3) break;
                 } catch (Exception e) {
-                    // Si hay error con una aerolínea, continuar con la siguiente
                     continue;
                 }
             }
 
-            // Obtener paquetes disponibles y filtrar los que tienen costo > 0
-            List<DtPaquete> paquetesDestacados = sistema.listarPaquetes();
-            if (paquetesDestacados != null) {
-                paquetesDestacados = paquetesDestacados.stream()
-                        .filter(paquete -> paquete.getCosto() > 0)
-                        .collect(Collectors.toList());
-            } else {
-                paquetesDestacados = new ArrayList<>();
-            }
+            List<DtPaquete> paquetesDestacados = null;
+            try { paquetesDestacados = port.listarPaquetes(); } catch (Exception e) { paquetesDestacados = new ArrayList<>(); }
+            if (paquetesDestacados == null) paquetesDestacados = new ArrayList<>();
+            paquetesDestacados = paquetesDestacados.stream().filter(paquete -> paquete.getCosto() > 0).collect(Collectors.toList());
+            if (paquetesDestacados.size() > 2) paquetesDestacados = paquetesDestacados.subList(0, 2);
 
-            if (paquetesDestacados.size() > 2) {
-                paquetesDestacados = paquetesDestacados.subList(0, 2);
-            }
-
-            // Obtener aerolíneas recomendadas (máximo 4)
             List<DtAerolinea> aerolineasRecomendadas = aerolineas;
-            if (aerolineasRecomendadas.size() > 4) {
-                aerolineasRecomendadas = aerolineasRecomendadas.subList(0, 4);
-            }
+            if (aerolineasRecomendadas.size() > 4) aerolineasRecomendadas = aerolineasRecomendadas.subList(0, 4);
 
-            // Construir JSON response
             StringBuilder json = new StringBuilder();
             json.append("{");
 
-            // Rutas destacadas
             json.append("\"rutasDestacadas\":[");
             for (int i = 0; i < rutasDestacadas.size(); i++) {
                 DtRutaVuelo ruta = rutasDestacadas.get(i);
@@ -93,7 +83,6 @@ public class HomePageServlet extends HttpServlet {
             }
             json.append("],");
 
-            // Paquetes destacados
             json.append("\"paquetesDestacados\":[");
             for (int i = 0; i < paquetesDestacados.size(); i++) {
                 DtPaquete paquete = paquetesDestacados.get(i);

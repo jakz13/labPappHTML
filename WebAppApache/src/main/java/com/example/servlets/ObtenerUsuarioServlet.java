@@ -1,14 +1,15 @@
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
-import DataTypes.DtCliente;
-import DataTypes.DtAerolinea;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.nio.file.Paths;
+
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtCliente;
+import serviciosweb.DtAerolinea;
+import com.example.util.PortUtils;
 
 @WebServlet("/api/usuario/actual")
 public class ObtenerUsuarioServlet extends HttpServlet {
@@ -28,11 +29,12 @@ public class ObtenerUsuarioServlet extends HttpServlet {
                 return;
             }
 
-            ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
+            JuanViajesWS port = PortUtils.getPort(request);
+            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
             if ("cliente".equals(tipoUsuario)) {
-                DtCliente dtCliente = sistema.obtenerCliente(nickname);
+                DtCliente dtCliente = null;
+                try { dtCliente = port.obtenerCliente(nickname); } catch (Exception ex) { dtCliente = null; }
                 if (dtCliente != null) {
                     String imagen = "";
                     try { imagen = dtCliente.getImagenUrl() != null ? dtCliente.getImagenUrl() : ""; } catch (Throwable t) { imagen = ""; }
@@ -62,7 +64,8 @@ public class ObtenerUsuarioServlet extends HttpServlet {
                     out.print("{\"success\":false, \"error\":\"Cliente no encontrado\"}");
                 }
             } else if ("aerolinea".equals(tipoUsuario)) {
-                DtAerolinea dtAerolinea = sistema.obtenerAerolinea(nickname);
+                DtAerolinea dtAerolinea = null;
+                try { dtAerolinea = port.obtenerAerolinea(nickname); } catch (Exception ex) { dtAerolinea = null; }
                 if (dtAerolinea != null) {
 
                     String imagen = "";
