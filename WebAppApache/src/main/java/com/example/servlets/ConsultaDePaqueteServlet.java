@@ -1,5 +1,10 @@
 package com.example.servlets;
 
+import com.example.util.PortUtils;
+import serviciosweb.JuanViajesWS;
+import serviciosweb.DtPaquete;
+import serviciosweb.DtItemPaquete;
+import serviciosweb.DtRutaVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
@@ -7,17 +12,35 @@ import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
-import serviciosweb.JuanViajesWS;
-import serviciosweb.DtPaquete;
-import serviciosweb.DtItemPaquete;
-import serviciosweb.DtRutaVuelo;
-import com.example.util.PortUtils;
-
 @WebServlet("/consulta-paquete")
-public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servlet
+public class ConsultaDePaqueteServlet extends HttpServlet {
+
+    private JuanViajesWS servicioWeb;
+
+    private void enviarError(HttpServletResponse response, String mensaje, int statusCode) throws IOException {
+        response.setStatus(statusCode);
+        try (PrintWriter out = response.getWriter()) {
+            out.print("{\"error\":\"" + escapeJson(mensaje) + "\"}");
+        }
+    }
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            // No inicializamos el servicio aquí, lo haremos en cada request usando PortUtils
+            System.out.println("✅ ConsultaDePaqueteServerlet inicializado - Usará PortUtils para obtener servicio web");
+        } catch (Exception e) {
+            System.err.println("❌ Error inicializando servlet: " + e.getMessage());
+            e.printStackTrace();
+            throw new ServletException("No se pudo inicializar el servlet", e);
+        }
+    }
 
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        // Obtener el servicio web usando PortUtils
+        servicioWeb = PortUtils.getPort(request);
+
         String action = request.getParameter("action");
         String paqueteId = request.getParameter("paquete");
         String rutaId = request.getParameter("ruta");
@@ -25,10 +48,13 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
 
-        try (PrintWriter out = response.getWriter()) {
-            JuanViajesWS port = PortUtils.getPort(request);
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+        // Verificar que el servicio esté disponible
+        if (servicioWeb == null) {
+            enviarError(response, "Servicio web no disponible", HttpServletResponse.SC_SERVICE_UNAVAILABLE);
+            return;
+        }
 
+        try (PrintWriter out = response.getWriter()) {
             System.out.println("=== CONSULTA PAQUETE ===");
             System.out.println("Action: " + action);
             System.out.println("Paquete: " + paqueteId);
@@ -36,13 +62,13 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
 
             if ("listar-paquetes".equals(action)) {
                 System.out.println("Listando todos los paquetes con información básica de rutas");
-                listarPaquetesConRutas(out, port);
+                listarPaquetesConRutas(out);
             } else if ("obtener-paquete".equals(action) && paqueteId != null) {
                 System.out.println("Obteniendo información detallada del paquete: " + paqueteId);
-                obtenerPaqueteDetalle(paqueteId, out, response, port);
+                obtenerPaqueteDetalle(paqueteId, out, response);
             } else if ("obtener-ruta".equals(action) && paqueteId != null && rutaId != null) {
                 System.out.println("Obteniendo ruta " + rutaId + " del paquete " + paqueteId);
-                obtenerRutaDetalle(paqueteId, rutaId, out, response, port);
+                obtenerRutaDetalle(paqueteId, rutaId, out, response);
             } else {
                 enviarError(response, "Parámetros inválidos. Acciones válidas: listar-paquetes, obtener-paquete, obtener-ruta",
                         HttpServletResponse.SC_BAD_REQUEST);
@@ -55,9 +81,9 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
         }
     }
 
-    private void listarPaquetesConRutas(PrintWriter out, JuanViajesWS port) {
+    private void listarPaquetesConRutas(PrintWriter out) {
         try {
-            List<DtPaquete> paquetes = port.listarPaquetes();
+            List<DtPaquete> paquetes = servicioWeb.listarPaquetes();
             if (paquetes == null) {
                 paquetes = new ArrayList<>();
             }
@@ -70,14 +96,14 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
         }
     }
 
-    private void obtenerPaqueteDetalle(String paqueteId, PrintWriter out, HttpServletResponse response, JuanViajesWS port) throws IOException {
+    private void obtenerPaqueteDetalle(String paqueteId, PrintWriter out, HttpServletResponse response) throws IOException {
         try {
             System.out.println("🔍 Buscando paquete: " + paqueteId);
-            DtPaquete paquete = port.obtenerDtPaquete(paqueteId);
+            DtPaquete paquete = servicioWeb.obtenerDtPaquete(paqueteId);
 
             if (paquete != null) {
                 System.out.println("📋 Paquete obtenido: " + paquete.getNombre());
-                List<DtItemPaquete> items = port.getDtItemRutasPaquete(paqueteId);
+                List<DtItemPaquete> items = servicioWeb.getDtItemRutasPaquete(paqueteId);
                 if (items == null) {
                     items = new ArrayList<>();
                 }
@@ -94,18 +120,18 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
         }
     }
 
-    private void obtenerRutaDetalle(String paqueteId, String rutaId, PrintWriter out, HttpServletResponse response, JuanViajesWS port) throws IOException {
+    private void obtenerRutaDetalle(String paqueteId, String rutaId, PrintWriter out, HttpServletResponse response) throws IOException {
         try {
             System.out.println("🔍 Buscando ruta " + rutaId + " en paquete " + paqueteId);
 
-            DtPaquete paquete = port.obtenerDtPaquete(paqueteId);
+            DtPaquete paquete = servicioWeb.obtenerDtPaquete(paqueteId);
             if (paquete == null) {
                 System.out.println("❌ Paquete no encontrado: " + paqueteId);
                 enviarError(response, "Paquete no encontrado", HttpServletResponse.SC_NOT_FOUND);
                 return;
             }
 
-            List<DtItemPaquete> items = port.getDtItemRutasPaquete(paqueteId);
+            List<DtItemPaquete> items = servicioWeb.getDtItemRutasPaquete(paqueteId);
             DtItemPaquete itemEncontrado = null;
 
             if (items != null) {
@@ -132,9 +158,6 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
             enviarError(response, "Error obteniendo ruta: " + e.getMessage(), HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
     }
-
-
-
 
     private void escribirPaquetesConRutasBasicasJSON(List<DtPaquete> paquetes, PrintWriter out) {
         out.print("[");
@@ -266,12 +289,4 @@ public class ConsultaDePaqueteServlet extends HttpServlet { // Corregido: Servle
                 .replace("\r", "\\r")
                 .replace("\t", "\\t");
     }
-
-    private void enviarError(HttpServletResponse response, String mensaje, int statusCode) throws IOException {
-        response.setStatus(statusCode);
-        try (PrintWriter out = response.getWriter()) {
-            out.print("{\"error\":" + (mensaje == null ? "\"\"" : ("\"" + escapeJson(mensaje) + "\"")) + "}");
-        }
-    }
 }
-

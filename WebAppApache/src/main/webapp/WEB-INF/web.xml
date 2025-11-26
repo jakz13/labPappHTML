@@ -20,7 +20,10 @@
         <!-- Esta es la página que se carga por defecto al entrar -->
         <welcome-file>PaginaPrincipal.jsp</welcome-file>
     </welcome-file-list>
-
+    <context-param>
+        <param-name>soap.endpoint</param-name>
+        <param-value>http://localhost:8080/JuanViajesWS</param-value>
+    </context-param>
     <!-- Listener que carga los datos desde la BD al iniciar el contexto (respaldo a @WebListener)
     <listener>
         <listener-class>com.examples.servlets.CargarDatosBD</listener-class>

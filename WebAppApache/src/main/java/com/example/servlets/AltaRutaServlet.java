@@ -34,7 +34,8 @@ public class AltaRutaServlet extends HttpServlet {
 
         try {
             JuanViajesWS port = PortUtils.getPort(request);
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+            // Reemplazo la llamada redundante a cargarDesdeBd() por un comentario; la inicialización
+            // ahora se realiza de forma centralizada en PortUtils.getPort(request).
 
             // Obtener aerolínea desde la sesión
             HttpSession session = request.getSession(false);

@@ -20,7 +20,7 @@ public class CargarDatosBD implements ServletContextListener {
         try {
             JuanViajesWS port = service.getJuanViajesWSPort();
             // configurar endpoint dinámico si hace falta (opcional)
-            port.cargarDesdeBd();
+
             // Guardar el port en el ServletContext para que los servlets lo reutilicen
             try {
                 sce.getServletContext().setAttribute("port", port);

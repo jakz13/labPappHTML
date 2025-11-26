@@ -33,7 +33,7 @@ public class VerificarPermisosVueloServlet extends HttpServlet {
 
                 if (usuarioNickname != null && tipoUsuario != null) {
                     JuanViajesWS port = PortUtils.getPort(request);
-                    try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+
 
                     boolean esAerolineaDueña = false;
                     boolean tieneReservaCliente = false;

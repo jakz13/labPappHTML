@@ -38,7 +38,7 @@ public class GetRutaServlet extends HttpServlet {
         // Usar WS remoto
         JuanViajesWS port = getPort(request);
         try {
-            port.cargarDesdeBd();
+
         } catch (Exception ignored) {}
         List<DtRutaVuelo> rutas = null;
         try {

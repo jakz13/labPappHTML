@@ -60,6 +60,21 @@
             <artifactId>MiProyectoSwing</artifactId>
             <version>1.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- CXF logging feature to print SOAP request/response for debugging -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-features-logging</artifactId>
+            <version>4.0.3</version>
+        </dependency>
+
+        <!-- SLF4J simple to ensure logs appear on the console in the dev environment -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>2.0.9</version>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>

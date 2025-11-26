@@ -34,7 +34,6 @@ public class CompraPaqueteServlet extends HttpServlet {
             System.out.println("Cliente: " + clienteId);
 
             JuanViajesWS port = PortUtils.getPort(request);
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
             if ("listar-paquetes-disponibles".equals(action)) {
                 System.out.println("Listando paquetes VÁLIDOS para compra");
@@ -80,8 +79,9 @@ public class CompraPaqueteServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            JuanViajesWS port = PortUtils.getPort(request);
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+            serviciosweb.JuanViajesWS port = PortUtils.getPort(request);
+            // Inicialización centralizada: PortUtils (y SoapStartupListener) se encarga de llamar cargarDesdeBd() una vez al inicio.
+            // Evitar invocar cargarDesdeBd() en cada petición para no provocar condiciones de carrera en el servicio remoto.
 
             if ("realizar-compra".equals(action)) {
                 realizarCompraPaquete(port, request, out, response);
@@ -379,4 +379,3 @@ public class CompraPaqueteServlet extends HttpServlet {
     }
 
 }
-

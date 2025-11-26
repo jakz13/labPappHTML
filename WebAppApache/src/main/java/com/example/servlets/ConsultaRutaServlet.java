@@ -31,7 +31,7 @@ public class ConsultaRutaServlet extends HttpServlet {
 
         try {
             JuanViajesWS port = PortUtils.getPort(request);
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+            // Inicialización centralizada: PortUtils/SoapStartupListener se encarga de cargar datos en startup.
 
             // === CONTAR LA VISITA A ESTA RUTA ESPECÍFICA ===
             //port.incrementarVisitasRuta(nombreRuta.trim());

@@ -27,7 +27,7 @@ public class AltaVueloServlet extends HttpServlet {
 
         try {
             JuanViajesWS port = PortUtils.getPort(request);
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+
 
             // Obtener aerolínea desde la sesión
             HttpSession session = request.getSession(false);

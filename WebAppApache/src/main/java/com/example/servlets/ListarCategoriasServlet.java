@@ -1,16 +1,17 @@
-// src/main/java/com/example/servlets/ListarCategoriasServlet.java
+// ListarCategoriasServlet.java
 package com.example.servlets;
 
+import com.example.util.PortUtils;
+import serviciosweb.DtCategoria;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
-import java.util.*;
-
-import com.example.usecases.CategoriasUseCase;
+import java.util.List;
 
 @WebServlet("/listarCategorias")
 public class ListarCategoriasServlet extends HttpServlet {
+
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 
@@ -19,36 +20,27 @@ public class ListarCategoriasServlet extends HttpServlet {
         PrintWriter out = response.getWriter();
 
         try {
-            // Obtener categorías siempre desde el port SOAP a través del caso de uso centralizado
-            List<String> categorias = CategoriasUseCase.getCategorias(request, true);
+            // Obtener el port usando PortUtils
+            serviciosweb.JuanViajesWS port = PortUtils.getPort(request);
 
-            // Añadir cabeceras diagnósticas para facilitar depuración desde el cliente
-            try {
-                response.setHeader("X-Categorias-Count", String.valueOf(categorias.size()));
-                String sample = categorias.stream().limit(3).collect(java.util.stream.Collectors.joining(","));
-                response.setHeader("X-Categorias-Sample", sample);
-            } catch (Exception ignored) {}
+            List<DtCategoria> categorias = port.listarCategorias();
 
-            // Construir JSON array simple y enviarlo
-            StringBuilder sb = new StringBuilder();
-            sb.append("[");
-            for (int i = 0; i < categorias.size(); i++) {
-                if (i > 0) sb.append(",");
-                sb.append("\"").append(categorias.get(i).replace("\"","\\\"")).append("\"");
+            System.out.println("Cantidad de categorías encontradas: " + categorias.size());
+            for (DtCategoria c : categorias) {
+                System.out.println("Categoría: " + c.getNombre());
             }
-            sb.append("]");
-            out.print(sb.toString());
+
+            out.print("[");
+            for (int i = 0; i < categorias.size(); i++) {
+                DtCategoria c = categorias.get(i);
+                out.print("{\"nombre\":\"" + c.getNombre() + "\"}");
+                if (i < categorias.size() - 1) out.print(",");
+            }
+            out.print("]");
 
         } catch (Exception e) {
-            System.err.println("ListarCategoriasServlet: error al listar categorías: " + e.getMessage());
-            e.printStackTrace();
-            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("[]");
+            e.printStackTrace();
         }
-    }
-
-    private String escapeJson(String value) {
-        if (value == null) return "";
-        return value.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n", "\\n").replace("\r", "\\r");
     }
 }

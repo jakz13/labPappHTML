@@ -56,7 +56,7 @@ public class ListarRutasServlet extends HttpServlet {
             }
 
             JuanViajesWS port = getPort(request);
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+
 
             List<DtRutaVuelo> rutas = null;
             try {

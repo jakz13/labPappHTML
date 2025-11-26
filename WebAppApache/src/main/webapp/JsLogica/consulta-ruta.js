@@ -4,11 +4,61 @@ let vueloSeleccionado = null;
 let usuarioInfo = null;
 let rutasCargadas = []; // <--- guarda las rutas reales de la aerolínea
 
-// Inicialización
+// Función para restaurar estado al recargar
+function restaurarEstado() {
+    const aerolineaGuardada = sessionStorage.getItem('consultaRuta_aerolinea');
+    const categoriaGuardada = sessionStorage.getItem('consultaRuta_categoria');
+    const rutaSeleccionadaGuardada = sessionStorage.getItem('consultaRuta_rutaSeleccionada');
+
+    if (aerolineaGuardada) {
+        // Establecer el valor primero
+        document.getElementById('aerolinea').value = aerolineaGuardada;
+
+        // Esperar a que el DOM se actualice y luego cargar rutas
+        setTimeout(() => {
+            // Disparar el cambio para cargar rutas
+            const event = new Event('change');
+            document.getElementById('aerolinea').dispatchEvent(event);
+
+            // Esperar a que las rutas se carguen antes de restaurar selecciones
+            const checkRutasCargadas = setInterval(() => {
+                if (rutasCargadas.length > 0) {
+                    clearInterval(checkRutasCargadas);
+
+                    // Restaurar categoría
+                    if (categoriaGuardada) {
+                        document.getElementById('categoria').value = categoriaGuardada;
+                        // Aplicar filtros si hay categoría
+                        setTimeout(() => aplicarFiltros(), 100);
+                    }
+
+                    // Restaurar ruta seleccionada
+                    if (rutaSeleccionadaGuardada) {
+                        const ruta = rutasCargadas.find(r => r.nombre === rutaSeleccionadaGuardada);
+                        if (ruta) {
+                            // Esperar un poco más para asegurar que la UI esté lista
+                            setTimeout(() => {
+                                seleccionarRuta(rutaSeleccionadaGuardada);
+                            }, 300);
+                        }
+                    }
+                }
+            }, 100);
+
+            // Timeout de seguridad
+            setTimeout(() => clearInterval(checkRutasCargadas), 3000);
+        }, 200);
+    }
+}
+
+// Inicialización CORREGIDA
 document.addEventListener('DOMContentLoaded', function() {
     cargarAerolineas();
-    cargarCategorias(); // <-- agregado: cargar las categorías al iniciar
+    cargarCategorias();
     configurarEventListeners();
+
+    // Restaurar estado después de que todo esté configurado
+    setTimeout(restaurarEstado, 500);
 });
 
 // Cargar aerolíneas desde backend
@@ -47,6 +97,17 @@ function cargarCategorias() {
 }
 
 function configurarEventListeners() {
+    // ========== GUARDAR EN SESSIONSTORAGE ==========
+    document.getElementById('aerolinea').addEventListener('change', function() {
+        sessionStorage.setItem('consultaRuta_aerolinea', this.value);
+        sessionStorage.removeItem('consultaRuta_rutaSeleccionada'); // Limpiar ruta al cambiar aerolínea
+    });
+
+    document.getElementById('categoria').addEventListener('change', function() {
+        sessionStorage.setItem('consultaRuta_categoria', this.value);
+    });
+    // ========== FIN GUARDAR EN SESSIONSTORAGE ==========
+
     // Aerolínea -> rutas
     document.getElementById('aerolinea').addEventListener('change', function() {
         const aerolinea = this.value;
@@ -83,7 +144,7 @@ function configurarEventListeners() {
         aplicarFiltros();
     });
 
-    // Botón limpiar
+    // Botón limpiar - CORREGIDO
     const btnLimpiar = document.getElementById('btnLimpiar');
     if (btnLimpiar) btnLimpiar.addEventListener('click', function() {
         limpiarFiltros();
@@ -97,6 +158,27 @@ function configurarEventListeners() {
         });
     }
 }
+
+// Función limpiarFiltros COMPLETA - AÑADIR ESTA FUNCIÓN
+function limpiarFiltros() {
+    // Limpiar sessionStorage
+    sessionStorage.removeItem('consultaRuta_aerolinea');
+    sessionStorage.removeItem('consultaRuta_categoria');
+    sessionStorage.removeItem('consultaRuta_rutaSeleccionada');
+
+    // Limpiar UI
+    document.getElementById('aerolinea').value = '';
+    document.getElementById('categoria').value = '';
+    rutasCargadas = [];
+    document.getElementById('listaRutas').innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
+    document.getElementById('vuelosAsociados').innerHTML = '';
+    document.getElementById('infoRuta').style.display = 'none';
+    document.getElementById('infoVuelo').style.display = 'none';
+    rutaSeleccionada = null;
+    vueloSeleccionado = null;
+}
+
+// [El resto de tus funciones permanecen igual: cargarRutas, seleccionarRuta, mostrarDetallesRuta, etc.]
 
 function cargarRutas(rutas) {
     const container = document.getElementById('listaRutas');
@@ -131,6 +213,7 @@ function cargarRutas(rutas) {
 
 function seleccionarRuta(nombreRuta) {
     console.log('🔍 Seleccionando ruta:', nombreRuta);
+    sessionStorage.setItem('consultaRuta_rutaSeleccionada', nombreRuta);
 
     // ✅ UNA SOLA LLAMADA: Obtener detalles Y contar visita
     fetch(`${CONTEXT_PATH}/consultaRuta?nombreRuta=${encodeURIComponent(nombreRuta)}`)
@@ -153,10 +236,15 @@ function seleccionarRuta(nombreRuta) {
             document.querySelectorAll('.ruta-card').forEach(card => {
                 card.classList.remove('border-primary', 'bg-light');
             });
-            try {
-                event.currentTarget.classList.add('border-primary', 'bg-light');
-            } catch (e) {
-                // no hacemos nada si no existe event
+
+            // Encontrar y marcar la tarjeta seleccionada
+            const todasLasTarjetas = document.querySelectorAll('.ruta-card');
+            for (let card of todasLasTarjetas) {
+                const titulo = card.querySelector('.card-title');
+                if (titulo && titulo.textContent === nombreRuta) {
+                    card.classList.add('border-primary', 'bg-light');
+                    break;
+                }
             }
         })
         .catch(error => {
@@ -172,6 +260,8 @@ function seleccionarRuta(nombreRuta) {
             }
         });
 }
+
+// [Mantén el resto de tus funciones como están...]
 
 function mostrarDetallesRuta(ruta) {
     // Actualizar información de la ruta con datos reales

@@ -25,7 +25,8 @@ public class CategoriasUseCase {
     public static List<String> getCategorias(JuanViajesWS port, boolean allowDefault) {
         if (port == null) return new ArrayList<>(allowDefault ? DEFAULT_CATEGORIES : Collections.emptyList());
 
-        try { port.cargarDesdeBd(); } catch (Exception ignored) {}
+        // Inicialización centralizada: la carga inicial de datos (cargarDesdeBd) se ejecuta en el startup
+        // por SoapStartupListener y PortUtils para evitar inicializaciones concurrentes desde peticiones.
 
         Object raw = null;
         try {
@@ -74,8 +75,6 @@ public class CategoriasUseCase {
             if (s == null) continue;
             String t = s.trim();
             if (t.isEmpty()) continue;
-            // Filtrar literales que muchas veces aparecen por serialización errónea
-            if (t.equalsIgnoreCase("undefined") || t.equalsIgnoreCase("null")) continue;
             if (!seen.contains(t)) {
                 seen.add(t);
                 cleaned.add(t);

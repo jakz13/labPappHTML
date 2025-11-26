@@ -30,7 +30,6 @@ public class ReservasVueloServlet extends HttpServlet {
 
         try {
             JuanViajesWS port = PortUtils.getPort(request);
-            try { port.cargarDesdeBd(); } catch (Exception ignored) {}
 
             List<DtCliente> clientes = null;
             try { clientes = port.listarClientes(); } catch (Exception e) { clientes = null; }
