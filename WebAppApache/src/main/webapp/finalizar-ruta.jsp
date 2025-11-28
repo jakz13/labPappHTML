@@ -304,13 +304,13 @@
                     .then(response => {
                         if (!response.ok) {
                             console.warn('Error verificando finalización para', nombreRuta, '- Status:', response.status);
-                            return {puedeFinalizar: false, motivo: 'Error al verificar finalización'};
+                            return {puedeFinalizar: false, codigo: -2, motivo: 'Error HTTP ' + response.status};
                         }
                         return response.json();
                     })
                     .catch(error => {
                         console.error('Error fetch finalización para', nombreRuta, error);
-                        return {puedeFinalizar: false, motivo: 'Error al verificar finalización'};
+                        return {puedeFinalizar: false, codigo: -3, motivo: 'Error de conexión con el servidor'};
                     });
 
                 Promise.all([promesaVuelos, promesaFinalizacion])
@@ -388,8 +388,9 @@
         var aerolinea = escapeHtml((ruta.aerolinea && ruta.aerolinea.nombre) || ruta.aerolinea || '<%= usuarioSession %>');
 
         // Determinar si es finalizable según el backend
-        const esFinalizable = finalizacionInfo.puedeFinalizar === true;
-        const motivoNoFinalizable = finalizacionInfo.motivo || 'No se puede finalizar';
+        const esFinalizable = !!(finalizacionInfo && finalizacionInfo.puedeFinalizar === true);
+        const motivoNoFinalizable = (finalizacionInfo && finalizacionInfo.motivo) || 'No se puede finalizar';
+        const codigoVerificacion = (finalizacionInfo && finalizacionInfo.codigo) || -99;
 
         // Clase de badge de estado según valor
         let claseEstado = 'badge';

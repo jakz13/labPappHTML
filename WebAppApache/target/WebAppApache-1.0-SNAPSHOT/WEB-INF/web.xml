@@ -22,7 +22,7 @@
     </welcome-file-list>
     <context-param>
         <param-name>soap.endpoint</param-name>
-        <param-value>http://localhost:8080/JuanViajesWS</param-value>
+        <param-value>http://localhost:8081/JuanViajes</param-value>
     </context-param>
     <!-- Listener que carga los datos desde la BD al iniciar el contexto (respaldo a @WebListener)
     <listener>

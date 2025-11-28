@@ -122,12 +122,23 @@ public class VerificarFinalizacionServlet extends HttpServlet {
         } catch (Exception e) {
             System.err.println("[ERROR VerificarFinalizacionServlet] Error al verificar finalización para ruta '" + nombreRuta + "': " + e.getMessage());
             e.printStackTrace();
+            
+            // Obtener causa raíz del error
+            String mensajeError = e.getMessage();
+            Throwable causa = e.getCause();
+            if (causa != null) {
+                System.err.println("[ERROR VerificarFinalizacionServlet] Causa: " + causa.getClass().getName());
+                System.err.println("[ERROR VerificarFinalizacionServlet] Causa mensaje: " + causa.getMessage());
+                if (causa.getMessage() != null) {
+                    mensajeError = causa.getMessage();
+                }
+            }
 
-            // Enviar respuesta de error
+            // Enviar respuesta de error con detalles
             String errorJson = "{" +
                     "\"puedeFinalizar\":false," +
                     "\"codigo\":-1," +
-                    "\"motivo\":\"" + escapeJson("Error al verificar finalización: " + e.getMessage()) + "\"" +
+                    "\"motivo\":\"" + escapeJson("Error al verificar: " + mensajeError) + "\"" +
                     "}";
             out.print(errorJson);
         }

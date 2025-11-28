@@ -79,6 +79,8 @@
             <xs:element name="puedeFinalizarRutaResponse" type="tns:puedeFinalizarRutaResponse"/>
             <xs:element name="realizarCheckinReserva" type="tns:realizarCheckinReserva"/>
             <xs:element name="realizarCheckinReservaResponse" type="tns:realizarCheckinReservaResponse"/>
+            <xs:element name="tieneCheckinRealizado" type="tns:tieneCheckinRealizado"/>
+            <xs:element name="tieneCheckinRealizadoResponse" type="tns:tieneCheckinRealizadoResponse"/>
             <xs:element name="unfollowUsuario" type="tns:unfollowUsuario"/>
             <xs:element name="unfollowUsuarioResponse" type="tns:unfollowUsuarioResponse"/>
             <xs:element name="verInfoVueloDt" type="tns:verInfoVueloDt"/>
@@ -116,6 +118,16 @@
             <xs:complexType name="obtenerCantidadSeguidoresResponse">
                 <xs:sequence>
                     <xs:element name="cantidadSeguidores" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="tieneCheckinRealizado">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="reservaId" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="tieneCheckinRealizadoResponse">
+                <xs:sequence>
+                    <xs:element name="return" type="xs:boolean"/>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="cargarDesdeBd">
@@ -714,6 +726,9 @@
     <wsdl:message name="obtenerCantidadSeguidores">
         <wsdl:part element="tns:obtenerCantidadSeguidores" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="tieneCheckinRealizado">
+        <wsdl:part element="tns:tieneCheckinRealizado" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="modificarDatosClienteCompletoResponse">
         <wsdl:part element="tns:modificarDatosClienteCompletoResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
@@ -954,6 +969,9 @@
     <wsdl:message name="puedeFinalizarRutaResponse">
         <wsdl:part element="tns:puedeFinalizarRutaResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="tieneCheckinRealizadoResponse">
+        <wsdl:part element="tns:tieneCheckinRealizadoResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="altaAerolineaResponse">
         <wsdl:part element="tns:altaAerolineaResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
@@ -974,6 +992,10 @@
         <wsdl:operation name="obtenerCantidadSeguidores">
             <wsdl:input message="tns:obtenerCantidadSeguidores" name="obtenerCantidadSeguidores"> </wsdl:input>
             <wsdl:output message="tns:obtenerCantidadSeguidoresResponse" name="obtenerCantidadSeguidoresResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="tieneCheckinRealizado">
+            <wsdl:input message="tns:tieneCheckinRealizado" name="tieneCheckinRealizado"> </wsdl:input>
+            <wsdl:output message="tns:tieneCheckinRealizadoResponse" name="tieneCheckinRealizadoResponse"> </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="cargarDesdeBd">
             <wsdl:input message="tns:cargarDesdeBd" name="cargarDesdeBd"> </wsdl:input>
@@ -1142,6 +1164,15 @@
     </wsdl:portType>
     <wsdl:binding name="WebServicesServiceSoapBinding" type="tns:JuanViajesWS">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="tieneCheckinRealizado">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="tieneCheckinRealizado">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="tieneCheckinRealizadoResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="obtenerCantidadSeguidores">
             <soap:operation soapAction="" style="document"/>
             <wsdl:input name="obtenerCantidadSeguidores">

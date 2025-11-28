@@ -111,16 +111,38 @@ public class ConsultaUsuarioServlet extends HttpServlet {
                 return;
             }
 
-            port.followUsuario(usuarioActualId, usuarioId);
+            System.out.println("🔵 ANTES de followUsuario");
+            System.out.println("   → followerNickname (quien sigue): " + usuarioActualId);
+            System.out.println("   → targetNickname (a quien sigue): " + usuarioId);
+
+            try {
+                port.followUsuario(usuarioActualId, usuarioId);
+                System.out.println("✅ followUsuario ejecutado SIN excepción");
+            } catch (Exception soapEx) {
+                System.err.println("❌ SOAP Exception en followUsuario: " + soapEx.getMessage());
+                soapEx.printStackTrace();
+                throw soapEx;
+            }
+
+            // Verificar inmediatamente si se guardó
+            boolean verificacion = port.verificarSeguimiento(usuarioActualId, usuarioId);
+            System.out.println("🔍 Verificación INMEDIATA después de followUsuario: " + verificacion);
 
             // ✅ INVALIDAR CACHE de ambos usuarios
             invalidarCacheUsuario(usuarioActualId);
             invalidarCacheUsuario(usuarioId);
             System.out.println("✅ Follow realizado - Cache invalidado para: " + usuarioActualId + " y " + usuarioId);
 
-            out.print("{\"success\":true,\"message\":\"Ahora sigues a este usuario\"}");
+            // ✅ OBTENER ESTADÍSTICAS ACTUALIZADAS
+            int seguidores = port.obtenerCantidadSeguidores(usuarioId);
+            int seguidos = port.obtenerCantidadSeguidos(usuarioId);
+            System.out.println("✅ Estadísticas actualizadas después de follow - seguidores: " + seguidores + ", seguidos: " + seguidos);
+
+            out.print("{\"success\":true,\"message\":\"Ahora sigues a este usuario\",\"estadisticas\":{\"seguidores\":" + seguidores + ",\"seguidos\":" + seguidos + "}}");
 
         } catch (Exception e) {
+            System.err.println(" Error en seguirUsuario: " + e.getMessage());
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error siguiendo usuario: " + escapeJson(e.getMessage()) + "\"}");
         }
@@ -148,16 +170,38 @@ public class ConsultaUsuarioServlet extends HttpServlet {
                 return;
             }
 
-            port.unfollowUsuario(usuarioActualId, usuarioId);
+            System.out.println("ANTES de unfollowUsuario");
+            System.out.println("   → followerNickname (quien deja de seguir): " + usuarioActualId);
+            System.out.println("   → targetNickname (a quien deja de seguir): " + usuarioId);
 
-            // ✅ INVALIDAR CACHE de ambos usuarios
+            try {
+                port.unfollowUsuario(usuarioActualId, usuarioId);
+                System.out.println("unfollowUsuario ejecutado SIN excepción");
+            } catch (Exception soapEx) {
+                System.err.println("SOAP Exception en unfollowUsuario: " + soapEx.getMessage());
+                soapEx.printStackTrace();
+                throw soapEx;
+            }
+
+            // Verificar inmediatamente si se eliminó
+            boolean verificacion = port.verificarSeguimiento(usuarioActualId, usuarioId);
+            System.out.println("Verificación INMEDIATA después de unfollowUsuario: " + verificacion);
+
+            // INVALIDAR CACHE de ambos usuarios
             invalidarCacheUsuario(usuarioActualId);
             invalidarCacheUsuario(usuarioId);
             System.out.println("✅ Unfollow realizado - Cache invalidado para: " + usuarioActualId + " y " + usuarioId);
 
-            out.print("{\"success\":true,\"message\":\"Has dejado de seguir a este usuario\"}");
+            // ✅ OBTENER ESTADÍSTICAS ACTUALIZADAS
+            int seguidores = port.obtenerCantidadSeguidores(usuarioId);
+            int seguidos = port.obtenerCantidadSeguidos(usuarioId);
+            System.out.println("✅ Estadísticas actualizadas después de unfollow - seguidores: " + seguidores + ", seguidos: " + seguidos);
+
+            out.print("{\"success\":true,\"message\":\"Has dejado de seguir a este usuario\",\"estadisticas\":{\"seguidores\":" + seguidores + ",\"seguidos\":" + seguidos + "}}");
 
         } catch (Exception e) {
+            System.err.println("❌ Error en dejarDeSeguirUsuario: " + e.getMessage());
+            e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error dejando de seguir usuario: " + escapeJson(e.getMessage()) + "\"}");
         }
@@ -420,12 +464,39 @@ public class ConsultaUsuarioServlet extends HttpServlet {
 
     private void obtenerPaquetesCliente(JuanViajesWS port, String clienteId, PrintWriter out, HttpServletResponse response) {
         try {
-            // Método temporal - devuelve lista vacía hasta que se implemente en servicio web
-            out.print("[]");
+            DtCliente cliente = port.obtenerCliente(clienteId);
+            if (cliente != null && cliente.getPaquetesComprados() != null) {
+                List<DtPaquete> paquetes = cliente.getPaquetesComprados();
+                System.out.println("[ConsultaUsuarioServlet] Paquetes comprados por " + clienteId + ": " + paquetes.size());
+                escribirPaquetesJSON(paquetes, out);
+            } else {
+                System.out.println("[ConsultaUsuarioServlet] No se encontraron paquetes para " + clienteId);
+                out.print("[]");
+            }
         } catch (Exception e) {
             System.err.println("Error en obtenerPaquetesCliente: " + e.getMessage());
+            e.printStackTrace();
             out.print("[]");
         }
+    }
+
+    private void escribirPaquetesJSON(List<DtPaquete> paquetes, PrintWriter out) {
+        out.print("[");
+        for (int i = 0; i < paquetes.size(); i++) {
+            DtPaquete paquete = paquetes.get(i);
+            out.print("{");
+            out.print("\"id\":\"" + escapeJson(paquete.getNombre()) + "\",");
+            out.print("\"nombre\":\"" + escapeJson(paquete.getNombre()) + "\",");
+            out.print("\"descripcion\":\"" + escapeJson(paquete.getDescripcion()) + "\",");
+            out.print("\"costo\":" + paquete.getCosto() + ",");
+            out.print("\"descuento\":" + paquete.getDescuentoPorc() + ",");
+            out.print("\"periodoValidezDias\":" + paquete.getPeriodoValidezDias() + ",");
+            out.print("\"fechaCompra\":\"" + (paquete.getFechaAlta() != null ? paquete.getFechaAlta().toString() : "") + "\",");
+            out.print("\"fechaAlta\":\"" + (paquete.getFechaAlta() != null ? paquete.getFechaAlta().toString() : "") + "\"");
+            out.print("}");
+            if (i < paquetes.size() - 1) out.print(",");
+        }
+        out.print("]");
     }
 
     private void escribirClienteDetalleJSON(DtCliente cliente, PrintWriter out) {

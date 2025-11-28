@@ -11,7 +11,7 @@ const DEFAULT_USER_PLACEHOLDER = 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTUw
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('🚀 Inicializando consulta de usuarios...');
+    console.log('Inicializando consulta de usuarios...');
     inicializarConsultaUsuarios();
 });
 
@@ -32,32 +32,32 @@ async function inicializarConsultaUsuarios() {
 
 async function cargarUsuariosDesdeBackend() {
     try {
-        console.log('🌐 Haciendo fetch a /consulta-usuario...');
+        console.log('Haciendo fetch a /consulta-usuario...');
 
         const response = await fetch('consulta-usuario?action=listar-usuarios');
-        console.log('📨 Response status:', response.status);
-        console.log('📨 Response ok:', response.ok);
+        console.log('Response status:', response.status);
+        console.log('Response ok:', response.ok);
 
         if (!response.ok) {
             throw new Error(`Error HTTP: ${response.status} - ${response.statusText}`);
         }
 
         const text = await response.text();
-        console.log('📄 Response text:', text);
+        console.log('Response text:', text);
 
         let usuariosData;
         try {
             usuariosData = JSON.parse(text);
         } catch (parseError) {
-            console.error('❌ Error parseando JSON:', parseError);
+            console.error('Error parseando JSON:', parseError);
             throw new Error('Respuesta del servidor no es JSON válido');
         }
 
-        console.log('📊 Usuarios cargados del backend:', usuariosData);
+        console.log('Usuarios cargados del backend:', usuariosData);
 
         // Verificar si no hay usuarios en la base de datos
         if (!usuariosData || (!usuariosData.clientes && !usuariosData.aerolineas)) {
-            console.log('📭 No hay usuarios en la BD');
+            console.log('No hay usuarios en la BD');
             mostrarMensajeSinUsuarios();
             return;
         }
@@ -68,7 +68,7 @@ async function cargarUsuariosDesdeBackend() {
         // Procesar clientes
         if (usuariosData.clientes && Array.isArray(usuariosData.clientes)) {
             usuariosData.clientes.forEach(cliente => {
-                console.log('📋 Procesando cliente:', cliente);
+                console.log('Procesando cliente:', cliente);
 
                 usuarios[cliente.id] = {
                     tipo: "Cliente",
@@ -92,7 +92,7 @@ async function cargarUsuariosDesdeBackend() {
         // Procesar aerolíneas
         if (usuariosData.aerolineas && Array.isArray(usuariosData.aerolineas)) {
             usuariosData.aerolineas.forEach(aerolinea => {
-                console.log('📋 Procesando aerolínea:', aerolinea);
+                console.log('Procesando aerolínea:', aerolinea);
 
                 usuarios[aerolinea.id] = {
                     tipo: "Aerolínea",
@@ -108,10 +108,10 @@ async function cargarUsuariosDesdeBackend() {
             });
         }
 
-        console.log('🎯 Usuarios procesados:', usuarios);
+        console.log('Usuarios procesados:', usuarios);
 
     } catch (error) {
-        console.error('💥 Error cargando usuarios:', error);
+        console.error('Error cargando usuarios:', error);
         mostrarError('No se pudieron cargar los usuarios: ' + error.message);
     }
 }
@@ -121,7 +121,7 @@ async function cargarUsuarioSeleccionado(usuarioId) {
         const usuario = usuarios[usuarioId];
         if (!usuario) return;
 
-        console.log('👤 Cargando detalles del usuario:', usuarioId);
+        console.log('Cargando detalles del usuario:', usuarioId);
         usuarioConsultadoId = usuarioId;
 
         // Resetear estado de la interfaz antes de cargar nuevo usuario
@@ -135,7 +135,7 @@ async function cargarUsuarioSeleccionado(usuarioId) {
 
         if (!response.ok) {
             if (response.status === 500) {
-                console.warn('⚠️ Error 500 del servidor, usando datos básicos');
+                console.warn('Error 500 del servidor, usando datos básicos');
                 usuarioActual = usuario;
                 mostrarInformacionUsuario(usuario);
                 return;
@@ -144,7 +144,7 @@ async function cargarUsuarioSeleccionado(usuarioId) {
         }
 
         const usuarioDetalle = await response.json();
-        console.log('📄 Detalle de usuario recibido:', usuarioDetalle);
+        console.log('Detalle de usuario recibido:', usuarioDetalle);
 
         // Actualizar usuario con información detallada
         if (usuario.tipo === 'Cliente') {
@@ -166,7 +166,7 @@ async function cargarUsuarioSeleccionado(usuarioId) {
         mostrarInformacionUsuario(usuario);
 
     } catch (error) {
-        console.error('💥 Error cargando detalles del usuario:', error);
+        console.error('Error cargando detalles del usuario:', error);
         if (usuarios[usuarioId]) {
             usuarioActual = usuarios[usuarioId];
             mostrarInformacionUsuario(usuarios[usuarioId]);
@@ -181,7 +181,7 @@ async function configurarSeguimiento(usuarioId) {
         const usuarioActual = obtenerUsuarioActual();
         esMiUsuario = (usuarioActual && usuarioActual.id === usuarioId);
 
-        console.log('🔍 Configurando seguimiento:', {
+        console.log('Configurando seguimiento:', {
             usuarioConsultado: usuarioId,
             usuarioActual: usuarioActual?.id,
             esMiUsuario: esMiUsuario
@@ -210,11 +210,10 @@ async function configurarSeguimiento(usuarioId) {
 
 async function verificarEstadoSeguimiento(usuarioId) {
     try {
-        // ✅ FORZAR recarga sin cache usando timestamp
         const timestamp = new Date().getTime();
         const url = `consulta-usuario?action=verificar-seguimiento&usuario=${encodeURIComponent(usuarioId)}&forzarRecarga=true&_=${timestamp}`;
 
-        console.log('🔍 Verificando estado de seguimiento:', url);
+        console.log('Verificando estado de seguimiento:', url);
 
         const response = await fetch(url);
 
@@ -222,9 +221,9 @@ async function verificarEstadoSeguimiento(usuarioId) {
             const resultado = await response.json();
             siguiendoUsuario = resultado.siguiendo || false;
             actualizarBotonSeguir();
-            console.log('✅ Estado de seguimiento verificado:', siguiendoUsuario);
+            console.log('Estado de seguimiento:', siguiendoUsuario);
         } else {
-            console.error('❌ Error en respuesta:', response.status);
+            console.error('Error en respuesta:', response.status);
             siguiendoUsuario = false;
             actualizarBotonSeguir();
         }
@@ -239,11 +238,10 @@ async function verificarEstadoSeguimiento(usuarioId) {
 // Función para cargar estadísticas de seguimiento - CON CACHE FORZADO
 async function cargarEstadisticasSeguimiento(usuarioId) {
     try {
-        // ✅ FORZAR recarga sin cache usando timestamp
         const timestamp = new Date().getTime();
         const url = `consulta-usuario?action=obtener-estadisticas-seguimiento&usuario=${encodeURIComponent(usuarioId)}&forzarRecarga=true&_=${timestamp}`;
 
-        console.log('🔍 Cargando estadísticas de seguimiento:', url);
+        console.log('Cargando estadísticas de seguimiento:', url);
 
         const response = await fetch(url);
 
@@ -251,70 +249,65 @@ async function cargarEstadisticasSeguimiento(usuarioId) {
             const estadisticas = await response.json();
             document.getElementById('seguidoresCount').textContent = estadisticas.seguidores || 0;
             document.getElementById('seguidosCount').textContent = estadisticas.seguidos || 0;
-            console.log('✅ Estadísticas cargadas:', estadisticas);
+            console.log('Estadísticas cargadas:', estadisticas);
         } else {
-            console.error('❌ Error cargando estadísticas:', response.status);
-            document.getElementById('seguidoresCount').textContent = '0';
-            document.getElementById('seguidosCount').textContent = '0';
+            console.error('Error cargando estadísticas:', response.status);
         }
     } catch (error) {
         console.error('Error cargando estadísticas:', error);
-        document.getElementById('seguidoresCount').textContent = '0';
-        document.getElementById('seguidosCount').textContent = '0';
     }
 }
 
-// Función para seguir/dejar de seguir - MEJORADA
+// Función para seguir/dejar de seguir
 async function toggleFollow() {
     if (!usuarioConsultadoId) {
-        console.error('❌ usuarioConsultadoId no está definido');
+        console.error('usuarioConsultadoId no está definido');
         return;
     }
 
-    console.log('🔄 toggleFollow llamado para usuario:', usuarioConsultadoId);
+    console.log('toggleFollow llamado para usuario:', usuarioConsultadoId);
 
     try {
         const action = siguiendoUsuario ? 'dejar-de-seguir' : 'seguir';
+        const estadoAnterior = siguiendoUsuario;
 
-        // ✅ FORZAR recarga sin cache
         const timestamp = new Date().getTime();
         const url = `consulta-usuario?action=${action}&usuario=${encodeURIComponent(usuarioConsultadoId)}&_=${timestamp}`;
 
-        console.log('🔍 URL:', url);
+        console.log('URL:', url);
 
         const response = await fetch(url);
-        console.log('📨 Response status:', response.status);
+        console.log('Response status:', response.status);
 
         if (response.ok) {
             const result = await response.json();
-            console.log('✅ Resultado:', result);
+            console.log('Resultado:', result);
 
             if (result.success) {
-                siguiendoUsuario = !siguiendoUsuario;
+                // Cambiar estado del botón
+                siguiendoUsuario = !estadoAnterior;
                 actualizarBotonSeguir();
 
                 // Mostrar mensaje
                 if (siguiendoUsuario) {
-                    mostrarExito('¡Ahora sigues a este usuario!');
+                    mostrarExito('¡Ahora sigues a este usuario! (guardado en BD)');
                 } else {
-                    mostrarExito('Has dejado de seguir a este usuario');
+                    mostrarExito('Has dejado de seguir a este usuario (guardado en BD)');
                 }
 
-                // ✅ FORZAR recarga de estadísticas sin cache
-                await cargarEstadisticasSeguimiento(usuarioConsultadoId);
-
-                console.log('✅ Estado actualizado en interfaz');
+                console.log('Estado actualizado correctamente');
             } else {
                 mostrarError(result.error || 'Error en la operación');
             }
         } else {
             const errorText = await response.text();
-            console.error('❌ Error response:', errorText);
+            console.error('Error response:', errorText);
             mostrarError('Error: ' + response.status);
         }
     } catch (error) {
-        console.error('💥 Error en toggleFollow:', error);
+        console.error('Error en toggleFollow:', error);
         mostrarError('Error de conexión: ' + error.message);
+        // Los cambios optimistas ya se aplicaron, el usuario puede refrescar si es necesario
     }
 }
 
@@ -322,7 +315,7 @@ async function toggleFollow() {
 function actualizarBotonSeguir() {
     const followBtn = document.getElementById('followBtn');
     if (!followBtn) {
-        console.error('❌ Botón followBtn no encontrado');
+        console.error('Botón followBtn no encontrado');
         return;
     }
 
@@ -336,7 +329,7 @@ function actualizarBotonSeguir() {
         followBtn.classList.add('btn-light');
     }
 
-    console.log('✅ Botón actualizado - siguiendoUsuario:', siguiendoUsuario);
+    console.log('Botón actualizado - siguiendoUsuario:', siguiendoUsuario);
 }
 
 // Resto de las funciones existentes (cargarReservasCliente, cargarPaquetesCliente, etc.)
@@ -344,15 +337,25 @@ function actualizarBotonSeguir() {
 
 async function cargarReservasCliente(usuarioId) {
     try {
+        // Verificar si el usuario actual es el cliente propietario
+        const usuarioActualObj = obtenerUsuarioActual();
+        const esClientePropietario = usuarioActualObj && usuarioActualObj.id === usuarioId;
+
+        if (!esClientePropietario) {
+            console.log('No mostrar reservas - no es el cliente propietario');
+            usuarios[usuarioId].reservas = [];
+            return;
+        }
+
         const response = await fetch(`consulta-usuario?action=obtener-reservas-cliente&usuario=${encodeURIComponent(usuarioId)}`);
 
         if (!response.ok) {
-            console.warn('⚠️ No se pudieron cargar las reservas');
+            console.warn('⚠No se pudieron cargar las reservas');
             return;
         }
 
         const reservasData = await response.json();
-        console.log('🎫 Reservas cargadas:', reservasData);
+        console.log('Reservas cargadas:', reservasData);
 
         usuarios[usuarioId].reservas = reservasData.map(reserva => ({
             id: "RES-" + reserva.id,
@@ -362,21 +365,34 @@ async function cargarReservasCliente(usuarioId) {
         }));
 
     } catch (error) {
-        console.error('💥 Error cargando reservas:', error);
+        console.error('Error cargando reservas:', error);
     }
 }
 
 async function cargarPaquetesCliente(usuarioId) {
     try {
+        // Verificar si el usuario actual es el cliente propietario
+        const usuarioActualObj = obtenerUsuarioActual();
+        const esClientePropietario = usuarioActualObj && usuarioActualObj.id === usuarioId;
+        console.log('esClientePropietario:', esClientePropietario);
+        console.log('Comparación:', usuarioActualObj?.id, '===', usuarioId);
+
+        if (!esClientePropietario) {
+            console.log('No mostrar paquetes - no es el cliente propietario');
+            usuarios[usuarioId].paquetes = [];
+            return;
+        }
+
         const response = await fetch(`consulta-usuario?action=obtener-paquetes-cliente&usuario=${encodeURIComponent(usuarioId)}`);
 
         if (!response.ok) {
-            console.warn('⚠️ No se pudieron cargar los paquetes');
+            console.warn('No se pudieron cargar los paquetes - Status:', response.status);
             return;
         }
 
         const paquetesData = await response.json();
-        console.log('📦 Paquetes cargados:', paquetesData);
+        console.log('Paquetes recibidos del servidor:', paquetesData);
+        console.log('Número de paquetes:', paquetesData.length);
 
         usuarios[usuarioId].paquetes = paquetesData.map(paquete => ({
             id: "PKG-" + paquete.id,
@@ -386,8 +402,10 @@ async function cargarPaquetesCliente(usuarioId) {
             estado: 'Vigente'
         }));
 
+        console.log('✅ Paquetes procesados y guardados:', usuarios[usuarioId].paquetes);
+
     } catch (error) {
-        console.error('💥 Error cargando paquetes:', error);
+        console.error('❌ Error cargando paquetes:', error);
     }
 }
 
@@ -401,9 +419,30 @@ async function cargarRutasAerolinea(usuarioId) {
         }
 
         const rutasData = await response.json();
-        console.log('🛣️ Rutas cargadas:', rutasData);
+        console.log('Rutas cargadas del servidor:', rutasData.length);
+        console.log('Estados de rutas:', rutasData.map(r => r.estado));
 
-        usuarios[usuarioId].rutas = rutasData.map(ruta => ({
+        // Verificar si el usuario actual es la aerolínea propietaria
+        const usuarioActualObj = obtenerUsuarioActual();
+        const esAerolineaPropietaria = usuarioActualObj && usuarioActualObj.id === usuarioId;
+
+        console.log('👤 Usuario actual:', usuarioActualObj?.id);
+        console.log('🏢 Aerolínea consultada:', usuarioId);
+        console.log('🔑 Es aerolínea propietaria:', esAerolineaPropietaria);
+
+        // Si NO es la aerolínea propietaria, filtrar solo rutas confirmadas (case-insensitive)
+        const rutasFiltradas = esAerolineaPropietaria
+            ? rutasData
+            : rutasData.filter(ruta => {
+                const estado = (ruta.estado || '').toLowerCase();
+                const esConfirmada = estado === 'confirmada';
+                console.log(`Ruta "${ruta.nombre}" - Estado: "${ruta.estado}" - Es confirmada: ${esConfirmada}`);
+                return esConfirmada;
+              });
+
+        console.log('✅ Rutas filtradas:', rutasFiltradas.length, 'de', rutasData.length);
+
+        usuarios[usuarioId].rutas = rutasFiltradas.map(ruta => ({
             id: ruta.id || 'Sin ID',
             nombre: ruta.nombre || 'Ruta sin nombre',
             estado: ruta.estado || 'No especificado',
@@ -429,14 +468,14 @@ function calcularVencimiento(fechaCompra, diasValidez) {
 function configurarInterfaz() {
     const usuarioSelect = document.getElementById("usuarioSelect");
 
-    console.log('🔄 Configurando interfaz...');
-    console.log('📋 Número de usuarios:', Object.keys(usuarios).length);
+    console.log('Configurando interfaz...');
+    console.log('Número de usuarios:', Object.keys(usuarios).length);
 
     // Limpiar el select
     usuarioSelect.innerHTML = '<option value="">Seleccione un usuario...</option>';
 
     if (Object.keys(usuarios).length === 0) {
-        console.log('📭 No hay usuarios para mostrar en el select');
+        console.log('No hay usuarios para mostrar en el select');
         usuarioSelect.innerHTML = '<option value="">No hay usuarios disponibles</option>';
         return;
     }
@@ -451,12 +490,12 @@ function configurarInterfaz() {
         usuarioSelect.appendChild(option);
     });
 
-    console.log('✅ Select poblado con', Object.keys(usuarios).length, 'usuarios');
+    console.log('Select poblado con', Object.keys(usuarios).length, 'usuarios');
 
     // Configurar event listener
     usuarioSelect.addEventListener("change", function() {
         const usuarioId = this.value;
-        console.log('🎯 Usuario seleccionado:', usuarioId);
+        console.log('Usuario seleccionado:', usuarioId);
 
         if (usuarioId && usuarios[usuarioId]) {
             resetearInterfaz();
@@ -483,7 +522,7 @@ function mostrarMensajeSinUsuarios() {
     const usuarioSelect = document.getElementById("usuarioSelect");
     const infoUsuario = document.getElementById("infoUsuario");
 
-    console.log('📭 Mostrando mensaje de no hay usuarios');
+    console.log('Mostrando mensaje de no hay usuarios');
 
     usuarioSelect.innerHTML = '<option value="">No hay usuarios disponibles</option>';
     infoUsuario.innerHTML = `
@@ -497,7 +536,7 @@ function mostrarMensajeSinUsuarios() {
 }
 
 function mostrarInformacionUsuario(usuario) {
-    console.log('📖 Mostrando información del usuario:', usuario);
+    console.log('Mostrando información del usuario:', usuario);
 
     document.getElementById('infoUsuario').style.display = 'block';
     document.getElementById('nombreUsuario').textContent = usuario.nombre;
@@ -551,6 +590,12 @@ function mostrarInfoCliente(usuario) {
                                 ${reserva.estado}
                             </span>
                         </div>
+                        <div class="mt-2">
+                            <a href="consulta-reserva.jsp?reserva=${encodeURIComponent(reserva.id)}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-search"></i> Ver Detalles
+                            </a>
+                        </div>
                     </div>
                 </div>
             `;
@@ -569,13 +614,13 @@ function mostrarInfoCliente(usuario) {
                 <div class="col-md-6">
                     <div class="paquete-item">
                         <h6 class="mb-1">${paquete.nombre}</h6>
-                        <p class="mb-1 small">Comprado: ${paquete.compra}</p>
+                        <p class="mb-1 small">Comprado: ${paquete.fechaCompra}</p>
                         <p class="mb-1 small">Vence: ${paquete.vencimiento}</p>
                         <span class="badge ${paquete.estado === 'Vigente' ? 'bg-success' : 'bg-secondary'} badge-estado">
                             ${paquete.estado}
                         </span>
                         <div class="mt-2">
-                            <a href="consulta-paquete.jsp?paquete=${encodeURIComponent(paquete.nombre)}" 
+                            <a href="compra-paquete.jsp?paquete=${encodeURIComponent(paquete.nombre)}" 
                                class="btn btn-sm btn-outline-primary" data-inc-type="paquete" data-inc-nombre="${paquete.nombre}">
                                 <i class="bi bi-search"></i> Ver Detalles
                             </a>
@@ -599,6 +644,22 @@ function mostrarInfoAerolinea(usuario) {
     document.getElementById('totalRutas').textContent = usuario.rutas.length;
 
     rutasActuales = usuario.rutas;
+
+    // Verificar si el usuario actual es la aerolínea propietaria
+    const usuarioActualObj = obtenerUsuarioActual();
+    const esAerolineaPropietaria = usuarioActualObj && usuarioActualObj.id === usuario.nickname;
+
+    // Mostrar/ocultar filtros de estado de rutas según permisos
+    const filtrosRutas = document.querySelector('.btn-group');
+    if (filtrosRutas) {
+        if (esAerolineaPropietaria) {
+            filtrosRutas.style.display = 'inline-flex';
+            console.log('Mostrando filtros de rutas - es aerolínea propietaria');
+        } else {
+            filtrosRutas.style.display = 'none';
+            console.log('Ocultando filtros de rutas - no es aerolínea propietaria');
+        }
+    }
 
     document.getElementById('vuelosAerolinea').innerHTML = `
         <div class="col-12">
@@ -639,6 +700,7 @@ function cargarRutasAerolineaInterfaz(filtro) {
             case 'Confirmada': badgeClass = 'bg-success'; break;
             case 'Ingresada': badgeClass = 'bg-warning'; break;
             case 'Rechazada': badgeClass = 'bg-danger'; break;
+            case 'Finalizada': badgeClass = 'bg-info'; break;
             default: badgeClass = 'bg-secondary';
         }
 
@@ -654,6 +716,12 @@ function cargarRutasAerolineaInterfaz(filtro) {
                         <span class="badge ${badgeClass} badge-estado">
                             ${ruta.estado}
                         </span>
+                    </div>
+                    <div class="mt-2">
+                        <a href="consulta-ruta.jsp?ruta=${encodeURIComponent(ruta.nombre)}" 
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-search"></i> Ver Detalles
+                        </a>
                     </div>
                 </div>
             </div>
@@ -754,26 +822,11 @@ function obtenerUsuarioActual() {
             tipo: window.CURRENT_SESSION.tipo
         };
     }
-
-    try {
-        const nickname = localStorage.getItem('session_nickname');
-        const tipo = localStorage.getItem('session_tipo');
-        if (nickname) {
-            return {
-                id: nickname,
-                nickname: nickname,
-                tipo: tipo
-            };
-        }
-    } catch (e) {
-        console.warn('Error accediendo localStorage');
-    }
-
     return null;
 }
 
 function mostrarError(mensaje) {
-    console.error('💥 Mostrando error:', mensaje);
+    console.error('Mostrando error:', mensaje);
     const toastHTML = `
         <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">

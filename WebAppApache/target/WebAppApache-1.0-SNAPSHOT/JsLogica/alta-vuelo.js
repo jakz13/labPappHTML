@@ -126,7 +126,6 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     });
 
-    // Validación del formulario y envío al backend
     formulario.addEventListener('submit', function(event) {
         event.preventDefault();
 
@@ -136,6 +135,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const minutos = parseInt(document.getElementById('minutos').value) || 0;
             const duracionMin = horas * 60 + minutos;
             document.getElementById('duracion').value = String(duracionMin);
+
+            // Mostrar indicador de carga
+            const submitBtn = this.querySelector('button[type="submit"]');
+            const originalText = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="bi bi-hourglass-split"></i> Procesando...';
+            submitBtn.disabled = true;
 
             // Construir FormData (multipart) para enviar imagen y campos
             const formData = new FormData();
@@ -153,37 +158,128 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // usar base para asegurar la URL absoluta correcta
             fetch((window.SESSION_API_BASE || '') + '/altaVuelo', {
-                 method: 'POST',
-                 body: formData,
-                 credentials: 'include'
-             })
-                .then(res => {
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    const ct = res.headers.get('content-type') || '';
-                    if (!ct.includes('application/json')) throw new Error('Respuesta no JSON: ' + ct);
-                    return res.json();
-                })
-                 .then(data => {
-                     if (data.success) {
-                         mostrarMensajeExito();
-                         setTimeout(() => {
-                             formulario.reset();
-                             formulario.classList.remove('was-validated');
-                             document.getElementById('infoRuta').classList.add('d-none');
-                         }, 2000);
-                     } else {
-                         alert("Error: " + data.error);
-                     }
-                 })
-                 .catch(err => {
-                     alert("Error de red o servidor: " + err);
-                 });
-         } else {
-             event.stopPropagation();
-         }
+                method: 'POST',
+                body: formData,
+                credentials: 'include'
+            })
+                .then(async res => {
+                    const data = await res.json();
 
-         this.classList.add('was-validated');
-     });
+                    if (!res.ok) {
+                        // Si hay error HTTP pero el servidor devolvió JSON con mensaje
+                        if (data && data.error) {
+                            throw new Error(data.error);
+                        } else {
+                            throw new Error(`Error del servidor: ${res.status}`);
+                        }
+                    }
+                    return data;
+                })
+                .then(data => {
+                    if (data.success) {
+                        mostrarMensajeExito();
+                        setTimeout(() => {
+                            formulario.reset();
+                            formulario.classList.remove('was-validated');
+                            document.getElementById('infoRuta').classList.add('d-none');
+                        }, 2000);
+                    } else {
+                        mostrarError(data.error || "Error desconocido al crear el vuelo");
+                    }
+                })
+                .catch(err => {
+                    // Usar nuestra función elegante de mostrar error, no alert() nativo
+                    mostrarError(err.message || "Error de red o servidor");
+                })
+                .finally(() => {
+                    // Restaurar botón
+                    submitBtn.innerHTML = originalText;
+                    submitBtn.disabled = false;
+                });
+        } else {
+            event.stopPropagation();
+        }
+
+        this.classList.add('was-validated');
+    });
+
+
+    // Función para mostrar errores en un cartel arriba a la izquierda
+    function mostrarError(mensaje) {
+        // Remover alertas anteriores si existen
+        const alertasAnteriores = document.querySelectorAll('.alert-error-alta-vuelo');
+        alertasAnteriores.forEach(alerta => alerta.remove());
+
+        // Crear nueva alerta más destacada
+        const alertaHTML = `
+        <div class="alert alert-danger alert-error-alta-vuelo alert-dismissible fade show mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-exclamation-octagon-fill me-3 fs-5"></i>
+                <div class="flex-grow-1">
+                    <h6 class="alert-heading mb-1">No se pudo crear el vuelo</h6>
+                    <p class="mb-0 small">${mensaje}</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+        // Insertar la alerta al principio del card-body (arriba de todo)
+        const cardBody = document.querySelector('.card-body');
+        if (cardBody) {
+            cardBody.insertAdjacentHTML('afterbegin', alertaHTML);
+
+            // Hacer scroll suave hasta el error para que el usuario lo vea
+            alertaHTML.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Auto-eliminar después de 10 segundos
+        setTimeout(() => {
+            const alerta = document.querySelector('.alert-error-alta-vuelo');
+            if (alerta) {
+                const bsAlert = new bootstrap.Alert(alerta);
+                bsAlert.close();
+            }
+        }, 10000);
+    }
+
+    // También mejora la función de éxito para que sea consistente:
+    function mostrarMensajeExito() {
+        // Remover alertas anteriores si existen
+        const alertasAnteriores = document.querySelectorAll('.alert-error-alta-vuelo');
+        alertasAnteriores.forEach(alerta => alerta.remove());
+
+        // Crear alerta de éxito mejorada
+        const alertaHTML = `
+        <div class="alert alert-success alert-dismissible fade show mb-4" role="alert">
+            <div class="d-flex align-items-center">
+                <i class="bi bi-check-circle-fill me-3 fs-5"></i>
+                <div class="flex-grow-1">
+                    <h6 class="alert-heading mb-1">¡Vuelo creado exitosamente!</h6>
+                    <p class="mb-0 small">El vuelo ha sido registrado en el sistema y está disponible para reservas.</p>
+                </div>
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+        const cardBody = document.querySelector('.card-body');
+        if (cardBody) {
+            cardBody.insertAdjacentHTML('afterbegin', alertaHTML);
+
+            // Hacer scroll suave hasta el éxito
+            alertaHTML.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+
+        // Auto-eliminar después de 6 segundos
+        setTimeout(() => {
+            const alerta = document.querySelector('.alert-success');
+            if (alerta) {
+                const bsAlert = new bootstrap.Alert(alerta);
+                bsAlert.close();
+            }
+        }, 6000);
+    }
 
     // Validar que la fecha sea futura
     document.getElementById('fechaVuelo').min = new Date().toISOString().split('T')[0];

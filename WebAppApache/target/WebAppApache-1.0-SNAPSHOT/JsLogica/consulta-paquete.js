@@ -240,7 +240,7 @@ function mostrarInformacionPaquete(paquete) {
             rutasContainer.innerHTML += rutaHTML;
         });
     } else {
-        console.log('🛑 No hay rutas para mostrar');
+        console.log('No hay rutas para mostrar');
         rutasContainer.innerHTML = `
             <div class="col-12">
                 <div class="alert alert-warning text-center">
@@ -253,12 +253,12 @@ function mostrarInformacionPaquete(paquete) {
     // Ocultar información de ruta
     infoRuta.style.display = "none";
 
-    console.log('✅ Información del paquete mostrada correctamente');
+    console.log('Información del paquete mostrada correctamente');
 }
 
 async function mostrarRutaDetalle(paqueteId, rutaId) {
     try {
-        console.log(`🔍 Solicitando detalle de ruta: paquete=${paqueteId}, ruta=${rutaId}`);
+        console.log(`Solicitando detalle de ruta: paquete=${paqueteId}, ruta=${rutaId}`);
 
         const response = await fetch(`consulta-paquete?action=obtener-ruta&paquete=${encodeURIComponent(paqueteId)}&ruta=${encodeURIComponent(rutaId)}`);
 
@@ -267,18 +267,18 @@ async function mostrarRutaDetalle(paqueteId, rutaId) {
         }
 
         const ruta = await response.json();
-        console.log('📄 Detalle de ruta recibido:', ruta);
+        console.log('Detalle de ruta recibido:', ruta);
 
         actualizarInterfazRuta(ruta);
 
     } catch (error) {
-        console.error('💥 Error cargando detalle de ruta:', error);
+        console.error('Error cargando detalle de ruta:', error);
         mostrarError('No se pudo cargar la información detallada de la ruta: ' + error.message);
     }
 }
 
 function actualizarInterfazRuta(ruta) {
-    console.log('🎨 Actualizando interfaz de ruta:', ruta);
+    console.log('Actualizando interfaz de ruta:', ruta);
 
     // Actualizar todos los campos
     document.getElementById("rutaNombre").textContent = ruta.nombre || "Sin nombre";
@@ -297,11 +297,93 @@ function actualizarInterfazRuta(ruta) {
 
     // Manejar la imagen
     const imagenRuta = document.getElementById("rutaImagen");
-    if (ruta.imagen) {
-        imagenRuta.src = ruta.imagen;
+
+    // Usar el placeholder local si existe, sino usar via.placeholder.com
+    const placeholderUrl = "Images/placeholder.svg";
+    const placeholderUrlFallback = "https://via.placeholder.com/400x250/6c757d/ffffff?text=Imagen+No+Disponible";
+
+    // Remover listener anterior si existe
+    imagenRuta.onerror = null;
+
+    console.log('Procesando imagen de ruta:', ruta.imagen);
+
+    if (ruta.imagen && ruta.imagen.trim() !== '' && ruta.imagen !== 'null') {
+        // Construir la URL correcta de la imagen
+        let imagenUrl = ruta.imagen.trim();
+
+        console.log('URL original de imagen:', imagenUrl);
+
+        // Crear lista de URLs a intentar en orden
+        const urlsAIntentar = [];
+
+        // Si ya es una URL completa (http:// o https://)
+        if (imagenUrl.startsWith('http://') || imagenUrl.startsWith('https://')) {
+            console.log('URL completa detectada');
+            urlsAIntentar.push(imagenUrl);
+        }
+        // Si empieza con /Images/ o Images/
+        else if (imagenUrl.startsWith('/Images/') || imagenUrl.startsWith('Images/')) {
+            console.log('Ruta Images/ detectada');
+            // Intentar con y sin / inicial
+            urlsAIntentar.push(imagenUrl.startsWith('/') ? imagenUrl : '/' + imagenUrl);
+            urlsAIntentar.push(imagenUrl.startsWith('/') ? imagenUrl.substring(1) : imagenUrl);
+        }
+        // Si es solo un nombre de archivo
+        else {
+            console.log('Nombre de archivo detectado, construyendo rutas');
+            // Intentar diferentes rutas posibles
+            urlsAIntentar.push('Images/' + imagenUrl);
+            urlsAIntentar.push('/Images/' + imagenUrl);
+        }
+
+        console.log('URLs a intentar:', urlsAIntentar);
+
+        let indiceIntentoActual = 0;
+
+        // Funci��n para intentar cargar la siguiente URL
+        const intentarSiguienteUrl = function() {
+            if (indiceIntentoActual < urlsAIntentar.length) {
+                const urlIntento = urlsAIntentar[indiceIntentoActual];
+                console.log(`Intento ${indiceIntentoActual + 1}/${urlsAIntentar.length}: ${urlIntento}`);
+                imagenRuta.src = urlIntento;
+                indiceIntentoActual++;
+            } else {
+                // Todas las URLs fallaron, usar placeholder
+                console.warn('Todas las URLs fallaron, usando placeholder');
+                console.warn('Valor original de imagen:', ruta.imagen);
+                this.onerror = null;
+
+                // Intentar placeholder local primero
+                const testImg = new Image();
+                testImg.onload = function() {
+                    imagenRuta.src = placeholderUrl;
+                };
+                testImg.onerror = function() {
+                    imagenRuta.src = placeholderUrlFallback;
+                };
+                testImg.src = placeholderUrl;
+
+                imagenRuta.alt = "Imagen no disponible";
+            }
+        };
+
+        // Agregar manejador de error que intenta la siguiente URL
+        imagenRuta.onerror = intentarSiguienteUrl;
+
+        // Iniciar primer intento
+        if (urlsAIntentar.length > 0) {
+            const urlIntento = urlsAIntentar[indiceIntentoActual];
+            console.log(`Intento ${indiceIntentoActual + 1}/${urlsAIntentar.length}: ${urlIntento}`);
+            imagenRuta.src = urlIntento;
+            indiceIntentoActual++;
+        } else {
+            imagenRuta.src = placeholderUrl;
+        }
+
         imagenRuta.alt = `Imagen de la ruta ${ruta.nombre || ''}`;
     } else {
-        imagenRuta.src = "https://via.placeholder.com/400x250/6c757d/ffffff?text=Imagen+No+Disponible";
+        console.log('⚠No hay imagen definida para esta ruta');
+        imagenRuta.src = placeholderUrl;
         imagenRuta.alt = "Imagen no disponible";
     }
 
@@ -316,7 +398,7 @@ function actualizarInterfazRuta(ruta) {
     // Scroll a la información de la ruta
     document.getElementById("infoRuta").scrollIntoView({ behavior: 'smooth' });
 
-    console.log('✅ Interfaz de ruta actualizada correctamente');
+    console.log('Interfaz de ruta actualizada correctamente');
 
     // Incrementar visitas en el backend (best-effort) cuando se muestra el detalle de la ruta desde un paquete
     (async () => {
@@ -329,21 +411,21 @@ function actualizarInterfazRuta(ruta) {
             const timeout = setTimeout(() => controller.abort(), 800);
             try {
                 await fetch(incUrl, { method: 'POST', credentials: 'include', signal: controller.signal });
-                console.log('🔼 Visitas incrementadas (paquete) para ruta:', nombre);
+                console.log('Visitas incrementadas (paquete) para ruta:', nombre);
             } catch (e) {
-                console.warn('⚠️ No se pudo incrementar visitas (paquete, ruta):', e);
+                console.warn('No se pudo incrementar visitas (paquete, ruta):', e);
             } finally {
                 clearTimeout(timeout);
             }
         } catch (e) {
-            console.warn('⚠️ Error iniciando incremento de visitas (paquete):', e);
+            console.warn('⚠Error iniciando incremento de visitas (paquete):', e);
         }
     })();
 }
 
 function consultarVuelos() {
     const rutaNombre = document.getElementById("rutaNombre").textContent;
-    console.log('✈️ Consultando vuelos para:', rutaNombre);
+    console.log('Consultando vuelos para:', rutaNombre);
 
     const modalHTML = `
         <div class="modal fade" id="vuelosModal" tabindex="-1" aria-labelledby="vuelosModalLabel" aria-hidden="true">
@@ -380,7 +462,7 @@ function consultarVuelos() {
 }
 
 function mostrarError(mensaje) {
-    console.error('💥 Mostrando error:', mensaje);
+    console.error('Mostrando error:', mensaje);
 
     const toastHTML = `
         <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
@@ -407,15 +489,4 @@ function crearToastContainer() {
     container.style.zIndex = '9999';
     document.body.appendChild(container);
     return container;
-}
-
-// Función para debug manual
-function debugEstado() {
-    console.log('=== 🐛 DEBUG CONSULTA PAQUETES ===');
-    console.log('Paquetes cargados:', Object.keys(paquetes).length);
-    console.log('Paquetes objeto:', paquetes);
-    console.log('Select element:', document.getElementById('paqueteSelect'));
-    console.log('InfoPaquete element:', document.getElementById('infoPaquete'));
-    console.log('InfoRuta element:', document.getElementById('infoRuta'));
-    console.log('================================');
 }

@@ -253,6 +253,7 @@
                                                     <button type="button" class="btn btn-outline-primary" onclick="filtrarRutas('confirmada')">Confirmadas</button>
                                                     <button type="button" class="btn btn-outline-primary" onclick="filtrarRutas('ingresada')">Ingresadas</button>
                                                     <button type="button" class="btn btn-outline-primary" onclick="filtrarRutas('rechazada')">Rechazadas</button>
+                                                    <button type="button" class="btn btn-outline-primary" onclick="filtrarRutas('finalizada')">Finalizadas</button>
                                                 </div>
                                             </div>
                                             <div id="rutasAerolinea" class="row g-2">
@@ -489,22 +490,80 @@
 
     // Función para alternar entre seguir y dejar de seguir
     async function toggleFollow() {
-        const action = siguiendoUsuario ? 'dejar-de-seguir' : 'seguir';
+        if (!usuarioConsultadoId) {
+            console.error('usuarioConsultadoId no está definido');
+            return;
+        }
 
-        const response = await fetch(`consulta-usuario?action=${action}&usuario=${usuarioConsultadoId}`);
+        console.log('llamado para usuario:', usuarioConsultadoId);
 
-        if (response.ok) {
-            siguiendoUsuario = !siguiendoUsuario;
+        try {
+            const action = siguiendoUsuario ? 'dejar-de-seguir' : 'seguir';
+
+            // GUARDAR valores actuales ANTES de la operación
+            const seguidoresElement = document.getElementById('seguidoresCount');
+            const seguidosElement = document.getElementById('seguidosCount');
+            const seguidoresActual = parseInt(seguidoresElement.textContent) || 0;
+            const estadoAnterior = siguiendoUsuario;
+
+            // ✅ actualizar UI inmediatamente
+            const nuevoEstado = !siguiendoUsuario;
+            siguiendoUsuario = nuevoEstado;
             actualizarBotonSeguir();
 
-            // ✅ FORZAR recarga sin cache
-            const timestamp = new Date().getTime();
-            await fetch(`consulta-usuario?action=obtener-estadisticas-seguimiento&usuario=${usuarioConsultadoId}&forzarRecarga=true&_=${timestamp}`)
-                .then(res => res.json())
-                .then(stats => {
-                    document.getElementById('seguidoresCount').textContent = stats.seguidores;
-                    document.getElementById('seguidosCount').textContent = stats.seguidos;
-                });
+            // ✅ Incrementar/decrementar contador optimísticamente
+            const nuevoValorSeguidores = nuevoEstado ? seguidoresActual + 1 : Math.max(0, seguidoresActual - 1);
+            seguidoresElement.textContent = nuevoValorSeguidores;
+            console.log('Actualización - Seguidores:', seguidoresActual, '→', nuevoValorSeguidores);
+
+
+            const response = await fetch(url);
+            console.log('Response status:', response.status);
+
+            if (response.ok) {
+                const result = await response.json();
+                console.log('Resultado:', result);
+
+                if (result.success) {
+                    // Mostrar mensaje
+                    if (siguiendoUsuario) {
+                        mostrarExito('¡Ahora sigues a este usuario!');
+                    } else {
+                        mostrarExito('Has dejado de seguir a este usuario');
+                    }
+
+                    if (result.estadisticas && result.estadisticas.seguidores > 0) {
+                        console.log('Actualizando estadísticas desde respuesta:', result.estadisticas);
+                        seguidoresElement.textContent = result.estadisticas.seguidores;
+                        seguidosElement.textContent = result.estadisticas.seguidos;
+                    } else {
+                        console.warn('Servidor devolvió estadísticas 0, manteniendo actualización optimista:', nuevoValorSeguidores);
+                        // NO hacer nada - mantener el valor optimista que ya establecimos
+                    }
+
+                    console.log('actualizado en interfaz');
+                } else {
+                    // Revertir cambios si hay error
+                    siguiendoUsuario = estadoAnterior;
+                    actualizarBotonSeguir();
+                    seguidoresElement.textContent = seguidoresActual;
+                    mostrarError(result.error || 'Error en la operación');
+                    console.error('Revirtiendo cambios optimistas por error');
+                }
+            } else {
+                // Error de red
+                siguiendoUsuario = estadoAnterior;
+                actualizarBotonSeguir();
+                seguidoresElement.textContent = seguidoresActual;
+                const errorText = await response.text();
+                console.error('Error response:', errorText);
+                mostrarError('Error: ' + response.status);
+                console.error('Revirtiendo cambios optimistas por error de red');
+            }
+        } catch (error) {
+            console.error('Error en toggleFollow:', error);
+            mostrarError('Error de conexión: ' + error.message);
+            // Los cambios optimistas ya se aplicaron, el usuario puede refrescar si es necesario
         }
     }
 
@@ -654,7 +713,6 @@
 
     // Función auxiliar para obtener el usuario actual desde session-manager.js
     function obtenerUsuarioActual() {
-        // Método 1: Desde window.CURRENT_SESSION (que usa tu session-manager.js)
         if (typeof window.CURRENT_SESSION !== 'undefined' && window.CURRENT_SESSION.authenticated) {
             return {
                 id: window.CURRENT_SESSION.nickname,
@@ -662,22 +720,6 @@
                 tipo: window.CURRENT_SESSION.tipo
             };
         }
-
-        // Método 2: Desde localStorage (fallback de tu session-manager)
-        try {
-            const nickname = localStorage.getItem('session_nickname');
-            const tipo = localStorage.getItem('session_tipo');
-            if (nickname) {
-                return {
-                    id: nickname,
-                    nickname: nickname,
-                    tipo: tipo
-                };
-            }
-        } catch (e) {
-            console.warn('Error accediendo localStorage');
-        }
-
         return null;
     }
 </script>
