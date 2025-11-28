@@ -341,18 +341,27 @@ function actualizarBotonSeguir() {
 
 // Resto de las funciones existentes (cargarReservasCliente, cargarPaquetesCliente, etc.)
 // ... [Mantén todas las otras funciones que ya tenías] ...
-
 async function cargarReservasCliente(usuarioId) {
     try {
+        // Verificar si el usuario actual es el cliente propietario
+        const usuarioActualObj = obtenerUsuarioActual();
+        const esClientePropietario = usuarioActualObj && usuarioActualObj.id === usuarioId;
+
+        if (!esClientePropietario) {
+            console.log('No mostrar reservas - no es el cliente propietario');
+            usuarios[usuarioId].reservas = [];
+            return;
+        }
+
         const response = await fetch(`consulta-usuario?action=obtener-reservas-cliente&usuario=${encodeURIComponent(usuarioId)}`);
 
         if (!response.ok) {
-            console.warn('⚠️ No se pudieron cargar las reservas');
+            console.warn('⚠No se pudieron cargar las reservas');
             return;
         }
 
         const reservasData = await response.json();
-        console.log('🎫 Reservas cargadas:', reservasData);
+        console.log('Reservas cargadas:', reservasData);
 
         usuarios[usuarioId].reservas = reservasData.map(reserva => ({
             id: "RES-" + reserva.id,
@@ -362,21 +371,34 @@ async function cargarReservasCliente(usuarioId) {
         }));
 
     } catch (error) {
-        console.error('💥 Error cargando reservas:', error);
+        console.error('Error cargando reservas:', error);
     }
 }
 
 async function cargarPaquetesCliente(usuarioId) {
     try {
+        // Verificar si el usuario actual es el cliente propietario
+        const usuarioActualObj = obtenerUsuarioActual();
+        const esClientePropietario = usuarioActualObj && usuarioActualObj.id === usuarioId;
+        console.log('esClientePropietario:', esClientePropietario);
+        console.log('Comparación:', usuarioActualObj?.id, '===', usuarioId);
+
+        if (!esClientePropietario) {
+            console.log('No mostrar paquetes - no es el cliente propietario');
+            usuarios[usuarioId].paquetes = [];
+            return;
+        }
+
         const response = await fetch(`consulta-usuario?action=obtener-paquetes-cliente&usuario=${encodeURIComponent(usuarioId)}`);
 
         if (!response.ok) {
-            console.warn('⚠️ No se pudieron cargar los paquetes');
+            console.warn('No se pudieron cargar los paquetes - Status:', response.status);
             return;
         }
 
         const paquetesData = await response.json();
-        console.log('📦 Paquetes cargados:', paquetesData);
+        console.log('Paquetes recibidos del servidor:', paquetesData);
+        console.log('Número de paquetes:', paquetesData.length);
 
         usuarios[usuarioId].paquetes = paquetesData.map(paquete => ({
             id: "PKG-" + paquete.id,
@@ -386,8 +408,10 @@ async function cargarPaquetesCliente(usuarioId) {
             estado: 'Vigente'
         }));
 
+        console.log('✅ Paquetes procesados y guardados:', usuarios[usuarioId].paquetes);
+
     } catch (error) {
-        console.error('💥 Error cargando paquetes:', error);
+        console.error('❌ Error cargando paquetes:', error);
     }
 }
 
@@ -401,9 +425,30 @@ async function cargarRutasAerolinea(usuarioId) {
         }
 
         const rutasData = await response.json();
-        console.log('🛣️ Rutas cargadas:', rutasData);
+        console.log('Rutas cargadas del servidor:', rutasData.length);
+        console.log('Estados de rutas:', rutasData.map(r => r.estado));
 
-        usuarios[usuarioId].rutas = rutasData.map(ruta => ({
+        // Verificar si el usuario actual es la aerolínea propietaria
+        const usuarioActualObj = obtenerUsuarioActual();
+        const esAerolineaPropietaria = usuarioActualObj && usuarioActualObj.id === usuarioId;
+
+        console.log('👤 Usuario actual:', usuarioActualObj?.id);
+        console.log('🏢 Aerolínea consultada:', usuarioId);
+        console.log('🔑 Es aerolínea propietaria:', esAerolineaPropietaria);
+
+        // Si NO es la aerolínea propietaria, filtrar solo rutas confirmadas (case-insensitive)
+        const rutasFiltradas = esAerolineaPropietaria
+            ? rutasData
+            : rutasData.filter(ruta => {
+                const estado = (ruta.estado || '').toLowerCase();
+                const esConfirmada = estado === 'confirmada';
+                console.log(`Ruta "${ruta.nombre}" - Estado: "${ruta.estado}" - Es confirmada: ${esConfirmada}`);
+                return esConfirmada;
+            });
+
+        console.log('✅ Rutas filtradas:', rutasFiltradas.length, 'de', rutasData.length);
+
+        usuarios[usuarioId].rutas = rutasFiltradas.map(ruta => ({
             id: ruta.id || 'Sin ID',
             nombre: ruta.nombre || 'Ruta sin nombre',
             estado: ruta.estado || 'No especificado',
@@ -429,14 +474,14 @@ function calcularVencimiento(fechaCompra, diasValidez) {
 function configurarInterfaz() {
     const usuarioSelect = document.getElementById("usuarioSelect");
 
-    console.log('🔄 Configurando interfaz...');
-    console.log('📋 Número de usuarios:', Object.keys(usuarios).length);
+    console.log('Configurando interfaz...');
+    console.log('Número de usuarios:', Object.keys(usuarios).length);
 
     // Limpiar el select
     usuarioSelect.innerHTML = '<option value="">Seleccione un usuario...</option>';
 
     if (Object.keys(usuarios).length === 0) {
-        console.log('📭 No hay usuarios para mostrar en el select');
+        console.log('No hay usuarios para mostrar en el select');
         usuarioSelect.innerHTML = '<option value="">No hay usuarios disponibles</option>';
         return;
     }
@@ -451,12 +496,12 @@ function configurarInterfaz() {
         usuarioSelect.appendChild(option);
     });
 
-    console.log('✅ Select poblado con', Object.keys(usuarios).length, 'usuarios');
+    console.log('Select poblado con', Object.keys(usuarios).length, 'usuarios');
 
     // Configurar event listener
     usuarioSelect.addEventListener("change", function() {
         const usuarioId = this.value;
-        console.log('🎯 Usuario seleccionado:', usuarioId);
+        console.log('Usuario seleccionado:', usuarioId);
 
         if (usuarioId && usuarios[usuarioId]) {
             resetearInterfaz();
@@ -483,7 +528,7 @@ function mostrarMensajeSinUsuarios() {
     const usuarioSelect = document.getElementById("usuarioSelect");
     const infoUsuario = document.getElementById("infoUsuario");
 
-    console.log('📭 Mostrando mensaje de no hay usuarios');
+    console.log('Mostrando mensaje de no hay usuarios');
 
     usuarioSelect.innerHTML = '<option value="">No hay usuarios disponibles</option>';
     infoUsuario.innerHTML = `
@@ -497,7 +542,7 @@ function mostrarMensajeSinUsuarios() {
 }
 
 function mostrarInformacionUsuario(usuario) {
-    console.log('📖 Mostrando información del usuario:', usuario);
+    console.log('Mostrando información del usuario:', usuario);
 
     document.getElementById('infoUsuario').style.display = 'block';
     document.getElementById('nombreUsuario').textContent = usuario.nombre;
@@ -551,6 +596,12 @@ function mostrarInfoCliente(usuario) {
                                 ${reserva.estado}
                             </span>
                         </div>
+                        <div class="mt-2">
+                            <a href="consulta-reserva.jsp?reserva=${encodeURIComponent(reserva.id)}" 
+                               class="btn btn-sm btn-outline-primary">
+                                <i class="bi bi-search"></i> Ver Detalles
+                            </a>
+                        </div>
                     </div>
                 </div>
             `;
@@ -569,13 +620,13 @@ function mostrarInfoCliente(usuario) {
                 <div class="col-md-6">
                     <div class="paquete-item">
                         <h6 class="mb-1">${paquete.nombre}</h6>
-                        <p class="mb-1 small">Comprado: ${paquete.compra}</p>
+                        <p class="mb-1 small">Comprado: ${paquete.fechaCompra}</p>
                         <p class="mb-1 small">Vence: ${paquete.vencimiento}</p>
                         <span class="badge ${paquete.estado === 'Vigente' ? 'bg-success' : 'bg-secondary'} badge-estado">
                             ${paquete.estado}
                         </span>
                         <div class="mt-2">
-                            <a href="consulta-paquete.jsp?paquete=${encodeURIComponent(paquete.nombre)}" 
+                            <a href="compra-paquete.jsp?paquete=${encodeURIComponent(paquete.nombre)}" 
                                class="btn btn-sm btn-outline-primary" data-inc-type="paquete" data-inc-nombre="${paquete.nombre}">
                                 <i class="bi bi-search"></i> Ver Detalles
                             </a>
@@ -599,6 +650,22 @@ function mostrarInfoAerolinea(usuario) {
     document.getElementById('totalRutas').textContent = usuario.rutas.length;
 
     rutasActuales = usuario.rutas;
+
+    // Verificar si el usuario actual es la aerolínea propietaria
+    const usuarioActualObj = obtenerUsuarioActual();
+    const esAerolineaPropietaria = usuarioActualObj && usuarioActualObj.id === usuario.nickname;
+
+    // Mostrar/ocultar filtros de estado de rutas según permisos
+    const filtrosRutas = document.querySelector('.btn-group');
+    if (filtrosRutas) {
+        if (esAerolineaPropietaria) {
+            filtrosRutas.style.display = 'inline-flex';
+            console.log('Mostrando filtros de rutas - es aerolínea propietaria');
+        } else {
+            filtrosRutas.style.display = 'none';
+            console.log('Ocultando filtros de rutas - no es aerolínea propietaria');
+        }
+    }
 
     document.getElementById('vuelosAerolinea').innerHTML = `
         <div class="col-12">
@@ -639,6 +706,7 @@ function cargarRutasAerolineaInterfaz(filtro) {
             case 'Confirmada': badgeClass = 'bg-success'; break;
             case 'Ingresada': badgeClass = 'bg-warning'; break;
             case 'Rechazada': badgeClass = 'bg-danger'; break;
+            case 'Finalizada': badgeClass = 'bg-info'; break;
             default: badgeClass = 'bg-secondary';
         }
 
@@ -654,6 +722,12 @@ function cargarRutasAerolineaInterfaz(filtro) {
                         <span class="badge ${badgeClass} badge-estado">
                             ${ruta.estado}
                         </span>
+                    </div>
+                    <div class="mt-2">
+                        <a href="consulta-ruta.jsp?ruta=${encodeURIComponent(ruta.nombre)}" 
+                           class="btn btn-sm btn-outline-primary">
+                            <i class="bi bi-search"></i> Ver Detalles
+                        </a>
                     </div>
                 </div>
             </div>
@@ -754,26 +828,11 @@ function obtenerUsuarioActual() {
             tipo: window.CURRENT_SESSION.tipo
         };
     }
-
-    try {
-        const nickname = localStorage.getItem('session_nickname');
-        const tipo = localStorage.getItem('session_tipo');
-        if (nickname) {
-            return {
-                id: nickname,
-                nickname: nickname,
-                tipo: tipo
-            };
-        }
-    } catch (e) {
-        console.warn('Error accediendo localStorage');
-    }
-
     return null;
 }
 
 function mostrarError(mensaje) {
-    console.error('💥 Mostrando error:', mensaje);
+    console.error('Mostrando error:', mensaje);
     const toastHTML = `
         <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
             <div class="d-flex">

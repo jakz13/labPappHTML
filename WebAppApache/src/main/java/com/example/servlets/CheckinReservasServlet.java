@@ -163,10 +163,8 @@ public class CheckinReservasServlet extends HttpServlet {
     private String formatearFechaJAXB(serviciosweb.LocalDate fecha) {
         if (fecha == null) return "N/A";
         try {
-            int dia = fecha.getDay();
-            int mes = fecha.getMonth();
-            int anio = fecha.getYear();
-            return String.format("%02d/%02d/%04d", dia, mes, anio);
+            String fechaString = fecha.toString();
+            return fechaString;
         } catch (Exception e) {
             System.err.println("Error formateando fecha JAXB: " + e.getMessage());
             return "N/A";
@@ -179,9 +177,8 @@ public class CheckinReservasServlet extends HttpServlet {
     private String formatearHoraJAXB(serviciosweb.LocalTime hora) {
         if (hora == null) return "N/A";
         try {
-            int horas = hora.getHour();
-            int minutos = hora.getMinute();
-            return String.format("%02d:%02d", horas, minutos);
+            String horaString = hora.toString();
+            return horaString;
         } catch (Exception e) {
             System.err.println("Error formateando hora JAXB: " + e.getMessage());
             return "N/A";

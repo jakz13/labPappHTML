@@ -132,7 +132,6 @@ async function cargarReservasConCheckin() {
                     <div class="alert alert-info text-center">
                         <h5 class="text-info">No hay check-ins realizados</h5>
                         <p class="text-dark">No se encontraron reservas con check-in realizado.</p>
-                        <a href="realizar-checkin.jsp" class="btn btn-primary mt-2">Realizar Check-in</a>
                     </div>
                 </div>
             `;

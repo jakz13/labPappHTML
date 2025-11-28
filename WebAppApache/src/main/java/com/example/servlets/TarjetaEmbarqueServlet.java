@@ -357,30 +357,8 @@ public class TarjetaEmbarqueServlet extends HttpServlet {
 
         try {
             // Método directo - si falla, usar valores por defecto
-            int year = 2024;
-            int month = 1;
-            int day = 1;
-
-            // Intentar obtener valores del objeto
-            try {
-                year = fechaObj.getYear();
-            } catch (Exception e) {
-                year = 2024;
-            }
-
-            try {
-                month = fechaObj.getMonth();
-            } catch (Exception e) {
-                month = 1;
-            }
-
-            try {
-                day = fechaObj.getDay();
-            } catch (Exception e) {
-                day = 1;
-            }
-
-            return String.format("%02d/%02d/%04d", day, month, year);
+            String fechaStr = fechaObj.toString();
+            return fechaStr;
 
         } catch (Exception e) {
             return "N/A";
@@ -397,23 +375,8 @@ public class TarjetaEmbarqueServlet extends HttpServlet {
 
         try {
             // Método directo - si falla, usar valores por defecto
-            int hour = 0;
-            int minute = 0;
-
-            // Intentar obtener valores del objeto
-            try {
-                hour = horaObj.getHour();
-            } catch (Exception e) {
-                hour = 0;
-            }
-
-            try {
-                minute = horaObj.getMinute();
-            } catch (Exception e) {
-                minute = 0;
-            }
-
-            return String.format("%02d:%02d", hour, minute);
+            String horaStr = horaObj.toString();
+            return horaStr;
 
         } catch (Exception e) {
             return "N/A";

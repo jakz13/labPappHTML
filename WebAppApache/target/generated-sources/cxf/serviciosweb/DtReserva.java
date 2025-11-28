@@ -185,10 +185,11 @@ public class DtReserva {
 
     /**
      * Obtiene el valor de la propiedad fechaCheckin.
-     *
-     * @return possible object is
-     * {@link LocalDate }
-     *
+     * 
+     * @return
+     *     possible object is
+     *     {@link LocalDate }
+     *     
      */
     public LocalDate getFechaCheckin() {
         return fechaCheckin;
