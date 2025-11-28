@@ -2,13 +2,12 @@ package com.example.servlets;
 
 import DataTypes.DtPasajero;
 import DataTypes.DtReserva;
-import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import logica.Fabrica;
 import logica.ISistema;
-
+import logica.EstadoReserva;
+import jakarta.servlet.*;
+import jakarta.servlet.http.*;
+import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.List;
