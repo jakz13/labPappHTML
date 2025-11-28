@@ -9,6 +9,116 @@
     <!-- Bootstrap Icons -->
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
     <link rel="stylesheet" href="CssLogica/estilo-css.css">
+    <style>
+        /* Estilos mejorados para las estadísticas de seguimiento */
+        .follow-stats {
+            background: linear-gradient(135deg, #2c3e50, #3498db);
+            border-radius: 12px;
+            padding: 15px;
+            margin-bottom: 20px;
+            color: white;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .follow-stats h5 {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .follow-stats small {
+            color: rgba(255, 255, 255, 0.85);
+            font-size: 14px;
+        }
+
+        /* Botón de seguir mejorado */
+        .follow-btn {
+            transition: all 0.3s ease;
+            border-radius: 25px;
+            padding: 10px 20px;
+            font-weight: 600;
+            box-shadow: 0 4px 8px rgba(231, 76, 60, 0.3);
+            background: linear-gradient(135deg, #e74c3c, #c0392b);
+            border: none;
+        }
+
+        .follow-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(231, 76, 60, 0.4);
+            background: linear-gradient(135deg, #c0392b, #a93226);
+        }
+
+        /* Estilo para cuando ya se está siguiendo */
+        .follow-btn.following {
+            background: linear-gradient(135deg, #f39c12, #e67e22);
+            box-shadow: 0 4px 8px rgba(243, 156, 18, 0.3);
+        }
+
+        .follow-btn.following:hover {
+            background: linear-gradient(135deg, #e67e22, #d35400);
+            box-shadow: 0 6px 12px rgba(243, 156, 18, 0.4);
+        }
+
+        /* Mejoras visuales generales */
+        .usuario-imagen {
+            border-radius: 50%;
+            border: 4px solid #3498db;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .card-header.bg-success {
+            background: linear-gradient(135deg, #27ae60, #2ecc71) !important;
+        }
+
+        .tabla-datos th {
+            background-color: #FFFFFF19 !important;
+            color: #2c3e50;
+            font-weight: 600;
+        }
+
+        .flight-card {
+            border: 1px solid #e9ecef;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            background: white;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .flight-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .flight-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 10px;
+        }
+
+        .flight-route {
+            font-weight: bold;
+            color: #2c3e50;
+            font-size: 16px;
+        }
+
+        .read-more {
+            color: #3498db;
+            text-decoration: none;
+            font-weight: 500;
+            display: inline-flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .read-more:hover {
+            color: #2980b9;
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body class="bg-dark">
 <header>
@@ -37,7 +147,7 @@
                     <!-- Información del Usuario -->
                     <div id="infoUsuario" class="mt-4" style="display: none;">
                         <div class="card border-success">
-                            <div class="card-header bg-success text-white">
+                            <div class="card-header bg-success text-white d-flex justify-content-between align-items-center">
                                 <h5 class="mb-0">Perfil del Usuario</h5>
                                 <!-- Botón de Seguir/Dejar de seguir -->
                                 <div id="followSection" style="display: none;">

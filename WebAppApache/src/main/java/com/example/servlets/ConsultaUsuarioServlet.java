@@ -1,5 +1,8 @@
 package com.example.servlets;
 
+import com.example.util.PortUtils;
+import serviciosweb.*;
+import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
