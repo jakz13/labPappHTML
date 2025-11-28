@@ -209,7 +209,6 @@ public class AltaUsuarioServlet extends HttpServlet {
         }
     }
 
-    // En AltaUsuarioServlet.java - método doGet MEJORADO
     protected void doGet(HttpServletRequest request, HttpServletResponse response)
             throws ServletException, IOException {
 

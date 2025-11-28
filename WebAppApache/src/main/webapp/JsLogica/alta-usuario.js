@@ -378,12 +378,17 @@ document.getElementById('confirmPassword').addEventListener('input', function() 
     const password = document.getElementById('password').value;
     const confirmPassword = this.value;
 
-    if (password !== confirmPassword && confirmPassword !== '') {
+    if (confirmPassword === '') {
+        // Si está vacío, limpiar validación
+        this.classList.remove('is-valid', 'is-invalid');
+    } else if (password !== confirmPassword) {
+        // Si no coinciden, marcar como inválido
         this.classList.add('is-invalid');
-        document.getElementById('confirmPassword').nextElementSibling.style.display = 'block';
+        this.classList.remove('is-valid');
     } else {
+        // Si coinciden, marcar como válido
+        this.classList.add('is-valid');
         this.classList.remove('is-invalid');
-        document.getElementById('confirmPassword').nextElementSibling.style.display = 'none';
     }
 });
 

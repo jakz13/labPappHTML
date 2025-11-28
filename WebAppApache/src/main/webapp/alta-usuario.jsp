@@ -53,6 +53,12 @@
                             </div>
 
                             <div class="mb-3">
+                                <label for="nombre" class="form-label">Nombre Completo *</label>
+                                <input type="text" class="form-control" id="nombre" required>
+                                <div class="invalid-feedback">Por favor ingrese su nombre.</div>
+                            </div>
+
+                            <div class="mb-3">
                                 <label for="email" class="form-label">Correo Electrónico *</label>
                                 <input type="email" class="form-control" id="email" required>
                                 <div class="invalid-feedback">Por favor ingrese un email válido.</div>
