@@ -373,7 +373,7 @@
                 '</div>' +
                 '</div>' +
                 '</div>' +
-                '<a href="consulta-paquete.jsp?nombre=' + paquete.nombre + '" class="read-more">' +
+                '<a href="consulta-paquete.jsp?nombre=' + paquete.nombre + '" class="read-more" data-inc-type="paquete" data-inc-nombre="' + paquete.nombre + '">' +
                 'Ver detalles del paquete <i class="bi bi-arrow-right"></i>' +
                 '</a>' +
                 '</div>';

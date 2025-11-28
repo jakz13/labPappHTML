@@ -62,9 +62,6 @@
                             <button class="btn btn-outline-secondary" id="btnLimpiar">
                                 <i class="bi bi-arrow-clockwise"></i> Limpiar
                             </button>
-                            <button class="btn btn-outline-info" id="btnActualizar" title="Forzar actualización de datos">
-                                <i class="bi bi-arrow-repeat"></i> Actualizar Datos
-                            </button>
                         </div>
                     </div>
 
@@ -89,7 +86,6 @@
                                     <div class="col-md-12">
                                         <!-- Imagen de la ruta -->
                                         <div class="mb-3">
-                                            <p class="mb-0"></p>
                                             <img id="imagenRutaDetalle" src="" alt="Imagen de la ruta" class="img-fluid rounded w-100" style="max-height:300px; object-fit:cover; display:none;">
                                         </div>
 

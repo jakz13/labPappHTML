@@ -576,7 +576,7 @@ function mostrarInfoCliente(usuario) {
                         </span>
                         <div class="mt-2">
                             <a href="consulta-paquete.jsp?paquete=${encodeURIComponent(paquete.nombre)}" 
-                               class="btn btn-sm btn-outline-primary">
+                               class="btn btn-sm btn-outline-primary" data-inc-type="paquete" data-inc-nombre="${paquete.nombre}">
                                 <i class="bi bi-search"></i> Ver Detalles
                             </a>
                         </div>

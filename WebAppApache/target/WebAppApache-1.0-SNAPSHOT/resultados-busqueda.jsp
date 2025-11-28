@@ -131,7 +131,7 @@
             <div class="card result-card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a href="DetalleRuta?nombre=<%= java.net.URLEncoder.encode(ruta.getNombre(), "UTF-8") %>">
+                        <a href="consulta-ruta.jsp" data-inc-type="ruta" data-inc-nombre="<%= ruta.getNombre() %>" onclick="try{sessionStorage.setItem('consultaRuta_rutaSeleccionada','<%= ruta.getNombre() %>');}catch(e){}">
                             <%= ruta.getNombre() %>
                         </a>
                         <span class="badge bg-primary ms-2">Ruta</span>
@@ -147,7 +147,7 @@
                         <span class="h5 mb-0 text-primary">
                             $<%= String.format("%.0f", ruta.getCostoTurista()) %>
                         </span>
-                        <a href="DetalleRuta?nombre=<%= java.net.URLEncoder.encode(ruta.getNombre(), "UTF-8") %>"
+                        <a href="consulta-ruta.jsp" data-inc-type="ruta" data-inc-nombre="<%= ruta.getNombre() %>" onclick="try{sessionStorage.setItem('consultaRuta_rutaSeleccionada','<%= ruta.getNombre() %>');}catch(e){}"
                            class="btn btn-primary btn-sm">
                             Ver Detalles
                         </a>
@@ -176,7 +176,7 @@
             <div class="card result-card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a href="DetallePaquete?nombre=<%= java.net.URLEncoder.encode(paquete.getNombre(), "UTF-8") %>">
+                        <a href="consulta-paquete.jsp" data-inc-type="paquete" data-inc-nombre="<%= paquete.getNombre() %>" onclick="try{sessionStorage.setItem('consultaPaquete_seleccionado','<%= paquete.getNombre() %>');}catch(e){}">
                             <%= paquete.getNombre() %>
                         </a>
                         <span class="badge bg-success ms-2">Paquete</span>
@@ -186,7 +186,7 @@
                         <span class="badge bg-warning text-dark">
                             <%= paquete.getDescuentoPorc() %>% descuento
                         </span>
-                        <a href="DetallePaquete?nombre=<%= java.net.URLEncoder.encode(paquete.getNombre(), "UTF-8") %>"
+                        <a href="consulta-paquete.jsp" data-inc-type="paquete" data-inc-nombre="<%= paquete.getNombre() %>" onclick="try{sessionStorage.setItem('consultaPaquete_seleccionado','<%= paquete.getNombre() %>');}catch(e){}"
                            class="btn btn-success btn-sm">
                             Ver Paquete
                         </a>
@@ -218,7 +218,7 @@
             <div class="card result-card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a href="DetalleRuta?nombre=<%= java.net.URLEncoder.encode(ruta.getNombre(), "UTF-8") %>">
+                        <a href="consulta-ruta.jsp" data-inc-type="ruta" data-inc-nombre="<%= ruta.getNombre() %>" onclick="try{sessionStorage.setItem('consultaRuta_rutaSeleccionada','<%= ruta.getNombre() %>');}catch(e){}">
                             <%= ruta.getNombre() %>
                         </a>
                     </h5>
@@ -230,7 +230,7 @@
                     </p>
                     <div class="d-flex justify-content-between">
                         <span class="text-primary">$<%= String.format("%.0f", ruta.getCostoTurista()) %></span>
-                        <a href="DetalleRuta?nombre=<%= java.net.URLEncoder.encode(ruta.getNombre(), "UTF-8") %>"
+                        <a href="consulta-ruta.jsp" data-inc-type="ruta" data-inc-nombre="<%= ruta.getNombre() %>" onclick="try{sessionStorage.setItem('consultaRuta_rutaSeleccionada','<%= ruta.getNombre() %>');}catch(e){}"
                            class="btn btn-outline-primary btn-sm">
                             Ver Detalles
                         </a>
@@ -256,7 +256,7 @@
             <div class="card result-card">
                 <div class="card-body">
                     <h5 class="card-title">
-                        <a href="DetallePaquete?nombre=<%= java.net.URLEncoder.encode(paquete.getNombre(), "UTF-8") %>">
+                        <a href="consulta-paquete.jsp" data-inc-type="paquete" data-inc-nombre="<%= paquete.getNombre() %>" onclick="try{sessionStorage.setItem('consultaPaquete_seleccionado','<%= paquete.getNombre() %>');}catch(e){}">
                             <%= paquete.getNombre() %>
                         </a>
                     </h5>
@@ -265,7 +265,7 @@
                         <span class="badge bg-warning text-dark">
                             <%= paquete.getDescuentoPorc() %>% OFF
                         </span>
-                        <a href="DetallePaquete?nombre=<%= java.net.URLEncoder.encode(paquete.getNombre(), "UTF-8") %>"
+                        <a href="consulta-paquete.jsp" data-inc-type="paquete" data-inc-nombre="<%= paquete.getNombre() %>" onclick="try{sessionStorage.setItem('consultaPaquete_seleccionado','<%= paquete.getNombre() %>');}catch(e){}"
                            class="btn btn-outline-success btn-sm">
                             Ver Paquete
                         </a>

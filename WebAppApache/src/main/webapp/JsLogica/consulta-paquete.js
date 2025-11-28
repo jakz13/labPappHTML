@@ -317,6 +317,28 @@ function actualizarInterfazRuta(ruta) {
     document.getElementById("infoRuta").scrollIntoView({ behavior: 'smooth' });
 
     console.log('✅ Interfaz de ruta actualizada correctamente');
+
+    // Incrementar visitas en el backend (best-effort) cuando se muestra el detalle de la ruta desde un paquete
+    (async () => {
+        try {
+            const nombre = ruta.nombre || ruta.id || '';
+            if (!nombre) return;
+            const contextPath = window.CONTEXT_PATH || '';
+            const incUrl = `${contextPath}/incrementarVisitasRuta?nombreRuta=${encodeURIComponent(nombre)}`;
+            const controller = new AbortController();
+            const timeout = setTimeout(() => controller.abort(), 800);
+            try {
+                await fetch(incUrl, { method: 'POST', credentials: 'include', signal: controller.signal });
+                console.log('🔼 Visitas incrementadas (paquete) para ruta:', nombre);
+            } catch (e) {
+                console.warn('⚠️ No se pudo incrementar visitas (paquete, ruta):', e);
+            } finally {
+                clearTimeout(timeout);
+            }
+        } catch (e) {
+            console.warn('⚠️ Error iniciando incremento de visitas (paquete):', e);
+        }
+    })();
 }
 
 function consultarVuelos() {

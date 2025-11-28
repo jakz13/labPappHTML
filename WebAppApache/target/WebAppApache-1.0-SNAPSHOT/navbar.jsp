@@ -145,3 +145,4 @@
     window.CONTEXT_PATH = '${pageContext.request.contextPath}';
 </script>
 <script src="${pageContext.request.contextPath}/JsLogica/navbar.js"></script>
+<script src="${pageContext.request.contextPath}/JsLogica/incrementar-visitas.js"></script>

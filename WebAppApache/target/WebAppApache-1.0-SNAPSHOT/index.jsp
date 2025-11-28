@@ -211,7 +211,7 @@
                 <div class="flight-details">
                     <small><strong>Salida:</strong> 07:15 | <strong>Llegada:</strong> 09:45 | <strong>Precio desde:</strong> $320</small>
                 </div>
-                <a href="consulta-vuelo.jsp?id=ZL1502" class="read-more">
+                <a href="consulta-vuelo.jsp?id=ZL1502" class="read-more" data-inc-type="ruta" data-inc-id="ZL1502">
                     Ver detalles <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -232,7 +232,7 @@
                 <div class="flight-details">
                     <small><strong>Incluye:</strong> 3 rutas | <strong>Vigencia:</strong> 6 meses | <strong>Precio:</strong> $1,200</small>
                 </div>
-                <a href="consulta-paquete.jsp?id=1" class="read-more">
+                <a href="consulta-paquete.jsp?id=1" class="read-more" data-inc-type="paquete" data-inc-id="1">
                     Ver detalles del paquete <i class="bi bi-arrow-right"></i>
                 </a>
             </div>
@@ -249,7 +249,7 @@
                 <div class="flight-details">
                     <small><strong>Incluye:</strong> 4 rutas | <strong>Vigencia:</strong> 1 año | <strong>Precio:</strong> $2,500</small>
                 </div>
-                <a href="consulta-paquete.jsp?id=2" class="read-more">
+                <a href="consulta-paquete.jsp?id=2" class="read-more" data-inc-type="paquete" data-inc-id="2">
                     Ver detalles del paquete <i class="bi bi-arrow-right"></i>
                 </a>
             </div>

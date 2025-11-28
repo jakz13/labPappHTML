@@ -1,7 +1,6 @@
 // Variables globales
 let rutaSeleccionada = null;
 let vueloSeleccionado = null;
-let usuarioInfo = null;
 let rutasCargadas = [];
 
 // Función para construir URLs a la API
@@ -249,7 +248,7 @@ function cargarRutas(rutas) {
     rutas.forEach(ruta => {
         const rutaHTML = `
             <div class="col-md-6 mb-3">
-                <div class="card ruta-card h-100" onclick="seleccionarRuta('${ruta.nombre}')" style="cursor: pointer;">
+                <div class="card ruta-card h-100" onclick="incAndSelectRuta('${ruta.nombre}')" style="cursor: pointer;">
                     <div class="card-body">
                         <div class="d-flex justify-content-between align-items-start mb-2">
                             <h6 class="card-title text-primary">${ruta.nombre}</h6>
@@ -262,6 +261,29 @@ function cargarRutas(rutas) {
         `;
         container.innerHTML += rutaHTML;
     });
+}
+
+// Nueva función: incrementa visitas (best-effort) y selecciona la ruta
+function incAndSelectRuta(nombreRuta) {
+    try {
+        const contextPath = window.CONTEXT_PATH || '';
+        const incUrl = `${contextPath}/incrementarVisitasRuta?nombreRuta=${encodeURIComponent(nombreRuta)}`;
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 800);
+        // Fire-and-forget: no await para no bloquear la UI
+        fetch(incUrl, { method: 'POST', credentials: 'include', signal: controller.signal })
+            .catch(e => console.warn('⚠️ No se pudo incrementar visitas (onclick):', e))
+            .finally(() => clearTimeout(timeout));
+    } catch (e) {
+        console.warn('⚠️ Error iniciando incremento de visitas (onclick):', e);
+    }
+
+    // Llamar a la función existente que carga el detalle
+    try {
+        seleccionarRuta(nombreRuta);
+    } catch (e) {
+        console.error('❌ Error al seleccionar ruta después de incrementar visitas:', e);
+    }
 }
 
 function seleccionarRuta(nombreRuta) {
@@ -309,6 +331,7 @@ function seleccionarRuta(nombreRuta) {
                     break;
                 }
             }
+
         })
         .catch(error => {
             console.error('❌ Error consultando ruta:', error);
@@ -324,114 +347,160 @@ function seleccionarRuta(nombreRuta) {
 }
 
 function mostrarDetallesRuta(ruta) {
+    // Función mejorada para formatear fechas
+    function formatearFecha(valor) {
+        if (!valor) return '-';
+        try {
+            // Si ya es una fecha formateada (dd/MM/yyyy), devolver tal cual
+            if (typeof valor === 'string' && /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(valor)) {
+                return valor;
+            }
+
+            // Si es formato ISO (yyyy-MM-dd) o similar, convertir
+            const d = new Date(valor);
+            if (isNaN(d.getTime())) {
+                // Intentar parsear formato yyyy-MM-dd
+                const parts = String(valor).split('-');
+                if (parts.length === 3) {
+                    const [year, month, day] = parts;
+                    d.setFullYear(parseInt(year), parseInt(month) - 1, parseInt(day));
+                }
+            }
+
+            if (!isNaN(d.getTime())) {
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yyyy = d.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            }
+
+            return String(valor); // Devolver el valor original si no se puede parsear
+        } catch (e) {
+            console.warn('Error formateando fecha:', valor, e);
+            return String(valor);
+        }
+    }
+
+    // Actualizar los campos en la UI
     document.getElementById('rutaNombre').textContent = ruta.nombre || '-';
     document.getElementById('rutaDescripcion').textContent = ruta.descripcion || 'Sin descripción';
 
     const aerSelect = document.getElementById('aerolinea');
-    const aerText = (aerSelect && aerSelect.options[aerSelect.selectedIndex]) ? aerSelect.options[aerSelect.selectedIndex].text : '-';
+    const aerText = (aerSelect && aerSelect.options[aerSelect.selectedIndex]) ?
+        aerSelect.options[aerSelect.selectedIndex].text : '-';
     document.getElementById('rutaAerolinea').textContent = aerText;
 
     document.getElementById('rutaOrigen').textContent = ruta.origen || '-';
     document.getElementById('rutaDestino').textContent = ruta.destino || '-';
-    document.getElementById('rutaEstado').textContent = ruta.estado || 'Confirmada';
+
+    // === Estado con colores según valor ===
+    const estadoSpan = document.getElementById('rutaEstado');
+    const estadoValor = (ruta.estado || 'CONFIRMADA').toString().toUpperCase();
+    estadoSpan.textContent = ruta.estado || 'Confirmada';
+    // limpiar clases previas
+    estadoSpan.className = 'badge';
+    if (estadoValor === 'CONFIRMADA') {
+        estadoSpan.classList.add('badge-estado-confirmada');
+    } else if (estadoValor === 'INGRESADA') {
+        estadoSpan.classList.add('badge-estado-ingresada');
+    } else if (estadoValor === 'FINALIZADA' || estadoValor === 'RECHAZADA') {
+        estadoSpan.classList.add('badge-estado-finalizada');
+    } else {
+        // por si aparece algún otro estado, usamos estilo neutro
+        estadoSpan.classList.add('bg-secondary');
+    }
+
+    const fechaMostrada = formatearFecha(ruta.fechaAlta);
+    const fechaEl = document.getElementById('rutaFechaAlta');
+    if (fechaEl) fechaEl.textContent = fechaMostrada;
+
     document.getElementById('rutaCategorias').textContent = ruta.categorias && ruta.categorias.length > 0 ? ruta.categorias.join(', ') : 'No especificadas';
     document.getElementById('costoTurista').textContent = ruta.costoTurista !== undefined ? `$${ruta.costoTurista}` : 'N/A';
     document.getElementById('costoEjecutivo').textContent = ruta.costoEjecutivo !== undefined ? `$${ruta.costoEjecutivo}` : 'N/A';
     document.getElementById('costoEquipaje').textContent = ruta.costoEquipaje !== undefined ? `$${ruta.costoEquipaje}` : 'N/A';
 
-    // Manejo de imagen
-    const infoRutaEl = document.getElementById('infoRuta');
-    if (infoRutaEl) {
-        let imgContainer = document.getElementById('rutaImagenContainer');
-        if (!imgContainer) {
-            imgContainer = document.createElement('div');
-            imgContainer.id = 'rutaImagenContainer';
-            imgContainer.className = 'mb-3';
-            infoRutaEl.insertAdjacentElement('afterbegin', imgContainer);
-        }
-
-        let imgEl = document.getElementById('imagenRutaDetalle');
-        if (!imgEl) {
-            imgEl = document.createElement('img');
-            imgEl.id = 'imagenRutaDetalle';
-            imgEl.alt = 'Imagen de la ruta';
-            imgEl.className = 'img-fluid route-image w-100 rounded';
-            imgContainer.innerHTML = '';
-            imgContainer.appendChild(imgEl);
-        }
-
-        const imageValue = ruta.imagen || ruta.imagenUrl || ruta.imagenURL || ruta.image || ruta.foto || ruta.url || '';
-        if (imageValue) {
-            const raw = String(imageValue).trim();
-            const resolved = toPublicImageUrl(raw);
-            console.log('Imagen de ruta:', resolved);
-            imgEl.src = resolved;
-            imgEl.style.display = 'block';
-            imgEl.style.objectFit = 'cover';
-            imgEl.onerror = function() {
-                console.warn('La imagen de ruta falló al cargar:', resolved);
-                imgEl.style.display = 'none';
+    // Manejar imagen
+    const imgElement = document.getElementById('imagenRutaDetalle');
+    if (imgElement) {
+        const possibleImage = ruta.imagenUrl || ruta.imagen || ruta.image || ruta.foto || ruta.url || '';
+        if (possibleImage && String(possibleImage).trim() !== '') {
+            let imgPath = String(possibleImage).trim();
+            // Normalizar ruta: si no empieza con /, Images/ o http, prefix con Images/
+            if (!imgPath.startsWith('/') && !imgPath.startsWith('Images/') && !/^https?:\/\//i.test(imgPath)) {
+                imgPath = 'Images/' + imgPath;
+            }
+            // Si es relativa y no tiene contexto, prefijar CONTEXT_PATH
+            if (!/^https?:\/\//i.test(imgPath) && imgPath.startsWith('Images/') && (window.CONTEXT_PATH || '').length) {
+                const ctx = (window.CONTEXT_PATH.endsWith('/')) ? window.CONTEXT_PATH.slice(0, -1) : window.CONTEXT_PATH;
+                imgPath = ctx + '/' + imgPath;
+            }
+            imgElement.src = imgPath;
+            imgElement.style.display = 'block';
+            imgElement.style.objectFit = 'cover';
+            imgElement.onerror = function() {
+                console.warn('La imagen de ruta falló al cargar:', imgPath);
+                imgElement.style.display = 'none';
             };
         } else {
-            imgEl.style.display = 'none';
+            imgElement.style.display = 'none';
         }
     }
 
-    // Manejo de video
-    const videoUrl = ruta.videoUrl || ruta.video || '';
-    const videoUrlContainer = document.getElementById('videoUrlContainer');
+    // Manejar video
     const videoContainer = document.getElementById('videoContainer');
+    const videoUrlContainer = document.getElementById('videoUrlContainer');
+    const videoUrlLink = document.getElementById('videoUrlLink');
 
-    if (videoUrl) {
-        if (videoUrlContainer) {
-            videoUrlContainer.style.display = 'block';
-            const linkEl = document.getElementById('videoUrlLink');
-            if (linkEl) {
-                linkEl.href = videoUrl;
-                linkEl.textContent = videoUrl;
+    if (ruta.videoUrl && String(ruta.videoUrl).trim() !== '') {
+        const videoUrl = String(ruta.videoUrl).trim();
+
+        // Verificar si es YouTube o Vimeo para embeber
+        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+            let videoId = '';
+            if (videoUrl.includes('youtu.be/')) {
+                videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+            } else if (videoUrl.includes('watch?v=')) {
+                videoId = videoUrl.split('watch?v=')[1].split('&')[0];
             }
+
+            if (videoId && videoContainer) {
+                videoContainer.innerHTML = `
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+                    </div>`;
+                videoContainer.style.display = 'block';
+            }
+        } else if (videoUrl.includes('vimeo.com')) {
+            const vimeoId = videoUrl.split('vimeo.com/')[1];
+            if (vimeoId && videoContainer) {
+                videoContainer.innerHTML = `
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://player.vimeo.com/video/${vimeoId}" allowfullscreen></iframe>
+                    </div>`;
+                videoContainer.style.display = 'block';
+            }
+        } else {
+            // Para otros videos, mostrar solo el enlace y no embeber
+            if (videoContainer) videoContainer.style.display = 'none';
         }
 
-        if (videoContainer) {
-            videoContainer.innerHTML = '';
-            const ytId = getYouTubeEmbed(videoUrl);
-            const vimeoId = getVimeoEmbed(videoUrl);
-            if (ytId) {
-                const iframe = document.createElement('iframe');
-                iframe.width = '100%';
-                iframe.height = '360';
-                iframe.src = 'https://www.youtube.com/embed/' + ytId;
-                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                iframe.allowFullscreen = true;
-                iframe.className = 'rounded';
-                videoContainer.appendChild(iframe);
-            } else if (vimeoId) {
-                const iframe = document.createElement('iframe');
-                iframe.width = '100%';
-                iframe.height = '360';
-                iframe.src = 'https://player.vimeo.com/video/' + vimeoId;
-                iframe.allowFullscreen = true;
-                iframe.className = 'rounded';
-                videoContainer.appendChild(iframe);
-            } else if (/\.mp4($|\?)/i.test(videoUrl)) {
-                const videoEl = document.createElement('video');
-                videoEl.controls = true;
-                videoEl.className = 'w-100 rounded';
-                const src = document.createElement('source');
-                src.src = videoUrl;
-                src.type = 'video/mp4';
-                videoEl.appendChild(src);
-                videoContainer.appendChild(videoEl);
-            }
+        // Siempre mostrar el enlace
+        if (videoUrlLink && videoUrlContainer) {
+            videoUrlLink.href = videoUrl;
+            videoUrlLink.textContent = videoUrl;
+            videoUrlContainer.style.display = 'block';
         }
     } else {
+        // No hay video
+        if (videoContainer) videoContainer.style.display = 'none';
         if (videoUrlContainer) videoUrlContainer.style.display = 'none';
-        if (videoContainer) videoContainer.innerHTML = '';
     }
 
-    try {
-        document.getElementById('infoRuta').style.display = 'block';
-    } catch (e) {}
+    // ✅ MOSTRAR la sección de información
+    const infoRutaSection = document.getElementById('infoRuta');
+    if (infoRutaSection) {
+        infoRutaSection.style.display = 'block';
+    }
 }
 
 // Filtrar rutas por categoría
