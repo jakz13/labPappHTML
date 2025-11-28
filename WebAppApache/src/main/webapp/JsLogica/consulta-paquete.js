@@ -408,14 +408,3 @@ function crearToastContainer() {
     document.body.appendChild(container);
     return container;
 }
-
-// Función para debug manual
-function debugEstado() {
-    console.log('=== 🐛 DEBUG CONSULTA PAQUETES ===');
-    console.log('Paquetes cargados:', Object.keys(paquetes).length);
-    console.log('Paquetes objeto:', paquetes);
-    console.log('Select element:', document.getElementById('paqueteSelect'));
-    console.log('InfoPaquete element:', document.getElementById('infoPaquete'));
-    console.log('InfoRuta element:', document.getElementById('infoRuta'));
-    console.log('================================');
-}

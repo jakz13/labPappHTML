@@ -62,9 +62,6 @@ public class CompraPaqueteServlet extends HttpServlet {
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String action = request.getParameter("action");
 
-        System.out.println("=== DEBUG COMPRA PAQUETE POST ===");
-        System.out.println("Action recibido: " + action);
-        System.out.println("Método: " + request.getMethod());
 
         Enumeration<String> paramNames = request.getParameterNames();
         while (paramNames.hasMoreElements()) {

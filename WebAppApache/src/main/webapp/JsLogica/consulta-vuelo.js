@@ -256,7 +256,7 @@ function cargarDetallesVuelo(nombreVuelo) {
 function mostrarDetallesVuelo(vueloData) {
     const resultadoConsulta = document.getElementById('resultadoConsulta');
 
-    // DEBUG: mostrar el objeto vueloData completo para facilitar diagnóstico de la URL de la imagen
+    // mostrar el objeto vueloData completo n
     try { console.log('mostrarDetallesVuelo - vueloData:', vueloData); } catch (e) { /* ignore */ }
 
     // Primero, restaurar el contenido original del resultadoConsulta (incluye contenedor multimedia)
