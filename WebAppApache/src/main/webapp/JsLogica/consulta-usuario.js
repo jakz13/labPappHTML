@@ -571,14 +571,3 @@ function crearToastContainer() {
     document.body.appendChild(container);
     return container;
 }
-
-// Función para debug manual
-function debugEstado() {
-    console.log('=== 🐛 DEBUG CONSULTA USUARIOS ===');
-    console.log('Usuarios cargados:', Object.keys(usuarios).length);
-    console.log('Usuarios objeto:', usuarios);
-    console.log('Usuario actual:', usuarioActual);
-    console.log('Select element:', document.getElementById('usuarioSelect'));
-    console.log('InfoUsuario element:', document.getElementById('infoUsuario'));
-    console.log('================================');
-}

@@ -39,7 +39,6 @@ public class AltaVueloServlet extends HttpServlet {
                 }
             }
             if (nombreAerolinea == null || nombreAerolinea.isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_FORBIDDEN);
                 out.print("{\"success\": false, \"error\": \"Usuario no autorizado: debe iniciar sesión como aerolínea\"}");
                 return;
             }
@@ -57,12 +56,10 @@ public class AltaVueloServlet extends HttpServlet {
 
             // Validaciones básicas
             if (nombreVuelo == null || nombreVuelo.trim().isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\": false, \"error\": \"El nombre del vuelo es obligatorio\"}");
                 return;
             }
             if (nombreRuta == null || nombreRuta.trim().isEmpty()) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\": false, \"error\": \"La ruta es obligatoria\"}");
                 return;
             }
@@ -77,7 +74,6 @@ public class AltaVueloServlet extends HttpServlet {
                             java.lang.reflect.Method gname = v.getClass().getMethod("getNombre");
                             Object val = gname.invoke(v);
                             if (val != null && String.valueOf(val).equalsIgnoreCase(nombreVuelo)) {
-                                response.setStatus(HttpServletResponse.SC_CONFLICT);
                                 out.print("{\"success\": false, \"error\": \"Ya existe un vuelo con ese nombre para la aerolínea\"}");
                                 return;
                             }
@@ -139,12 +135,12 @@ public class AltaVueloServlet extends HttpServlet {
             // Obtener aerolínea (DTO) desde la lógica
             DtAerolinea aerolinea = sistema.obtenerAerolinea(nombreAerolinea);
             if (aerolinea == null) {
-                response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
                 out.print("{\"success\": false, \"error\": \"Aerolínea no encontrada\"}");
                 return;
             }
 
             // Llamada a la lógica de negocio
+            boolean altaVueloOk = false;
             try {
                 java.lang.reflect.Method[] methods = sistema.getClass().getMethods();
                 boolean invoked = false;
@@ -163,24 +159,62 @@ public class AltaVueloServlet extends HttpServlet {
                             if (pts[6] == int.class || pts[6] == Integer.class) args[6] = asientosEjecutivo;
                             if (pts[7] == LocalDate.class) args[7] = fechaAlta;
                             if (pts[8] == String.class) args[8] = imagenUrl; else args[8] = imagenUrl;
-                            try { m.invoke(sistema, args); invoked = true; break; } catch (Exception ex) { /* continuar intentando */ }
+                            m.invoke(sistema, args);
+                            invoked = true;
+                            altaVueloOk = true;
+                            break;
                         }
                         if (pts.length == 8) {
                             Object[] args = new Object[]{nombreVuelo, nombreAerolinea, nombreRuta, fecha, duracion, asientosTurista, asientosEjecutivo, fechaAlta};
-                            try { m.invoke(sistema, args); invoked = true; break; } catch (Exception ex) { /* continuar */ }
+                            m.invoke(sistema, args);
+                            invoked = true;
+                            altaVueloOk = true;
+                            break;
                         }
                     } catch (Exception invokeEx) {
-                        System.out.println("AltaVueloServlet: fallo al invocar altaVuelo -> " + invokeEx.getMessage());
+                        // si es un InvocationTargetException, extraer la causa real
+                        Throwable cause = invokeEx;
+                        if (invokeEx instanceof java.lang.reflect.InvocationTargetException && invokeEx.getCause() != null) {
+                            cause = invokeEx.getCause();
+                        }
+                        System.out.println("AltaVueloServlet: fallo al invocar altaVuelo -> " + cause);
+
+                        String msg = (cause.getMessage() != null) ? cause.getMessage() : "Error al crear el vuelo";
+                        String msgLower = msg.toLowerCase();
+
+                        // Si detectamos que es un error de negocio (ruta finalizada o vuelo duplicado)
+                        if (msgLower.contains("finalizada") || msgLower.contains("finalizado") ||
+                                msgLower.contains("ya existe") || msgLower.contains("existe un vuelo")) {
+                            // Error de negocio controlado -> mantener HTTP 200 para que el JS pueda leer el JSON
+                            out.print("{\"success\": false, \"error\": \"" + msg.replace("\"", "\\\"") + "\"}");
+                            return; // no continuar ni devolver éxito
+                        } else {
+                            // Otro error de negocio o técnico -> 400 con mensaje devuelto en JSON
+                            out.print("{\"success\": false, \"error\": \"" + msg.replace("\"", "\\\"") + "\"}");
+                            return;
+                        }
                     }
                 }
                 if (!invoked) {
-                    response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
                     out.print("{\"success\": false, \"error\": \"No se pudo invocar altaVuelo en la lógica (firma no encontrada)\"}");
                     return;
                 }
-             } catch (Throwable e) {
-                 System.out.println("AltaVueloServlet: error invocando altaVuelo -> " + e.getMessage());
-             }
+            } catch (Throwable e) {
+                // Cualquier otro error inesperado al preparar o buscar el método
+                Throwable cause = e instanceof java.lang.reflect.InvocationTargetException && e.getCause() != null
+                        ? e.getCause() : e;
+                System.out.println("AltaVueloServlet: error inesperado invocando altaVuelo -> " + cause);
+                String msg = (cause.getMessage() != null) ? cause.getMessage() : "Error interno al crear el vuelo";
+
+                out.print("{\"success\": false, \"error\": \"" + msg.replace("\"", "\\\"") + "\"}");
+                return;
+            }
+
+            // Si por alguna razón no se marcó como OK, no seguir y devolver error genérico
+            if (!altaVueloOk) {
+                out.print("{\"success\": false, \"error\": \"No se pudo completar el alta del vuelo\"}");
+                return;
+            }
 
             // Intentar persistir la URL de la imagen en la lógica de negocio si existe
             boolean imagenPersistida = false;

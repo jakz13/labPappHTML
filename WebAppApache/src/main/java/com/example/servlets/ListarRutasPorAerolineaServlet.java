@@ -1,12 +1,11 @@
 package com.example.servlets;
 
-import logica.EstadoRuta;
-import logica.Fabrica;
-import logica.ISistema;
+import logica.*;
 import DataTypes.DtRutaVuelo;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
+
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.lang.reflect.*;
@@ -20,179 +19,193 @@ public class ListarRutasPorAerolineaServlet extends HttpServlet {
         String categoria = request.getParameter("categoria");
         String estado = request.getParameter("estado");
 
-        // DEBUG: log del parámetro recibido para facilitar diagnóstico (por qué no lista rutas)
-        try { System.out.println("[DEBUG api/rutas] param aerolinea='" + aerolinea + "', categoria='" + categoria + "', estado='" + estado + "'"); } catch (Throwable ignore) {}
-
-        ISistema sistema = Fabrica.getInstance().getISistema();
-        sistema.cargarDesdeBd();
-
-        sistema.obtenerAerolinea(aerolinea);
-        List<DtRutaVuelo> rutasTotales = sistema.listarRutasPorAerolinea((aerolinea != null && !aerolinea.trim().isEmpty()) ? aerolinea : null);
-
-        // Determinar si el usuario en sesión es la aerolínea propietaria solicitada
-        HttpSession session = request.getSession(false);
-        boolean ownerIsRequesting = false;
-        if (session != null) {
-            Object tipoUsuario = session.getAttribute("tipoUsuario");
-            Object usuarioSession = session.getAttribute("usuario");
-            if (tipoUsuario != null && "aerolinea".equalsIgnoreCase(String.valueOf(tipoUsuario))
-                    && usuarioSession != null && aerolinea != null
-                    && String.valueOf(usuarioSession).equalsIgnoreCase(aerolinea)) {
-                ownerIsRequesting = true;
-            }
-        }
-
-        // Si el que pide es la aerolínea dueña, le mostramos todas sus rutas (incluidas no confirmadas).
-        // En caso contrario, exponemos solo las rutas confirmadas.
-        List<DtRutaVuelo> rutas;
-        if (rutasTotales == null) {
-            rutas = new ArrayList<>();
-        } else if (ownerIsRequesting) {
-            rutas = rutasTotales; // dueño: ver todas sus rutas
-            System.out.println("[DEBUG ListarRutas] usuario dueño detectado, mostrando todas las rutas para: " + aerolinea);
-        } else {
-            // filtrar sólo CONFIRMADA
-            List<DtRutaVuelo> rutasConfirmadas = new ArrayList<>();
-            for (DtRutaVuelo ruta : rutasTotales) {
-                EstadoRuta est = ruta.getEstado() != null ? ruta.getEstado() : EstadoRuta.INGRESADA;
-                if ("CONFIRMADA".equalsIgnoreCase(String.valueOf(est))) {
-                    rutasConfirmadas.add(ruta);
-                    System.out.println("[DEBUG ListarRutas] ruta confirmada extraida: " + ruta.getNombre());
-                }
-            }
-            rutas = rutasConfirmadas;
-        }
-
-        // Aplicar filtros
-        List<DtRutaVuelo> rutasFiltradas = new ArrayList<>();
-        for (DtRutaVuelo r : rutas) {
-            boolean pasaFiltros = true;
-
-            // Filtro por categoría
-            if (categoria != null && !categoria.isEmpty() && !"todas".equalsIgnoreCase(categoria)) {
-                if (r.getCategorias() != null) {
-                    boolean tieneCategoria = false;
-                    for (String cat : r.getCategorias()) {
-                        if (cat.equalsIgnoreCase(categoria)) {
-                            tieneCategoria = true;
-                            break;
-                        }
-                    }
-                    pasaFiltros = pasaFiltros && tieneCategoria;
-                } else {
-                    pasaFiltros = false; // Si no tiene categorías definidas, no pasa el filtro
-                }
-            }
-
-            // Filtro por estado (si se solicita un estado distinto de "todas")
-            if (estado != null && !estado.isEmpty() && !"todas".equalsIgnoreCase(estado)) {
-                EstadoRuta estadoRuta = r.getEstado() != null ? r.getEstado() : EstadoRuta.INGRESADA;
-                pasaFiltros = pasaFiltros && estadoRuta.equals(estado);
-            }
-
-            if (pasaFiltros) {
-                rutasFiltradas.add(r);
-            }
-        }
-
-        // Convertir a JSON
+        // Configurar response ANTES de obtener PrintWriter
         response.setContentType("application/json;charset=UTF-8");
-        PrintWriter out = response.getWriter();
-        StringBuilder sb = new StringBuilder();
-        sb.append("[");
-        for (int i = 0; i < rutasFiltradas.size(); i++) {
-            DtRutaVuelo r = rutasFiltradas.get(i);
-            sb.append("{");
-            sb.append("\"nombre\":\"").append(escapeJson(r.getNombre())).append("\",");
-            sb.append("\"descripcion\":\"").append(escapeJson(r.getDescripcion())).append("\",");
-            sb.append("\"origen\":\"").append(escapeJson(r.getCiudadOrigen())).append("\",");
-            sb.append("\"destino\":\"").append(escapeJson(r.getCiudadDestino())).append("\",");
-            sb.append("\"estado\":\"").append(escapeJson(String.valueOf(r.getEstado()))).append("\",");
+        response.setCharacterEncoding("UTF-8");
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
 
-            // Categorías como array
-            sb.append("\"categorias\":[");
-            if (r.getCategorias() != null) {
-                for (int j = 0; j < r.getCategorias().size(); j++) {
-                    sb.append("\"").append(escapeJson(r.getCategorias().get(j))).append("\"");
-                    if (j < r.getCategorias().size() - 1) sb.append(",");
+        PrintWriter out = response.getWriter();
+
+        try {
+            ISistema sistema = Fabrica.getInstance().getISistema();
+            sistema.cargarDesdeBd();
+
+            List<DtRutaVuelo> rutasTotales = sistema.listarRutasPorAerolinea((aerolinea != null && !aerolinea.trim().isEmpty()) ? aerolinea : null);
+
+            // Determinar si el usuario en sesión es la aerolínea propietaria solicitada
+            HttpSession session = request.getSession(false);
+            boolean ownerIsRequesting = false;
+            if (session != null) {
+                Object tipoUsuario = session.getAttribute("tipoUsuario");
+                Object usuarioSession = session.getAttribute("usuario");
+                if (tipoUsuario != null && "aerolinea".equalsIgnoreCase(String.valueOf(tipoUsuario))
+                        && usuarioSession != null && aerolinea != null
+                        && String.valueOf(usuarioSession).equalsIgnoreCase(aerolinea)) {
+                    ownerIsRequesting = true;
                 }
             }
-            sb.append("],");
 
-            sb.append("\"costoTurista\":").append(r.getCostoTurista()).append(",");
-            sb.append("\"costoEjecutivo\":").append(r.getCostoEjecutivo()).append(",");
-            sb.append("\"costoEquipaje\":").append(r.getCostoEquipajeExtra());
-
-            try {
-                String imagenVal = invokeGetterSafe(r, new String[]{"getImagenUrl", "getImagen", "imagenUrl", "imagen", "getImagenPath", "imagenPath", "url"});
-
-
-                if (imagenVal != null && !imagenVal.isBlank()) {
-                    String tmp = imagenVal.trim();
-                    try {
-                        if (!tmp.matches("(?i)^(https?:)?//.*")) {
-                            // construir URL absoluta igual que en la JVM de consulta de vuelo
-                            String scheme = request.getScheme();
-                            String serverName = request.getServerName();
-                            int serverPort = request.getServerPort();
-                            String portPart = "";
-                            if (!("http".equalsIgnoreCase(scheme) && serverPort == 80) && !("https".equalsIgnoreCase(scheme) && serverPort == 443)) {
-                                portPart = ":" + serverPort;
-                            }
-                            if (!tmp.startsWith("/")) tmp = "/" + tmp;
-                            String absolute = scheme + "://" + serverName + portPart + tmp;
-                            imagenVal = absolute;
-                        } else {
-                            imagenVal = tmp;
-                        }
-                    } catch (Exception ignore) {
-                        imagenVal = tmp;
+            // Si el que pide es la aerolínea dueña, le mostramos todas sus rutas (incluidas no confirmadas).
+            // En caso contrario, exponemos solo las rutas confirmadas.
+            List<DtRutaVuelo> rutas;
+            if (rutasTotales == null) {
+                rutas = new ArrayList<>();
+            } else if (ownerIsRequesting) {
+                rutas = rutasTotales; // dueño: ver todas sus rutas
+            } else {
+                // filtrar sólo CONFIRMADA
+                List<DtRutaVuelo> rutasConfirmadas = new ArrayList<>();
+                for (DtRutaVuelo ruta : rutasTotales) {
+                    EstadoRuta est = ruta.getEstado() != null ? ruta.getEstado() : EstadoRuta.INGRESADA;
+                    if ("CONFIRMADA".equalsIgnoreCase(String.valueOf(est))) {
+                        rutasConfirmadas.add(ruta);
                     }
+                }
+                rutas = rutasConfirmadas;
+            }
+
+            // Aplicar filtros
+            List<DtRutaVuelo> rutasFiltradas = new ArrayList<>();
+            for (DtRutaVuelo r : rutas) {
+                boolean pasaFiltros = true;
+
+                // Filtro por categoría
+                if (categoria != null && !categoria.isEmpty() && !"todas".equalsIgnoreCase(categoria)) {
+                    if (r.getCategorias() != null) {
+                        boolean tieneCategoria = false;
+                        for (String cat : r.getCategorias()) {
+                            if (cat.equalsIgnoreCase(categoria)) {
+                                tieneCategoria = true;
+                                break;
+                            }
+                        }
+                        pasaFiltros = pasaFiltros && tieneCategoria;
+                    } else {
+                        pasaFiltros = false; // Si no tiene categorías definidas, no pasa el filtro
+                    }
+                }
+
+                // Filtro por estado (si se solicita un estado distinto de "todas")
+                if (estado != null && !estado.isEmpty() && !"todas".equalsIgnoreCase(estado)) {
+                    EstadoRuta estadoRuta = r.getEstado() != null ? r.getEstado() : EstadoRuta.INGRESADA;
+                    pasaFiltros = pasaFiltros && estadoRuta.name().equalsIgnoreCase(estado);
+                }
+
+                if (pasaFiltros) {
+                    rutasFiltradas.add(r);
+                }
+            }
+
+            System.out.println("[ListarRutasPorAerolinea] Aerolínea param = " + aerolinea);
+            System.out.println("[ListarRutasPorAerolinea] Rutas totales = " + (rutasTotales != null ? rutasTotales.size() : 0));
+            System.out.println("[ListarRutasPorAerolinea] ownerIsRequesting = " + ownerIsRequesting);
+            System.out.println("[ListarRutasPorAerolinea] Rutas tras filtro dueño/estado = " + rutas.size());
+            System.out.println("[ListarRutasPorAerolinea] Rutas tras filtros finales = " + rutasFiltradas.size());
+
+
+            // Convertir a JSON
+            StringBuilder sb = new StringBuilder();
+            sb.append("[");
+            for (int i = 0; i < rutasFiltradas.size(); i++) {
+                DtRutaVuelo r = rutasFiltradas.get(i);
+                sb.append("{");
+                sb.append("\"nombre\":\"").append(escapeJson(r.getNombre())).append("\",");
+                sb.append("\"descripcion\":\"").append(escapeJson(r.getDescripcion())).append("\",");
+                sb.append("\"origen\":\"").append(escapeJson(r.getCiudadOrigen())).append("\",");
+                sb.append("\"destino\":\"").append(escapeJson(r.getCiudadDestino())).append("\",");
+                sb.append("\"estado\":\"").append(escapeJson(String.valueOf(r.getEstado()))).append("\",");
+
+                // Categorías como array
+                sb.append("\"categorias\":[");
+                if (r.getCategorias() != null) {
+                    for (int j = 0; j < r.getCategorias().size(); j++) {
+                        sb.append("\"").append(escapeJson(r.getCategorias().get(j))).append("\"");
+                        if (j < r.getCategorias().size() - 1) sb.append(",");
+                    }
+                }
+                sb.append("],");
+
+                sb.append("\"costoTurista\":").append(r.getCostoTurista()).append(",");
+                sb.append("\"costoEjecutivo\":").append(r.getCostoEjecutivo()).append(",");
+                sb.append("\"costoEquipaje\":").append(r.getCostoEquipajeExtra());
+
+                try {
+                    String imagenVal = invokeGetterSafe(r, new String[]{"getImagenUrl", "getImagen", "imagenUrl", "imagen", "getImagenPath", "imagenPath", "url"});
 
                     if (imagenVal != null && !imagenVal.isBlank()) {
-                        sb.append(",\"imagenUrl\":\"").append(escapeJson(imagenVal)).append("\"");
-                    }
-                }
-            } catch (Exception ignore) {}
-
-            // AÑADIR: Procesar videoUrl (NUEVO CÓDIGO)
-            try {
-                String videoVal = r.getVideoUrl();
-
-                if (videoVal != null && !videoVal.isBlank()) {
-                    String tmp = videoVal.trim();
-                    try {
-                        if (!tmp.matches("(?i)^(https?:)?//.*")) {
-                            // construir URL absoluta igual que para imágenes
-                            String scheme = request.getScheme();
-                            String serverName = request.getServerName();
-                            int serverPort = request.getServerPort();
-                            String portPart = "";
-                            if (!("http".equalsIgnoreCase(scheme) && serverPort == 80) && !("https".equalsIgnoreCase(scheme) && serverPort == 443)) {
-                                portPart = ":" + serverPort;
+                        String tmp = imagenVal.trim();
+                        try {
+                            if (!tmp.matches("(?i)^(https?:)?//.*")) {
+                                // construir URL absoluta igual que en la JVM de consulta de vuelo
+                                String scheme = request.getScheme();
+                                String serverName = request.getServerName();
+                                int serverPort = request.getServerPort();
+                                String portPart = "";
+                                if (!("http".equalsIgnoreCase(scheme) && serverPort == 80) && !("https".equalsIgnoreCase(scheme) && serverPort == 443)) {
+                                    portPart = ":" + serverPort;
+                                }
+                                if (!tmp.startsWith("/")) tmp = "/" + tmp;
+                                String absolute = scheme + "://" + serverName + portPart + tmp;
+                                imagenVal = absolute;
+                            } else {
+                                imagenVal = tmp;
                             }
-                            if (!tmp.startsWith("/")) tmp = "/" + tmp;
-                            String absolute = scheme + "://" + serverName + portPart + tmp;
-                            videoVal = absolute;
-                        } else {
-                            videoVal = tmp;
+                        } catch (Exception ignore) {
+                            imagenVal = tmp;
                         }
-                    } catch (Exception ignore) {
-                        videoVal = tmp;
+
+                        if (imagenVal != null && !imagenVal.isBlank()) {
+                            sb.append(",\"imagenUrl\":\"").append(escapeJson(imagenVal)).append("\"");
+                        }
                     }
+                } catch (Exception ignore) {}
+
+                // AÑADIR: Procesar videoUrl (NUEVO CÓDIGO)
+                try {
+                    String videoVal = r.getVideoUrl();
 
                     if (videoVal != null && !videoVal.isBlank()) {
-                        sb.append(",\"videoUrl\":\"").append(escapeJson(videoVal)).append("\"");
+                        String tmp = videoVal.trim();
+                        try {
+                            if (!tmp.matches("(?i)^(https?:)?//.*")) {
+                                // construir URL absoluta igual que para imágenes
+                                String scheme = request.getScheme();
+                                String serverName = request.getServerName();
+                                int serverPort = request.getServerPort();
+                                String portPart = "";
+                                if (!("http".equalsIgnoreCase(scheme) && serverPort == 80) && !("https".equalsIgnoreCase(scheme) && serverPort == 443)) {
+                                    portPart = ":" + serverPort;
+                                }
+                                if (!tmp.startsWith("/")) tmp = "/" + tmp;
+                                String absolute = scheme + "://" + serverName + portPart + tmp;
+                                videoVal = absolute;
+                            } else {
+                                videoVal = tmp;
+                            }
+                        } catch (Exception ignore) {
+                            videoVal = tmp;
+                        }
+
+                        if (videoVal != null && !videoVal.isBlank()) {
+                            sb.append(",\"videoUrl\":\"").append(escapeJson(videoVal)).append("\"");
+                        }
                     }
-                }
-            } catch (Exception ignore) {}
+                } catch (Exception ignore) {}
 
-            sb.append("}");
+                sb.append("}");
 
-            if (i < rutasFiltradas.size() - 1) sb.append(",");
+                if (i < rutasFiltradas.size() - 1) sb.append(",");
+            }
+            sb.append("]");
+            out.print(sb.toString());
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            out.print("{\"error\":\"Error al cargar rutas: " + escapeJson(e.getMessage()) + "\"}");
         }
-        sb.append("]");
-        out.print(sb.toString());
     }
 
     // intenta invocar getters comunes devolviendo String

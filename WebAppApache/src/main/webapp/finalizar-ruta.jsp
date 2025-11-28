@@ -136,6 +136,10 @@
                 </ul>
                 </p>
                 <input type="hidden" id="rutaIdModal">
+                <!-- Detalle adicional en caso de que la ruta no sea finalizable -->
+                <div id="detalleFinalizacionModal" class="alert alert-warning small" style="display:none;">
+                    <!-- Mensaje dinámico según la razón por la cual no se puede finalizar -->
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
@@ -157,22 +161,22 @@
     window.CONTEXT_PATH = '<%= contextPath %>';
 </script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-<!-- Script local (ruta absoluta dentro de la app) -->
 <script src="<%= contextPath %>/JsLogica/session-manager.js"></script>
 <script>
     // Variables globales
     let rutaSeleccionada = null;
     let rutaIdSeleccionada = null;
+    let rutaEsFinalizable = false; // nuevo flag global
 
     // Utility: escapar HTML para evitar inyección en strings construidos
     function escapeHtml(unsafe) {
         if (unsafe === null || unsafe === undefined) return '';
         return String(unsafe)
-            .replace(/&/g, '&amp;')
-            .replace(/</g, '&lt;')
-            .replace(/>/g, '&gt;')
-            .replace(/"/g, '&quot;')
-            .replace(/'/g, '&#039;');
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
     }
 
     // Cargar rutas al iniciar
@@ -185,13 +189,13 @@
             confirmBtn.addEventListener('click', finalizarRutaConfirmada);
         }
 
-        // Cargar rutas
+        // Cargar rutas (todas las rutas de la aerolínea que inició sesión)
         cargarRutasFinalizables();
     });
 
     function cargarRutasFinalizables() {
         const aerolinea = '<%= usuarioSession %>';
-        console.log('Cargando rutas para aerolínea:', aerolinea);
+        console.log('Cargando rutas para aerolínea (todas):', aerolinea);
 
         if (!aerolinea) {
             mostrarError('No se pudo identificar la aerolínea. Por favor, inicie sesión.');
@@ -206,46 +210,66 @@
             + '<div class="spinner-border text-primary mb-3" role="status">'
             + '<span class="visually-hidden">Cargando...</span>'
             + '</div>'
-            + '<p class="text-muted">Cargando rutas finalizables...</p>'
+            + '<p class="text-muted">Cargando rutas...</p>'
             + '</div>';
 
-        // Llamar al backend real
+        // Llamar al backend: listar TODAS las rutas de la aerolínea
         const apiBase = window.CONTEXT_PATH;
         const fetchUrl = apiBase + '/api/rutas?aerolinea=' + encodeURIComponent(aerolinea);
-        console.log('Llamando a backend:', fetchUrl);
+        console.log('Llamando a backend (todas las rutas):', fetchUrl);
 
         fetch(fetchUrl, { credentials: 'include' })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Error al cargar las rutas: ' + response.status);
-                }
-                return response.json();
-            })
-            .then(rutas => {
-                console.log('Rutas recibidas:', rutas);
-                // Filtrar solo rutas con estado "Confirmada" y que no estén "Finalizadas"
-                const rutasFiltradas = rutas.filter(ruta =>
-                    ruta.estado === 'CONFIRMADA' && ruta.estado !== 'FINALIZADA'
-                );
-                mostrarRutas(rutasFiltradas);
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                mostrarError('Error al cargar las rutas finalizables: ' + error.message);
-            });
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Error al cargar las rutas: ' + response.status);
+            }
+            return response.json();
+        })
+        .then(rutas => {
+            console.log('Rutas recibidas:', rutas);
+            mostrarRutas(rutas || []);
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            mostrarError('Error al cargar las rutas: ' + error.message);
+        });
+    }
+
+    /**
+     * Procesa promesas en lotes secuenciales para evitar sobrecarga del backend
+     */
+    async function procesarEnLotes(promesas, tamañoLote = 3) {
+        const resultados = [];
+        for (let i = 0; i < promesas.length; i += tamañoLote) {
+            const lote = promesas.slice(i, i + tamañoLote);
+            const resultadosLote = await Promise.all(lote);
+            resultados.push(...resultadosLote);
+
+            // Pequeña pausa entre lotes para no sobrecargar
+            if (i + tamañoLote < promesas.length) {
+                await new Promise(resolve => setTimeout(resolve, 300));
+            }
+        }
+        return resultados;
     }
 
     function mostrarRutas(rutas) {
         const container = document.getElementById('rutasFinalizables');
         if (!container) return;
 
-        console.log('Mostrando', rutas.length, 'rutas confirmadas');
+        // Filtrar solo rutas que NO estén finalizadas
+        const rutasNoFinalizadas = (rutas || []).filter(r => {
+            const est = (r.estado || '').toString().toUpperCase();
+            return est !== 'FINALIZADA';
+        });
 
-        if (!rutas || rutas.length === 0) {
+        console.log('Mostrando', rutasNoFinalizadas.length, 'rutas no finalizadas');
+
+        if (!rutasNoFinalizadas || rutasNoFinalizadas.length === 0) {
             container.innerHTML = '<div class="text-center py-5">'
                 + '<i class="bi bi-inbox display-1 text-muted"></i>'
-                + '<h4 class="text-muted mt-3">No hay rutas finalizables</h4>'
-                + '<p class="text-muted">No se encontraron rutas con estado "Confirmada" que puedan ser finalizadas.</p>'
+                + '<h4 class="text-muted mt-3">No hay rutas para esta aerolínea</h4>'
+                + '<p class="text-muted">No se encontraron rutas para la aerolínea actual.</p>'
                 + '<button class="btn btn-primary mt-3" onclick="cargarRutasFinalizables()">'
                 + '<i class="bi bi-arrow-repeat me-2"></i>Reintentar'
                 + '</button>'
@@ -253,129 +277,209 @@
             return;
         }
 
-        let html = '<div class="row g-3">'; // Reducido el gap entre cards
-        rutas.forEach(function(ruta) {
-            var idRuta = ruta.id || ruta.idRuta;
-            var nombre = escapeHtml(ruta.nombre || 'Sin nombre');
-            var descripcion = escapeHtml(ruta.descripcion || 'Sin descripción');
-            var origen = escapeHtml(ruta.origen || 'N/A');
-            var destino = escapeHtml(ruta.destino || 'N/A');
-            var costoTurista = escapeHtml(ruta.costoTurista || 0);
-            var costoEjecutivo = escapeHtml(ruta.costoEjecutivo || 0);
-            var estado = escapeHtml(ruta.estado || 'N/A');
-            var aerolinea = escapeHtml((ruta.aerolinea && ruta.aerolinea.nombre) || ruta.aerolinea || '<%= usuarioSession %>');
-            var vuelosHTML = (ruta.vuelos && ruta.vuelos.length > 0)
-                ? generarVuelosHTML(ruta.vuelos)
-                : '<p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i>No hay vuelos asociados</p>';
+        const promesasRutas = rutasNoFinalizadas.map(ruta => {
+            return new Promise((resolve) => {
+                const nombreRuta = ruta.nombre;
 
-            var esFinalizable = estado === 'CONFIRMADA';
-
-            html += '<div class="col-11112 col-md-12 col-xl-12">'
-                + '<div class="card border-primary ruta-card h-100 w-100">'
-                + '<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">'
-                + '<h6 class="mb-0 text-truncate" title="' + nombre + '">' + nombre + '</h6>'
-                + '<span class="badge ' + (esFinalizable ? 'badge-finalizable' : 'badge-no-finalizable') + '">'
-                + (esFinalizable ? 'Finalizable' : 'No Finalizable')
-                + '</span>'
-                + '</div>'
-                + '<div class="card-body card-body-compact">'
-                + '<p class="card-text text-muted small mb-2">' + descripcion + '</p>'
-
-                + '<div class="row mb-2">'
-                + '<div class="col-12">'
-                + '<p class="mb-1 small"><strong><i class="bi bi-route me-1"></i>Ruta:</strong> ' + origen + ' → ' + destino + '</p>'
-                + '<p class="mb-1 small"><strong><i class="bi bi-flag me-1"></i>Estado:</strong> <span class="badge bg-success">' + estado + '</span></p>'
-                + '<p class="mb-1 small"><strong><i class="bi bi-building me-1"></i>Aerolínea:</strong> ' + aerolinea + '</p>'
-                + '</div>'
-                + '</div>'
-
-                + '<div class="bg-light rounded p-2 mb-2">'
-                + '<h6 class="mb-2 text-center small">Costos</h6>'
-                + '<div class="row text-center">'
-                + '<div class="col-6">'
-                + '<div class="costo-destacado small">$' + costoTurista + '</div>'
-                + '<small class="text-muted">Turista</small>'
-                + '</div>'
-                + '<div class="col-6">'
-                + '<div class="costo-destacado small">$' + costoEjecutivo + '</div>'
-                + '<small class="text-muted">Ejecutivo</small>'
-                + '</div>'
-                + '</div>'
-                + '</div>'
-
-                + '<div class="vuelos-section-compact">'
-                + '<h6 class="mb-2 small"><i class="bi bi-airplane me-1"></i>Vuelos (' + (ruta.vuelos ? ruta.vuelos.length : 0) + ')</h6>'
-                + '<div class="row g-1">' + vuelosHTML + '</div>'
-                + '</div>'
-
-                + '<div class="d-flex justify-content-end mt-2">'
-                + (esFinalizable
-                        ? '<button class="btn btn-success btn-compact btn-finalizar" '
-                        + 'data-id="' + idRuta + '" '
-                        + 'data-nombre="' + nombre + '">'
-                        + '<i class="bi bi-flag-checkered me-1"></i>Finalizar'
-                        + '</button>'
-                        : '<button class="btn btn-outline-secondary btn-compact" disabled title="Solo rutas con estado \'Confirmada\' pueden finalizarse">'
-                        + '<i class="bi bi-slash-circle me-1"></i>No Finalizable'
-                        + '</button>'
+                const promesaVuelos = fetch(
+                    window.CONTEXT_PATH + '/api/vuelos-por-ruta?nombreRuta=' + encodeURIComponent(nombreRuta),
+                    {credentials: 'include'}
                 )
-                + '</div>'
-                + '</div>'
-                + '</div>'
-                + '</div>';
-        });
+                    .then(response => {
+                        if (!response.ok) {
+                            console.warn('Error cargando vuelos para', nombreRuta, '- Status:', response.status);
+                            return [];
+                        }
+                        return response.json();
+                    })
+                    .catch(error => {
+                        console.error('Error fetch vuelos para', nombreRuta, error);
+                        return [];
+                    });
 
-        html += '</div>';
-        container.innerHTML = html;
+                const promesaFinalizacion = fetch(
+                    window.CONTEXT_PATH + '/api/verificar-finalizacion?nombreRuta=' + encodeURIComponent(nombreRuta),
+                    {credentials: 'include'}
+                )
+                    .then(response => {
+                        if (!response.ok) {
+                            console.warn('Error verificando finalización para', nombreRuta, '- Status:', response.status);
+                            return {puedeFinalizar: false, motivo: 'Error al verificar finalización'};
+                        }
+                        return response.json();
+                    })
+                    .catch(error => {
+                        console.error('Error fetch finalización para', nombreRuta, error);
+                        return {puedeFinalizar: false, motivo: 'Error al verificar finalización'};
+                    });
 
-        // Agregar listeners a botones creados dinámicamente
-        container.querySelectorAll('.btn-finalizar').forEach(function(btn) {
-            btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id') || '';
-                const nombre = this.getAttribute('data-nombre') || '';
-                solicitarFinalizarRuta(id, nombre);
+                Promise.all([promesaVuelos, promesaFinalizacion])
+                    .then(([vuelos, finalizacionInfo]) => {
+                        resolve({
+                            ruta: ruta,
+                            vuelos: vuelos || [],
+                            finalizacionInfo: finalizacionInfo || {puedeFinalizar: false, motivo: 'Error'}
+                        });
+                    })
+                    .catch(error => {
+                        console.error('Error procesando ruta:', nombreRuta, error);
+                        resolve({
+                            ruta: ruta,
+                            vuelos: [],
+                            finalizacionInfo: {puedeFinalizar: false, motivo: 'Error al cargar información'}
+                        });
+                    });
             });
         });
+
+        // Mostrar loading
+        container.innerHTML = '<div class="text-center py-3">'
+            + '<div class="spinner-border text-primary mb-2" role="status">'
+            + '<span class="visually-hidden">Cargando información...</span>'
+            + '</div>'
+            + '<p class="text-muted">Cargando vuelos y verificando finalización...</p>'
+            + '</div>';
+
+        // Procesar las rutas en lotes de 3 para evitar sobrecarga
+        procesarEnLotes(promesasRutas, 3)
+            .then(resultados => {
+                let html = '<div class="row g-3">';
+
+                resultados.forEach(resultado => {
+                    const tarjetaHTML = crearTarjetaRuta(
+                        resultado.ruta,
+                        resultado.vuelos,
+                        resultado.finalizacionInfo
+                    );
+                    html += tarjetaHTML;
+                });
+
+                html += '</div>';
+                container.innerHTML = html;
+
+                // Agregar event listeners a los botones
+                container.querySelectorAll('.btn-finalizar').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = this.getAttribute('data-id') || '';
+                        const nombre = this.getAttribute('data-nombre') || '';
+                        const esFinalizable = this.getAttribute('data-finalizable') === 'true';
+                        solicitarFinalizarRuta(id, nombre, esFinalizable);
+                    });
+                });
+
+                console.log('Todas las rutas procesadas correctamente');
+            })
+            .catch(error => {
+                console.error('Error general procesando rutas:', error);
+                mostrarError('Error al cargar la información de las rutas: ' + error.message);
+            });
     }
 
-    function generarVuelosHTML(vuelos) {
-        var html = '';
-        vuelos.forEach(function(vuelo, index) {
-            if (index >= 3) return; // Mostrar máximo 3 vuelos
-            var nombreV = escapeHtml(vuelo.nombre || 'Vuelo sin nombre');
-            var fechaV = escapeHtml(vuelo.fecha || 'Fecha no disponible');
-            var estadoV = escapeHtml(vuelo.estado || 'Programado');
-            html += '<div class="col-12">'
-                + '<div class="card bg-dark border-secondary">'
-                + '<div class="card-body py-1">' // Padding reducido
-                + '<div class="d-flex justify-content-between align-items-center">'
-                + '<div class="text-truncate">'
-                + '<strong class="text-light small">' + nombreV + '</strong>'
-                + '<br>'
-                + '<small class="text-muted"><i class="bi bi-calendar me-1"></i>' + fechaV + '</small>'
-                + '</div>'
-                + '<span class="badge bg-primary small">' + estadoV + '</span>'
-                + '</div>'
-                + '</div>'
-                + '</div>'
-                + '</div>';
-        });
+    function crearTarjetaRuta(ruta, vuelos, finalizacionInfo) {
+        var idRuta = ruta.id || ruta.idRuta;
+        var nombre = escapeHtml(ruta.nombre || 'Sin nombre');
+        var descripcion = escapeHtml(ruta.descripcion || 'Sin descripción');
+        var origen = escapeHtml(ruta.origen || 'N/A');
+        var destino = escapeHtml(ruta.destino || 'N/A');
+        var costoTurista = escapeHtml(ruta.costoTurista || 0);
+        var costoEjecutivo = escapeHtml(ruta.costoEjecutivo || 0);
+        var estado = (ruta.estado || 'N/A').toString();
+        var estadoUpper = estado.toUpperCase();
+        var aerolinea = escapeHtml((ruta.aerolinea && ruta.aerolinea.nombre) || ruta.aerolinea || '<%= usuarioSession %>');
 
-        if (vuelos.length > 3) {
-            html += '<div class="col-12">'
-                + '<div class="text-center">'
-                + '<small class="text-muted">+ ' + (vuelos.length - 3) + ' vuelos más</small>'
-                + '</div>'
-                + '</div>';
+        // Determinar si es finalizable según el backend
+        const esFinalizable = !!(finalizacionInfo && finalizacionInfo.puedeFinalizar);
+        const motivoNoFinalizable = (finalizacionInfo && finalizacionInfo.motivo) || 'No se puede finalizar';
+
+        // Clase de badge de estado según valor
+        let claseEstado = 'badge';
+        if (estadoUpper === 'CONFIRMADA') {
+            claseEstado += ' badge-estado-confirmada';
+        } else if (estadoUpper === 'INGRESADA') {
+            claseEstado += ' badge-estado-ingresada';
+        } else if (estadoUpper === 'FINALIZADA' || estadoUpper === 'RECHAZADA') {
+            claseEstado += ' badge-estado-finalizada';
+        } else {
+            claseEstado += ' bg-secondary';
         }
 
-        return html;
+        // Construir HTML de vuelos
+        let vuelosHTML = '';
+        if (vuelos && vuelos.length > 0) {
+            vuelosHTML = '<div class="table-responsive">'
+                + '<table class="table table-sm table-hover small">'
+                + '<thead class="table-light">'
+                + '<tr><th>Nombre</th><th>Fecha</th></tr>'
+                + '</thead>'
+                + '<tbody>';
+
+            vuelos.forEach(vuelo => {
+                vuelosHTML += '<tr>'
+                    + '<td>' + escapeHtml(vuelo.nombre || 'N/A') + '</td>'
+                    + '<td>' + escapeHtml(vuelo.fecha || 'N/A') + '</td>'
+                    + '</tr>';
+            });
+
+            vuelosHTML += '</tbody></table></div>';
+        } else {
+            vuelosHTML = '<p class="text-muted small mb-0"><i class="bi bi-info-circle me-1"></i>No hay vuelos asociados a esta ruta.</p>';
+        }
+
+        // guardando si es finalizable
+        const botonHTML = '<button class="btn btn-success btn-lg btn-finalizar"'
+            + ' data-id="' + idRuta + '"'
+            + ' data-nombre="' + nombre + '"'
+            + ' data-finalizable="' + (esFinalizable ? 'true' : 'false') + '">'
+            + '<i class="bi bi-flag-checkered me-2"></i>Finalizar Ruta</button>';
+
+        return '<div class="col-12 col-md-12 col-xl-12">'
+            + '<div class="card border-primary ruta-card h-100 w-100">'
+            + '<div class="card-header bg-primary text-white d-flex justify-content-between align-items-center py-3">'
+            + '<h6 class="mb-0 text-truncate" title="' + nombre + '">' + nombre + '</h6>'
+            + '<span class="badge ' + (esFinalizable ? 'badge-finalizable' : 'badge-no-finalizable') + '"'
+            + ' title="' + (esFinalizable ? 'Ruta finalizable' : motivoNoFinalizable) + '">'
+            + (esFinalizable ? 'Finalizable' : 'No finalizable')
+            + '</span>'
+            + '</div>'
+            + '<div class="card-body card-body-compact">'
+            + '<p class="card-text text-muted small mb-2">' + descripcion + '</p>'
+            + '<div class="row mb-2">'
+            + '<div class="col-12">'
+            + '<p class="mb-1 small"><strong><i class="bi bi-route me-1"></i>Ruta:</strong> ' + origen + ' → ' + destino + '</p>'
+            + '<p class="mb-1 small"><strong><i class="bi bi-flag me-1"></i>Estado:</strong> <span class="' + claseEstado + '">' + estado + '</span></p>'
+            + '<p class="mb-1 small"><strong><i class="bi bi-building me-1"></i>Aerolínea:</strong> ' + aerolinea + '</p>'
+            + '</div>'
+            + '</div>'
+            + '<div class="bg-light rounded p-2 mb-2">'
+            + '<h6 class="mb-2 text-center small">Costos</h6>'
+            + '<div class="row text-center">'
+            + '<div class="col-6">'
+            + '<div class="costo-destacado small">$' + costoTurista + '</div>'
+            + '<small class="text-muted">Turista</small>'
+            + '</div>'
+            + '<div class="col-6">'
+            + '<div class="costo-destacado small">$' + costoEjecutivo + '</div>'
+            + '<small class="text-muted">Ejecutivo</small>'
+            + '</div>'
+            + '</div>'
+            + '</div>'
+            + '<div class="vuelos-section-compact">'
+            + '<h6 class="mb-2 small"><i class="bi bi-airplane me-1"></i>Vuelos (' + (vuelos ? vuelos.length : 0) + ')</h6>'
+            + vuelosHTML
+            + '</div>'
+            + '<div class="d-flex justify-content-end mt-3">'
+            + botonHTML
+            + '</div>'
+            + '</div>'
+            + '</div>'
+            + '</div>';
     }
 
-    function solicitarFinalizarRuta(id, nombre) {
+    function solicitarFinalizarRuta(id, nombre, esFinalizable) {
         rutaSeleccionada = nombre;
         rutaIdSeleccionada = id;
-        console.log('Solicitando finalizar ruta:', { id: id, nombre: nombre });
+        rutaEsFinalizable = esFinalizable;
+        console.log('Solicitando finalizar ruta:', { id: id, nombre: nombre, esFinalizable });
 
         var rutaModal = document.getElementById('rutaNombreModal');
         if (rutaModal) rutaModal.textContent = nombre;
@@ -390,6 +494,11 @@
     function finalizarRutaConfirmada() {
         if (!rutaIdSeleccionada) {
             mostrarMensaje('danger', 'Error: No se ha seleccionado una ruta válida.');
+            return;
+        }
+
+        if (!rutaEsFinalizable) {
+            mostrarMensaje('danger', 'Error: La ruta seleccionada no es finalizable según la verificación actual.');
             return;
         }
 
@@ -428,14 +537,9 @@
                     }
 
                     if (!response.ok) {
-                        // Si el servlet envió JSON con \`error\`, lo usamos
-                        const msg =
-                            data && data.error
-                                ? data.error
-                                : ('Error al finalizar la ruta: ' + response.status);
+                        const msg = data && data.error ? data.error : ('Error al finalizar la ruta: ' + response.status);
                         throw new Error(msg);
                     }
-                    // OK: devolvemos el JSON parseado
                     return data;
                 });
             })
@@ -452,9 +556,7 @@
             });
     }
 
-
     function manejarRespuestaFinalizacion(result) {
-        // Cerrar modal
         var modalElement = document.getElementById('confirmModal');
         if (modalElement) {
             var modalInst = bootstrap.Modal.getInstance(modalElement);
@@ -478,6 +580,7 @@
             confirmBtn.disabled = false;
         }
         rutaSeleccionada = null;
+        rutaEsFinalizable = false;
     }
 
     function mostrarError(mensaje) {
@@ -492,26 +595,20 @@
     }
 
     function mostrarMensaje(tipo, mensaje) {
-        // Mapear alias a clases válidas de bootstrap
         const clase = (tipo === 'error') ? 'danger' : tipo;
-
-        // Crear alerta temporal
         const alert = document.createElement('div');
         alert.className = 'alert alert-' + clase + ' alert-dismissible fade show';
         alert.setAttribute('role', 'alert');
 
         const icono = clase === 'success' ? 'check-circle' : 'exclamation-triangle';
-
         alert.innerHTML = '<i class="bi bi-' + icono + ' me-2"></i>' + escapeHtml(mensaje)
-            + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
+        + '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>';
 
-        // Insertar después del header
         const container = document.querySelector('.container');
         if (container) {
             const firstChild = container.firstChild;
             container.insertBefore(alert, firstChild);
 
-            // Auto-remover después de 5 segundos
             setTimeout(function() {
                 if (alert.parentNode) {
                     const bsAlert = new bootstrap.Alert(alert);
@@ -523,3 +620,4 @@
 </script>
 </body>
 </html>
+

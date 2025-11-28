@@ -2077,3 +2077,369 @@ button, .btn, .dropdown-item, .ruta-item, .paquete-card,
     border-color: #dc3545;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.4.4.4-.4'/%3e%3cpath d='M6 7v2.5'/%3e%3c/svg%3e");
 }
+
+
+.vuelos-section-compact {
+    max-height: 300px; /* Ajusta según necesites */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.vuelos-section-compact table {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+}
+
+.vuelos-section-compact th {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Estilos para las alertas de error en alta de vuelo */
+.alert-error-alta-vuelo {
+    position: relative;
+    border-left: 4px solid var(--color-accent);
+    animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos mejorados para las alertas de error en alta de vuelo */
+.alert-error-alta-vuelo {
+    position: relative;
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    animation: slideInDown 0.4s ease-out;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.05));
+    border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.alert-error-alta-vuelo .alert-heading {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.alert-error-alta-vuelo .bi-exclamation-octagon-fill {
+    color: var(--color-accent);
+}
+
+.alert-success {
+    border-left: 4px solid var(--color-success);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    animation: slideInDown 0.4s ease-out;
+    background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
+    border: 1px solid rgba(22, 163, 74, 0.3);
+}
+
+.alert-success .alert-heading {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.alert-success .bi-check-circle-fill {
+    color: var(--color-success);
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efecto hover sutil en las alertas */
+.alert-error-alta-vuelo:hover,
+.alert-success:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition);
+}
+
+/* Estilos para badges de estado */
+.badge-estado-confirmada {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+.badge-estado-ingresada {
+    background-color: #ffc107 !important;
+    color: black !important;
+}
+
+.badge-estado-finalizada {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.badge-estado-rechazada {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+/* Toast personalizado */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+
+
+.vuelos-section-compact {
+    max-height: 300px; /* Ajusta según necesites */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.vuelos-section-compact table {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+}
+
+.vuelos-section-compact th {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Estilos para las alertas de error en alta de vuelo */
+.alert-error-alta-vuelo {
+    position: relative;
+    border-left: 4px solid var(--color-accent);
+    animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos mejorados para las alertas de error en alta de vuelo */
+.alert-error-alta-vuelo {
+    position: relative;
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    animation: slideInDown 0.4s ease-out;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.05));
+    border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.alert-error-alta-vuelo .alert-heading {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.alert-error-alta-vuelo .bi-exclamation-octagon-fill {
+    color: var(--color-accent);
+}
+
+.alert-success {
+    border-left: 4px solid var(--color-success);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    animation: slideInDown 0.4s ease-out;
+    background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
+    border: 1px solid rgba(22, 163, 74, 0.3);
+}
+
+.alert-success .alert-heading {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.alert-success .bi-check-circle-fill {
+    color: var(--color-success);
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efecto hover sutil en las alertas */
+.alert-error-alta-vuelo:hover,
+.alert-success:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition);
+}
+
+/* Estilos para badges de estado */
+.badge-estado-confirmada {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+.badge-estado-ingresada {
+    background-color: #ffc107 !important;
+    color: black !important;
+}
+
+.badge-estado-finalizada {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.badge-estado-rechazada {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+/* Toast personalizado */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+
+
+
+.vuelos-section-compact {
+    max-height: 300px; /* Ajusta según necesites */
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.vuelos-section-compact table {
+    font-size: 0.8rem;
+    margin-bottom: 0;
+}
+
+.vuelos-section-compact th {
+    font-size: 0.75rem;
+    font-weight: 600;
+}
+
+/* Estilos para las alertas de error en alta de vuelo */
+.alert-error-alta-vuelo {
+    position: relative;
+    border-left: 4px solid var(--color-accent);
+    animation: slideInDown 0.3s ease-out;
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Estilos mejorados para las alertas de error en alta de vuelo */
+.alert-error-alta-vuelo {
+    position: relative;
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    animation: slideInDown 0.4s ease-out;
+    background: linear-gradient(135deg, rgba(220, 38, 38, 0.1), rgba(220, 38, 38, 0.05));
+    border: 1px solid rgba(220, 38, 38, 0.3);
+}
+
+.alert-error-alta-vuelo .alert-heading {
+    color: var(--color-accent);
+    font-weight: 600;
+}
+
+.alert-error-alta-vuelo .bi-exclamation-octagon-fill {
+    color: var(--color-accent);
+}
+
+.alert-success {
+    border-left: 4px solid var(--color-success);
+    border-radius: var(--border-radius);
+    box-shadow: var(--shadow-md);
+    animation: slideInDown 0.4s ease-out;
+    background: linear-gradient(135deg, rgba(22, 163, 74, 0.1), rgba(22, 163, 74, 0.05));
+    border: 1px solid rgba(22, 163, 74, 0.3);
+}
+
+.alert-success .alert-heading {
+    color: var(--color-success);
+    font-weight: 600;
+}
+
+.alert-success .bi-check-circle-fill {
+    color: var(--color-success);
+}
+
+@keyframes slideInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Efecto hover sutil en las alertas */
+.alert-error-alta-vuelo:hover,
+.alert-success:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+    transition: var(--transition);
+}
+
+/* Estilos para badges de estado */
+.badge-estado-confirmada {
+    background-color: #198754 !important;
+    color: white !important;
+}
+
+.badge-estado-ingresada {
+    background-color: #ffc107 !important;
+    color: black !important;
+}
+
+.badge-estado-finalizada {
+    background-color: #6c757d !important;
+    color: white !important;
+}
+
+.badge-estado-rechazada {
+    background-color: #dc3545 !important;
+    color: white !important;
+}
+
+/* Toast personalizado */
+.toast {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+}
+

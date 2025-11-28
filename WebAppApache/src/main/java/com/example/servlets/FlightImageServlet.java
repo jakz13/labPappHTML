@@ -176,8 +176,7 @@ public class FlightImageServlet extends HttpServlet {
                     response.getWriter().print(sb.toString());
                     return;
                 } catch (Throwable t) {
-                    // si algo falla en el diagnóstico, caemos al 404 normal
-                    System.err.println("FlightImageServlet: debug failure: " + t.getMessage());
+                    System.err.println("FlightImageServlet: Error: " + t.getMessage());
                 }
             }
 

@@ -1,17 +1,39 @@
-//FINALIZARRUTAS
-
 package com.example.servlets;
 
-import logica.Fabrica;
-import logica.ISistema;
+import serviciosweb.JuanViajesWS;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.IOException;
 import java.io.PrintWriter;
+import javax.xml.namespace.QName;
+import jakarta.xml.ws.Service;
+import java.net.URL;
 
 @WebServlet("/api/finalizar-ruta")
 public class FinalizarRutaServlet extends HttpServlet {
+
+    private static volatile boolean sistemaCargado = false;
+    private static final Object lock = new Object();
+    private JuanViajesWS servicioWeb;
+
+    @Override
+    public void init() throws ServletException {
+        try {
+            // Configurar la conexión al servicio web usando la URL del WSDL
+            URL wsdlURL = new URL("http://localhost:8081/JuanViajes?wsdl");
+            QName serviceName = new QName("http://ServiciosWeb/", "WebServicesService");
+            Service service = Service.create(wsdlURL, serviceName);
+            servicioWeb = service.getPort(JuanViajesWS.class);
+
+            System.out.println("FinalizarRutaServlet - Cliente del servicio web inicializado correctamente");
+
+        } catch (Exception e) {
+            System.err.println("ERROR FinalizarRutaServlet - Error inicializando el cliente del servicio web: " + e.getMessage());
+            throw new ServletException("Error inicializando el cliente del servicio web", e);
+        }
+    }
+
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         String nombreRuta = request.getParameter("nombreRuta");
@@ -21,52 +43,42 @@ public class FinalizarRutaServlet extends HttpServlet {
             return;
         }
 
-        ISistema sistema = Fabrica.getInstance().getISistema();
-        sistema.cargarDesdeBd();
-
         response.setContentType("application/json;charset=UTF-8");
         PrintWriter out = response.getWriter();
 
         try {
-            System.out.println("[DEBUG FinalizarRutaServlet] Intentando finalizar ruta: " + nombreRuta);
+            // Cargar sistema solo una vez de forma thread-safe
+            cargarSistemaUnaVez();
 
-            // \[1] Validar estado de la ruta (no confirmada)
-            if (sistema.puedeFinalizarRuta(nombreRuta) == 1) {
-                sendErrorResponse(response,
-                        "La ruta no puede ser finalizada porque aún no está confirmada",
-                        HttpServletResponse.SC_BAD_REQUEST);
+            // Primero verificar si puede finalizar usando el servicio web
+            int resultadoVerificacion = servicioWeb.puedeFinalizarRuta(nombreRuta);
+
+            if (resultadoVerificacion != 4) {
+                String mensajeError = "";
+                switch (resultadoVerificacion) {
+                    case 0:
+                        mensajeError = "Ruta no encontrada";
+                        break;
+                    case 1:
+                        mensajeError = "La ruta no puede ser finalizada porque aún no está confirmada";
+                        break;
+                    case 2:
+                        mensajeError = "La ruta no puede ser finalizada porque tiene vuelos pendientes";
+                        break;
+                    case 3:
+                        mensajeError = "La ruta no puede ser finalizada porque está asociada a un paquete";
+                        break;
+                    default:
+                        mensajeError = "La ruta no puede ser finalizada en este momento";
+                }
+                sendErrorResponse(response, mensajeError, HttpServletResponse.SC_BAD_REQUEST);
                 return;
             }
 
-            // \[2] Validar si tiene vuelos pendientes
-            if (sistema.puedeFinalizarRuta(nombreRuta) == 2) {
-                sendErrorResponse(response,
-                        "La ruta no puede ser finalizada porque tiene vuelos pendientes",
-                        HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-
-            // \[3] Validar si está en algún paquete
-            if (sistema.puedeFinalizarRuta(nombreRuta) == 3) {
-                sendErrorResponse(response,
-                        "La ruta no puede ser finalizada porque está asociada a un paquete",
-                        HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-
-            // \[4] Validación genérica extra por si mantienes `puedeFinalizarRuta`
-            if (sistema.puedeFinalizarRuta(nombreRuta) == 0) {
-                sendErrorResponse(response,
-                        "La ruta no puede ser finalizada en este momento",
-                        HttpServletResponse.SC_BAD_REQUEST);
-                return;
-            }
-
-            // Finalizar la ruta
-            sistema.finalizarRutaVuelo(nombreRuta);
-            System.out.println("[DEBUG FinalizarRutaServlet] Ruta finalizada exitosamente: " + nombreRuta);
-
+            // Finalizar la ruta usando el servicio web
+            servicioWeb.finalizarRutaVuelo(nombreRuta);
             out.print("{\"success\":true,\"message\":\"Ruta finalizada exitosamente\"}");
+            System.out.println("FinalizarRutaServlet - Ruta '" + nombreRuta + "' finalizada exitosamente");
 
         } catch (IllegalArgumentException e) {
             System.err.println("[ERROR FinalizarRutaServlet] Error de validación: " + e.getMessage());
@@ -77,6 +89,22 @@ public class FinalizarRutaServlet extends HttpServlet {
             sendErrorResponse(response,
                     "Error interno del servidor: " + e.getMessage(),
                     HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    private void cargarSistemaUnaVez() {
+        if (!sistemaCargado) {
+            synchronized (lock) {
+                if (!sistemaCargado) {
+                    try {
+                        servicioWeb.cargarDesdeBd();
+                        sistemaCargado = true;
+                        System.out.println("FinalizarRutaServlet - Sistema cargado desde BD");
+                    } catch (Exception e) {
+                        System.err.println("ERROR FinalizarRutaServlet - Error cargando sistema desde BD: " + e.getMessage());
+                    }
+                }
+            }
         }
     }
 

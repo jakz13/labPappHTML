@@ -175,7 +175,6 @@
                 return response.json();
             })
             .then(data => {
-                console.log('Datos recibidos:', data); // Para debug
                 mostrarAerolineasRecomendadas(data.aerolineasRecomendadas);
                 mostrarRutasDestacadas(data.rutasDestacadas);
                 mostrarPaquetesDestacados(data.paquetesDestacados);

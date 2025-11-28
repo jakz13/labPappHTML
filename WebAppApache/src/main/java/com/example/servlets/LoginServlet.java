@@ -27,41 +27,49 @@ import serviciosweb.DtAerolinea;
 )
 public class LoginServlet extends HttpServlet {
 
-    private WebServicesService service;
+    // Cliente SOAP creado de forma lazy
+    private volatile WebServicesService service;
     private String endpointUrl;
 
     @Override
     public void init() {
-        // Inicializa la Service una vez
         endpointUrl = getInitParameter("wsEndpoint");
         if (endpointUrl == null || endpointUrl.isBlank()) {
             endpointUrl = "http://localhost:8081/JuanViajes";
         }
-
-        // Servicio generado por CXF/wsdl2java. Ajusta el constructor si el generado es distinto.
-        service = new WebServicesService();
     }
 
-    // Crea un port por cada petición y fuerza la endpoint URL (y timeouts)
-    private JuanViajesWS createPort() {
-        JuanViajesWS port = service.getJuanViajesWSPort(); // método generado; revisa el nombre exacto
-        BindingProvider bp = (BindingProvider) port;
-        Map<String, Object> ctx = bp.getRequestContext();
-        ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
+    private WebServicesService getService() {
+        if (service == null) {
+            synchronized (this) {
+                if (service == null) {
+                    // Primera creación del stub: puede tardar, por eso ajustamos bien los timeouts
+                    service = new WebServicesService();
+                }
+            }
+        }
+        return service;
+    }
 
-        // Timeouts: ponemos varias claves para cubrir diferentes implementaciones (Metro/CXF)
-        // Valores en ms
-        ctx.put("javax.xml.ws.client.connectionTimeout", 10000);
-        ctx.put("javax.xml.ws.client.receiveTimeout", 20000);
-        // CXF-specific
-        ctx.put("org.apache.cxf.transport.http.client.connection.timeout", 10000);
-        ctx.put("org.apache.cxf.transport.http.client.receive.timeout", 20000);
+    private JuanViajesWS createPort() throws Exception {
+        try {
+            JuanViajesWS port = getService().getJuanViajesWSPort();
+            BindingProvider bp = (BindingProvider) port;
+            Map<String, Object> ctx = bp.getRequestContext();
+            ctx.put(BindingProvider.ENDPOINT_ADDRESS_PROPERTY, endpointUrl);
 
-        // Metro / RI properties (fallback)
-        ctx.put("com.sun.xml.ws.connect.timeout", 10000);
-        ctx.put("com.sun.xml.ws.request.timeout", 20000);
+            // Timeouts más bajos (2s conexión, 5s respuesta)
+            ctx.put("javax.xml.ws.client.connectionTimeout", 2000);
+            ctx.put("javax.xml.ws.client.receiveTimeout", 5000);
+            ctx.put("org.apache.cxf.transport.http.client.connection.timeout", 2000);
+            ctx.put("org.apache.cxf.transport.http.client.receive.timeout", 5000);
+            ctx.put("com.sun.xml.ws.connect.timeout", 2000);
+            ctx.put("com.sun.xml.ws.request.timeout", 5000);
 
-        return port;
+            return port;
+        } catch (Exception e) {
+            throw new Exception("No se pudo inicializar el cliente del WebService", e);
+        }
     }
 
     @Override
@@ -82,33 +90,32 @@ public class LoginServlet extends HttpServlet {
         try {
             JuanViajesWS port = createPort();
 
-            // Primero, intentamos autenticar como cliente:
-            List<DtCliente> clientes = null;
+            // --- Intento como cliente ---
             DtCliente clienteEncontrado = null;
             try {
-                clientes = port.listarClientes(); // llamada remota
-            } catch (Exception ex) {
-                // si falla la llamada remota, lanzamos para entrar en el catch exterior
-                throw ex;
-            }
-            if (clientes != null) {
-                for (DtCliente c : clientes) {
-                    if (c == null) continue;
-                    String nick = c.getNickname();
-                    String mail = c.getEmail();
-                    boolean match = (nick != null && nick.equalsIgnoreCase(user))
-                            || (mail != null && mail.equalsIgnoreCase(user));
-                    if (!match) continue;
+                List<DtCliente> clientes = port.listarClientes();
+                if (clientes != null) {
+                    for (DtCliente c : clientes) {
+                        if (c == null) continue;
+                        String nick = c.getNickname();
+                        String mail = c.getEmail();
+                        boolean match = (nick != null && nick.equalsIgnoreCase(user))
+                                || (mail != null && mail.equalsIgnoreCase(user));
+                        if (!match) continue;
 
-                    // verificarLogin espera email y password según tu SEI; si usas nickname, ajusta
-                    boolean ok;
-                    try { ok = port.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
-                    if (!ok) continue;
+                        // Solo si matchea, llamamos al WS para verificar login
+                        boolean ok = port.verificarLogin(mail, password);
+                        if (!ok) break;
 
-                    // Obtener datos completos del cliente
-                    clienteEncontrado = port.obtenerCliente(nick);
-                    break;
+                        clienteEncontrado = port.obtenerCliente(nick);
+                        break;
+                    }
                 }
+            } catch (Exception ex) {
+                // Error de conexión o tiempo de espera: devolvemos 500 rápido
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print("{\"success\":false,\"error\":\"Error de conexión con el servidor de autenticación\"}");
+                return;
             }
 
             if (clienteEncontrado != null) {
@@ -117,36 +124,37 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("tipoUsuario", "cliente");
                 session.setAttribute("tipo", "cliente");
 
-                String jsonResponse = "{\"success\":true,\"nickname\":\"" + escapeJson(clienteEncontrado.getNickname()) + "\",\"tipo\":\"cliente\"}";
+                String jsonResponse = "{\"success\":true,\"nickname\":\""
+                        + escapeJson(clienteEncontrado.getNickname())
+                        + "\",\"tipo\":\"cliente\"}";
                 out.print(jsonResponse);
                 return;
             }
 
-            // Si no es cliente, intentamos aerolinea
-            List<DtAerolinea> aerolineas = null;
+            // --- Intento como aerolínea ---
             DtAerolinea aeroEncontrada = null;
             try {
-                aerolineas = port.listarAerolineas();
-            } catch (Exception ex) {
-                throw ex;
-            }
+                List<DtAerolinea> aerolineas = port.listarAerolineas();
+                if (aerolineas != null) {
+                    for (DtAerolinea a : aerolineas) {
+                        if (a == null) continue;
+                        String nick = a.getNickname();
+                        String mail = a.getEmail();
+                        boolean match = (nick != null && nick.equalsIgnoreCase(user))
+                                || (mail != null && mail.equalsIgnoreCase(user));
+                        if (!match) continue;
 
-            if (aerolineas != null) {
-                for (DtAerolinea a : aerolineas) {
-                    if (a == null) continue;
-                    String nick = a.getNickname();
-                    String mail = a.getEmail();
-                    boolean match = (nick != null && nick.equalsIgnoreCase(user))
-                            || (mail != null && mail.equalsIgnoreCase(user));
-                    if (!match) continue;
+                        boolean ok = port.verificarLogin(mail, password);
+                        if (!ok) break;
 
-                    boolean ok = false;
-                    try { ok = port.verificarLogin(mail, password); } catch (Exception ex) { ok = false; }
-                    if (!ok) continue;
-
-                    aeroEncontrada = port.obtenerAerolinea(nick);
-                    break;
+                        aeroEncontrada = port.obtenerAerolinea(nick);
+                        break;
+                    }
                 }
+            } catch (Exception ex) {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+                out.print("{\"success\":false,\"error\":\"Error de conexión con el servidor de autenticación\"}");
+                return;
             }
 
             if (aeroEncontrada != null) {
@@ -155,26 +163,30 @@ public class LoginServlet extends HttpServlet {
                 session.setAttribute("tipoUsuario", "aerolinea");
                 session.setAttribute("tipo", "aerolinea");
 
-                String jsonResponse = "{\"success\":true,\"nickname\":\"" + escapeJson(aeroEncontrada.getNickname()) + "\",\"tipo\":\"aerolinea\"}";
+                String jsonResponse = "{\"success\":true,\"nickname\":\""
+                        + escapeJson(aeroEncontrada.getNickname())
+                        + "\",\"tipo\":\"aerolinea\"}";
                 out.print(jsonResponse);
                 return;
             }
 
-
-            // Si llegamos aquí: fallo de autenticación
+            // Fallo de autenticación
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
             out.print("{\"success\":false,\"error\":\"Usuario no encontrado o credenciales inválidas\"}");
 
         } catch (Exception e) {
-            // Error remoto / red / marshalling
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-            out.print("{\"success\":false,\"error\":\"Error interno: " + escapeJson(e.getMessage()) + "\"}");
+            String msg = (e.getMessage() != null) ? e.getMessage() : "Error inesperado";
+            out.print("{\"success\":false,\"error\":\"Error interno: " + escapeJson(msg) + "\"}");
         }
     }
 
     private String escapeJson(String s) {
         if (s == null) return "";
-        return s.replace("\\", "\\\\").replace("\"", "\\\"").replace("\n","\\n").replace("\r","\\r");
+        return s.replace("\\", "\\\\")
+                .replace("\"", "\\\"")
+                .replace("\n", "\\n")
+                .replace("\r", "\\r");
     }
 }

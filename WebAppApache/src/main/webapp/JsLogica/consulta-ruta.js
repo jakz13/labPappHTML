@@ -1,19 +1,20 @@
 // Variables globales
 let rutaSeleccionada = null;
 let vueloSeleccionado = null;
-let usuarioInfo = null;
-let rutasCargadas = []; // <--- guarda las rutas reales de la aerolínea
+let rutasCargadas = [];
+let ultimaAerolineaCargada = null;
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
     cargarAerolineas();
-    cargarCategorias(); // <-- agregado: cargar las categorías al iniciar
+    cargarCategorias();
     configurarEventListeners();
 });
 
 // Cargar aerolíneas desde backend
 function cargarAerolineas() {
-    fetch((window.CONTEXT_PATH || '') + '/api/aerolineas')
+    const timestamp = new Date().getTime(); // Anti-cache
+    fetch(`${window.CONTEXT_PATH || ''}/api/aerolineas?_=${timestamp}`)
         .then(res => res.json())
         .then(data => {
             const select = document.getElementById('aerolinea');
@@ -29,7 +30,8 @@ function cargarAerolineas() {
 
 // Nueva función: cargar categorías desde el servlet ListarCategoriasServlet (ruta: /listarCategorias)
 function cargarCategorias() {
-    fetch('listarCategorias')
+    const timestamp = new Date().getTime(); // Anti-cache
+    fetch(`listarCategorias?_=${timestamp}`)
         .then(res => res.json())
         .then(data => {
             const select = document.getElementById('categoria');
@@ -46,8 +48,9 @@ function cargarCategorias() {
         });
 }
 
+// Modificar el event listener para usar recarga forzada al cambiar aerolínea
 function configurarEventListeners() {
-    // Aerolínea -> rutas
+    // Aerolínea -> rutas (ACTUALIZADO)
     document.getElementById('aerolinea').addEventListener('change', function() {
         const aerolinea = this.value;
         const rutasList = document.getElementById('listaRutas');
@@ -61,19 +64,26 @@ function configurarEventListeners() {
         vueloSeleccionado = null;
 
         if (aerolinea) {
-            fetch((window.CONTEXT_PATH || '') + '/api/rutas?aerolinea=' + encodeURIComponent(aerolinea))
-                .then(res => res.json())
+            const timestamp = new Date().getTime();
+            fetch(`${window.CONTEXT_PATH || ''}/api/rutas?aerolinea=${encodeURIComponent(aerolinea)}&_=${timestamp}`)
+                .then(res => {
+                    if (!res.ok) throw new Error('Error ' + res.status);
+                    return res.json();
+                })
                 .then(data => {
-                    rutasCargadas = data; // <--- guardar todas las rutas cargadas
-                    aplicarFiltros(); // aplicar filtro de categoría localmente (si hay)
+                    rutasCargadas = data || [];
+                    ultimaAerolineaCargada = aerolinea;
+                    cargarRutas(rutasCargadas);
                 })
                 .catch(err => {
-                    console.error("Error al cargar rutas:", err);
-                    rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Error al cargar rutas</p></div>';
+                    console.error('Error cargando rutas:', err);
+                    rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-danger">Error al cargar rutas</p></div>';
+                    rutasCargadas = [];
                 });
         } else {
             rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
             rutasCargadas = [];
+            ultimaAerolineaCargada = null;
         }
     });
 
@@ -105,35 +115,50 @@ function cargarRutas(rutas) {
     if (!rutas || rutas.length === 0) {
         container.innerHTML = `
             <div class="col-12 text-center py-4">
-                <p class="text-muted">No se encontraron rutas para esta aerolínea.</p>
+                <p class="text-muted">No hay rutas disponibles para esta aerolínea.</p>
             </div>
         `;
         return;
     }
 
     rutas.forEach(ruta => {
-        const rutaHTML = `
-            <div class="col-md-6 mb-3">
-                <div class="card ruta-card h-100" onclick="seleccionarRuta('${ruta.nombre}')" style="cursor: pointer;">
-                    <div class="card-body">
-                        <div class="d-flex justify-content-between align-items-start mb-2">
-                            <h6 class="card-title text-primary">${ruta.nombre}</h6>
-                            <span class="badge bg-success">${ruta.estado || 'Confirmada'}</span>
-                        </div>
-                        <small class="text-muted">${ruta.origen} → ${ruta.destino}</small>
+        const rutaCard = document.createElement('div');
+        rutaCard.className = 'col-md-6 mb-3';
+        rutaCard.innerHTML = `
+            <div class="card ruta-card h-100" style="cursor: pointer;" data-nombre-ruta="${ruta.nombre}">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <h6 class="card-title text-primary">${ruta.nombre}</h6>
+                        <span class="badge bg-success">${ruta.estado || 'Confirmada'}</span>
                     </div>
+                    <small class="text-muted">${ruta.origen || ''} → ${ruta.destino || ''}</small>
                 </div>
             </div>
         `;
-        container.innerHTML += rutaHTML;
+
+        const card = rutaCard.querySelector('.card');
+        // Agregar event listener directamente
+        card.addEventListener('click', function(e) {
+            e.preventDefault();
+            e.stopPropagation();
+            console.log('Click en ruta:', ruta.nombre);
+            seleccionarRuta(ruta.nombre, this);
+        });
+
+        container.appendChild(rutaCard);
     });
+
+    console.log(`✅ ${rutas.length} rutas cargadas con eventos click`);
 }
 
-function seleccionarRuta(nombreRuta) {
-    console.log('🔍 Seleccionando ruta:', nombreRuta);
+function seleccionarRuta(nombreRuta, elementoClickeado) {
+    const base = (typeof window !== 'undefined' && window.CONTEXT_PATH) ? window.CONTEXT_PATH : '';
+    const timestamp = new Date().getTime(); // Anti-cache
+    const url = base + '/consultaRuta?nombreRuta=' + encodeURIComponent(nombreRuta) + '&_=' + timestamp;
 
-    // ✅ UNA SOLA LLAMADA: Obtener detalles Y contar visita
-    fetch(`${CONTEXT_PATH}/consultaRuta?nombreRuta=${encodeURIComponent(nombreRuta)}`)
+    console.log(`🔍 Consultando detalles de ruta: ${nombreRuta}`);
+
+    fetch(url)
         .then(response => {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return response.json();
@@ -143,8 +168,6 @@ function seleccionarRuta(nombreRuta) {
                 throw new Error(rutaDetallada.error);
             }
 
-            console.log('✅ Detalles de ruta obtenidos (visita contada):', rutaDetallada);
-
             rutaSeleccionada = rutaDetallada;
             mostrarDetallesRuta(rutaDetallada);
             cargarVuelosRuta(nombreRuta);
@@ -153,256 +176,245 @@ function seleccionarRuta(nombreRuta) {
             document.querySelectorAll('.ruta-card').forEach(card => {
                 card.classList.remove('border-primary', 'bg-light');
             });
-            try {
-                event.currentTarget.classList.add('border-primary', 'bg-light');
-            } catch (e) {
-                // no hacemos nada si no existe event
+
+            if (elementoClickeado) {
+                elementoClickeado.classList.add('border-primary', 'bg-light');
             }
+
+            console.log(`✅ Detalles de ruta cargados: ${nombreRuta}`);
         })
         .catch(error => {
-            console.error('❌ Error consultando ruta:', error);
-            // Fallback a datos locales
+            console.error('❌ Error cargando detalles de ruta:', error);
             const rutaLocal = rutasCargadas.find(r => r.nombre === nombreRuta);
             if (rutaLocal) {
                 rutaSeleccionada = rutaLocal;
                 mostrarDetallesRuta(rutaLocal);
                 cargarVuelosRuta(nombreRuta);
+
+                // Aplicar estilo de selección incluso con datos locales
+                document.querySelectorAll('.ruta-card').forEach(card => {
+                    card.classList.remove('border-primary', 'bg-light');
+                });
+                if (elementoClickeado) {
+                    elementoClickeado.classList.add('border-primary', 'bg-light');
+                }
             } else {
                 mostrarMensajeError('No se pudieron cargar los detalles de la ruta');
             }
         });
 }
 
+// NUEVAS FUNCIONES DE MENSAJES
+function mostrarMensajeExito(mensaje) {
+    mostrarMensaje(mensaje, 'success');
+}
+
+function mostrarMensajeInfo(mensaje) {
+    mostrarMensaje(mensaje, 'info');
+}
+
+function mostrarMensajeError(mensaje) {
+    mostrarMensaje(mensaje, 'danger');
+}
+
+function mostrarMensaje(mensaje, tipo) {
+    // Remover mensajes anteriores
+    const alertasAnteriores = document.querySelectorAll('.alert-mensaje-temporal');
+    alertasAnteriores.forEach(alerta => alerta.remove());
+
+    // Crear nueva alerta
+    const alertHTML = `
+        <div class="alert alert-${tipo} alert-dismissible fade show alert-mensaje-temporal" role="alert">
+            <i class="bi ${tipo === 'success' ? 'bi-check-circle' : tipo === 'info' ? 'bi-info-circle' : 'bi-exclamation-triangle'} me-2"></i>
+            ${mensaje}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+    `;
+
+    const container = document.querySelector('.card-body') || document.body;
+    container.insertAdjacentHTML('afterbegin', alertHTML);
+
+    // Auto-eliminar después de 5 segundos
+    setTimeout(() => {
+        const alerta = document.querySelector('.alert-mensaje-temporal');
+        if (alerta) {
+            alerta.remove();
+        }
+    }, 5000);
+}
+
+// El resto de las funciones permanecen igual...
 function mostrarDetallesRuta(ruta) {
-    // Actualizar información de la ruta con datos reales
-    console.log("Datos de la ruta recibidos:", ruta);
-    console.log("Video URL:", ruta.videoUrl);
-    console.log("Imagen URL:", ruta.imagenUrl);
-    // PRUEBA: Mostrar TODOS los campos de la ruta en la consola
-    console.log("=== TODOS LOS CAMPOS DE LA RUTA ===");
-    for (let key in ruta) {
-        console.log(`📌 ${key}:`, ruta[key]);
+    // Función mejorada para formatear fechas
+    function formatearFecha(valor) {
+        if (!valor) return '-';
+        try {
+            // Si ya es una fecha formateada (dd/MM/yyyy), devolver tal cual
+            if (typeof valor === 'string' && /^\d{1,2}\/\d{1,2}\/\d{4}$/.test(valor)) {
+                return valor;
+            }
+
+            // Si es formato ISO (yyyy-MM-dd) o similar, convertir
+            const d = new Date(valor);
+            if (isNaN(d.getTime())) {
+                // Intentar parsear formato yyyy-MM-dd
+                const parts = String(valor).split('-');
+                if (parts.length === 3) {
+                    const [year, month, day] = parts;
+                    d.setFullYear(parseInt(year), parseInt(month) - 1, parseInt(day));
+                }
+            }
+
+            if (!isNaN(d.getTime())) {
+                const dd = String(d.getDate()).padStart(2, '0');
+                const mm = String(d.getMonth() + 1).padStart(2, '0');
+                const yyyy = d.getFullYear();
+                return `${dd}/${mm}/${yyyy}`;
+            }
+
+            return String(valor); // Devolver el valor original si no se puede parsear
+        } catch (e) {
+            console.warn('Error formateando fecha:', valor, e);
+            return String(valor);
+        }
     }
-    console.log("===================================");
+
+    // Actualizar los campos en la UI
     document.getElementById('rutaNombre').textContent = ruta.nombre || '-';
     document.getElementById('rutaDescripcion').textContent = ruta.descripcion || 'Sin descripción';
-    // si el select de aerolinea no tiene texto (por ejemplo value ''), poner '-'
+
     const aerSelect = document.getElementById('aerolinea');
-    const aerText = (aerSelect && aerSelect.options[aerSelect.selectedIndex]) ? aerSelect.options[aerSelect.selectedIndex].text : '-';
+    const aerText = (aerSelect && aerSelect.options[aerSelect.selectedIndex]) ?
+        aerSelect.options[aerSelect.selectedIndex].text : '-';
     document.getElementById('rutaAerolinea').textContent = aerText;
+
     document.getElementById('rutaOrigen').textContent = ruta.origen || '-';
     document.getElementById('rutaDestino').textContent = ruta.destino || '-';
-    document.getElementById('rutaEstado').textContent = ruta.estado || 'Confirmada';
+
+    // === Estado con colores según valor ===
+    const estadoSpan = document.getElementById('rutaEstado');
+    const estadoValor = (ruta.estado || 'CONFIRMADA').toString().toUpperCase();
+    estadoSpan.textContent = ruta.estado || 'Confirmada';
+    // limpiar clases previas
+    estadoSpan.className = 'badge';
+    if (estadoValor === 'CONFIRMADA') {
+        estadoSpan.classList.add('badge-estado-confirmada');
+    } else if (estadoValor === 'INGRESADA') {
+        estadoSpan.classList.add('badge-estado-ingresada');
+    } else if (estadoValor === 'FINALIZADA' || estadoValor === 'RECHAZADA') {
+        estadoSpan.classList.add('badge-estado-finalizada');
+    } else {
+        // por si aparece algún otro estado, usamos estilo neutro
+        estadoSpan.classList.add('bg-secondary');
+    }
+
+    const fechaMostrada = formatearFecha(ruta.fechaAlta);
+    document.getElementById('rutaFechaAlta').textContent = fechaMostrada;
     document.getElementById('rutaCategorias').textContent = ruta.categorias && ruta.categorias.length > 0 ? ruta.categorias.join(', ') : 'No especificadas';
     document.getElementById('costoTurista').textContent = ruta.costoTurista !== undefined ? `$${ruta.costoTurista}` : 'N/A';
     document.getElementById('costoEjecutivo').textContent = ruta.costoEjecutivo !== undefined ? `$${ruta.costoEjecutivo}` : 'N/A';
     document.getElementById('costoEquipaje').textContent = ruta.costoEquipaje !== undefined ? `$${ruta.costoEquipaje}` : 'N/A';
 
-    // ---------- Imagen de la ruta (nuevo) ----------
-    // Crear o reutilizar un contenedor para la imagen dentro de #infoRuta
-    const infoRutaEl = document.getElementById('infoRuta');
-    if (infoRutaEl) {
-        let imgContainer = document.getElementById('rutaImagenContainer');
-        if (!imgContainer) {
-            imgContainer = document.createElement('div');
-            imgContainer.id = 'rutaImagenContainer';
-            imgContainer.className = 'mb-3';
-            // Insertarlo al principio de infoRuta
-            infoRutaEl.insertAdjacentElement('afterbegin', imgContainer);
-        }
-
-        // Crear o reutilizar la etiqueta img
-        let imgEl = document.getElementById('imagenRutaDetalle');
-        if (!imgEl) {
-            imgEl = document.createElement('img');
-            imgEl.id = 'imagenRutaDetalle';
-            imgEl.alt = 'Imagen de la ruta';
-            imgEl.className = 'img-fluid route-image w-100 rounded';
-            imgContainer.innerHTML = '';
-            imgContainer.appendChild(imgEl);
-        }
-
-        // Obtener posible valor de imagen desde el objeto ruta (varias claves posibles)
-        const imageValue = ruta.imagen || ruta.imagenUrl || ruta.imagenURL || ruta.image || ruta.foto || ruta.url || '';
-
-        // Helper: convertir un valor devuelto por el backend en una URL pública de imagen
-        function toPublicImageUrl(value) {
-            if (!value) return '';
-            const v = String(value).trim();
-            if (v.length === 0) return '';
-            try {
-                // Si es data URL, devolver tal cual
-                if (/^data:/i.test(v)) return v;
-                // Si es URL absoluta, analizarla para decidir si normalizar
-                if (/^https?:\/\//i.test(v)) {
-                    try {
-                        const parsed = new URL(v);
-                        const origin = window.location.origin || (window.location.protocol + '//' + window.location.host);
-                        // Si la URL absoluta apunta al mismo origen del navegador, extraer filename y construir con contextPath
-                        if (parsed.origin === origin || parsed.pathname.indexOf('/Images/') >= 0 || parsed.pathname.split('/').length <= 2) {
-                            // extraer filename
-                            const path = parsed.pathname || '';
-                            const parts = path.split('/').filter(Boolean);
-                            const filename = parts.length > 0 ? parts[parts.length - 1] : '';
-                            if (filename) {
-                                const ctx = (typeof window !== 'undefined' && window.CONTEXT_PATH) ? window.CONTEXT_PATH : window.location.pathname.replace(/\/[^/]*$/, '');
-                                const prefix = (ctx.endsWith('/')) ? ctx.slice(0, -1) : ctx;
-                                return prefix + '/Images/' + filename;
-                            }
-                        }
-                        // si no coincide con el origen o no contiene un filename, devolver la URL tal cual
-                        return v;
-                    } catch (e) {
-                        return v;
-                    }
-                }
-                // si ya tiene un slash al inicio (ruta absoluta dentro del host), intentar extraer filename si contiene Images/
-                if (v.startsWith('/')) {
-                    if (v.indexOf('/Images/') >= 0) {
-                        const parts = v.split('/').filter(Boolean);
-                        const filename = parts.length > 0 ? parts[parts.length - 1] : '';
-                        if (filename) {
-                            const ctx = (typeof window !== 'undefined' && window.CONTEXT_PATH) ? window.CONTEXT_PATH : window.location.pathname.replace(/\/[^/]*$/, '');
-                            const prefix = (ctx.endsWith('/')) ? ctx.slice(0, -1) : ctx;
-                            return prefix + '/Images/' + filename;
-                        }
-                    }
-                    // si no contiene Images/, devolver como filename simple
-                    return v;
-                }
-                // para cualquier otro caso, devolver como filename simple
-                return v;
-            } catch (e) {
-                return '';
+    // Manejar imagen
+    const imgElement = document.getElementById('imagenRutaDetalle');
+    if (imgElement) {
+        if (ruta.imagenUrl && ruta.imagenUrl.trim() !== '') {
+            // Asegurar que la ruta de imagen sea correcta
+            let imgPath = ruta.imagenUrl;
+            // Si la ruta no empieza con /, Images/, o http, agregar Images/
+            if (!imgPath.startsWith('/') && !imgPath.startsWith('Images/') && !imgPath.startsWith('http')) {
+                imgPath = 'Images/' + imgPath;
             }
-        }
-
-        // Lógica principal: asignar imagen según valor
-        if (imageValue) {
-            const raw = String(imageValue).trim();
-            // Resolver a URL pública usando helper (si es filename o URL absoluta local)
-            const resolved = toPublicImageUrl(raw);
-            console.log('Imagen de ruta: asignando URL resuelta ->', resolved, ' (raw:', raw, ')');
-            imgEl.src = resolved;
-            imgEl.style.display = 'block';
-            imgEl.style.objectFit = 'cover';
-            imgEl.onerror = function() {
-                console.warn('La imagen de ruta falló al cargar, ocultando elemento:', resolved);
-                imgEl.style.display = 'none';
-            };
+            imgElement.src = imgPath;
+            imgElement.style.display = 'block';
         } else {
-            imgEl.style.display = 'none';
+            imgElement.style.display = 'none';
         }
     }
 
-    // ---------- Video de la ruta (nuevo) ----------
-    // Usar videoUrl directamente desde el objeto ruta
-    const videoUrl = ruta.videoUrl || ruta.video || '';
-    const videoUrlContainer = document.getElementById('videoUrlContainer');
+    // Manejar video
     const videoContainer = document.getElementById('videoContainer');
+    const videoUrlContainer = document.getElementById('videoUrlContainer');
+    const videoUrlLink = document.getElementById('videoUrlLink');
 
-    // helpers para detectar YouTube/Vimeo/MP4
-    function getYouTubeEmbed(url) {
-        // soporta https://www.youtube.com/watch?v=ID y https://youtu.be/ID
-        try {
-            const u = new URL(url);
-            if (u.hostname.indexOf('youtube.com') >= 0) {
-                return u.searchParams.get('v');
-            }
-            if (u.hostname.indexOf('youtu.be') >= 0) {
-                return u.pathname.split('/').filter(Boolean)[0];
-            }
-        } catch (e) { }
-        return null;
-    }
-    function getVimeoEmbed(url) {
-        try {
-            const u = new URL(url);
-            if (u.hostname.indexOf('vimeo.com') >= 0) {
-                return u.pathname.split('/').filter(Boolean)[0];
-            }
-        } catch (e) { }
-        return null;
-    }
+    if (ruta.videoUrl && ruta.videoUrl.trim() !== '') {
+        const videoUrl = ruta.videoUrl.trim();
 
-    if (videoUrl) {
-        // mostrar enlace
-        if (videoUrlContainer) {
-            videoUrlContainer.style.display = 'block';
-            const linkEl = document.getElementById('videoUrlLink');
-            if (linkEl) {
-                linkEl.href = videoUrl;
-                linkEl.textContent = videoUrl;
+        // Verificar si es YouTube o Vimeo para embeber
+        if (videoUrl.includes('youtube.com') || videoUrl.includes('youtu.be')) {
+            let videoId = '';
+            if (videoUrl.includes('youtu.be/')) {
+                videoId = videoUrl.split('youtu.be/')[1].split('?')[0];
+            } else if (videoUrl.includes('watch?v=')) {
+                videoId = videoUrl.split('watch?v=')[1].split('&')[0];
             }
+
+            if (videoId && videoContainer) {
+                videoContainer.innerHTML = `
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://www.youtube.com/embed/${videoId}" allowfullscreen></iframe>
+                    </div>`;
+                videoContainer.style.display = 'block';
+            }
+        } else if (videoUrl.includes('vimeo.com')) {
+            const vimeoId = videoUrl.split('vimeo.com/')[1];
+            if (vimeoId && videoContainer) {
+                videoContainer.innerHTML = `
+                    <div class="ratio ratio-16x9">
+                        <iframe src="https://player.vimeo.com/video/${vimeoId}" allowfullscreen></iframe>
+                    </div>`;
+                videoContainer.style.display = 'block';
+            }
+        } else {
+            // Para otros videos, mostrar solo el enlace
+            if (videoContainer) videoContainer.style.display = 'none';
         }
 
-        if (videoContainer) {
-            videoContainer.innerHTML = '';
-            const ytId = getYouTubeEmbed(videoUrl);
-            const vimeoId = getVimeoEmbed(videoUrl);
-            if (ytId) {
-                const iframe = document.createElement('iframe');
-                iframe.width = '100%';
-                iframe.height = '360';
-                iframe.src = 'https://www.youtube.com/embed/' + ytId;
-                iframe.allow = 'accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture';
-                iframe.allowFullscreen = true;
-                iframe.className = 'rounded';
-                videoContainer.appendChild(iframe);
-            } else if (vimeoId) {
-                const iframe = document.createElement('iframe');
-                iframe.width = '100%';
-                iframe.height = '360';
-                iframe.src = 'https://player.vimeo.com/video/' + vimeoId;
-                iframe.allowFullscreen = true;
-                iframe.className = 'rounded';
-                videoContainer.appendChild(iframe);
-            } else if (/\.mp4($|\?)/i.test(videoUrl)) {
-                const videoEl = document.createElement('video');
-                videoEl.controls = true;
-                videoEl.className = 'w-100 rounded';
-                const src = document.createElement('source');
-                src.src = videoUrl;
-                src.type = 'video/mp4';
-                videoEl.appendChild(src);
-                videoContainer.appendChild(videoEl);
-            } else {
-                // si no se puede embeber, dejamos solo el enlace (ya puesto arriba)
-            }
+        // Siempre mostrar el enlace
+        if (videoUrlLink && videoUrlContainer) {
+            videoUrlLink.href = videoUrl;
+            videoUrlLink.textContent = videoUrl;
+            videoUrlContainer.style.display = 'block';
         }
     } else {
+        // No hay video
+        if (videoContainer) videoContainer.style.display = 'none';
         if (videoUrlContainer) videoUrlContainer.style.display = 'none';
-        if (videoContainer) videoContainer.innerHTML = '';
     }
 
-    // Asegurarse de mostrar el panel de detalles
-    try {
-        document.getElementById('infoRuta').style.display = 'block';
-    } catch (e) {
-        // si no existe, no hacemos nada
+    // ✅ MOSTRAR la sección de información
+    const infoRutaSection = document.getElementById('infoRuta');
+    if (infoRutaSection) {
+        infoRutaSection.style.display = 'block';
     }
 }
 
 // Filtrar rutas por categoría (localmente, en el cliente)
 function aplicarFiltros() {
-    const categoriaSeleccionada = document.getElementById('categoria').value;
+    const categoria = document.getElementById('categoria') ? document.getElementById('categoria').value : '';
 
-    // Si no hay rutas cargadas, no hacer nada
-    if (!rutasCargadas || rutasCargadas.length === 0) return;
+    // Si no hay rutas cargadas, recargar desde servidor si hay aerolínea seleccionada
+    if (!rutasCargadas || rutasCargadas.length === 0) {
+        const aerolinea = document.getElementById('aerolinea').value;
+        if (aerolinea) {
+            cargarRutas([]);
+        }
+        return;
+    }
 
-    // Si no se seleccionó ninguna categoría (valor vacío), mostrar todas las rutas
-    if (!categoriaSeleccionada || categoriaSeleccionada.trim() === '') {
+    // Si no hay categoría seleccionada, mostrar todas las rutas cargadas
+    if (!categoria) {
         cargarRutas(rutasCargadas);
         return;
     }
 
-    // Filtrar rutas por categoría seleccionada
-    const rutasFiltradas = rutasCargadas.filter(ruta => {
-        if (!ruta.categorias || ruta.categorias.length === 0) return false; // Sin categoría definida no coincide
-        return ruta.categorias.some(cat => cat.toString().toLowerCase() === categoriaSeleccionada.toString().toLowerCase());
+    // Filtrar por categoría
+    const filtradas = rutasCargadas.filter(ruta => {
+        if (!ruta.categorias || ruta.categorias.length === 0) return false;
+        return ruta.categorias.includes(categoria);
     });
 
-    cargarRutas(rutasFiltradas);
+    cargarRutas(filtradas);
 }
 
 // Limpiar filtros y recargar todas las rutas
@@ -416,7 +428,8 @@ function cargarVuelosRuta(nombreRuta) {
     const vuelosList = document.getElementById('vuelosAsociados');
     vuelosList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Cargando vuelos...</p></div>';
 
-    fetch((window.CONTEXT_PATH || '') + '/api/vuelos?ruta=' + encodeURIComponent(nombreRuta))
+    const timestamp = new Date().getTime(); //Anti-cache
+    fetch(`${window.CONTEXT_PATH || ''}/api/vuelos?ruta=${encodeURIComponent(nombreRuta)}&_=${timestamp}`)
         .then(res => res.json())
         .then(data => {
             // Si no hay vuelos, mostrar mensaje
@@ -441,7 +454,7 @@ function cargarVuelosRuta(nombreRuta) {
                     </div>`;
 
                 vuelosList.innerHTML += vueloHTML;
-             });
+            });
 
         })
         .catch(err => {

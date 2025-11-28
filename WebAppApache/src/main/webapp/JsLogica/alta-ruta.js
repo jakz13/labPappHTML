@@ -18,7 +18,6 @@ document.addEventListener('DOMContentLoaded', function() {
             return res.json();
         })
         .then(categorias => {
-            console.debug('listarCategorias ->', categorias);
             setDefaultSelect(selectCategorias, 'Seleccione categorías (Ctrl/Cmd + click para múltiples)');
             if (!Array.isArray(categorias) || categorias.length === 0) {
                 console.warn('No se recibieron categorías.');
@@ -113,37 +112,18 @@ document.addEventListener('DOMContentLoaded', function() {
                     let data;
                     try { data = await res.json(); } catch (e) { data = { success: false, error: 'Respuesta inválida del servidor' }; }
                     if (res.ok && data && data.success) {
+                        console.log('Ruta creada exitosamente. Datos:', data);
+                        
+                        // Limpiar preview de imagen
+                        const imgPrev = document.getElementById('imagenPreviewRuta');
+                        if (imgPrev) {
+                            imgPrev.classList.add('d-none');
+                            imgPrev.src = '';
+                        }
+                        
                         mostrarMensajeExito();
                         formulario.reset();
                         formulario.classList.remove('was-validated');
-                        // si vino imagenUrl, puedes mostrarla o loguearla
-                        if (data.imagenUrl) {
-                            // convertir a URL pública (el servidor puede devolver filename o URL completa)
-                            function toPublicImageUrl(value) {
-                                if (!value) return '';
-                                value = String(value).trim();
-                                if (value.length === 0) return '';
-                                if (/^data:/i.test(value)) return value;
-                                if (/^https?:\/\//i.test(value)) return value;
-                                if (value.startsWith('/')) {
-                                    return window.location.origin + value;
-                                }
-                                // si contiene '/Images/' en cualquier parte, devolver origin + '/' + value (sin duplicar slashes)
-                                if (value.indexOf('/Images/') >= 0) {
-                                    return window.location.origin + '/' + value.replace(/^\/+/, '');
-                                }
-                                // caso filename solo -> añadir contexto + /Images/
-                                const parts = window.location.pathname.split('/');
-                                const ctx = (parts.length > 1 && parts[1]) ? ('/' + parts[1]) : '';
-                                return window.location.origin + ctx + '/Images/' + value;
-                            }
-
-                            const imgUrlPublic = toPublicImageUrl(data.imagenUrl);
-                            console.log('Imagen guardada en:', imgUrlPublic);
-                            // actualizar preview con la URL persistida
-                            const imgPrev = document.getElementById('imagenPreviewRuta');
-                            if (imgPrev) imgPrev.src = imgUrlPublic;
-                        }
                     } else {
                         if (res.status === 409) {
                             const volver = confirm((data && data.error) ? (data.error + '\n\n¿Desea reingresar los datos?') : 'Ya existe una ruta con ese nombre.\n\n¿Desea reingresar los datos?');

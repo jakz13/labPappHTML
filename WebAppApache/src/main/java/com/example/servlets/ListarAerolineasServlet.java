@@ -17,7 +17,6 @@ public class ListarAerolineasServlet extends HttpServlet {
         sistema.cargarDesdeBd();
         List<DtAerolinea> aerolineas = sistema.listarAerolineas();
 
-        // DEBUG: Imprimir en consola del servidor
         System.out.println("Aerolineas extraÃdas de la BD:");
         for (DtAerolinea a : aerolineas) {
             System.out.println("Nickname: " + a.getNickname() + ", Nombre: " + a.getNombre());

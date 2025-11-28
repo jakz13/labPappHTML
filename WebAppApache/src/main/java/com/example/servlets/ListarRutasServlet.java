@@ -8,7 +8,7 @@ import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
 import java.util.List;
-// src/main/java/com/example/servlets/ListarRutasServlet.java
+
 @WebServlet("/listarRutas")
 public class ListarRutasServlet extends HttpServlet {
     protected void doGet(HttpServletRequest request, HttpServletResponse response)

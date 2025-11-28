@@ -471,24 +471,13 @@ function confirmarCompra() {
 // Realizar compra desde el modal
 async function realizarCompraDesdeModal() {
     try {
-        console.log('💰 Realizando compra del paquete:', paqueteSeleccionado.id);
+        console.log('Realizando compra del paquete:', paqueteSeleccionado.id);
 
         const fechaCompra = new Date();
         const fechaVencimiento = new Date();
         fechaVencimiento.setDate(fechaVencimiento.getDate() + (paqueteSeleccionado.vigenciaDias || 0));
         const costoFinal = paqueteSeleccionado.costoFinal || paqueteSeleccionado.costoBase || 0;
 
-        // DEBUG: Log los datos que se enviarán
-        console.log('📤 Datos a enviar:', {
-            action: 'realizar-compra',
-            paquete: paqueteSeleccionado.id,
-            cliente: clienteActual,
-            validezDias: (paqueteSeleccionado.vigenciaDias || 0).toString(),
-            fechaCompra: fechaCompra.toISOString().split('T')[0],
-            costo: costoFinal.toString()
-        });
-
-        // ✅ SOLUCIÓN: Usar URLSearchParams en lugar de FormData
         const params = new URLSearchParams();
         params.append('action', 'realizar-compra');
         params.append('paquete', paqueteSeleccionado.id);
@@ -496,9 +485,6 @@ async function realizarCompraDesdeModal() {
         params.append('validezDias', (paqueteSeleccionado.vigenciaDias || 0).toString());
         params.append('fechaCompra', fechaCompra.toISOString().split('T')[0]);
         params.append('costo', costoFinal.toString());
-
-        console.log('🌐 Enviando request a compra-paquete...');
-        console.log('📝 Body:', params.toString());
 
         const response = await fetch('compra-paquete', {
             method: 'POST',
@@ -513,7 +499,7 @@ async function realizarCompraDesdeModal() {
 
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('❌ Error response text:', errorText);
+            console.error('Error response text:', errorText);
             let errorData;
             try {
                 errorData = JSON.parse(errorText);
@@ -524,7 +510,7 @@ async function realizarCompraDesdeModal() {
         }
 
         const result = await response.json();
-        console.log('✅ Resultado compra:', result);
+        console.log('Resultado compra:', result);
 
         if (result.success) {
             // Mostrar mensaje de éxito
@@ -547,7 +533,7 @@ async function realizarCompraDesdeModal() {
         modal.hide();
 
     } catch (error) {
-        console.error('💥 Error realizando compra:', error);
+        console.error('Error realizando compra:', error);
         mostrarMensaje('Error al realizar la compra: ' + error.message, 'danger');
     }
 }
@@ -685,7 +671,7 @@ function utilizarPaquete(id) {
 
 // Escuchar eventos de actualización de sesión
 window.addEventListener('sessionUpdated', function() {
-    console.log('🔄 Evento sessionUpdated recibido, recargando datos...');
+    console.log('Evento sessionUpdated recibido, recargando datos...');
     setTimeout(() => {
         window.location.reload();
     }, 500);
@@ -693,12 +679,12 @@ window.addEventListener('sessionUpdated', function() {
 
 // Inicializar la página cuando se carga
 document.addEventListener('DOMContentLoaded', function() {
-    console.log('📄 DOM cargado, inicializando compra de paquetes...');
+    console.log('DOM cargado, inicializando compra de paquetes...');
     inicializarPagina();
 });
 
 // Manejar errores no capturados
 window.addEventListener('error', function(e) {
-    console.error('💥 Error no capturado:', e.error);
+    console.error('Error no capturado:', e.error);
     mostrarMensaje('Ocurrió un error inesperado. Por favor, recarga la página.', 'danger');
 });

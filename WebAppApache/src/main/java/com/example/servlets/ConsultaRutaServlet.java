@@ -1,13 +1,14 @@
-// src/main/java/com/example/servlets/ConsultaRutaServlet.java
 package com.example.servlets;
 
 import logica.Fabrica;
 import logica.ISistema;
 import DataTypes.DtRutaVuelo;
+import DataTypes.DtAerolinea;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import jakarta.servlet.annotation.*;
 import java.io.*;
+import java.text.SimpleDateFormat;
 import java.util.List;
 
 @WebServlet("/consultaRuta")
@@ -17,6 +18,7 @@ public class ConsultaRutaServlet extends HttpServlet {
             throws ServletException, IOException {
 
         String nombreRuta = request.getParameter("nombreRuta");
+        String forzarRecarga = request.getParameter("recargar"); // ✅ Nuevo parámetro
 
         if (nombreRuta == null || nombreRuta.trim().isEmpty()) {
             response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
@@ -24,27 +26,45 @@ public class ConsultaRutaServlet extends HttpServlet {
             return;
         }
 
+        // ✅ HEADERS ANTI-CACHE
+        response.setHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+        response.setHeader("Pragma", "no-cache");
+        response.setDateHeader("Expires", 0);
+
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
 
         try {
             ISistema sistema = Fabrica.getInstance().getISistema();
-            sistema.cargarDesdeBd();
 
-            // === CONTAR LA VISITA A ESTA RUTA ESPECÍFICA ===
-            //sistema.incrementarVisitasRuta(nombreRuta.trim());
-            System.out.println("[CONSULTA RUTA] ✅ Visita contada para: " + nombreRuta);
+            // ✅ OPCIONAL: Recargar desde BD si se solicita
+            if ("true".equals(forzarRecarga)) {
+                System.out.println("🔄 Forzando recarga de datos desde BD para ruta: " + nombreRuta);
+                sistema.cargarDesdeBd(); // Esto recargará todo desde BD
+            } else {
+                // Carga normal desde memoria (más rápido)
+                sistema.cargarDesdeBd();
+            }
 
-            // Buscar la ruta en todas las aerolíneas
             DtRutaVuelo rutaEncontrada = null;
-            List<DtRutaVuelo> todasRutas = sistema.listarRutasConfirmadas(1000);
+            List<DtAerolinea> aerolineas = sistema.listarAerolineas();
 
-            for (DtRutaVuelo ruta : todasRutas) {
-                if (ruta.getNombre().equals(nombreRuta)) {
-                    rutaEncontrada = ruta;
-                    break;
+            for (DtAerolinea aerolinea : aerolineas) {
+                String nickname = aerolinea.getNickname();
+                String nombreAerolinea = aerolinea.getNombre();
+                List<DtRutaVuelo> rutasAerolinea = sistema.listarRutasPorAerolinea(nickname);
+
+                for (DtRutaVuelo ruta : rutasAerolinea) {
+                    boolean nombresIguales = ruta.getNombre() != null &&
+                            nombreRuta != null &&
+                            ruta.getNombre().trim().equals(nombreRuta.trim());
+                    if (nombresIguales) {
+                        rutaEncontrada = ruta;
+                        break;
+                    }
                 }
+                if (rutaEncontrada != null) break;
             }
 
             if (rutaEncontrada == null) {
@@ -53,36 +73,70 @@ public class ConsultaRutaServlet extends HttpServlet {
                 return;
             }
 
-            // Generar JSON con la información completa de la ruta
-            out.print("{");
-            out.print("\"nombre\":\"" + escapeJson(rutaEncontrada.getNombre()) + "\",");
-            out.print("\"descripcion\":\"" + escapeJson(rutaEncontrada.getDescripcion()) + "\",");
-            out.print("\"descripcionCorta\":\"" + escapeJson(rutaEncontrada.getDescripcionCorta()) + "\",");
-            out.print("\"origen\":\"" + escapeJson(rutaEncontrada.getCiudadOrigen()) + "\",");
-            out.print("\"destino\":\"" + escapeJson(rutaEncontrada.getCiudadDestino()) + "\",");
-            out.print("\"aerolinea\":\"" + escapeJson(rutaEncontrada.getAerolinea()) + "\",");
-            out.print("\"hora\":\"" + escapeJson(rutaEncontrada.getHora()) + "\",");
-            out.print("\"estado\":\"" + escapeJson(String.valueOf(rutaEncontrada.getEstado())) + "\",");
-            out.print("\"costoTurista\":" + rutaEncontrada.getCostoTurista() + ",");
-            out.print("\"costoEjecutivo\":" + rutaEncontrada.getCostoEjecutivo() + ",");
-            out.print("\"costoEquipaje\":" + rutaEncontrada.getCostoEquipajeExtra() + ",");
-            out.print("\"contadorVisitas\":" + rutaEncontrada.getContadorVisitas());
+            // ✅ INCREMENTAR CONTADOR DE VISITAS
+            try {
+                sistema.incrementarVisitasRuta(nombreRuta);
+                System.out.println("✅ Visitas incrementadas para ruta: " + nombreRuta);
+            } catch (Exception e) {
+                System.err.println("⚠️ Error incrementando visitas: " + e.getMessage());
+                // No fallar la consulta por esto
+            }
+
+            StringBuilder json = new StringBuilder();
+            json.append("{");
+
+            // Campos básicos
+            json.append("\"nombre\":\"").append(escapeJson(rutaEncontrada.getNombre())).append("\",");
+            json.append("\"descripcion\":\"").append(escapeJson(rutaEncontrada.getDescripcion())).append("\",");
+            json.append("\"descripcionCorta\":\"").append(escapeJson(rutaEncontrada.getDescripcionCorta())).append("\",");
+            json.append("\"origen\":\"").append(escapeJson(rutaEncontrada.getCiudadOrigen())).append("\",");
+            json.append("\"destino\":\"").append(escapeJson(rutaEncontrada.getCiudadDestino())).append("\",");
+            json.append("\"aerolinea\":\"").append(escapeJson(rutaEncontrada.getAerolinea())).append("\",");
+            json.append("\"hora\":\"").append(escapeJson(rutaEncontrada.getHora())).append("\",");
+            json.append("\"estado\":\"").append(escapeJson(String.valueOf(rutaEncontrada.getEstado()))).append("\",");
+            json.append("\"costoTurista\":").append(rutaEncontrada.getCostoTurista()).append(",");
+            json.append("\"costoEjecutivo\":").append(rutaEncontrada.getCostoEjecutivo()).append(",");
+            json.append("\"costoEquipaje\":").append(rutaEncontrada.getCostoEquipajeExtra()).append(",");
+            json.append("\"contadorVisitas\":").append(rutaEncontrada.getContadorVisitas()).append(",");
+
+            if (rutaEncontrada.getFechaAlta() != null) {
+                String fechaAltaStr = String.valueOf(rutaEncontrada.getFechaAlta());
+
+                // Si ya está en formato yyyy-MM-dd, usar tal cual
+                if (fechaAltaStr.matches("\\d{4}-\\d{2}-\\d{2}")) {
+                    json.append("\"fechaAlta\":\"").append(escapeJson(fechaAltaStr)).append("\",");
+                } else {
+                    // Intentar convertir otros formatos
+                    try {
+                        SimpleDateFormat sdfInput = new SimpleDateFormat("EEE MMM dd HH:mm:ss zzz yyyy"); // formato común
+                        SimpleDateFormat sdfOutput = new SimpleDateFormat("yyyy-MM-dd");
+                        java.util.Date date = sdfInput.parse(fechaAltaStr);
+                        String fechaFormateada = sdfOutput.format(date);
+                        json.append("\"fechaAlta\":\"").append(escapeJson(fechaFormateada)).append("\",");
+                    } catch (Exception e) {
+                        // Si falla, usar el valor original
+                        json.append("\"fechaAlta\":\"").append(escapeJson(fechaAltaStr)).append("\",");
+                    }
+                }
+            } else {
+                json.append("\"fechaAlta\":\"\",");
+            }
 
             // Categorías
-            out.print(",\"categorias\":[");
+            json.append("\"categorias\":[");
             if (rutaEncontrada.getCategorias() != null && !rutaEncontrada.getCategorias().isEmpty()) {
                 for (int i = 0; i < rutaEncontrada.getCategorias().size(); i++) {
-                    if (i > 0) out.print(",");
-                    out.print("\"" + escapeJson(rutaEncontrada.getCategorias().get(i)) + "\"");
+                    if (i > 0) json.append(",");
+                    json.append("\"").append(escapeJson(rutaEncontrada.getCategorias().get(i))).append("\"");
                 }
             }
-            out.print("]");
+            json.append("]");
 
             // Agregar imagen si existe
             try {
                 String imagenVal = rutaEncontrada.getImagenUrl();
                 if (imagenVal != null && !imagenVal.isBlank()) {
-                    out.print(",\"imagenUrl\":\"" + escapeJson(imagenVal) + "\"");
+                    json.append(",\"imagenUrl\":\"").append(escapeJson(imagenVal)).append("\"");
                 }
             } catch (Exception e) {
                 // Ignorar si no hay imagen
@@ -92,16 +146,18 @@ public class ConsultaRutaServlet extends HttpServlet {
             try {
                 String videoVal = rutaEncontrada.getVideoUrl();
                 if (videoVal != null && !videoVal.isBlank()) {
-                    out.print(",\"videoUrl\":\"" + escapeJson(videoVal) + "\"");
+                    json.append(",\"videoUrl\":\"").append(escapeJson(videoVal)).append("\"");
                 }
             } catch (Exception e) {
                 // Ignorar si no hay video
             }
 
-            out.print("}");
+            json.append("}");
+            out.print(json.toString());
+
+            System.out.println("✅ Ruta consultada: " + nombreRuta + " (recargar=" + forzarRecarga + ")");
 
         } catch (Exception e) {
-            System.err.println("[CONSULTA RUTA] ❌ Error: " + e.getMessage());
             e.printStackTrace();
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             out.print("{\"error\":\"Error al consultar ruta: " + escapeJson(e.getMessage()) + "\"}");
