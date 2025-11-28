@@ -1,3 +1,294 @@
+// Variables para controlar las peticiones asincrónicas
+let nicknameTimeout;
+let emailTimeout;
+let currentNicknameCheck = null;
+let currentEmailCheck = null;
+
+// Validación asincrónica de nickname - MEJORADA
+document.getElementById('nickname').addEventListener('input', function() {
+    const nickname = this.value.trim();
+
+    clearTimeout(nicknameTimeout);
+
+    // Cancelar petición anterior si todavía está pendiente
+    if (currentNicknameCheck) {
+        currentNicknameCheck.abort();
+    }
+
+    // Limpiar estado anterior
+    this.classList.remove('is-valid', 'is-invalid');
+    hideValidationMessage(this);
+
+    if (nickname.length === 0) {
+        return;
+    }
+
+    if (nickname.length < 3) {
+        showValidationMessage(this, 'Mínimo 3 caracteres', false);
+        return;
+    }
+
+    // Debounce: esperar 600ms después de que el usuario deje de escribir
+    nicknameTimeout = setTimeout(() => {
+        checkNicknameAvailability(nickname, this);
+    }, 600);
+});
+
+// Validación asincrónica de email - MEJORADA
+document.getElementById('email').addEventListener('input', function() {
+    const email = this.value.trim();
+
+    clearTimeout(emailTimeout);
+
+    // Cancelar petición anterior si todavía está pendiente
+    if (currentEmailCheck) {
+        currentEmailCheck.abort();
+    }
+
+    // Limpiar estado anterior
+    this.classList.remove('is-valid', 'is-invalid');
+    hideValidationMessage(this);
+
+    if (email.length === 0) {
+        return;
+    }
+
+    if (!validateEmail(email)) {
+        showValidationMessage(this, 'Formato de email inválido', false);
+        return;
+    }
+
+    // Debounce: esperar 600ms después de que el usuario deje de escribir
+    emailTimeout = setTimeout(() => {
+        checkEmailAvailability(email, this);
+    }, 600);
+});
+
+// Función para verificar disponibilidad de nickname - MEJORADA
+function checkNicknameAvailability(nickname, inputElement) {
+    showLoadingState(inputElement, true);
+
+    const basePath = (window.SESSION_API_BASE && window.SESSION_API_BASE.length > 0) ?
+        window.SESSION_API_BASE :
+        window.location.pathname.replace(/\/[^/]*$/, '');
+
+    // Crear AbortController para poder cancelar la petición
+    const controller = new AbortController();
+    currentNicknameCheck = controller;
+
+    fetch(`${basePath}/altaUsuario?action=checkNickname&nickname=${encodeURIComponent(nickname)}`, {
+        method: 'GET',
+        credentials: 'include',
+        signal: controller.signal
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Verificar que todavía es el valor actual (el usuario no ha seguido escribiendo)
+            if (inputElement.value.trim() === nickname) {
+                if (data.available) {
+                    showValidationMessage(inputElement, data.message, true);
+                } else {
+                    showValidationMessage(inputElement, data.message, false);
+                }
+            }
+        })
+        .catch(error => {
+            if (error.name !== 'AbortError') {
+                console.error('Error verificando nickname:', error);
+                // En caso de error, mostramos como disponible para no bloquear al usuario
+                if (inputElement.value.trim() === nickname) {
+                    showValidationMessage(inputElement, '✓ Disponible (verificación temporal)', true);
+                }
+            }
+        })
+        .finally(() => {
+            if (inputElement.value.trim() === nickname) {
+                showLoadingState(inputElement, false);
+            }
+            currentNicknameCheck = null;
+        });
+}
+
+// Función para verificar disponibilidad de email - MEJORADA
+function checkEmailAvailability(email, inputElement) {
+    showLoadingState(inputElement, true);
+
+    const basePath = (window.SESSION_API_BASE && window.SESSION_API_BASE.length > 0) ?
+        window.SESSION_API_BASE :
+        window.location.pathname.replace(/\/[^/]*$/, '');
+
+    // Crear AbortController para poder cancelar la petición
+    const controller = new AbortController();
+    currentEmailCheck = controller;
+
+    fetch(`${basePath}/altaUsuario?action=checkEmail&email=${encodeURIComponent(email)}`, {
+        method: 'GET',
+        credentials: 'include',
+        signal: controller.signal
+    })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error(`Error HTTP: ${response.status}`);
+            }
+            return response.json();
+        })
+        .then(data => {
+            // Verificar que todavía es el valor actual
+            if (inputElement.value.trim() === email) {
+                if (data.available) {
+                    showValidationMessage(inputElement, data.message, true);
+                } else {
+                    showValidationMessage(inputElement, data.message, false);
+                }
+            }
+        })
+        .catch(error => {
+            if (error.name !== 'AbortError') {
+                console.error('Error verificando email:', error);
+                // En caso de error, mostramos como disponible para no bloquear al usuario
+                if (inputElement.value.trim() === email) {
+                    showValidationMessage(inputElement, '✓ Disponible (verificación temporal)', true);
+                }
+            }
+        })
+        .finally(() => {
+            if (inputElement.value.trim() === email) {
+                showLoadingState(inputElement, false);
+            }
+            currentEmailCheck = null;
+        });
+}
+
+// Función auxiliar para mostrar mensajes - MEJORADA
+function showValidationMessage(inputElement, message, isValid) {
+    // Limpiar completamente
+    inputElement.classList.remove('is-valid', 'is-invalid');
+
+    // Remover mensajes anteriores
+    const existingFeedback = inputElement.parentNode.querySelector('.validation-feedback');
+    if (existingFeedback) {
+        existingFeedback.remove();
+    }
+
+    // Crear nuevo mensaje
+    const feedbackElement = document.createElement('div');
+    feedbackElement.className = `validation-feedback ${isValid ? 'valid-feedback' : 'invalid-feedback'} d-block`;
+    feedbackElement.textContent = message;
+    feedbackElement.style.fontSize = '0.875rem';
+    feedbackElement.style.marginTop = '0.25rem';
+
+    inputElement.parentNode.appendChild(feedbackElement);
+
+    // Aplicar clase de validación
+    if (isValid) {
+        inputElement.classList.add('is-valid');
+    } else {
+        inputElement.classList.add('is-invalid');
+    }
+}
+
+// Función para ocultar mensajes
+function hideValidationMessage(inputElement) {
+    const feedbackElement = inputElement.parentNode.querySelector('.validation-feedback');
+    if (feedbackElement) {
+        feedbackElement.remove();
+    }
+}
+
+// Función para mostrar estado de carga
+function showLoadingState(inputElement, isLoading) {
+    let spinner = inputElement.parentNode.querySelector('.validation-spinner');
+
+    if (isLoading) {
+        if (!spinner) {
+            spinner = document.createElement('span');
+            spinner.className = 'validation-spinner spinner-border spinner-border-sm';
+            spinner.style.position = 'absolute';
+            spinner.style.right = '12px';
+            spinner.style.top = '50%';
+            spinner.style.transform = 'translateY(-50%)';
+            spinner.style.zIndex = '5';
+
+            inputElement.parentNode.style.position = 'relative';
+            inputElement.parentNode.appendChild(spinner);
+        }
+        spinner.style.display = 'block';
+        inputElement.style.paddingRight = '40px';
+    } else {
+        if (spinner) {
+            spinner.style.display = 'none';
+        }
+        inputElement.style.paddingRight = '';
+    }
+}
+
+// Modificar validateStep1 para validar disponibilidad - MEJORADA
+function validateStep1() {
+    const form = document.getElementById('formRegistroUsuario');
+    const requiredFields = ['nickname', 'nombre', 'email', 'password'];
+    let isValid = true;
+
+    requiredFields.forEach(field => {
+        const element = document.getElementById(field);
+        if (!element.value.trim()) {
+            element.classList.add('is-invalid');
+            isValid = false;
+        } else {
+            // Solo remover invalid si no hay otros errores
+            if (!element.classList.contains('is-invalid')) {
+                element.classList.remove('is-invalid');
+            }
+        }
+    });
+
+    // Validaciones específicas
+    const nickname = document.getElementById('nickname');
+    const email = document.getElementById('email');
+    const password = document.getElementById('password');
+    const confirmPassword = document.getElementById('confirmPassword');
+
+    // Validar que nickname esté disponible Y válido
+    if (nickname.value.trim() && !nickname.classList.contains('is-valid')) {
+        if (!nickname.classList.contains('is-invalid')) {
+            nickname.classList.add('is-invalid');
+            showValidationMessage(nickname, 'Verifique la disponibilidad del nickname', false);
+        }
+        isValid = false;
+    }
+
+    // Validar que email esté disponible Y válido
+    if (email.value.trim() && !email.classList.contains('is-valid')) {
+        if (!email.classList.contains('is-invalid')) {
+            email.classList.add('is-invalid');
+            showValidationMessage(email, 'Verifique la disponibilidad del email', false);
+        }
+        isValid = false;
+    }
+
+    // Validar email formato
+    if (email.value && !validateEmail(email.value)) {
+        email.classList.add('is-invalid');
+        isValid = false;
+    }
+
+    // Validar contraseñas
+    if (password.value && password.value.length < 6) {
+        password.classList.add('is-invalid');
+        isValid = false;
+    }
+
+    if (password.value !== confirmPassword.value) {
+        confirmPassword.classList.add('is-invalid');
+        isValid = false;
+    }
+
+    return isValid;
+}
 // Navegación entre pasos
 function nextStep(step) {
     if (step === 2 && !validateStep1()) return;
@@ -96,46 +387,6 @@ document.getElementById('confirmPassword').addEventListener('input', function() 
     }
 });
 
-// Validaciones de pasos
-function validateStep1() {
-    const form = document.getElementById('formRegistroUsuario');
-    const requiredFields = ['nickname', 'nombre', 'email', 'password'];
-    let isValid = true;
-
-    requiredFields.forEach(field => {
-        const element = document.getElementById(field);
-        if (!element.value.trim()) {
-            element.classList.add('is-invalid');
-            isValid = false;
-        } else {
-            element.classList.remove('is-invalid');
-        }
-    });
-
-    // Validar email
-    const email = document.getElementById('email').value;
-    if (email && !validateEmail(email)) {
-        document.getElementById('email').classList.add('is-invalid');
-        isValid = false;
-    }
-
-    // Validar confirmación de contraseña
-    const password = document.getElementById('password').value;
-    const confirmPassword = document.getElementById('confirmPassword').value;
-    if (password !== confirmPassword) {
-        document.getElementById('confirmPassword').classList.add('is-invalid');
-        isValid = false;
-    }
-
-    // Validar longitud de contraseña
-    if (password && password.length < 6) {
-        document.getElementById('password').classList.add('is-invalid');
-        isValid = false;
-    }
-
-    return isValid;
-}
-
 function validateStep2() {
     const tipoUsuario = document.getElementById('tipoUsuario').value;
     if (!tipoUsuario) {
@@ -188,7 +439,7 @@ function validateEmail(email) {
     return re.test(email);
 }
 
-// Envío del formulario - VERSIÓN ACTUALIZADA
+// Envío del formulario
 document.getElementById('formRegistroUsuario').addEventListener('submit', function(event) {
     event.preventDefault();
 
@@ -240,14 +491,12 @@ function enviarRegistroAlServidor() {
     submitBtn.disabled = true;
 
     // Enviar al servidor
-    // Determinar base (intentar usar la variable de session-manager si está disponible)
     const basePath = (window.SESSION_API_BASE && window.SESSION_API_BASE.length > 0) ? window.SESSION_API_BASE : window.location.pathname.replace(/\/[^/]*$/, '');
     fetch(basePath + '/altaUsuario', {
         method: 'POST',
         body: formData,
         credentials: 'include'
     })
-
         .then(response => {
             if (!response.ok) {
                 throw new Error('Error en la respuesta del servidor: ' + response.status);
@@ -257,7 +506,6 @@ function enviarRegistroAlServidor() {
         .then(data => {
             if (data.success) {
                 // Éxito
-                // Mostrar modal de éxito si existe
                 try {
                     const successModal = new bootstrap.Modal(document.getElementById('successModal'));
                     successModal.show();
@@ -267,20 +515,18 @@ function enviarRegistroAlServidor() {
                 try {
                     if (data.nickname) localStorage.setItem('session_nickname', data.nickname);
                     if (data.tipo) localStorage.setItem('session_tipo', data.tipo);
-                    // opcional: marcar un timestamp
                     localStorage.setItem('session_timestamp', String(Date.now()));
                 } catch (e) {
                     console.warn('No se pudo guardar session en localStorage:', e);
                 }
 
-                // Notificar a otras partes de la página que la sesión cambió y forzar recarga/redirect
+                // Notificar a otras partes de la página que la sesión cambió
                 try { window.dispatchEvent(new Event('sessionUpdated')); } catch (e) { console.warn('No se pudo dispatch sessionUpdated', e); }
 
-                // Si el servidor devolvió nickname/tipo, redirigir: si es aerolinea, ir a alta-vuelo con parámetro
+                // Redirigir según tipo de usuario
                 setTimeout(() => {
                     try {
                         if (data.tipo === 'aerolinea' && data.nickname) {
-                            // redirigir a la página de alta-vuelo con parámetro para forzar carga de rutas
                             window.location.href = 'alta-vuelo.jsp?aerolinea=' + encodeURIComponent(data.nickname);
                         } else {
                             window.location.href = 'PaginaPrincipal.jsp';
@@ -361,7 +607,67 @@ document.getElementById('imagenUsuario').addEventListener('change', function(e) 
     }
 });
 
-// Validar edad mínima (18 años) - Ya existe en tu código
+// Validación asincrónica de nickname
+document.getElementById('nickname').addEventListener('input', function() {
+    const nickname = this.value.trim();
+
+    clearTimeout(nicknameTimeout);
+
+    // Cancelar petición anterior si todavía está pendiente
+    if (currentNicknameCheck) {
+        currentNicknameCheck.abort();
+    }
+
+    // Limpiar estado anterior
+    this.classList.remove('is-valid', 'is-invalid');
+    hideValidationMessage(this);
+
+    if (nickname.length === 0) {
+        return;
+    }
+
+    if (nickname.length < 3) {
+        showValidationMessage(this, 'Mínimo 3 caracteres', false);
+        return;
+    }
+
+    // Debounce: esperar 800ms después de que el usuario deje de escribir
+    nicknameTimeout = setTimeout(() => {
+        checkNicknameAvailability(nickname, this);
+    }, 800);
+});
+
+// Validación asincrónica de email
+document.getElementById('email').addEventListener('input', function() {
+    const email = this.value.trim();
+
+    clearTimeout(emailTimeout);
+
+    // Cancelar petición anterior si todavía está pendiente
+    if (currentEmailCheck) {
+        currentEmailCheck.abort();
+    }
+
+    // Limpiar estado anterior
+    this.classList.remove('is-valid', 'is-invalid');
+    hideValidationMessage(this);
+
+    if (email.length === 0) {
+        return;
+    }
+
+    if (!validateEmail(email)) {
+        showValidationMessage(this, 'Formato de email inválido', false);
+        return;
+    }
+
+    // Debounce: esperar 800ms después de que el usuario deje de escribir
+    emailTimeout = setTimeout(() => {
+        checkEmailAvailability(email, this);
+    }, 800);
+});
+
+// Validar edad mínima (18 años)
 document.getElementById('fechaNacimiento').max = new Date(new Date().setFullYear(new Date().getFullYear() - 18)).toISOString().split('T')[0];
 
 // Inicialización cuando el DOM está listo
@@ -444,6 +750,29 @@ document.addEventListener('DOMContentLoaded', function() {
         .ruta-card.selected {
             border-color: #0d6efd;
             box-shadow: 0 0 0 2px rgba(13, 110, 253, 0.25);
+        }
+        .validation-feedback {
+            display: block !important;
+        }
+        .validation-spinner {
+            color: #0d6efd;
+            display: none;
+        }
+        .form-control.is-valid {
+            border-color: #198754;
+            padding-right: 40px;
+        }
+        .form-control.is-invalid {
+            border-color: #dc3545;
+            padding-right: 40px;
+        }
+        .valid-feedback {
+            color: #198754;
+            display: block !important;
+        }
+        .invalid-feedback {
+            color: #dc3545;
+            display: block !important;
         }
     `;
     document.head.appendChild(style);

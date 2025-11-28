@@ -45,24 +45,18 @@
                         <div class="form-section active" id="section1">
                             <h5 class="text-primary mb-3">Datos Básicos del Usuario</h5>
 
-                            <div class="row">
-                                <div class="col-md-6 mb-3">
-                                    <label for="nickname" class="form-label">Nickname *</label>
-                                    <input type="text" class="form-control" id="nickname" required>
-                                    <div class="invalid-feedback">Por favor ingrese un nickname.</div>
-                                    <div class="form-text">Este será tu nombre de usuario único en la plataforma.</div>
-                                </div>
-                                <div class="col-md-6 mb-3">
-                                    <label for="nombre" class="form-label">Nombre *</label>
-                                    <input type="text" class="form-control" id="nombre" required>
-                                    <div class="invalid-feedback">Por favor ingrese su nombre.</div>
-                                </div>
+                            <div class="mb-3">
+                                <label for="nickname" class="form-label">Nickname *</label>
+                                <input type="text" class="form-control" id="nickname" required>
+                                <div class="invalid-feedback">Por favor ingrese un nickname.</div>
+                                <div class="form-text">Este será tu nombre de usuario único en la plataforma. Se verificará automáticamente.</div>
                             </div>
 
                             <div class="mb-3">
                                 <label for="email" class="form-label">Correo Electrónico *</label>
                                 <input type="email" class="form-control" id="email" required>
                                 <div class="invalid-feedback">Por favor ingrese un email válido.</div>
+                                <div class="form-text">Se verificará automáticamente la disponibilidad.</div>
                             </div>
 
                             <div class="row">
