@@ -10,7 +10,104 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="servlet tercer intento todo bien al parecer">
+      <change afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/TarjetaEmbarqueServlet.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/pom.xml" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/pom.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CheckinReservasServlet.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/java/com/example/servlets/CheckinReservasServlet.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-checkin.js" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/src/main/webapp/JsLogica/consulta-checkin.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/listeners/SoapStartupListener.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/FinalizarRutaServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/FinalizarRutaVerificacionServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/IncrementarVisitasRutaServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/com/example/servlets/ListarCiudadesServlet.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/AltaAerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/AltaAerolineaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/AltaCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/AltaClienteResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/AltaRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/AltaRutaVueloResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/AltaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/AltaVueloResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CalcularCostoReserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CalcularCostoReservaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CargarDesdeBd.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CargarDesdeBdResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CompraPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CompraPaqueteResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ConsultarCheckinReserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ConsultarCheckinReservaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CrearPasajero.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CrearPasajeroResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CrearYRegistrarReserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/CrearYRegistrarReservaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/FinalizarRutaVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/FinalizarRutaVueloResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/FollowUsuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/FollowUsuarioResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/GetDtItemRutasPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/GetDtItemRutasPaqueteResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/GetReservasCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/GetReservasClienteResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/IncrementarVisitasRuta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/IncrementarVisitasRutaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarAerolineas.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarAerolineasResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarCategorias.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarCategoriasResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarCiudades.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarCiudadesResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarClientes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarClientesResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarPaquetes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarPaquetesResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarRutasConfirmadas.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarRutasConfirmadasResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarRutasFinalizables.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarRutasFinalizablesResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarRutasPorAerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarRutasPorAerolineaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarVuelosPorRuta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ListarVuelosPorRutaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ModificarDatosAerolineaCompleto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ModificarDatosAerolineaCompletoResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ModificarDatosClienteCompleto.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ModificarDatosClienteCompletoResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObjectFactory.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerAerolinea.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerAerolineaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerAsientosDisponiblesVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerAsientosDisponiblesVueloResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerCantidadSeguidores.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerCantidadSeguidoresResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerCantidadSeguidos.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerCantidadSeguidosResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerCliente.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerClienteResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerDtPaquete.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerDtPaqueteResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerHoraRutaPorReserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerHoraRutaPorReservaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerReservasConCheckin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerReservasConCheckinResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerTopRutasMasVisitadas.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerTopRutasMasVisitadasResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerVuelo.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/ObtenerVueloResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/Ping.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/PingResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/PuedeFinalizarRuta.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/PuedeFinalizarRutaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/RealizarCheckinReserva.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/RealizarCheckinReservaResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/UnfollowUsuario.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/UnfollowUsuarioResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/VerInfoVueloDt.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/VerInfoVueloDtResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/VerificarLogin.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/VerificarLoginResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/VerificarSeguimiento.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/classes/serviciosweb/VerificarSeguimientoResponse.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/WebAppApache/target/generated-sources/cxf/serviciosweb/DtReserva.java" beforeDir="false" afterPath="$PROJECT_DIR$/WebAppApache/target/generated-sources/cxf/serviciosweb/DtReserva.java" afterDir="false" />
     </list>
     <list id="b508ea56-c1f6-4c26-aad9-dbec1639cce4" name="Changes by agust" comment="" />
     <option name="SHOW_DIALOG" value="false" />
@@ -72,39 +169,39 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;ASKED_SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;Application.ClienteSOAP.executor&quot;: &quot;Run&quot;,
-    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
-    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
-    &quot;SHARE_PROJECT_CONFIGURATION_FILES&quot;: &quot;true&quot;,
-    &quot;SHELLCHECK.PATH&quot;: &quot;C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe&quot;,
-    &quot;Tomcat Server.Tomcat 11.0.11.executor&quot;: &quot;Run&quot;,
-    &quot;Tomcat Server.Tomcat 11.0.12.executor&quot;: &quot;Run&quot;,
-    &quot;com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;junior__pruebasConImagenes&quot;,
-    &quot;ignore.virus.scanning.warn.message&quot;: &quot;true&quot;,
-    &quot;junie.onboarding.icon.badge.shown&quot;: &quot;true&quot;,
-    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
-    &quot;last_opened_file_path&quot;: &quot;C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp/JsLogica&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;project.structure.last.edited&quot;: &quot;Modules&quot;,
-    &quot;project.structure.proportion&quot;: &quot;0.15&quot;,
-    &quot;project.structure.side.proportion&quot;: &quot;0.29319373&quot;,
-    &quot;run.code.analysis.last.selected.profile&quot;: &quot;pProject Default&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
-    &quot;to.speed.mode.migration.done&quot;: &quot;true&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "ASKED_SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "Application.ClienteSOAP.executor": "Run",
+    "Application.Main.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.TerminalTabsStorage.copyFrom.TerminalArrangementManager.252": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "SHELLCHECK.PATH": "C:\\Users\\Curbe\\AppData\\Roaming\\JetBrains\\IntelliJIdea2025.2\\plugins\\Shell Script\\shellcheck.exe",
+    "Tomcat Server.Tomcat 11.0.11.executor": "Run",
+    "Tomcat Server.Tomcat 11.0.12.executor": "Run",
+    "com.intellij.ml.llm.matterhorn.ej.ui.settings.DefaultModelSelectionForGA.v1": "true",
+    "git-widget-placeholder": "junior__pruebasConImagenes",
+    "ignore.virus.scanning.warn.message": "true",
+    "junie.onboarding.icon.badge.shown": "true",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/Curbe/OneDrive/Escritorio/prueba-tomcat/WebAppApache/src/main/webapp/JsLogica",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "project.structure.last.edited": "Modules",
+    "project.structure.proportion": "0.15",
+    "project.structure.side.proportion": "0.29319373",
+    "run.code.analysis.last.selected.profile": "pProject Default",
+    "settings.editor.selected.configurable": "preferences.pluginManager",
+    "to.speed.mode.migration.done": "true",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\Users\Curbe\OneDrive\Escritorio\prueba-tomcat\WebAppApache\src\main\webapp\JsLogica" />
@@ -269,6 +366,9 @@
         <option value="bundled-js-predefined-d6986cc7102b-3aa1da707db6-JavaScript-IU-252.26830.84" />
       </set>
     </attachedChunks>
+  </component>
+  <component name="StructureViewState">
+    <option name="selectedTab" value="JSP" />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
@@ -531,7 +631,7 @@
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="origin/Felipe-Tarea3" />
+                        <option value="junior_pruebasConImagenes" />
                       </list>
                     </value>
                   </entry>
@@ -557,7 +657,8 @@
     <MESSAGE value="servlet primera prueba" />
     <MESSAGE value="servlet segunda prueba categorias mal" />
     <MESSAGE value="servlet tercer intento todo bien al parecer" />
-    <option name="LAST_COMMIT_MESSAGE" value="servlet tercer intento todo bien al parecer" />
+    <MESSAGE value="caso de uso de verificado en tiempo real realizado" />
+    <option name="LAST_COMMIT_MESSAGE" value="caso de uso de verificado en tiempo real realizado" />
   </component>
   <component name="github-copilot-workspace">
     <instructionFileLocations>

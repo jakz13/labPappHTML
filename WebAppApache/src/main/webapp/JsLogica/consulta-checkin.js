@@ -91,12 +91,22 @@ function configurarEventListeners() {
         }
     });
 
-    // Event listener para botón de tarjeta de embarque
+    // Event listeners para botones de tarjeta de embarque
     document.getElementById('btnTarjetaEmbarque').addEventListener('click', function() {
         if (reservaCheckinSeleccionada) {
             generarTarjetaEmbarque(reservaCheckinSeleccionada);
         }
     });
+
+    // Segundo botón en la vista de detalles
+    const btnTarjetaEmbarque2 = document.getElementById('btnTarjetaEmbarque2');
+    if (btnTarjetaEmbarque2) {
+        btnTarjetaEmbarque2.addEventListener('click', function() {
+            if (reservaCheckinSeleccionada) {
+                generarTarjetaEmbarque(reservaCheckinSeleccionada);
+            }
+        });
+    }
 }
 
 // Cargar reservas con check-in realizados
@@ -298,33 +308,72 @@ async function mostrarDetallesCheckin(reservaId) {
     }
 }
 
-// Generar tarjeta de embarque en PDF
+// Generar tarjeta de embarque en PDF - VERSIÓN ACTUALIZADA
 async function generarTarjetaEmbarque(reservaId) {
     try {
-        // Mostrar loading
-        const oldHtml = document.getElementById('btnTarjetaEmbarque').innerHTML;
-        document.getElementById('btnTarjetaEmbarque').innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Generando...';
-        document.getElementById('btnTarjetaEmbarque').disabled = true;
+        // Deshabilitar ambos botones durante la generación
+        const btn1 = document.getElementById('btnTarjetaEmbarque');
+        const btn2 = document.getElementById('btnTarjetaEmbarque2');
 
-        // Aquí llamarías al endpoint que genera el PDF
-        // Por ahora simulamos la generación
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        const oldHtml1 = btn1.innerHTML;
+        const oldHtml2 = btn2 ? btn2.innerHTML : '';
 
-        // Simular descarga
+        btn1.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Generando PDF...';
+        btn1.disabled = true;
+
+        if (btn2) {
+            btn2.innerHTML = '<span class="spinner-border spinner-border-sm" role="status"></span> Generando PDF...';
+            btn2.disabled = true;
+        }
+
+        // Construir URL del servlet
+        const url = `api/tarjeta-embarque?cliente=${encodeURIComponent(usuarioInfo.nickname)}&reservaId=${reservaId}`;
+
+        console.log('Descargando tarjeta de embarque desde:', url);
+
+        // Hacer la petición para obtener el PDF
+        const response = await fetch(url, {
+            method: 'GET',
+            credentials: 'include'
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            throw new Error(`Error al generar PDF: ${response.status} - ${errorText}`);
+        }
+
+        // Obtener el blob del PDF
+        const blob = await response.blob();
+
+        // Crear URL del blob y descargar
+        const blobUrl = window.URL.createObjectURL(blob);
         const link = document.createElement('a');
-        link.href = '#'; // Reemplazar con la URL real del PDF
+        link.href = blobUrl;
         link.download = `tarjeta-embarque-${reservaId}.pdf`;
+        document.body.appendChild(link);
         link.click();
+        document.body.removeChild(link);
 
-        mostrarMensajeExito('Tarjeta de embarque generada correctamente');
+        // Liberar memoria
+        window.URL.revokeObjectURL(blobUrl);
+
+        mostrarMensajeExito('Tarjeta de embarque descargada correctamente');
 
     } catch (error) {
         console.error('Error generando tarjeta de embarque:', error);
         mostrarMensajeError('Error al generar la tarjeta de embarque: ' + error.message);
     } finally {
-        // Restaurar botón
-        document.getElementById('btnTarjetaEmbarque').innerHTML = '<i class="bi bi-download me-2"></i>Descargar Tarjeta de Embarque';
-        document.getElementById('btnTarjetaEmbarque').disabled = false;
+        // Restaurar botones
+        const btn1 = document.getElementById('btnTarjetaEmbarque');
+        const btn2 = document.getElementById('btnTarjetaEmbarque2');
+
+        btn1.innerHTML = '<i class="bi bi-download me-2"></i>Descargar Tarjeta de Embarque';
+        btn1.disabled = false;
+
+        if (btn2) {
+            btn2.innerHTML = '<i class="bi bi-download me-2"></i>Descargar Tarjeta de Embarque';
+            btn2.disabled = false;
+        }
     }
 }
 
