@@ -9,9 +9,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="servlet tercer intento todo bien al parecer">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-    </list>
+    <list default="true" id="9fad4d8b-b73d-4daa-994f-a9c0a792a904" name="Changes" comment="servlet tercer intento todo bien al parecer" />
     <list id="b508ea56-c1f6-4c26-aad9-dbec1639cce4" name="Changes by agust" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -304,7 +302,7 @@
       <workItem from="1763783815030" duration="3101000" />
       <workItem from="1764277849431" duration="1235000" />
       <workItem from="1764279719547" duration="19446000" />
-      <workItem from="1764301360925" duration="12968000" />
+      <workItem from="1764301360925" duration="13866000" />
     </task>
     <task id="LOCAL-00001" summary="fxg">
       <option name="closed" value="true" />
@@ -514,7 +512,15 @@
       <option name="project" value="LOCAL" />
       <updated>1764314463522</updated>
     </task>
-    <option name="localTasksCounter" value="27" />
+    <task id="LOCAL-00027" summary="servlet tercer intento todo bien al parecer">
+      <option name="closed" value="true" />
+      <created>1764315163923</created>
+      <option name="number" value="00027" />
+      <option name="presentableId" value="LOCAL-00027" />
+      <option name="project" value="LOCAL" />
+      <updated>1764315163923</updated>
+    </task>
+    <option name="localTasksCounter" value="28" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">

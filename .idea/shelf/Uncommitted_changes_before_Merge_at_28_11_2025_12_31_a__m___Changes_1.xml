@@ -1,0 +1,63 @@
+<changelist name="Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1" date="1764300715143" recycled="true" deleted="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Merge at 28/11/2025 12:31 a. m. [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/serviciosweb/WebServicesService.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ListarCiudadesServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCiudadesServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCiudadesServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1/ListarCiudadesServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/FinalizarRutaServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/FinalizarRutaServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1/FinalizarRutaServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ListarAerolineasServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/FinalizarRutaServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/serviciosweb/JuanViajesWS.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/serviciosweb/ObjectFactory.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/serviciosweb/ObjectFactory.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/serviciosweb/ObjectFactory.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1/ObjectFactory.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/serviciosweb/JuanViajesWS.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/serviciosweb/JuanViajesWS.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1/JuanViajesWS.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1/ConsultaUsuarioServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarAerolineasServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1/ListarAerolineasServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ListarCategoriasServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCategoriasServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarCategoriasServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_28_11_2025_12_31_a_ m__[Changes]1/ListarCategoriasServlet.class" />
+  </binary>
+</changelist>
