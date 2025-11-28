@@ -26,7 +26,6 @@
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-vuelo.jsp"><i class="bi bi-search"></i> Consulta de Vuelo</a></li>
                         <li data-visible-for="cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-reserva.jsp"><i class="bi bi-ticket-perforated"></i> Consulta de Reserva</a></li>
                         <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/reserva-vuelo.jsp"><i class="bi bi-calendar-check"></i> Reserva de Vuelo</a></li>
-                        <!--Consulta de Check-in -->
                         <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-checkin.jsp"><i class="bi bi-check-circle"></i> Consulta de Check-in</a></li>
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-plus-circle"></i> Alta de Vuelo</a></li>
                     </ul>
@@ -52,7 +51,6 @@
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-ruta.jsp"><i class="bi bi-signpost"></i> Alta de Ruta</a></li>
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-ruta.jsp"><i class="bi bi-map"></i> Consulta de Ruta</a></li>
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-airplane"></i> Alta de Vuelo</a></li>
-                        <!-- NUEVO: Enlace para Finalizar Ruta -->
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/finalizar-ruta.jsp"><i class="bi bi-check-circle"></i> Finalizar Ruta</a></li>
                     </ul>
                 </li>
@@ -70,7 +68,7 @@
                 </li>
             </ul>
 
-            <!-- BARRA DE BÚSQUEDA CON ICONO EXPANDIBLE - ESTRUCTURA CORREGIDA -->
+            <!-- BARRA DE BÚSQUEDA -->
             <div class="navbar-search me-3">
                 <div class="search-container position-relative">
                     <form action="${pageContext.request.contextPath}/ResultadosBusqueda"
@@ -141,5 +139,9 @@
     </div>
 </div>
 
-<!-- Incluir el JavaScript del navbar -->
+<!-- Incluir los JavaScript necesarios -->
+<script>
+    // Configurar contexto global para JavaScript
+    window.CONTEXT_PATH = '${pageContext.request.contextPath}';
+</script>
 <script src="${pageContext.request.contextPath}/JsLogica/navbar.js"></script>
