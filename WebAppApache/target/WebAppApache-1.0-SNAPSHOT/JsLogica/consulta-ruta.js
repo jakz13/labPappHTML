@@ -419,30 +419,81 @@ function mostrarDetallesRuta(ruta) {
     document.getElementById('costoEjecutivo').textContent = ruta.costoEjecutivo !== undefined ? `$${ruta.costoEjecutivo}` : 'N/A';
     document.getElementById('costoEquipaje').textContent = ruta.costoEquipaje !== undefined ? `$${ruta.costoEquipaje}` : 'N/A';
 
-    // Manejar imagen
+    // === MANEJO DE IMAGEN - CORREGIDO ===
     const imgElement = document.getElementById('imagenRutaDetalle');
     if (imgElement) {
         const possibleImage = ruta.imagenUrl || ruta.imagen || ruta.image || ruta.foto || ruta.url || '';
         if (possibleImage && String(possibleImage).trim() !== '') {
             let imgPath = String(possibleImage).trim();
-            // Normalizar ruta: si no empieza con /, Images/ o http, prefix con Images/
-            if (!imgPath.startsWith('/') && !imgPath.startsWith('Images/') && !/^https?:\/\//i.test(imgPath)) {
-                imgPath = 'Images/' + imgPath;
+            const contextPath = window.CONTEXT_PATH || '';
+
+            console.log('🖼️ Imagen original:', imgPath);
+            console.log('🖼️ Context path:', contextPath);
+
+            // CASO 1: Solo nombre de archivo (pruebaDeRuta9876_1764308939475.jpg)
+            if (!imgPath.includes('/') && !/^https?:\/\//i.test(imgPath)) {
+                imgPath = contextPath + '/Images/' + imgPath;
             }
-            // Si es relativa y no tiene contexto, prefijar CONTEXT_PATH
-            if (!/^https?:\/\//i.test(imgPath) && imgPath.startsWith('Images/') && (window.CONTEXT_PATH || '').length) {
-                const ctx = (window.CONTEXT_PATH.endsWith('/')) ? window.CONTEXT_PATH.slice(0, -1) : window.CONTEXT_PATH;
-                imgPath = ctx + '/' + imgPath;
+            // CASO 2: Ya tiene "Images/" pero sin contextPath
+            else if (imgPath.startsWith('Images/') && !/^https?:\/\//i.test(imgPath)) {
+                imgPath = contextPath + '/' + imgPath;
             }
+            // CASO 3: Si empieza con / pero no tiene el contexto completo
+            else if (imgPath.startsWith('/') && !imgPath.includes(contextPath) && !/^https?:\/\//i.test(imgPath)) {
+                // Si es una ruta absoluta pero le falta el contextPath, agregarlo
+                if (!imgPath.startsWith(contextPath)) {
+                    imgPath = contextPath + imgPath;
+                }
+            }
+            // CASO 4: Si ya es una URL completa, dejarla como está
+            else if (/^https?:\/\//i.test(imgPath)) {
+                // No hacer nada, ya es una URL completa
+            }
+            // CASO 5: Cualquier otro caso, construir la ruta completa
+            else {
+                imgPath = contextPath + '/Images/' + imgPath.split('/').pop();
+            }
+
+            console.log('🖼️ Imagen final construida:', imgPath);
+
             imgElement.src = imgPath;
             imgElement.style.display = 'block';
             imgElement.style.objectFit = 'cover';
+
+            // Manejo de errores mejorado
             imgElement.onerror = function() {
-                console.warn('La imagen de ruta falló al cargar:', imgPath);
-                imgElement.style.display = 'none';
+                console.warn('❌ La imagen de ruta falló al cargar:', imgPath);
+
+                // Intentar alternativas si falla la primera
+                const fallbackPaths = [
+                    contextPath + '/Images/' + (ruta.imagenUrl || ruta.imagen || ruta.image || ruta.foto || ruta.url || '').split('/').pop(),
+                    contextPath + '/images/' + (ruta.imagenUrl || ruta.imagen || ruta.image || ruta.foto || ruta.url || '').split('/').pop(),
+                    '/Images/' + (ruta.imagenUrl || ruta.imagen || ruta.image || ruta.foto || ruta.url || '').split('/').pop()
+                ];
+
+                let currentFallbackIndex = 0;
+                const tryFallback = () => {
+                    if (currentFallbackIndex < fallbackPaths.length) {
+                        const fallbackPath = fallbackPaths[currentFallbackIndex++];
+                        console.log('🔄 Intentando fallback:', fallbackPath);
+                        imgElement.src = fallbackPath;
+                    } else {
+                        console.log('❌ Todas las alternativas fallaron, ocultando imagen');
+                        imgElement.style.display = 'none';
+                    }
+                };
+
+                // Reasignar el onerror para que siga intentando
+                imgElement.onerror = tryFallback;
+                tryFallback();
+            };
+
+            imgElement.onload = function() {
+                console.log('✅ Imagen cargada correctamente:', imgPath);
             };
         } else {
             imgElement.style.display = 'none';
+            console.log('🖼️ No hay imagen para esta ruta');
         }
     }
 
