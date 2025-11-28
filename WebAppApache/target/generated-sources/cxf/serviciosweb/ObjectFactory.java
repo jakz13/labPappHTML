@@ -44,6 +44,10 @@ public class ObjectFactory {
     private final static QName _CrearPasajeroResponse_QNAME = new QName("http://ServiciosWeb/", "crearPasajeroResponse");
     private final static QName _CrearYRegistrarReserva_QNAME = new QName("http://ServiciosWeb/", "crearYRegistrarReserva");
     private final static QName _CrearYRegistrarReservaResponse_QNAME = new QName("http://ServiciosWeb/", "crearYRegistrarReservaResponse");
+    private final static QName _FinalizarRutaVuelo_QNAME = new QName("http://ServiciosWeb/", "finalizarRutaVuelo");
+    private final static QName _FinalizarRutaVueloResponse_QNAME = new QName("http://ServiciosWeb/", "finalizarRutaVueloResponse");
+    private final static QName _FollowUsuario_QNAME = new QName("http://ServiciosWeb/", "followUsuario");
+    private final static QName _FollowUsuarioResponse_QNAME = new QName("http://ServiciosWeb/", "followUsuarioResponse");
     private final static QName _GetDtItemRutasPaquete_QNAME = new QName("http://ServiciosWeb/", "getDtItemRutasPaquete");
     private final static QName _GetDtItemRutasPaqueteResponse_QNAME = new QName("http://ServiciosWeb/", "getDtItemRutasPaqueteResponse");
     private final static QName _GetReservasCliente_QNAME = new QName("http://ServiciosWeb/", "getReservasCliente");
@@ -62,6 +66,8 @@ public class ObjectFactory {
     private final static QName _ListarPaquetesResponse_QNAME = new QName("http://ServiciosWeb/", "listarPaquetesResponse");
     private final static QName _ListarRutasConfirmadas_QNAME = new QName("http://ServiciosWeb/", "listarRutasConfirmadas");
     private final static QName _ListarRutasConfirmadasResponse_QNAME = new QName("http://ServiciosWeb/", "listarRutasConfirmadasResponse");
+    private final static QName _ListarRutasFinalizables_QNAME = new QName("http://ServiciosWeb/", "listarRutasFinalizables");
+    private final static QName _ListarRutasFinalizablesResponse_QNAME = new QName("http://ServiciosWeb/", "listarRutasFinalizablesResponse");
     private final static QName _ListarRutasPorAerolinea_QNAME = new QName("http://ServiciosWeb/", "listarRutasPorAerolinea");
     private final static QName _ListarRutasPorAerolineaResponse_QNAME = new QName("http://ServiciosWeb/", "listarRutasPorAerolineaResponse");
     private final static QName _ListarVuelosPorRuta_QNAME = new QName("http://ServiciosWeb/", "listarVuelosPorRuta");
@@ -72,10 +78,18 @@ public class ObjectFactory {
     private final static QName _ModificarDatosClienteCompletoResponse_QNAME = new QName("http://ServiciosWeb/", "modificarDatosClienteCompletoResponse");
     private final static QName _ObtenerAerolinea_QNAME = new QName("http://ServiciosWeb/", "obtenerAerolinea");
     private final static QName _ObtenerAerolineaResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerAerolineaResponse");
+    private final static QName _ObtenerAsientosDisponiblesVuelo_QNAME = new QName("http://ServiciosWeb/", "obtenerAsientosDisponiblesVuelo");
+    private final static QName _ObtenerAsientosDisponiblesVueloResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerAsientosDisponiblesVueloResponse");
+    private final static QName _ObtenerCantidadSeguidores_QNAME = new QName("http://ServiciosWeb/", "obtenerCantidadSeguidores");
+    private final static QName _ObtenerCantidadSeguidoresResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerCantidadSeguidoresResponse");
+    private final static QName _ObtenerCantidadSeguidos_QNAME = new QName("http://ServiciosWeb/", "obtenerCantidadSeguidos");
+    private final static QName _ObtenerCantidadSeguidosResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerCantidadSeguidosResponse");
     private final static QName _ObtenerCliente_QNAME = new QName("http://ServiciosWeb/", "obtenerCliente");
     private final static QName _ObtenerClienteResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerClienteResponse");
     private final static QName _ObtenerDtPaquete_QNAME = new QName("http://ServiciosWeb/", "obtenerDtPaquete");
     private final static QName _ObtenerDtPaqueteResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerDtPaqueteResponse");
+    private final static QName _ObtenerHoraRutaPorReserva_QNAME = new QName("http://ServiciosWeb/", "obtenerHoraRutaPorReserva");
+    private final static QName _ObtenerHoraRutaPorReservaResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerHoraRutaPorReservaResponse");
     private final static QName _ObtenerReservasConCheckin_QNAME = new QName("http://ServiciosWeb/", "obtenerReservasConCheckin");
     private final static QName _ObtenerReservasConCheckinResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerReservasConCheckinResponse");
     private final static QName _ObtenerTopRutasMasVisitadas_QNAME = new QName("http://ServiciosWeb/", "obtenerTopRutasMasVisitadas");
@@ -84,12 +98,18 @@ public class ObjectFactory {
     private final static QName _ObtenerVueloResponse_QNAME = new QName("http://ServiciosWeb/", "obtenerVueloResponse");
     private final static QName _Ping_QNAME = new QName("http://ServiciosWeb/", "ping");
     private final static QName _PingResponse_QNAME = new QName("http://ServiciosWeb/", "pingResponse");
+    private final static QName _PuedeFinalizarRuta_QNAME = new QName("http://ServiciosWeb/", "puedeFinalizarRuta");
+    private final static QName _PuedeFinalizarRutaResponse_QNAME = new QName("http://ServiciosWeb/", "puedeFinalizarRutaResponse");
     private final static QName _RealizarCheckinReserva_QNAME = new QName("http://ServiciosWeb/", "realizarCheckinReserva");
     private final static QName _RealizarCheckinReservaResponse_QNAME = new QName("http://ServiciosWeb/", "realizarCheckinReservaResponse");
+    private final static QName _UnfollowUsuario_QNAME = new QName("http://ServiciosWeb/", "unfollowUsuario");
+    private final static QName _UnfollowUsuarioResponse_QNAME = new QName("http://ServiciosWeb/", "unfollowUsuarioResponse");
     private final static QName _VerInfoVueloDt_QNAME = new QName("http://ServiciosWeb/", "verInfoVueloDt");
     private final static QName _VerInfoVueloDtResponse_QNAME = new QName("http://ServiciosWeb/", "verInfoVueloDtResponse");
     private final static QName _VerificarLogin_QNAME = new QName("http://ServiciosWeb/", "verificarLogin");
     private final static QName _VerificarLoginResponse_QNAME = new QName("http://ServiciosWeb/", "verificarLoginResponse");
+    private final static QName _VerificarSeguimiento_QNAME = new QName("http://ServiciosWeb/", "verificarSeguimiento");
+    private final static QName _VerificarSeguimientoResponse_QNAME = new QName("http://ServiciosWeb/", "verificarSeguimientoResponse");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: serviciosweb
@@ -259,6 +279,38 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link FinalizarRutaVuelo }
+     * 
+     */
+    public FinalizarRutaVuelo createFinalizarRutaVuelo() {
+        return new FinalizarRutaVuelo();
+    }
+
+    /**
+     * Create an instance of {@link FinalizarRutaVueloResponse }
+     * 
+     */
+    public FinalizarRutaVueloResponse createFinalizarRutaVueloResponse() {
+        return new FinalizarRutaVueloResponse();
+    }
+
+    /**
+     * Create an instance of {@link FollowUsuario }
+     * 
+     */
+    public FollowUsuario createFollowUsuario() {
+        return new FollowUsuario();
+    }
+
+    /**
+     * Create an instance of {@link FollowUsuarioResponse }
+     * 
+     */
+    public FollowUsuarioResponse createFollowUsuarioResponse() {
+        return new FollowUsuarioResponse();
+    }
+
+    /**
      * Create an instance of {@link GetDtItemRutasPaquete }
      * 
      */
@@ -403,6 +455,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ListarRutasFinalizables }
+     * 
+     */
+    public ListarRutasFinalizables createListarRutasFinalizables() {
+        return new ListarRutasFinalizables();
+    }
+
+    /**
+     * Create an instance of {@link ListarRutasFinalizablesResponse }
+     * 
+     */
+    public ListarRutasFinalizablesResponse createListarRutasFinalizablesResponse() {
+        return new ListarRutasFinalizablesResponse();
+    }
+
+    /**
      * Create an instance of {@link ListarRutasPorAerolinea }
      * 
      */
@@ -483,6 +551,54 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ObtenerAsientosDisponiblesVuelo }
+     * 
+     */
+    public ObtenerAsientosDisponiblesVuelo createObtenerAsientosDisponiblesVuelo() {
+        return new ObtenerAsientosDisponiblesVuelo();
+    }
+
+    /**
+     * Create an instance of {@link ObtenerAsientosDisponiblesVueloResponse }
+     * 
+     */
+    public ObtenerAsientosDisponiblesVueloResponse createObtenerAsientosDisponiblesVueloResponse() {
+        return new ObtenerAsientosDisponiblesVueloResponse();
+    }
+
+    /**
+     * Create an instance of {@link ObtenerCantidadSeguidores }
+     * 
+     */
+    public ObtenerCantidadSeguidores createObtenerCantidadSeguidores() {
+        return new ObtenerCantidadSeguidores();
+    }
+
+    /**
+     * Create an instance of {@link ObtenerCantidadSeguidoresResponse }
+     * 
+     */
+    public ObtenerCantidadSeguidoresResponse createObtenerCantidadSeguidoresResponse() {
+        return new ObtenerCantidadSeguidoresResponse();
+    }
+
+    /**
+     * Create an instance of {@link ObtenerCantidadSeguidos }
+     * 
+     */
+    public ObtenerCantidadSeguidos createObtenerCantidadSeguidos() {
+        return new ObtenerCantidadSeguidos();
+    }
+
+    /**
+     * Create an instance of {@link ObtenerCantidadSeguidosResponse }
+     * 
+     */
+    public ObtenerCantidadSeguidosResponse createObtenerCantidadSeguidosResponse() {
+        return new ObtenerCantidadSeguidosResponse();
+    }
+
+    /**
      * Create an instance of {@link ObtenerCliente }
      * 
      */
@@ -512,6 +628,22 @@ public class ObjectFactory {
      */
     public ObtenerDtPaqueteResponse createObtenerDtPaqueteResponse() {
         return new ObtenerDtPaqueteResponse();
+    }
+
+    /**
+     * Create an instance of {@link ObtenerHoraRutaPorReserva }
+     * 
+     */
+    public ObtenerHoraRutaPorReserva createObtenerHoraRutaPorReserva() {
+        return new ObtenerHoraRutaPorReserva();
+    }
+
+    /**
+     * Create an instance of {@link ObtenerHoraRutaPorReservaResponse }
+     * 
+     */
+    public ObtenerHoraRutaPorReservaResponse createObtenerHoraRutaPorReservaResponse() {
+        return new ObtenerHoraRutaPorReservaResponse();
     }
 
     /**
@@ -579,6 +711,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link PuedeFinalizarRuta }
+     * 
+     */
+    public PuedeFinalizarRuta createPuedeFinalizarRuta() {
+        return new PuedeFinalizarRuta();
+    }
+
+    /**
+     * Create an instance of {@link PuedeFinalizarRutaResponse }
+     * 
+     */
+    public PuedeFinalizarRutaResponse createPuedeFinalizarRutaResponse() {
+        return new PuedeFinalizarRutaResponse();
+    }
+
+    /**
      * Create an instance of {@link RealizarCheckinReserva }
      * 
      */
@@ -592,6 +740,22 @@ public class ObjectFactory {
      */
     public RealizarCheckinReservaResponse createRealizarCheckinReservaResponse() {
         return new RealizarCheckinReservaResponse();
+    }
+
+    /**
+     * Create an instance of {@link UnfollowUsuario }
+     * 
+     */
+    public UnfollowUsuario createUnfollowUsuario() {
+        return new UnfollowUsuario();
+    }
+
+    /**
+     * Create an instance of {@link UnfollowUsuarioResponse }
+     * 
+     */
+    public UnfollowUsuarioResponse createUnfollowUsuarioResponse() {
+        return new UnfollowUsuarioResponse();
     }
 
     /**
@@ -624,6 +788,22 @@ public class ObjectFactory {
      */
     public VerificarLoginResponse createVerificarLoginResponse() {
         return new VerificarLoginResponse();
+    }
+
+    /**
+     * Create an instance of {@link VerificarSeguimiento }
+     * 
+     */
+    public VerificarSeguimiento createVerificarSeguimiento() {
+        return new VerificarSeguimiento();
+    }
+
+    /**
+     * Create an instance of {@link VerificarSeguimientoResponse }
+     * 
+     */
+    public VerificarSeguimientoResponse createVerificarSeguimientoResponse() {
+        return new VerificarSeguimientoResponse();
     }
 
     /**
@@ -991,6 +1171,58 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FinalizarRutaVuelo }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link FinalizarRutaVuelo }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "finalizarRutaVuelo")
+    public JAXBElement<FinalizarRutaVuelo> createFinalizarRutaVuelo(FinalizarRutaVuelo value) {
+        return new JAXBElement<FinalizarRutaVuelo>(_FinalizarRutaVuelo_QNAME, FinalizarRutaVuelo.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FinalizarRutaVueloResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link FinalizarRutaVueloResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "finalizarRutaVueloResponse")
+    public JAXBElement<FinalizarRutaVueloResponse> createFinalizarRutaVueloResponse(FinalizarRutaVueloResponse value) {
+        return new JAXBElement<FinalizarRutaVueloResponse>(_FinalizarRutaVueloResponse_QNAME, FinalizarRutaVueloResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FollowUsuario }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link FollowUsuario }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "followUsuario")
+    public JAXBElement<FollowUsuario> createFollowUsuario(FollowUsuario value) {
+        return new JAXBElement<FollowUsuario>(_FollowUsuario_QNAME, FollowUsuario.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link FollowUsuarioResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link FollowUsuarioResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "followUsuarioResponse")
+    public JAXBElement<FollowUsuarioResponse> createFollowUsuarioResponse(FollowUsuarioResponse value) {
+        return new JAXBElement<FollowUsuarioResponse>(_FollowUsuarioResponse_QNAME, FollowUsuarioResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link GetDtItemRutasPaquete }{@code >}
      * 
      * @param value
@@ -1225,6 +1457,32 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ListarRutasFinalizables }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ListarRutasFinalizables }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "listarRutasFinalizables")
+    public JAXBElement<ListarRutasFinalizables> createListarRutasFinalizables(ListarRutasFinalizables value) {
+        return new JAXBElement<ListarRutasFinalizables>(_ListarRutasFinalizables_QNAME, ListarRutasFinalizables.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ListarRutasFinalizablesResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ListarRutasFinalizablesResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "listarRutasFinalizablesResponse")
+    public JAXBElement<ListarRutasFinalizablesResponse> createListarRutasFinalizablesResponse(ListarRutasFinalizablesResponse value) {
+        return new JAXBElement<ListarRutasFinalizablesResponse>(_ListarRutasFinalizablesResponse_QNAME, ListarRutasFinalizablesResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ListarRutasPorAerolinea }{@code >}
      * 
      * @param value
@@ -1355,6 +1613,84 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerAsientosDisponiblesVuelo }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ObtenerAsientosDisponiblesVuelo }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerAsientosDisponiblesVuelo")
+    public JAXBElement<ObtenerAsientosDisponiblesVuelo> createObtenerAsientosDisponiblesVuelo(ObtenerAsientosDisponiblesVuelo value) {
+        return new JAXBElement<ObtenerAsientosDisponiblesVuelo>(_ObtenerAsientosDisponiblesVuelo_QNAME, ObtenerAsientosDisponiblesVuelo.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerAsientosDisponiblesVueloResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ObtenerAsientosDisponiblesVueloResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerAsientosDisponiblesVueloResponse")
+    public JAXBElement<ObtenerAsientosDisponiblesVueloResponse> createObtenerAsientosDisponiblesVueloResponse(ObtenerAsientosDisponiblesVueloResponse value) {
+        return new JAXBElement<ObtenerAsientosDisponiblesVueloResponse>(_ObtenerAsientosDisponiblesVueloResponse_QNAME, ObtenerAsientosDisponiblesVueloResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerCantidadSeguidores }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ObtenerCantidadSeguidores }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerCantidadSeguidores")
+    public JAXBElement<ObtenerCantidadSeguidores> createObtenerCantidadSeguidores(ObtenerCantidadSeguidores value) {
+        return new JAXBElement<ObtenerCantidadSeguidores>(_ObtenerCantidadSeguidores_QNAME, ObtenerCantidadSeguidores.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerCantidadSeguidoresResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ObtenerCantidadSeguidoresResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerCantidadSeguidoresResponse")
+    public JAXBElement<ObtenerCantidadSeguidoresResponse> createObtenerCantidadSeguidoresResponse(ObtenerCantidadSeguidoresResponse value) {
+        return new JAXBElement<ObtenerCantidadSeguidoresResponse>(_ObtenerCantidadSeguidoresResponse_QNAME, ObtenerCantidadSeguidoresResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerCantidadSeguidos }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ObtenerCantidadSeguidos }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerCantidadSeguidos")
+    public JAXBElement<ObtenerCantidadSeguidos> createObtenerCantidadSeguidos(ObtenerCantidadSeguidos value) {
+        return new JAXBElement<ObtenerCantidadSeguidos>(_ObtenerCantidadSeguidos_QNAME, ObtenerCantidadSeguidos.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerCantidadSeguidosResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ObtenerCantidadSeguidosResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerCantidadSeguidosResponse")
+    public JAXBElement<ObtenerCantidadSeguidosResponse> createObtenerCantidadSeguidosResponse(ObtenerCantidadSeguidosResponse value) {
+        return new JAXBElement<ObtenerCantidadSeguidosResponse>(_ObtenerCantidadSeguidosResponse_QNAME, ObtenerCantidadSeguidosResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerCliente }{@code >}
      * 
      * @param value
@@ -1404,6 +1740,32 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerDtPaqueteResponse")
     public JAXBElement<ObtenerDtPaqueteResponse> createObtenerDtPaqueteResponse(ObtenerDtPaqueteResponse value) {
         return new JAXBElement<ObtenerDtPaqueteResponse>(_ObtenerDtPaqueteResponse_QNAME, ObtenerDtPaqueteResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerHoraRutaPorReserva }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ObtenerHoraRutaPorReserva }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerHoraRutaPorReserva")
+    public JAXBElement<ObtenerHoraRutaPorReserva> createObtenerHoraRutaPorReserva(ObtenerHoraRutaPorReserva value) {
+        return new JAXBElement<ObtenerHoraRutaPorReserva>(_ObtenerHoraRutaPorReserva_QNAME, ObtenerHoraRutaPorReserva.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ObtenerHoraRutaPorReservaResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link ObtenerHoraRutaPorReservaResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "obtenerHoraRutaPorReservaResponse")
+    public JAXBElement<ObtenerHoraRutaPorReservaResponse> createObtenerHoraRutaPorReservaResponse(ObtenerHoraRutaPorReservaResponse value) {
+        return new JAXBElement<ObtenerHoraRutaPorReservaResponse>(_ObtenerHoraRutaPorReservaResponse_QNAME, ObtenerHoraRutaPorReservaResponse.class, null, value);
     }
 
     /**
@@ -1511,6 +1873,32 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link PuedeFinalizarRuta }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link PuedeFinalizarRuta }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "puedeFinalizarRuta")
+    public JAXBElement<PuedeFinalizarRuta> createPuedeFinalizarRuta(PuedeFinalizarRuta value) {
+        return new JAXBElement<PuedeFinalizarRuta>(_PuedeFinalizarRuta_QNAME, PuedeFinalizarRuta.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link PuedeFinalizarRutaResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link PuedeFinalizarRutaResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "puedeFinalizarRutaResponse")
+    public JAXBElement<PuedeFinalizarRutaResponse> createPuedeFinalizarRutaResponse(PuedeFinalizarRutaResponse value) {
+        return new JAXBElement<PuedeFinalizarRutaResponse>(_PuedeFinalizarRutaResponse_QNAME, PuedeFinalizarRutaResponse.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link RealizarCheckinReserva }{@code >}
      * 
      * @param value
@@ -1534,6 +1922,32 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "realizarCheckinReservaResponse")
     public JAXBElement<RealizarCheckinReservaResponse> createRealizarCheckinReservaResponse(RealizarCheckinReservaResponse value) {
         return new JAXBElement<RealizarCheckinReservaResponse>(_RealizarCheckinReservaResponse_QNAME, RealizarCheckinReservaResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link UnfollowUsuario }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link UnfollowUsuario }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "unfollowUsuario")
+    public JAXBElement<UnfollowUsuario> createUnfollowUsuario(UnfollowUsuario value) {
+        return new JAXBElement<UnfollowUsuario>(_UnfollowUsuario_QNAME, UnfollowUsuario.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link UnfollowUsuarioResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link UnfollowUsuarioResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "unfollowUsuarioResponse")
+    public JAXBElement<UnfollowUsuarioResponse> createUnfollowUsuarioResponse(UnfollowUsuarioResponse value) {
+        return new JAXBElement<UnfollowUsuarioResponse>(_UnfollowUsuarioResponse_QNAME, UnfollowUsuarioResponse.class, null, value);
     }
 
     /**
@@ -1586,6 +2000,32 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "verificarLoginResponse")
     public JAXBElement<VerificarLoginResponse> createVerificarLoginResponse(VerificarLoginResponse value) {
         return new JAXBElement<VerificarLoginResponse>(_VerificarLoginResponse_QNAME, VerificarLoginResponse.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link VerificarSeguimiento }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link VerificarSeguimiento }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "verificarSeguimiento")
+    public JAXBElement<VerificarSeguimiento> createVerificarSeguimiento(VerificarSeguimiento value) {
+        return new JAXBElement<VerificarSeguimiento>(_VerificarSeguimiento_QNAME, VerificarSeguimiento.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link VerificarSeguimientoResponse }{@code >}
+     * 
+     * @param value
+     *     Java instance representing xml element's value.
+     * @return
+     *     the new instance of {@link JAXBElement }{@code <}{@link VerificarSeguimientoResponse }{@code >}
+     */
+    @XmlElementDecl(namespace = "http://ServiciosWeb/", name = "verificarSeguimientoResponse")
+    public JAXBElement<VerificarSeguimientoResponse> createVerificarSeguimientoResponse(VerificarSeguimientoResponse value) {
+        return new JAXBElement<VerificarSeguimientoResponse>(_VerificarSeguimientoResponse_QNAME, VerificarSeguimientoResponse.class, null, value);
     }
 
 }

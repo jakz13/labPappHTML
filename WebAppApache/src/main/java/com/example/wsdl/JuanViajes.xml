@@ -1,1513 +1,1323 @@
-<?xml version='1.0' encoding='UTF-8'?><wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ServiciosWeb/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="WebServicesService" targetNamespace="http://ServiciosWeb/">
-  <wsdl:types>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ServiciosWeb/" elementFormDefault="unqualified" targetNamespace="http://ServiciosWeb/" version="1.0">
-
-  <xs:element name="altaAerolinea" type="tns:altaAerolinea"/>
-
-  <xs:element name="altaAerolineaResponse" type="tns:altaAerolineaResponse"/>
-
-  <xs:element name="altaCliente" type="tns:altaCliente"/>
-
-  <xs:element name="altaClienteResponse" type="tns:altaClienteResponse"/>
-
-  <xs:element name="altaRutaVuelo" type="tns:altaRutaVuelo"/>
-
-  <xs:element name="altaRutaVueloResponse" type="tns:altaRutaVueloResponse"/>
-
-  <xs:element name="altaVuelo" type="tns:altaVuelo"/>
-
-  <xs:element name="altaVueloResponse" type="tns:altaVueloResponse"/>
-
-  <xs:element name="calcularCostoReserva" type="tns:calcularCostoReserva"/>
-
-  <xs:element name="calcularCostoReservaResponse" type="tns:calcularCostoReservaResponse"/>
-
-  <xs:element name="cargarDesdeBd" type="tns:cargarDesdeBd"/>
-
-  <xs:element name="cargarDesdeBdResponse" type="tns:cargarDesdeBdResponse"/>
-
-  <xs:element name="compraPaquete" type="tns:compraPaquete"/>
-
-  <xs:element name="compraPaqueteResponse" type="tns:compraPaqueteResponse"/>
-
-  <xs:element name="consultarCheckinReserva" type="tns:consultarCheckinReserva"/>
-
-  <xs:element name="consultarCheckinReservaResponse" type="tns:consultarCheckinReservaResponse"/>
-
-  <xs:element name="crearPasajero" type="tns:crearPasajero"/>
-
-  <xs:element name="crearPasajeroResponse" type="tns:crearPasajeroResponse"/>
-
-  <xs:element name="crearYRegistrarReserva" type="tns:crearYRegistrarReserva"/>
-
-  <xs:element name="crearYRegistrarReservaResponse" type="tns:crearYRegistrarReservaResponse"/>
-
-  <xs:element name="getDtItemRutasPaquete" type="tns:getDtItemRutasPaquete"/>
-
-  <xs:element name="getDtItemRutasPaqueteResponse" type="tns:getDtItemRutasPaqueteResponse"/>
-
-  <xs:element name="getReservasCliente" type="tns:getReservasCliente"/>
-
-  <xs:element name="getReservasClienteResponse" type="tns:getReservasClienteResponse"/>
-
-  <xs:element name="incrementarVisitasRuta" type="tns:incrementarVisitasRuta"/>
-
-  <xs:element name="incrementarVisitasRutaResponse" type="tns:incrementarVisitasRutaResponse"/>
-
-  <xs:element name="listarAerolineas" type="tns:listarAerolineas"/>
-
-  <xs:element name="listarAerolineasResponse" type="tns:listarAerolineasResponse"/>
-
-  <xs:element name="listarCategorias" type="tns:listarCategorias"/>
-
-  <xs:element name="listarCategoriasResponse" type="tns:listarCategoriasResponse"/>
-
-  <xs:element name="listarCiudades" type="tns:listarCiudades"/>
-
-  <xs:element name="listarCiudadesResponse" type="tns:listarCiudadesResponse"/>
-
-  <xs:element name="listarClientes" type="tns:listarClientes"/>
-
-  <xs:element name="listarClientesResponse" type="tns:listarClientesResponse"/>
-
-  <xs:element name="listarPaquetes" type="tns:listarPaquetes"/>
-
-  <xs:element name="listarPaquetesResponse" type="tns:listarPaquetesResponse"/>
-
-  <xs:element name="listarRutasConfirmadas" type="tns:listarRutasConfirmadas"/>
-
-  <xs:element name="listarRutasConfirmadasResponse" type="tns:listarRutasConfirmadasResponse"/>
-
-  <xs:element name="listarRutasPorAerolinea" type="tns:listarRutasPorAerolinea"/>
-
-  <xs:element name="listarRutasPorAerolineaResponse" type="tns:listarRutasPorAerolineaResponse"/>
-
-  <xs:element name="listarVuelosPorRuta" type="tns:listarVuelosPorRuta"/>
-
-  <xs:element name="listarVuelosPorRutaResponse" type="tns:listarVuelosPorRutaResponse"/>
-
-  <xs:element name="modificarDatosAerolineaCompleto" type="tns:modificarDatosAerolineaCompleto"/>
-
-  <xs:element name="modificarDatosAerolineaCompletoResponse" type="tns:modificarDatosAerolineaCompletoResponse"/>
-
-  <xs:element name="modificarDatosClienteCompleto" type="tns:modificarDatosClienteCompleto"/>
-
-  <xs:element name="modificarDatosClienteCompletoResponse" type="tns:modificarDatosClienteCompletoResponse"/>
-
-  <xs:element name="obtenerAerolinea" type="tns:obtenerAerolinea"/>
-
-  <xs:element name="obtenerAerolineaResponse" type="tns:obtenerAerolineaResponse"/>
-
-  <xs:element name="obtenerCliente" type="tns:obtenerCliente"/>
-
-  <xs:element name="obtenerClienteResponse" type="tns:obtenerClienteResponse"/>
-
-  <xs:element name="obtenerDtPaquete" type="tns:obtenerDtPaquete"/>
-
-  <xs:element name="obtenerDtPaqueteResponse" type="tns:obtenerDtPaqueteResponse"/>
-
-  <xs:element name="obtenerReservasConCheckin" type="tns:obtenerReservasConCheckin"/>
-
-  <xs:element name="obtenerReservasConCheckinResponse" type="tns:obtenerReservasConCheckinResponse"/>
-
-  <xs:element name="obtenerTopRutasMasVisitadas" type="tns:obtenerTopRutasMasVisitadas"/>
-
-  <xs:element name="obtenerTopRutasMasVisitadasResponse" type="tns:obtenerTopRutasMasVisitadasResponse"/>
-
-  <xs:element name="obtenerVuelo" type="tns:obtenerVuelo"/>
-
-  <xs:element name="obtenerVueloResponse" type="tns:obtenerVueloResponse"/>
-
-  <xs:element name="ping" type="tns:ping"/>
-
-  <xs:element name="pingResponse" type="tns:pingResponse"/>
-
-  <xs:element name="realizarCheckinReserva" type="tns:realizarCheckinReserva"/>
-
-  <xs:element name="realizarCheckinReservaResponse" type="tns:realizarCheckinReservaResponse"/>
-
-  <xs:element name="verInfoVueloDt" type="tns:verInfoVueloDt"/>
-
-  <xs:element name="verInfoVueloDtResponse" type="tns:verInfoVueloDtResponse"/>
-
-  <xs:element name="verificarLogin" type="tns:verificarLogin"/>
-
-  <xs:element name="verificarLoginResponse" type="tns:verificarLoginResponse"/>
-
-  <xs:complexType name="listarCiudades">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="listarCiudadesResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="ciudades" type="tns:dtCiudad"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtCiudad">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="aeropuerto" type="xs:string"/>
-      <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
-      <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="pais" type="xs:string"/>
-      <xs:element minOccurs="0" name="sitioWeb" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType final="extension restriction" name="localDate">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="cargarDesdeBd">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="cargarDesdeBdResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerDtPaquete">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="paqueteId" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerDtPaqueteResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="paquete" type="tns:dtPaquete"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtPaquete">
-    <xs:sequence>
-      <xs:element name="costo" type="xs:double"/>
-      <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
-      <xs:element name="descuentoPorc" type="xs:int"/>
-      <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="items" nillable="true" type="tns:dtItemPaquete"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element name="periodoValidezDias" type="xs:int"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtItemPaquete">
-    <xs:sequence>
-      <xs:element name="cantAsientos" type="xs:int"/>
-      <xs:element minOccurs="0" name="rutaVuelo" type="tns:dtRutaVuelo"/>
-      <xs:element minOccurs="0" name="tipoAsiento" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtRutaVuelo">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="aerolinea" type="xs:string"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="categorias" nillable="true" type="xs:string"/>
-      <xs:element minOccurs="0" name="ciudadDestino" type="xs:string"/>
-      <xs:element minOccurs="0" name="ciudadOrigen" type="xs:string"/>
-      <xs:element name="contadorVisitas" type="xs:int"/>
-      <xs:element name="costoEjecutivo" type="xs:double"/>
-      <xs:element name="costoEquipajeExtra" type="xs:double"/>
-      <xs:element name="costoTurista" type="xs:double"/>
-      <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
-      <xs:element minOccurs="0" name="descripcionCorta" type="xs:string"/>
-      <xs:element minOccurs="0" name="estado" type="tns:estadoRuta"/>
-      <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
-      <xs:element minOccurs="0" name="hora" type="xs:string"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="videoUrl" type="xs:string"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="vuelos" nillable="true" type="tns:dtVuelo"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtVuelo">
-    <xs:sequence>
-      <xs:element name="asientosEjecutivo" type="xs:int"/>
-      <xs:element name="asientosTurista" type="xs:int"/>
-      <xs:element name="duracion" type="xs:int"/>
-      <xs:element minOccurs="0" name="fecha" type="tns:localDate"/>
-      <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombreAerolinea" type="xs:string"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="reservas" nillable="true" type="tns:dtReserva"/>
-      <xs:element minOccurs="0" name="rutaVuelo" type="tns:dtRutaVuelo"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtReserva">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="asientosAsignados" nillable="true" type="xs:string"/>
-      <xs:element name="cantidadPasajes" type="xs:int"/>
-      <xs:element name="costo" type="xs:double"/>
-      <xs:element minOccurs="0" name="estado" type="tns:estadoReserva"/>
-      <xs:element minOccurs="0" name="fecha" type="tns:localDate"/>
-      <xs:element minOccurs="0" name="fechaCheckin" type="tns:localDate"/>
-      <xs:element minOccurs="0" name="horaInicioEmbarque" type="tns:localTime"/>
-      <xs:element minOccurs="0" name="id" type="xs:long"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="pasajeros" nillable="true" type="tns:dtPasajero"/>
-      <xs:element minOccurs="0" name="tipoAsiento" type="tns:tipoAsiento"/>
-      <xs:element name="unidadesEquipajeExtra" type="xs:int"/>
-      <xs:element minOccurs="0" name="vuelo" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType final="extension restriction" name="localTime">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="dtPasajero">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="apellido" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="listarRutasPorAerolinea">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombreAerolinea" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="listarRutasPorAerolineaResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="rutas" type="tns:dtRutaVuelo"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="listarCategorias">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="listarCategoriasResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="categorias" type="tns:dtCategoria"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtCategoria">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="ping">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="pingResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="respuesta" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerCliente">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerClienteResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="cliente" type="tns:dtCliente"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtCliente">
-    <xs:complexContent>
-      <xs:extension base="tns:dtUsuario">
-        <xs:sequence>
-          <xs:element minOccurs="0" name="apellido" type="xs:string"/>
-          <xs:element minOccurs="0" name="fechaNacimiento" type="tns:localDate"/>
-          <xs:element minOccurs="0" name="nacionalidad" type="xs:string"/>
-          <xs:element minOccurs="0" name="numeroDocumento" type="xs:string"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="paquetesComprados" nillable="true" type="tns:dtPaquete"/>
-          <xs:element maxOccurs="unbounded" minOccurs="0" name="reservas" nillable="true" type="tns:dtReserva"/>
-          <xs:element minOccurs="0" name="tipoDocumento" type="tns:tipoDoc"/>
-        </xs:sequence>
-      </xs:extension>
-    </xs:complexContent>
-  </xs:complexType>
-
-  <xs:complexType name="dtUsuario">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="email" type="xs:string"/>
-      <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-      <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="listarAerolineas">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="listarAerolineasResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="aerolineas" type="tns:dtAerolinea"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="dtAerolinea">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
-      <xs:element minOccurs="0" name="email" type="xs:string"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-      <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="rutas" nillable="true" type="tns:dtRutaVuelo"/>
-      <xs:element minOccurs="0" name="sitioWeb" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="getReservasCliente">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="clienteNickname" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="getReservasClienteResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="reservas" type="tns:dtReserva"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerVuelo">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerVueloResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="vuelo" type="tns:dtVuelo"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerTopRutasMasVisitadas">
-    <xs:sequence>
-      <xs:element name="limite" type="xs:int"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerTopRutasMasVisitadasResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="topRutas" type="tns:dtRutaVuelo"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="altaRutaVuelo">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
-      <xs:element minOccurs="0" name="descripcionCorta" type="xs:string"/>
-      <xs:element minOccurs="0" name="aerolineaNickname" type="xs:string"/>
-      <xs:element minOccurs="0" name="ciudadOrigen" type="xs:string"/>
-      <xs:element minOccurs="0" name="ciudadDestino" type="xs:string"/>
-      <xs:element minOccurs="0" name="hora" type="xs:string"/>
-      <xs:element minOccurs="0" name="fechaAlta" type="xs:string"/>
-      <xs:element name="costoTurista" type="xs:double"/>
-      <xs:element name="costoEjecutivo" type="xs:double"/>
-      <xs:element name="costoEquipajeExtra" type="xs:double"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="categorias" type="xs:string"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-      <xs:element minOccurs="0" name="videoUrl" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="altaRutaVueloResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="incrementarVisitasRuta">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="incrementarVisitasRutaResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerAerolinea">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerAerolineaResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="aerolinea" type="tns:dtAerolinea"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="altaVuelo">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombreAerolinea" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
-      <xs:element minOccurs="0" name="fecha" type="xs:string"/>
-      <xs:element name="duracion" type="xs:int"/>
-      <xs:element name="asientosTurista" type="xs:int"/>
-      <xs:element name="asientosEjecutivo" type="xs:int"/>
-      <xs:element minOccurs="0" name="fechaAlta" type="xs:string"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="altaVueloResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="consultarCheckinReserva">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="reservaId" type="xs:long"/>
-      <xs:element minOccurs="0" name="clienteNickname" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="consultarCheckinReservaResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="checkin" type="tns:dtReserva"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="crearYRegistrarReserva">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nicknameCliente" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
-      <xs:element minOccurs="0" name="fechaReserva" type="xs:string"/>
-      <xs:element name="costo" type="xs:double"/>
-      <xs:element minOccurs="0" name="tipoAsiento" type="xs:string"/>
-      <xs:element name="cantidadPasajes" type="xs:int"/>
-      <xs:element name="unidadesEquipajeExtra" type="xs:int"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="pasajerosNombres" type="xs:string"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="pasajerosApellidos" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="crearYRegistrarReservaResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="listarRutasConfirmadas">
-    <xs:sequence>
-      <xs:element name="limite" type="xs:int"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="listarRutasConfirmadasResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="rutasConfirmadas" type="tns:dtRutaVuelo"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="compraPaquete">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="paqueteId" type="xs:string"/>
-      <xs:element minOccurs="0" name="clienteId" type="xs:string"/>
-      <xs:element name="validezDias" type="xs:int"/>
-      <xs:element minOccurs="0" name="fechaCompra" type="xs:string"/>
-      <xs:element name="costo" type="xs:double"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="compraPaqueteResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="getDtItemRutasPaquete">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="paqueteId" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="getDtItemRutasPaqueteResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="items" type="tns:dtItemPaquete"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="listarVuelosPorRuta">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="listarVuelosPorRutaResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="vuelos" type="tns:dtVuelo"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="realizarCheckinReserva">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="reservaId" type="xs:long"/>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="asientosAsignados" type="xs:string"/>
-      <xs:element minOccurs="0" name="horaEmbarque" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="realizarCheckinReservaResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="listarClientes">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="listarClientesResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="clientes" type="tns:dtCliente"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="altaAerolinea">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
-      <xs:element minOccurs="0" name="email" type="xs:string"/>
-      <xs:element minOccurs="0" name="sitioWeb" type="xs:string"/>
-      <xs:element minOccurs="0" name="password" type="xs:string"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="altaAerolineaResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerReservasConCheckin">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="clienteNickname" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="obtenerReservasConCheckinResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="reservasConCheckin" type="tns:dtReserva"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="verInfoVueloDt">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="verInfoVueloDtResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="vuelo" type="tns:dtVuelo"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="verificarLogin">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="email" type="xs:string"/>
-      <xs:element minOccurs="0" name="password" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="verificarLoginResponse">
-    <xs:sequence>
-      <xs:element name="ok" type="xs:boolean"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="altaCliente">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="apellido" type="xs:string"/>
-      <xs:element minOccurs="0" name="correo" type="xs:string"/>
-      <xs:element minOccurs="0" name="fechaNacimiento" type="xs:string"/>
-      <xs:element minOccurs="0" name="nacionalidad" type="xs:string"/>
-      <xs:element minOccurs="0" name="tipoDoc" type="xs:string"/>
-      <xs:element minOccurs="0" name="numDoc" type="xs:string"/>
-      <xs:element minOccurs="0" name="password" type="xs:string"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="altaClienteResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="listarPaquetes">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="listarPaquetesResponse">
-    <xs:sequence>
-      <xs:element maxOccurs="unbounded" minOccurs="0" name="paquetes" type="tns:dtPaquete"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="calcularCostoReserva">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
-      <xs:element minOccurs="0" name="tipoAsiento" type="xs:string"/>
-      <xs:element name="cantidadPasajes" type="xs:int"/>
-      <xs:element name="unidadesEquipajeExtra" type="xs:int"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="calcularCostoReservaResponse">
-    <xs:sequence>
-      <xs:element name="costo" type="xs:double"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="crearPasajero">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="apellido" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="crearPasajeroResponse">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="pasajero" type="tns:dtPasajero"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="modificarDatosAerolineaCompleto">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
-      <xs:element minOccurs="0" name="sitioWeb" type="xs:string"/>
-      <xs:element minOccurs="0" name="password" type="xs:string"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="modificarDatosAerolineaCompletoResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:complexType name="modificarDatosClienteCompleto">
-    <xs:sequence>
-      <xs:element minOccurs="0" name="nickname" type="xs:string"/>
-      <xs:element minOccurs="0" name="nombre" type="xs:string"/>
-      <xs:element minOccurs="0" name="apellido" type="xs:string"/>
-      <xs:element minOccurs="0" name="nacionalidad" type="xs:string"/>
-      <xs:element minOccurs="0" name="fechaNacimiento" type="xs:string"/>
-      <xs:element minOccurs="0" name="tipoDoc" type="xs:string"/>
-      <xs:element minOccurs="0" name="numDoc" type="xs:string"/>
-      <xs:element minOccurs="0" name="password" type="xs:string"/>
-      <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
-    </xs:sequence>
-  </xs:complexType>
-
-  <xs:complexType name="modificarDatosClienteCompletoResponse">
-    <xs:sequence/>
-  </xs:complexType>
-
-  <xs:simpleType name="estadoRuta">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="INGRESADA"/>
-      <xs:enumeration value="CONFIRMADA"/>
-      <xs:enumeration value="RECHAZADA"/>
-      <xs:enumeration value="FINALIZADA"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="estadoReserva">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="PENDIENTE"/>
-      <xs:enumeration value="CHECKIN_REALIZADO"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="tipoAsiento">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="TURISTA"/>
-      <xs:enumeration value="EJECUTIVO"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-  <xs:simpleType name="tipoDoc">
-    <xs:restriction base="xs:string">
-      <xs:enumeration value="CEDULAIDENTIDAD"/>
-      <xs:enumeration value="PASAPORTE"/>
-    </xs:restriction>
-  </xs:simpleType>
-
-</xs:schema>
-  </wsdl:types>
-  <wsdl:message name="listarCiudades">
-    <wsdl:part element="tns:listarCiudades" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="modificarDatosClienteCompletoResponse">
-    <wsdl:part element="tns:modificarDatosClienteCompletoResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="realizarCheckinReservaResponse">
-    <wsdl:part element="tns:realizarCheckinReservaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="calcularCostoReservaResponse">
-    <wsdl:part element="tns:calcularCostoReservaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerDtPaquete">
-    <wsdl:part element="tns:obtenerDtPaquete" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerReservasConCheckinResponse">
-    <wsdl:part element="tns:obtenerReservasConCheckinResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarRutasPorAerolinea">
-    <wsdl:part element="tns:listarRutasPorAerolinea" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="ping">
-    <wsdl:part element="tns:ping" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarAerolineas">
-    <wsdl:part element="tns:listarAerolineas" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getReservasCliente">
-    <wsdl:part element="tns:getReservasCliente" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerVuelo">
-    <wsdl:part element="tns:obtenerVuelo" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarCategoriasResponse">
-    <wsdl:part element="tns:listarCategoriasResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarRutasConfirmadasResponse">
-    <wsdl:part element="tns:listarRutasConfirmadasResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="crearYRegistrarReservaResponse">
-    <wsdl:part element="tns:crearYRegistrarReservaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerClienteResponse">
-    <wsdl:part element="tns:obtenerClienteResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarAerolineasResponse">
-    <wsdl:part element="tns:listarAerolineasResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="compraPaqueteResponse">
-    <wsdl:part element="tns:compraPaqueteResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarVuelosPorRuta">
-    <wsdl:part element="tns:listarVuelosPorRuta" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="realizarCheckinReserva">
-    <wsdl:part element="tns:realizarCheckinReserva" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="altaAerolinea">
-    <wsdl:part element="tns:altaAerolinea" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarVuelosPorRutaResponse">
-    <wsdl:part element="tns:listarVuelosPorRutaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="pingResponse">
-    <wsdl:part element="tns:pingResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="altaCliente">
-    <wsdl:part element="tns:altaCliente" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarPaquetes">
-    <wsdl:part element="tns:listarPaquetes" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerTopRutasMasVisitadasResponse">
-    <wsdl:part element="tns:obtenerTopRutasMasVisitadasResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerAerolineaResponse">
-    <wsdl:part element="tns:obtenerAerolineaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarCiudadesResponse">
-    <wsdl:part element="tns:listarCiudadesResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="altaVueloResponse">
-    <wsdl:part element="tns:altaVueloResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="calcularCostoReserva">
-    <wsdl:part element="tns:calcularCostoReserva" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="crearPasajero">
-    <wsdl:part element="tns:crearPasajero" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getDtItemRutasPaqueteResponse">
-    <wsdl:part element="tns:getDtItemRutasPaqueteResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="modificarDatosAerolineaCompleto">
-    <wsdl:part element="tns:modificarDatosAerolineaCompleto" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarRutasPorAerolineaResponse">
-    <wsdl:part element="tns:listarRutasPorAerolineaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="cargarDesdeBd">
-    <wsdl:part element="tns:cargarDesdeBd" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="altaRutaVueloResponse">
-    <wsdl:part element="tns:altaRutaVueloResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="incrementarVisitasRutaResponse">
-    <wsdl:part element="tns:incrementarVisitasRutaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarCategorias">
-    <wsdl:part element="tns:listarCategorias" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerCliente">
-    <wsdl:part element="tns:obtenerCliente" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="verInfoVueloDtResponse">
-    <wsdl:part element="tns:verInfoVueloDtResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerTopRutasMasVisitadas">
-    <wsdl:part element="tns:obtenerTopRutasMasVisitadas" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="altaRutaVuelo">
-    <wsdl:part element="tns:altaRutaVuelo" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="incrementarVisitasRuta">
-    <wsdl:part element="tns:incrementarVisitasRuta" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="cargarDesdeBdResponse">
-    <wsdl:part element="tns:cargarDesdeBdResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerAerolinea">
-    <wsdl:part element="tns:obtenerAerolinea" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="crearPasajeroResponse">
-    <wsdl:part element="tns:crearPasajeroResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="altaVuelo">
-    <wsdl:part element="tns:altaVuelo" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarClientesResponse">
-    <wsdl:part element="tns:listarClientesResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="verificarLoginResponse">
-    <wsdl:part element="tns:verificarLoginResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="consultarCheckinReserva">
-    <wsdl:part element="tns:consultarCheckinReserva" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="crearYRegistrarReserva">
-    <wsdl:part element="tns:crearYRegistrarReserva" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="altaClienteResponse">
-    <wsdl:part element="tns:altaClienteResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="modificarDatosAerolineaCompletoResponse">
-    <wsdl:part element="tns:modificarDatosAerolineaCompletoResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarRutasConfirmadas">
-    <wsdl:part element="tns:listarRutasConfirmadas" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="compraPaquete">
-    <wsdl:part element="tns:compraPaquete" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getDtItemRutasPaquete">
-    <wsdl:part element="tns:getDtItemRutasPaquete" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarClientes">
-    <wsdl:part element="tns:listarClientes" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="consultarCheckinReservaResponse">
-    <wsdl:part element="tns:consultarCheckinReservaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerVueloResponse">
-    <wsdl:part element="tns:obtenerVueloResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerReservasConCheckin">
-    <wsdl:part element="tns:obtenerReservasConCheckin" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="verInfoVueloDt">
-    <wsdl:part element="tns:verInfoVueloDt" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="verificarLogin">
-    <wsdl:part element="tns:verificarLogin" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="listarPaquetesResponse">
-    <wsdl:part element="tns:listarPaquetesResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="obtenerDtPaqueteResponse">
-    <wsdl:part element="tns:obtenerDtPaqueteResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="altaAerolineaResponse">
-    <wsdl:part element="tns:altaAerolineaResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="getReservasClienteResponse">
-    <wsdl:part element="tns:getReservasClienteResponse" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:message name="modificarDatosClienteCompleto">
-    <wsdl:part element="tns:modificarDatosClienteCompleto" name="parameters">
-    </wsdl:part>
-  </wsdl:message>
-  <wsdl:portType name="JuanViajesWS">
-    <wsdl:operation name="listarCiudades">
-      <wsdl:input message="tns:listarCiudades" name="listarCiudades">
-    </wsdl:input>
-      <wsdl:output message="tns:listarCiudadesResponse" name="listarCiudadesResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="cargarDesdeBd">
-      <wsdl:input message="tns:cargarDesdeBd" name="cargarDesdeBd">
-    </wsdl:input>
-      <wsdl:output message="tns:cargarDesdeBdResponse" name="cargarDesdeBdResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerDtPaquete">
-      <wsdl:input message="tns:obtenerDtPaquete" name="obtenerDtPaquete">
-    </wsdl:input>
-      <wsdl:output message="tns:obtenerDtPaqueteResponse" name="obtenerDtPaqueteResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarRutasPorAerolinea">
-      <wsdl:input message="tns:listarRutasPorAerolinea" name="listarRutasPorAerolinea">
-    </wsdl:input>
-      <wsdl:output message="tns:listarRutasPorAerolineaResponse" name="listarRutasPorAerolineaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarCategorias">
-      <wsdl:input message="tns:listarCategorias" name="listarCategorias">
-    </wsdl:input>
-      <wsdl:output message="tns:listarCategoriasResponse" name="listarCategoriasResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ping">
-      <wsdl:input message="tns:ping" name="ping">
-    </wsdl:input>
-      <wsdl:output message="tns:pingResponse" name="pingResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerCliente">
-      <wsdl:input message="tns:obtenerCliente" name="obtenerCliente">
-    </wsdl:input>
-      <wsdl:output message="tns:obtenerClienteResponse" name="obtenerClienteResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarAerolineas">
-      <wsdl:input message="tns:listarAerolineas" name="listarAerolineas">
-    </wsdl:input>
-      <wsdl:output message="tns:listarAerolineasResponse" name="listarAerolineasResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="getReservasCliente">
-      <wsdl:input message="tns:getReservasCliente" name="getReservasCliente">
-    </wsdl:input>
-      <wsdl:output message="tns:getReservasClienteResponse" name="getReservasClienteResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerVuelo">
-      <wsdl:input message="tns:obtenerVuelo" name="obtenerVuelo">
-    </wsdl:input>
-      <wsdl:output message="tns:obtenerVueloResponse" name="obtenerVueloResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerTopRutasMasVisitadas">
-      <wsdl:input message="tns:obtenerTopRutasMasVisitadas" name="obtenerTopRutasMasVisitadas">
-    </wsdl:input>
-      <wsdl:output message="tns:obtenerTopRutasMasVisitadasResponse" name="obtenerTopRutasMasVisitadasResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="altaRutaVuelo">
-      <wsdl:input message="tns:altaRutaVuelo" name="altaRutaVuelo">
-    </wsdl:input>
-      <wsdl:output message="tns:altaRutaVueloResponse" name="altaRutaVueloResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="incrementarVisitasRuta">
-      <wsdl:input message="tns:incrementarVisitasRuta" name="incrementarVisitasRuta">
-    </wsdl:input>
-      <wsdl:output message="tns:incrementarVisitasRutaResponse" name="incrementarVisitasRutaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerAerolinea">
-      <wsdl:input message="tns:obtenerAerolinea" name="obtenerAerolinea">
-    </wsdl:input>
-      <wsdl:output message="tns:obtenerAerolineaResponse" name="obtenerAerolineaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="altaVuelo">
-      <wsdl:input message="tns:altaVuelo" name="altaVuelo">
-    </wsdl:input>
-      <wsdl:output message="tns:altaVueloResponse" name="altaVueloResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="consultarCheckinReserva">
-      <wsdl:input message="tns:consultarCheckinReserva" name="consultarCheckinReserva">
-    </wsdl:input>
-      <wsdl:output message="tns:consultarCheckinReservaResponse" name="consultarCheckinReservaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="crearYRegistrarReserva">
-      <wsdl:input message="tns:crearYRegistrarReserva" name="crearYRegistrarReserva">
-    </wsdl:input>
-      <wsdl:output message="tns:crearYRegistrarReservaResponse" name="crearYRegistrarReservaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarRutasConfirmadas">
-      <wsdl:input message="tns:listarRutasConfirmadas" name="listarRutasConfirmadas">
-    </wsdl:input>
-      <wsdl:output message="tns:listarRutasConfirmadasResponse" name="listarRutasConfirmadasResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="compraPaquete">
-      <wsdl:input message="tns:compraPaquete" name="compraPaquete">
-    </wsdl:input>
-      <wsdl:output message="tns:compraPaqueteResponse" name="compraPaqueteResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="getDtItemRutasPaquete">
-      <wsdl:input message="tns:getDtItemRutasPaquete" name="getDtItemRutasPaquete">
-    </wsdl:input>
-      <wsdl:output message="tns:getDtItemRutasPaqueteResponse" name="getDtItemRutasPaqueteResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarVuelosPorRuta">
-      <wsdl:input message="tns:listarVuelosPorRuta" name="listarVuelosPorRuta">
-    </wsdl:input>
-      <wsdl:output message="tns:listarVuelosPorRutaResponse" name="listarVuelosPorRutaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="realizarCheckinReserva">
-      <wsdl:input message="tns:realizarCheckinReserva" name="realizarCheckinReserva">
-    </wsdl:input>
-      <wsdl:output message="tns:realizarCheckinReservaResponse" name="realizarCheckinReservaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarClientes">
-      <wsdl:input message="tns:listarClientes" name="listarClientes">
-    </wsdl:input>
-      <wsdl:output message="tns:listarClientesResponse" name="listarClientesResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="altaAerolinea">
-      <wsdl:input message="tns:altaAerolinea" name="altaAerolinea">
-    </wsdl:input>
-      <wsdl:output message="tns:altaAerolineaResponse" name="altaAerolineaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerReservasConCheckin">
-      <wsdl:input message="tns:obtenerReservasConCheckin" name="obtenerReservasConCheckin">
-    </wsdl:input>
-      <wsdl:output message="tns:obtenerReservasConCheckinResponse" name="obtenerReservasConCheckinResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="verInfoVueloDt">
-      <wsdl:input message="tns:verInfoVueloDt" name="verInfoVueloDt">
-    </wsdl:input>
-      <wsdl:output message="tns:verInfoVueloDtResponse" name="verInfoVueloDtResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="verificarLogin">
-      <wsdl:input message="tns:verificarLogin" name="verificarLogin">
-    </wsdl:input>
-      <wsdl:output message="tns:verificarLoginResponse" name="verificarLoginResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="altaCliente">
-      <wsdl:input message="tns:altaCliente" name="altaCliente">
-    </wsdl:input>
-      <wsdl:output message="tns:altaClienteResponse" name="altaClienteResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarPaquetes">
-      <wsdl:input message="tns:listarPaquetes" name="listarPaquetes">
-    </wsdl:input>
-      <wsdl:output message="tns:listarPaquetesResponse" name="listarPaquetesResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="calcularCostoReserva">
-      <wsdl:input message="tns:calcularCostoReserva" name="calcularCostoReserva">
-    </wsdl:input>
-      <wsdl:output message="tns:calcularCostoReservaResponse" name="calcularCostoReservaResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="crearPasajero">
-      <wsdl:input message="tns:crearPasajero" name="crearPasajero">
-    </wsdl:input>
-      <wsdl:output message="tns:crearPasajeroResponse" name="crearPasajeroResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="modificarDatosAerolineaCompleto">
-      <wsdl:input message="tns:modificarDatosAerolineaCompleto" name="modificarDatosAerolineaCompleto">
-    </wsdl:input>
-      <wsdl:output message="tns:modificarDatosAerolineaCompletoResponse" name="modificarDatosAerolineaCompletoResponse">
-    </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="modificarDatosClienteCompleto">
-      <wsdl:input message="tns:modificarDatosClienteCompleto" name="modificarDatosClienteCompleto">
-    </wsdl:input>
-      <wsdl:output message="tns:modificarDatosClienteCompletoResponse" name="modificarDatosClienteCompletoResponse">
-    </wsdl:output>
-    </wsdl:operation>
-  </wsdl:portType>
-  <wsdl:binding name="WebServicesServiceSoapBinding" type="tns:JuanViajesWS">
-    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <wsdl:operation name="listarCiudades">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listarCiudades">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="listarCiudadesResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="cargarDesdeBd">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="cargarDesdeBd">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="cargarDesdeBdResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerDtPaquete">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="obtenerDtPaquete">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="obtenerDtPaqueteResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarRutasPorAerolinea">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listarRutasPorAerolinea">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="listarRutasPorAerolineaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarCategorias">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listarCategorias">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="listarCategoriasResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="ping">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="ping">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="pingResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerCliente">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="obtenerCliente">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="obtenerClienteResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarAerolineas">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listarAerolineas">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="listarAerolineasResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="getReservasCliente">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getReservasCliente">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getReservasClienteResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerVuelo">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="obtenerVuelo">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="obtenerVueloResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerTopRutasMasVisitadas">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="obtenerTopRutasMasVisitadas">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="obtenerTopRutasMasVisitadasResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="altaRutaVuelo">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="altaRutaVuelo">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="altaRutaVueloResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="incrementarVisitasRuta">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="incrementarVisitasRuta">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="incrementarVisitasRutaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerAerolinea">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="obtenerAerolinea">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="obtenerAerolineaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="altaVuelo">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="altaVuelo">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="altaVueloResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="consultarCheckinReserva">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="consultarCheckinReserva">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="consultarCheckinReservaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="crearYRegistrarReserva">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="crearYRegistrarReserva">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="crearYRegistrarReservaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarRutasConfirmadas">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listarRutasConfirmadas">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="listarRutasConfirmadasResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="compraPaquete">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="compraPaquete">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="compraPaqueteResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="getDtItemRutasPaquete">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="getDtItemRutasPaquete">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="getDtItemRutasPaqueteResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarVuelosPorRuta">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listarVuelosPorRuta">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="listarVuelosPorRutaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="realizarCheckinReserva">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="realizarCheckinReserva">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="realizarCheckinReservaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarClientes">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listarClientes">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="listarClientesResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="altaAerolinea">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="altaAerolinea">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="altaAerolineaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="obtenerReservasConCheckin">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="obtenerReservasConCheckin">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="obtenerReservasConCheckinResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="verInfoVueloDt">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="verInfoVueloDt">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="verInfoVueloDtResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="verificarLogin">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="verificarLogin">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="verificarLoginResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="altaCliente">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="altaCliente">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="altaClienteResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="listarPaquetes">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="listarPaquetes">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="listarPaquetesResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="calcularCostoReserva">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="calcularCostoReserva">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="calcularCostoReservaResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="crearPasajero">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="crearPasajero">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="crearPasajeroResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="modificarDatosAerolineaCompleto">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="modificarDatosAerolineaCompleto">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="modificarDatosAerolineaCompletoResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-    <wsdl:operation name="modificarDatosClienteCompleto">
-      <soap:operation soapAction="" style="document"/>
-      <wsdl:input name="modificarDatosClienteCompleto">
-        <soap:body use="literal"/>
-      </wsdl:input>
-      <wsdl:output name="modificarDatosClienteCompletoResponse">
-        <soap:body use="literal"/>
-      </wsdl:output>
-    </wsdl:operation>
-  </wsdl:binding>
-  <wsdl:service name="WebServicesService">
-    <wsdl:port binding="tns:WebServicesServiceSoapBinding" name="JuanViajesWSPort">
-      <soap:address location="http://localhost:8081/JuanViajes"/>
-    </wsdl:port>
-  </wsdl:service>
+This XML file does not appear to have any style information associated with it. The document tree is shown below.
+<wsdl:definitions xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:tns="http://ServiciosWeb/" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ns1="http://schemas.xmlsoap.org/soap/http" name="WebServicesService" targetNamespace="http://ServiciosWeb/">
+    <wsdl:types>
+        <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://ServiciosWeb/" elementFormDefault="unqualified" targetNamespace="http://ServiciosWeb/" version="1.0">
+            <xs:element name="altaAerolinea" type="tns:altaAerolinea"/>
+            <xs:element name="altaAerolineaResponse" type="tns:altaAerolineaResponse"/>
+            <xs:element name="altaCliente" type="tns:altaCliente"/>
+            <xs:element name="altaClienteResponse" type="tns:altaClienteResponse"/>
+            <xs:element name="altaRutaVuelo" type="tns:altaRutaVuelo"/>
+            <xs:element name="altaRutaVueloResponse" type="tns:altaRutaVueloResponse"/>
+            <xs:element name="altaVuelo" type="tns:altaVuelo"/>
+            <xs:element name="altaVueloResponse" type="tns:altaVueloResponse"/>
+            <xs:element name="calcularCostoReserva" type="tns:calcularCostoReserva"/>
+            <xs:element name="calcularCostoReservaResponse" type="tns:calcularCostoReservaResponse"/>
+            <xs:element name="cargarDesdeBd" type="tns:cargarDesdeBd"/>
+            <xs:element name="cargarDesdeBdResponse" type="tns:cargarDesdeBdResponse"/>
+            <xs:element name="compraPaquete" type="tns:compraPaquete"/>
+            <xs:element name="compraPaqueteResponse" type="tns:compraPaqueteResponse"/>
+            <xs:element name="consultarCheckinReserva" type="tns:consultarCheckinReserva"/>
+            <xs:element name="consultarCheckinReservaResponse" type="tns:consultarCheckinReservaResponse"/>
+            <xs:element name="crearPasajero" type="tns:crearPasajero"/>
+            <xs:element name="crearPasajeroResponse" type="tns:crearPasajeroResponse"/>
+            <xs:element name="crearYRegistrarReserva" type="tns:crearYRegistrarReserva"/>
+            <xs:element name="crearYRegistrarReservaResponse" type="tns:crearYRegistrarReservaResponse"/>
+            <xs:element name="finalizarRutaVuelo" type="tns:finalizarRutaVuelo"/>
+            <xs:element name="finalizarRutaVueloResponse" type="tns:finalizarRutaVueloResponse"/>
+            <xs:element name="getDtItemRutasPaquete" type="tns:getDtItemRutasPaquete"/>
+            <xs:element name="getDtItemRutasPaqueteResponse" type="tns:getDtItemRutasPaqueteResponse"/>
+            <xs:element name="getReservasCliente" type="tns:getReservasCliente"/>
+            <xs:element name="getReservasClienteResponse" type="tns:getReservasClienteResponse"/>
+            <xs:element name="incrementarVisitasRuta" type="tns:incrementarVisitasRuta"/>
+            <xs:element name="incrementarVisitasRutaResponse" type="tns:incrementarVisitasRutaResponse"/>
+            <xs:element name="listarAerolineas" type="tns:listarAerolineas"/>
+            <xs:element name="listarAerolineasResponse" type="tns:listarAerolineasResponse"/>
+            <xs:element name="listarCategorias" type="tns:listarCategorias"/>
+            <xs:element name="listarCategoriasResponse" type="tns:listarCategoriasResponse"/>
+            <xs:element name="listarCiudades" type="tns:listarCiudades"/>
+            <xs:element name="listarCiudadesResponse" type="tns:listarCiudadesResponse"/>
+            <xs:element name="listarClientes" type="tns:listarClientes"/>
+            <xs:element name="listarClientesResponse" type="tns:listarClientesResponse"/>
+            <xs:element name="listarPaquetes" type="tns:listarPaquetes"/>
+            <xs:element name="listarPaquetesResponse" type="tns:listarPaquetesResponse"/>
+            <xs:element name="listarRutasConfirmadas" type="tns:listarRutasConfirmadas"/>
+            <xs:element name="listarRutasConfirmadasResponse" type="tns:listarRutasConfirmadasResponse"/>
+            <xs:element name="listarRutasFinalizables" type="tns:listarRutasFinalizables"/>
+            <xs:element name="listarRutasFinalizablesResponse" type="tns:listarRutasFinalizablesResponse"/>
+            <xs:element name="listarRutasPorAerolinea" type="tns:listarRutasPorAerolinea"/>
+            <xs:element name="listarRutasPorAerolineaResponse" type="tns:listarRutasPorAerolineaResponse"/>
+            <xs:element name="listarVuelosPorRuta" type="tns:listarVuelosPorRuta"/>
+            <xs:element name="listarVuelosPorRutaResponse" type="tns:listarVuelosPorRutaResponse"/>
+            <xs:element name="modificarDatosAerolineaCompleto" type="tns:modificarDatosAerolineaCompleto"/>
+            <xs:element name="modificarDatosAerolineaCompletoResponse" type="tns:modificarDatosAerolineaCompletoResponse"/>
+            <xs:element name="modificarDatosClienteCompleto" type="tns:modificarDatosClienteCompleto"/>
+            <xs:element name="modificarDatosClienteCompletoResponse" type="tns:modificarDatosClienteCompletoResponse"/>
+            <xs:element name="obtenerAerolinea" type="tns:obtenerAerolinea"/>
+            <xs:element name="obtenerAerolineaResponse" type="tns:obtenerAerolineaResponse"/>
+            <xs:element name="obtenerCliente" type="tns:obtenerCliente"/>
+            <xs:element name="obtenerClienteResponse" type="tns:obtenerClienteResponse"/>
+            <xs:element name="obtenerDtPaquete" type="tns:obtenerDtPaquete"/>
+            <xs:element name="obtenerDtPaqueteResponse" type="tns:obtenerDtPaqueteResponse"/>
+            <xs:element name="obtenerReservasConCheckin" type="tns:obtenerReservasConCheckin"/>
+            <xs:element name="obtenerReservasConCheckinResponse" type="tns:obtenerReservasConCheckinResponse"/>
+            <xs:element name="obtenerTopRutasMasVisitadas" type="tns:obtenerTopRutasMasVisitadas"/>
+            <xs:element name="obtenerTopRutasMasVisitadasResponse" type="tns:obtenerTopRutasMasVisitadasResponse"/>
+            <xs:element name="obtenerVuelo" type="tns:obtenerVuelo"/>
+            <xs:element name="obtenerVueloResponse" type="tns:obtenerVueloResponse"/>
+            <xs:element name="ping" type="tns:ping"/>
+            <xs:element name="pingResponse" type="tns:pingResponse"/>
+            <xs:element name="puedeFinalizarRuta" type="tns:puedeFinalizarRuta"/>
+            <xs:element name="puedeFinalizarRutaResponse" type="tns:puedeFinalizarRutaResponse"/>
+            <xs:element name="realizarCheckinReserva" type="tns:realizarCheckinReserva"/>
+            <xs:element name="realizarCheckinReservaResponse" type="tns:realizarCheckinReservaResponse"/>
+            <xs:element name="verInfoVueloDt" type="tns:verInfoVueloDt"/>
+            <xs:element name="verInfoVueloDtResponse" type="tns:verInfoVueloDtResponse"/>
+            <xs:element name="verificarLogin" type="tns:verificarLogin"/>
+            <xs:element name="verificarLoginResponse" type="tns:verificarLoginResponse"/>
+            <xs:complexType name="listarCiudades">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listarCiudadesResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="ciudades" type="tns:dtCiudad"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtCiudad">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="aeropuerto" type="xs:string"/>
+                    <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+                    <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="pais" type="xs:string"/>
+                    <xs:element minOccurs="0" name="sitioWeb" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType final="extension restriction" name="localDate">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="cargarDesdeBd">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="cargarDesdeBdResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="obtenerDtPaquete">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="paqueteId" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerDtPaqueteResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="paquete" type="tns:dtPaquete"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtPaquete">
+                <xs:sequence>
+                    <xs:element name="costo" type="xs:double"/>
+                    <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+                    <xs:element name="descuentoPorc" type="xs:int"/>
+                    <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="items" nillable="true" type="tns:dtItemPaquete"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element name="periodoValidezDias" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtItemPaquete">
+                <xs:sequence>
+                    <xs:element name="cantAsientos" type="xs:int"/>
+                    <xs:element minOccurs="0" name="rutaVuelo" type="tns:dtRutaVuelo"/>
+                    <xs:element minOccurs="0" name="tipoAsiento" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtRutaVuelo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="aerolinea" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="categorias" nillable="true" type="xs:string"/>
+                    <xs:element minOccurs="0" name="ciudadDestino" type="xs:string"/>
+                    <xs:element minOccurs="0" name="ciudadOrigen" type="xs:string"/>
+                    <xs:element name="contadorVisitas" type="xs:int"/>
+                    <xs:element name="costoEjecutivo" type="xs:double"/>
+                    <xs:element name="costoEquipajeExtra" type="xs:double"/>
+                    <xs:element name="costoTurista" type="xs:double"/>
+                    <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+                    <xs:element minOccurs="0" name="descripcionCorta" type="xs:string"/>
+                    <xs:element minOccurs="0" name="estado" type="tns:estadoRuta"/>
+                    <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
+                    <xs:element minOccurs="0" name="hora" type="xs:string"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="videoUrl" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="vuelos" nillable="true" type="tns:dtVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtVuelo">
+                <xs:sequence>
+                    <xs:element name="asientosEjecutivo" type="xs:int"/>
+                    <xs:element name="asientosTurista" type="xs:int"/>
+                    <xs:element name="duracion" type="xs:int"/>
+                    <xs:element minOccurs="0" name="fecha" type="tns:localDate"/>
+                    <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombreAerolinea" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="reservas" nillable="true" type="tns:dtReserva"/>
+                    <xs:element minOccurs="0" name="rutaVuelo" type="tns:dtRutaVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtReserva">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="asientosAsignados" nillable="true" type="xs:string"/>
+                    <xs:element name="cantidadPasajes" type="xs:int"/>
+                    <xs:element name="costo" type="xs:double"/>
+                    <xs:element minOccurs="0" name="estado" type="tns:estadoReserva"/>
+                    <xs:element minOccurs="0" name="fecha" type="tns:localDate"/>
+                    <xs:element minOccurs="0" name="fechaCheckin" type="tns:localDate"/>
+                    <xs:element minOccurs="0" name="horaInicioEmbarque" type="tns:localTime"/>
+                    <xs:element minOccurs="0" name="id" type="xs:long"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="pasajeros" nillable="true" type="tns:dtPasajero"/>
+                    <xs:element minOccurs="0" name="tipoAsiento" type="tns:tipoAsiento"/>
+                    <xs:element name="unidadesEquipajeExtra" type="xs:int"/>
+                    <xs:element minOccurs="0" name="vuelo" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType final="extension restriction" name="localTime">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="dtPasajero">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="apellido" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarRutasPorAerolinea">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreAerolinea" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarRutasPorAerolineaResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rutas" type="tns:dtRutaVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarCategorias">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listarCategoriasResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="categorias" type="tns:dtCategoria"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtCategoria">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="ping">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="pingResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="respuesta" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerCliente">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerClienteResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="cliente" type="tns:dtCliente"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtCliente">
+                <xs:complexContent>
+                    <xs:extension base="tns:dtUsuario">
+                        <xs:sequence>
+                            <xs:element minOccurs="0" name="apellido" type="xs:string"/>
+                            <xs:element minOccurs="0" name="fechaNacimiento" type="tns:localDate"/>
+                            <xs:element minOccurs="0" name="nacionalidad" type="xs:string"/>
+                            <xs:element minOccurs="0" name="numeroDocumento" type="xs:string"/>
+                            <xs:element maxOccurs="unbounded" minOccurs="0" name="paquetesComprados" nillable="true" type="tns:dtPaquete"/>
+                            <xs:element maxOccurs="unbounded" minOccurs="0" name="reservas" nillable="true" type="tns:dtReserva"/>
+                            <xs:element minOccurs="0" name="tipoDocumento" type="tns:tipoDoc"/>
+                        </xs:sequence>
+                    </xs:extension>
+                </xs:complexContent>
+            </xs:complexType>
+            <xs:complexType name="dtUsuario">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="email" type="xs:string"/>
+                    <xs:element minOccurs="0" name="fechaAlta" type="tns:localDate"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="puedeFinalizarRuta">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="puedeFinalizarRutaResponse">
+                <xs:sequence>
+                    <xs:element name="codigo" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarAerolineas">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listarAerolineasResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="aerolineas" type="tns:dtAerolinea"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="dtAerolinea">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+                    <xs:element minOccurs="0" name="email" type="xs:string"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rutas" nillable="true" type="tns:dtRutaVuelo"/>
+                    <xs:element minOccurs="0" name="sitioWeb" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getReservasCliente">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="clienteNickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getReservasClienteResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="reservas" type="tns:dtReserva"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarRutasFinalizables">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreAerolinea" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarRutasFinalizablesResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rutasFinalizables" type="tns:dtRutaVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerVuelo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerVueloResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="vuelo" type="tns:dtVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerTopRutasMasVisitadas">
+                <xs:sequence>
+                    <xs:element name="limite" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerTopRutasMasVisitadasResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="topRutas" type="tns:dtRutaVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="finalizarRutaVuelo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="finalizarRutaVueloResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="altaRutaVuelo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+                    <xs:element minOccurs="0" name="descripcionCorta" type="xs:string"/>
+                    <xs:element minOccurs="0" name="aerolineaNickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="ciudadOrigen" type="xs:string"/>
+                    <xs:element minOccurs="0" name="ciudadDestino" type="xs:string"/>
+                    <xs:element minOccurs="0" name="hora" type="xs:string"/>
+                    <xs:element minOccurs="0" name="fechaAlta" type="xs:string"/>
+                    <xs:element name="costoTurista" type="xs:double"/>
+                    <xs:element name="costoEjecutivo" type="xs:double"/>
+                    <xs:element name="costoEquipajeExtra" type="xs:double"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="categorias" type="xs:string"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                    <xs:element minOccurs="0" name="videoUrl" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="altaRutaVueloResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="incrementarVisitasRuta">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="incrementarVisitasRutaResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="obtenerAerolinea">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerAerolineaResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="aerolinea" type="tns:dtAerolinea"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="altaVuelo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombreAerolinea" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
+                    <xs:element minOccurs="0" name="fecha" type="xs:string"/>
+                    <xs:element name="duracion" type="xs:int"/>
+                    <xs:element name="asientosTurista" type="xs:int"/>
+                    <xs:element name="asientosEjecutivo" type="xs:int"/>
+                    <xs:element minOccurs="0" name="fechaAlta" type="xs:string"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="altaVueloResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="consultarCheckinReserva">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="reservaId" type="xs:long"/>
+                    <xs:element minOccurs="0" name="clienteNickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="consultarCheckinReservaResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="checkin" type="tns:dtReserva"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="crearYRegistrarReserva">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nicknameCliente" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
+                    <xs:element minOccurs="0" name="fechaReserva" type="xs:string"/>
+                    <xs:element name="costo" type="xs:double"/>
+                    <xs:element minOccurs="0" name="tipoAsiento" type="xs:string"/>
+                    <xs:element name="cantidadPasajes" type="xs:int"/>
+                    <xs:element name="unidadesEquipajeExtra" type="xs:int"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="pasajerosNombres" type="xs:string"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="pasajerosApellidos" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="crearYRegistrarReservaResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listarRutasConfirmadas">
+                <xs:sequence>
+                    <xs:element name="limite" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarRutasConfirmadasResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rutasConfirmadas" type="tns:dtRutaVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="compraPaquete">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="paqueteId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="clienteId" type="xs:string"/>
+                    <xs:element name="validezDias" type="xs:int"/>
+                    <xs:element minOccurs="0" name="fechaCompra" type="xs:string"/>
+                    <xs:element name="costo" type="xs:double"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="compraPaqueteResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="getDtItemRutasPaquete">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="paqueteId" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="getDtItemRutasPaqueteResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="items" type="tns:dtItemPaquete"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarVuelosPorRuta">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarVuelosPorRutaResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="vuelos" type="tns:dtVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="realizarCheckinReserva">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="reservaId" type="xs:long"/>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="asientosAsignados" type="xs:string"/>
+                    <xs:element minOccurs="0" name="horaEmbarque" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="realizarCheckinReservaResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listarClientes">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listarClientesResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="clientes" type="tns:dtCliente"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="altaAerolinea">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+                    <xs:element minOccurs="0" name="email" type="xs:string"/>
+                    <xs:element minOccurs="0" name="sitioWeb" type="xs:string"/>
+                    <xs:element minOccurs="0" name="password" type="xs:string"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="altaAerolineaResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="obtenerReservasConCheckin">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="clienteNickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerReservasConCheckinResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="reservasConCheckin" type="tns:dtReserva"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="verInfoVueloDt">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="verInfoVueloDtResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="vuelo" type="tns:dtVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="verificarLogin">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="email" type="xs:string"/>
+                    <xs:element minOccurs="0" name="password" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="verificarLoginResponse">
+                <xs:sequence>
+                    <xs:element name="ok" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="altaCliente">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="apellido" type="xs:string"/>
+                    <xs:element minOccurs="0" name="correo" type="xs:string"/>
+                    <xs:element minOccurs="0" name="fechaNacimiento" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nacionalidad" type="xs:string"/>
+                    <xs:element minOccurs="0" name="tipoDoc" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numDoc" type="xs:string"/>
+                    <xs:element minOccurs="0" name="password" type="xs:string"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="altaClienteResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listarPaquetes">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="listarPaquetesResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="paquetes" type="tns:dtPaquete"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="calcularCostoReserva">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
+                    <xs:element minOccurs="0" name="tipoAsiento" type="xs:string"/>
+                    <xs:element name="cantidadPasajes" type="xs:int"/>
+                    <xs:element name="unidadesEquipajeExtra" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="calcularCostoReservaResponse">
+                <xs:sequence>
+                    <xs:element name="costo" type="xs:double"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="crearPasajero">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="apellido" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="crearPasajeroResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="pasajero" type="tns:dtPasajero"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="modificarDatosAerolineaCompleto">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="descripcion" type="xs:string"/>
+                    <xs:element minOccurs="0" name="sitioWeb" type="xs:string"/>
+                    <xs:element minOccurs="0" name="password" type="xs:string"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="modificarDatosAerolineaCompletoResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="modificarDatosClienteCompleto">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nombre" type="xs:string"/>
+                    <xs:element minOccurs="0" name="apellido" type="xs:string"/>
+                    <xs:element minOccurs="0" name="nacionalidad" type="xs:string"/>
+                    <xs:element minOccurs="0" name="fechaNacimiento" type="xs:string"/>
+                    <xs:element minOccurs="0" name="tipoDoc" type="xs:string"/>
+                    <xs:element minOccurs="0" name="numDoc" type="xs:string"/>
+                    <xs:element minOccurs="0" name="password" type="xs:string"/>
+                    <xs:element minOccurs="0" name="imagenUrl" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="modificarDatosClienteCompletoResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:simpleType name="estadoRuta">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="INGRESADA"/>
+                    <xs:enumeration value="CONFIRMADA"/>
+                    <xs:enumeration value="RECHAZADA"/>
+                    <xs:enumeration value="FINALIZADA"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="estadoReserva">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="PENDIENTE"/>
+                    <xs:enumeration value="CHECKIN_REALIZADO"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="tipoAsiento">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="TURISTA"/>
+                    <xs:enumeration value="EJECUTIVO"/>
+                </xs:restriction>
+            </xs:simpleType>
+            <xs:simpleType name="tipoDoc">
+                <xs:restriction base="xs:string">
+                    <xs:enumeration value="CEDULAIDENTIDAD"/>
+                    <xs:enumeration value="PASAPORTE"/>
+                </xs:restriction>
+            </xs:simpleType>
+        </xs:schema>
+    </wsdl:types>
+    <wsdl:message name="listarCiudades">
+        <wsdl:part element="tns:listarCiudades" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="modificarDatosClienteCompletoResponse">
+        <wsdl:part element="tns:modificarDatosClienteCompletoResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="realizarCheckinReservaResponse">
+        <wsdl:part element="tns:realizarCheckinReservaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="calcularCostoReservaResponse">
+        <wsdl:part element="tns:calcularCostoReservaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerDtPaquete">
+        <wsdl:part element="tns:obtenerDtPaquete" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerReservasConCheckinResponse">
+        <wsdl:part element="tns:obtenerReservasConCheckinResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarRutasPorAerolinea">
+        <wsdl:part element="tns:listarRutasPorAerolinea" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="ping">
+        <wsdl:part element="tns:ping" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="puedeFinalizarRuta">
+        <wsdl:part element="tns:puedeFinalizarRuta" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarAerolineas">
+        <wsdl:part element="tns:listarAerolineas" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getReservasCliente">
+        <wsdl:part element="tns:getReservasCliente" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerVuelo">
+        <wsdl:part element="tns:obtenerVuelo" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarCategoriasResponse">
+        <wsdl:part element="tns:listarCategoriasResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="finalizarRutaVuelo">
+        <wsdl:part element="tns:finalizarRutaVuelo" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarRutasConfirmadasResponse">
+        <wsdl:part element="tns:listarRutasConfirmadasResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="crearYRegistrarReservaResponse">
+        <wsdl:part element="tns:crearYRegistrarReservaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerClienteResponse">
+        <wsdl:part element="tns:obtenerClienteResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarAerolineasResponse">
+        <wsdl:part element="tns:listarAerolineasResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="compraPaqueteResponse">
+        <wsdl:part element="tns:compraPaqueteResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarVuelosPorRuta">
+        <wsdl:part element="tns:listarVuelosPorRuta" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="realizarCheckinReserva">
+        <wsdl:part element="tns:realizarCheckinReserva" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="altaAerolinea">
+        <wsdl:part element="tns:altaAerolinea" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarVuelosPorRutaResponse">
+        <wsdl:part element="tns:listarVuelosPorRutaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="pingResponse">
+        <wsdl:part element="tns:pingResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="finalizarRutaVueloResponse">
+        <wsdl:part element="tns:finalizarRutaVueloResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarRutasFinalizablesResponse">
+        <wsdl:part element="tns:listarRutasFinalizablesResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="altaCliente">
+        <wsdl:part element="tns:altaCliente" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarPaquetes">
+        <wsdl:part element="tns:listarPaquetes" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerTopRutasMasVisitadasResponse">
+        <wsdl:part element="tns:obtenerTopRutasMasVisitadasResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerAerolineaResponse">
+        <wsdl:part element="tns:obtenerAerolineaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarCiudadesResponse">
+        <wsdl:part element="tns:listarCiudadesResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="altaVueloResponse">
+        <wsdl:part element="tns:altaVueloResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="calcularCostoReserva">
+        <wsdl:part element="tns:calcularCostoReserva" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="crearPasajero">
+        <wsdl:part element="tns:crearPasajero" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getDtItemRutasPaqueteResponse">
+        <wsdl:part element="tns:getDtItemRutasPaqueteResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="modificarDatosAerolineaCompleto">
+        <wsdl:part element="tns:modificarDatosAerolineaCompleto" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarRutasPorAerolineaResponse">
+        <wsdl:part element="tns:listarRutasPorAerolineaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="cargarDesdeBd">
+        <wsdl:part element="tns:cargarDesdeBd" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="altaRutaVueloResponse">
+        <wsdl:part element="tns:altaRutaVueloResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="incrementarVisitasRutaResponse">
+        <wsdl:part element="tns:incrementarVisitasRutaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarCategorias">
+        <wsdl:part element="tns:listarCategorias" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerCliente">
+        <wsdl:part element="tns:obtenerCliente" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarRutasFinalizables">
+        <wsdl:part element="tns:listarRutasFinalizables" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="verInfoVueloDtResponse">
+        <wsdl:part element="tns:verInfoVueloDtResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerTopRutasMasVisitadas">
+        <wsdl:part element="tns:obtenerTopRutasMasVisitadas" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="altaRutaVuelo">
+        <wsdl:part element="tns:altaRutaVuelo" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="incrementarVisitasRuta">
+        <wsdl:part element="tns:incrementarVisitasRuta" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="cargarDesdeBdResponse">
+        <wsdl:part element="tns:cargarDesdeBdResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerAerolinea">
+        <wsdl:part element="tns:obtenerAerolinea" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="crearPasajeroResponse">
+        <wsdl:part element="tns:crearPasajeroResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="altaVuelo">
+        <wsdl:part element="tns:altaVuelo" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarClientesResponse">
+        <wsdl:part element="tns:listarClientesResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="verificarLoginResponse">
+        <wsdl:part element="tns:verificarLoginResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="consultarCheckinReserva">
+        <wsdl:part element="tns:consultarCheckinReserva" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="crearYRegistrarReserva">
+        <wsdl:part element="tns:crearYRegistrarReserva" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="altaClienteResponse">
+        <wsdl:part element="tns:altaClienteResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="modificarDatosAerolineaCompletoResponse">
+        <wsdl:part element="tns:modificarDatosAerolineaCompletoResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarRutasConfirmadas">
+        <wsdl:part element="tns:listarRutasConfirmadas" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="compraPaquete">
+        <wsdl:part element="tns:compraPaquete" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getDtItemRutasPaquete">
+        <wsdl:part element="tns:getDtItemRutasPaquete" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarClientes">
+        <wsdl:part element="tns:listarClientes" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="consultarCheckinReservaResponse">
+        <wsdl:part element="tns:consultarCheckinReservaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerVueloResponse">
+        <wsdl:part element="tns:obtenerVueloResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerReservasConCheckin">
+        <wsdl:part element="tns:obtenerReservasConCheckin" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="verInfoVueloDt">
+        <wsdl:part element="tns:verInfoVueloDt" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="verificarLogin">
+        <wsdl:part element="tns:verificarLogin" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarPaquetesResponse">
+        <wsdl:part element="tns:listarPaquetesResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerDtPaqueteResponse">
+        <wsdl:part element="tns:obtenerDtPaqueteResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="puedeFinalizarRutaResponse">
+        <wsdl:part element="tns:puedeFinalizarRutaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="altaAerolineaResponse">
+        <wsdl:part element="tns:altaAerolineaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="getReservasClienteResponse">
+        <wsdl:part element="tns:getReservasClienteResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="modificarDatosClienteCompleto">
+        <wsdl:part element="tns:modificarDatosClienteCompleto" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="JuanViajesWS">
+        <wsdl:operation name="listarCiudades">
+            <wsdl:input message="tns:listarCiudades" name="listarCiudades"> </wsdl:input>
+            <wsdl:output message="tns:listarCiudadesResponse" name="listarCiudadesResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="cargarDesdeBd">
+            <wsdl:input message="tns:cargarDesdeBd" name="cargarDesdeBd"> </wsdl:input>
+            <wsdl:output message="tns:cargarDesdeBdResponse" name="cargarDesdeBdResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerDtPaquete">
+            <wsdl:input message="tns:obtenerDtPaquete" name="obtenerDtPaquete"> </wsdl:input>
+            <wsdl:output message="tns:obtenerDtPaqueteResponse" name="obtenerDtPaqueteResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarRutasPorAerolinea">
+            <wsdl:input message="tns:listarRutasPorAerolinea" name="listarRutasPorAerolinea"> </wsdl:input>
+            <wsdl:output message="tns:listarRutasPorAerolineaResponse" name="listarRutasPorAerolineaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarCategorias">
+            <wsdl:input message="tns:listarCategorias" name="listarCategorias"> </wsdl:input>
+            <wsdl:output message="tns:listarCategoriasResponse" name="listarCategoriasResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ping">
+            <wsdl:input message="tns:ping" name="ping"> </wsdl:input>
+            <wsdl:output message="tns:pingResponse" name="pingResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerCliente">
+            <wsdl:input message="tns:obtenerCliente" name="obtenerCliente"> </wsdl:input>
+            <wsdl:output message="tns:obtenerClienteResponse" name="obtenerClienteResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="puedeFinalizarRuta">
+            <wsdl:input message="tns:puedeFinalizarRuta" name="puedeFinalizarRuta"> </wsdl:input>
+            <wsdl:output message="tns:puedeFinalizarRutaResponse" name="puedeFinalizarRutaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarAerolineas">
+            <wsdl:input message="tns:listarAerolineas" name="listarAerolineas"> </wsdl:input>
+            <wsdl:output message="tns:listarAerolineasResponse" name="listarAerolineasResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getReservasCliente">
+            <wsdl:input message="tns:getReservasCliente" name="getReservasCliente"> </wsdl:input>
+            <wsdl:output message="tns:getReservasClienteResponse" name="getReservasClienteResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarRutasFinalizables">
+            <wsdl:input message="tns:listarRutasFinalizables" name="listarRutasFinalizables"> </wsdl:input>
+            <wsdl:output message="tns:listarRutasFinalizablesResponse" name="listarRutasFinalizablesResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerVuelo">
+            <wsdl:input message="tns:obtenerVuelo" name="obtenerVuelo"> </wsdl:input>
+            <wsdl:output message="tns:obtenerVueloResponse" name="obtenerVueloResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerTopRutasMasVisitadas">
+            <wsdl:input message="tns:obtenerTopRutasMasVisitadas" name="obtenerTopRutasMasVisitadas"> </wsdl:input>
+            <wsdl:output message="tns:obtenerTopRutasMasVisitadasResponse" name="obtenerTopRutasMasVisitadasResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="finalizarRutaVuelo">
+            <wsdl:input message="tns:finalizarRutaVuelo" name="finalizarRutaVuelo"> </wsdl:input>
+            <wsdl:output message="tns:finalizarRutaVueloResponse" name="finalizarRutaVueloResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="altaRutaVuelo">
+            <wsdl:input message="tns:altaRutaVuelo" name="altaRutaVuelo"> </wsdl:input>
+            <wsdl:output message="tns:altaRutaVueloResponse" name="altaRutaVueloResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="incrementarVisitasRuta">
+            <wsdl:input message="tns:incrementarVisitasRuta" name="incrementarVisitasRuta"> </wsdl:input>
+            <wsdl:output message="tns:incrementarVisitasRutaResponse" name="incrementarVisitasRutaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerAerolinea">
+            <wsdl:input message="tns:obtenerAerolinea" name="obtenerAerolinea"> </wsdl:input>
+            <wsdl:output message="tns:obtenerAerolineaResponse" name="obtenerAerolineaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="altaVuelo">
+            <wsdl:input message="tns:altaVuelo" name="altaVuelo"> </wsdl:input>
+            <wsdl:output message="tns:altaVueloResponse" name="altaVueloResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="consultarCheckinReserva">
+            <wsdl:input message="tns:consultarCheckinReserva" name="consultarCheckinReserva"> </wsdl:input>
+            <wsdl:output message="tns:consultarCheckinReservaResponse" name="consultarCheckinReservaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="crearYRegistrarReserva">
+            <wsdl:input message="tns:crearYRegistrarReserva" name="crearYRegistrarReserva"> </wsdl:input>
+            <wsdl:output message="tns:crearYRegistrarReservaResponse" name="crearYRegistrarReservaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarRutasConfirmadas">
+            <wsdl:input message="tns:listarRutasConfirmadas" name="listarRutasConfirmadas"> </wsdl:input>
+            <wsdl:output message="tns:listarRutasConfirmadasResponse" name="listarRutasConfirmadasResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="compraPaquete">
+            <wsdl:input message="tns:compraPaquete" name="compraPaquete"> </wsdl:input>
+            <wsdl:output message="tns:compraPaqueteResponse" name="compraPaqueteResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getDtItemRutasPaquete">
+            <wsdl:input message="tns:getDtItemRutasPaquete" name="getDtItemRutasPaquete"> </wsdl:input>
+            <wsdl:output message="tns:getDtItemRutasPaqueteResponse" name="getDtItemRutasPaqueteResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarVuelosPorRuta">
+            <wsdl:input message="tns:listarVuelosPorRuta" name="listarVuelosPorRuta"> </wsdl:input>
+            <wsdl:output message="tns:listarVuelosPorRutaResponse" name="listarVuelosPorRutaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="realizarCheckinReserva">
+            <wsdl:input message="tns:realizarCheckinReserva" name="realizarCheckinReserva"> </wsdl:input>
+            <wsdl:output message="tns:realizarCheckinReservaResponse" name="realizarCheckinReservaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarClientes">
+            <wsdl:input message="tns:listarClientes" name="listarClientes"> </wsdl:input>
+            <wsdl:output message="tns:listarClientesResponse" name="listarClientesResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="altaAerolinea">
+            <wsdl:input message="tns:altaAerolinea" name="altaAerolinea"> </wsdl:input>
+            <wsdl:output message="tns:altaAerolineaResponse" name="altaAerolineaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerReservasConCheckin">
+            <wsdl:input message="tns:obtenerReservasConCheckin" name="obtenerReservasConCheckin"> </wsdl:input>
+            <wsdl:output message="tns:obtenerReservasConCheckinResponse" name="obtenerReservasConCheckinResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="verInfoVueloDt">
+            <wsdl:input message="tns:verInfoVueloDt" name="verInfoVueloDt"> </wsdl:input>
+            <wsdl:output message="tns:verInfoVueloDtResponse" name="verInfoVueloDtResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="verificarLogin">
+            <wsdl:input message="tns:verificarLogin" name="verificarLogin"> </wsdl:input>
+            <wsdl:output message="tns:verificarLoginResponse" name="verificarLoginResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="altaCliente">
+            <wsdl:input message="tns:altaCliente" name="altaCliente"> </wsdl:input>
+            <wsdl:output message="tns:altaClienteResponse" name="altaClienteResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarPaquetes">
+            <wsdl:input message="tns:listarPaquetes" name="listarPaquetes"> </wsdl:input>
+            <wsdl:output message="tns:listarPaquetesResponse" name="listarPaquetesResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="calcularCostoReserva">
+            <wsdl:input message="tns:calcularCostoReserva" name="calcularCostoReserva"> </wsdl:input>
+            <wsdl:output message="tns:calcularCostoReservaResponse" name="calcularCostoReservaResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="crearPasajero">
+            <wsdl:input message="tns:crearPasajero" name="crearPasajero"> </wsdl:input>
+            <wsdl:output message="tns:crearPasajeroResponse" name="crearPasajeroResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="modificarDatosAerolineaCompleto">
+            <wsdl:input message="tns:modificarDatosAerolineaCompleto" name="modificarDatosAerolineaCompleto"> </wsdl:input>
+            <wsdl:output message="tns:modificarDatosAerolineaCompletoResponse" name="modificarDatosAerolineaCompletoResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="modificarDatosClienteCompleto">
+            <wsdl:input message="tns:modificarDatosClienteCompleto" name="modificarDatosClienteCompleto"> </wsdl:input>
+            <wsdl:output message="tns:modificarDatosClienteCompletoResponse" name="modificarDatosClienteCompletoResponse"> </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="WebServicesServiceSoapBinding" type="tns:JuanViajesWS">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="listarCiudades">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarCiudades">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarCiudadesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="cargarDesdeBd">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="cargarDesdeBd">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="cargarDesdeBdResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerDtPaquete">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerDtPaquete">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerDtPaqueteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarRutasPorAerolinea">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarRutasPorAerolinea">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarRutasPorAerolineaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarCategorias">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarCategorias">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarCategoriasResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ping">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="ping">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="pingResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerCliente">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerCliente">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerClienteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="puedeFinalizarRuta">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="puedeFinalizarRuta">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="puedeFinalizarRutaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarAerolineas">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarAerolineas">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarAerolineasResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getReservasCliente">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getReservasCliente">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getReservasClienteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarRutasFinalizables">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarRutasFinalizables">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarRutasFinalizablesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerVuelo">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerVuelo">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerVueloResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerTopRutasMasVisitadas">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerTopRutasMasVisitadas">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerTopRutasMasVisitadasResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="finalizarRutaVuelo">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="finalizarRutaVuelo">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="finalizarRutaVueloResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="altaRutaVuelo">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="altaRutaVuelo">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="altaRutaVueloResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="incrementarVisitasRuta">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="incrementarVisitasRuta">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="incrementarVisitasRutaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerAerolinea">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerAerolinea">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerAerolineaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="altaVuelo">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="altaVuelo">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="altaVueloResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="consultarCheckinReserva">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="consultarCheckinReserva">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="consultarCheckinReservaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="crearYRegistrarReserva">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="crearYRegistrarReserva">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="crearYRegistrarReservaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarRutasConfirmadas">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarRutasConfirmadas">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarRutasConfirmadasResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="compraPaquete">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="compraPaquete">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="compraPaqueteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="getDtItemRutasPaquete">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="getDtItemRutasPaquete">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="getDtItemRutasPaqueteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarVuelosPorRuta">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarVuelosPorRuta">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarVuelosPorRutaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="realizarCheckinReserva">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="realizarCheckinReserva">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="realizarCheckinReservaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarClientes">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarClientes">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarClientesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="altaAerolinea">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="altaAerolinea">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="altaAerolineaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerReservasConCheckin">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerReservasConCheckin">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerReservasConCheckinResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="verInfoVueloDt">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="verInfoVueloDt">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="verInfoVueloDtResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="verificarLogin">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="verificarLogin">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="verificarLoginResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="altaCliente">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="altaCliente">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="altaClienteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="listarPaquetes">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarPaquetes">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarPaquetesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="calcularCostoReserva">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="calcularCostoReserva">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="calcularCostoReservaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="crearPasajero">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="crearPasajero">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="crearPasajeroResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="modificarDatosAerolineaCompleto">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="modificarDatosAerolineaCompleto">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="modificarDatosAerolineaCompletoResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="modificarDatosClienteCompleto">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="modificarDatosClienteCompleto">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="modificarDatosClienteCompletoResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="WebServicesService">
+        <wsdl:port binding="tns:WebServicesServiceSoapBinding" name="JuanViajesWSPort">
+            <soap:address location="http://localhost:8081/JuanViajes"/>
+        </wsdl:port>
+    </wsdl:service>
 </wsdl:definitions>

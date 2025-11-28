@@ -21,6 +21,10 @@
             <xs:element name="crearPasajeroResponse" type="tns:crearPasajeroResponse"/>
             <xs:element name="crearYRegistrarReserva" type="tns:crearYRegistrarReserva"/>
             <xs:element name="crearYRegistrarReservaResponse" type="tns:crearYRegistrarReservaResponse"/>
+            <xs:element name="finalizarRutaVuelo" type="tns:finalizarRutaVuelo"/>
+            <xs:element name="finalizarRutaVueloResponse" type="tns:finalizarRutaVueloResponse"/>
+            <xs:element name="followUsuario" type="tns:followUsuario"/>
+            <xs:element name="followUsuarioResponse" type="tns:followUsuarioResponse"/>
             <xs:element name="getDtItemRutasPaquete" type="tns:getDtItemRutasPaquete"/>
             <xs:element name="getDtItemRutasPaqueteResponse" type="tns:getDtItemRutasPaqueteResponse"/>
             <xs:element name="getReservasCliente" type="tns:getReservasCliente"/>
@@ -39,6 +43,8 @@
             <xs:element name="listarPaquetesResponse" type="tns:listarPaquetesResponse"/>
             <xs:element name="listarRutasConfirmadas" type="tns:listarRutasConfirmadas"/>
             <xs:element name="listarRutasConfirmadasResponse" type="tns:listarRutasConfirmadasResponse"/>
+            <xs:element name="listarRutasFinalizables" type="tns:listarRutasFinalizables"/>
+            <xs:element name="listarRutasFinalizablesResponse" type="tns:listarRutasFinalizablesResponse"/>
             <xs:element name="listarRutasPorAerolinea" type="tns:listarRutasPorAerolinea"/>
             <xs:element name="listarRutasPorAerolineaResponse" type="tns:listarRutasPorAerolineaResponse"/>
             <xs:element name="listarVuelosPorRuta" type="tns:listarVuelosPorRuta"/>
@@ -49,10 +55,18 @@
             <xs:element name="modificarDatosClienteCompletoResponse" type="tns:modificarDatosClienteCompletoResponse"/>
             <xs:element name="obtenerAerolinea" type="tns:obtenerAerolinea"/>
             <xs:element name="obtenerAerolineaResponse" type="tns:obtenerAerolineaResponse"/>
+            <xs:element name="obtenerAsientosDisponiblesVuelo" type="tns:obtenerAsientosDisponiblesVuelo"/>
+            <xs:element name="obtenerAsientosDisponiblesVueloResponse" type="tns:obtenerAsientosDisponiblesVueloResponse"/>
+            <xs:element name="obtenerCantidadSeguidores" type="tns:obtenerCantidadSeguidores"/>
+            <xs:element name="obtenerCantidadSeguidoresResponse" type="tns:obtenerCantidadSeguidoresResponse"/>
+            <xs:element name="obtenerCantidadSeguidos" type="tns:obtenerCantidadSeguidos"/>
+            <xs:element name="obtenerCantidadSeguidosResponse" type="tns:obtenerCantidadSeguidosResponse"/>
             <xs:element name="obtenerCliente" type="tns:obtenerCliente"/>
             <xs:element name="obtenerClienteResponse" type="tns:obtenerClienteResponse"/>
             <xs:element name="obtenerDtPaquete" type="tns:obtenerDtPaquete"/>
             <xs:element name="obtenerDtPaqueteResponse" type="tns:obtenerDtPaqueteResponse"/>
+            <xs:element name="obtenerHoraRutaPorReserva" type="tns:obtenerHoraRutaPorReserva"/>
+            <xs:element name="obtenerHoraRutaPorReservaResponse" type="tns:obtenerHoraRutaPorReservaResponse"/>
             <xs:element name="obtenerReservasConCheckin" type="tns:obtenerReservasConCheckin"/>
             <xs:element name="obtenerReservasConCheckinResponse" type="tns:obtenerReservasConCheckinResponse"/>
             <xs:element name="obtenerTopRutasMasVisitadas" type="tns:obtenerTopRutasMasVisitadas"/>
@@ -61,12 +75,18 @@
             <xs:element name="obtenerVueloResponse" type="tns:obtenerVueloResponse"/>
             <xs:element name="ping" type="tns:ping"/>
             <xs:element name="pingResponse" type="tns:pingResponse"/>
+            <xs:element name="puedeFinalizarRuta" type="tns:puedeFinalizarRuta"/>
+            <xs:element name="puedeFinalizarRutaResponse" type="tns:puedeFinalizarRutaResponse"/>
             <xs:element name="realizarCheckinReserva" type="tns:realizarCheckinReserva"/>
             <xs:element name="realizarCheckinReservaResponse" type="tns:realizarCheckinReservaResponse"/>
+            <xs:element name="unfollowUsuario" type="tns:unfollowUsuario"/>
+            <xs:element name="unfollowUsuarioResponse" type="tns:unfollowUsuarioResponse"/>
             <xs:element name="verInfoVueloDt" type="tns:verInfoVueloDt"/>
             <xs:element name="verInfoVueloDtResponse" type="tns:verInfoVueloDtResponse"/>
             <xs:element name="verificarLogin" type="tns:verificarLogin"/>
             <xs:element name="verificarLoginResponse" type="tns:verificarLoginResponse"/>
+            <xs:element name="verificarSeguimiento" type="tns:verificarSeguimiento"/>
+            <xs:element name="verificarSeguimientoResponse" type="tns:verificarSeguimientoResponse"/>
             <xs:complexType name="listarCiudades">
                 <xs:sequence/>
             </xs:complexType>
@@ -87,6 +107,16 @@
             </xs:complexType>
             <xs:complexType final="extension restriction" name="localDate">
                 <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="obtenerCantidadSeguidores">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerCantidadSeguidoresResponse">
+                <xs:sequence>
+                    <xs:element name="cantidadSeguidores" type="xs:int"/>
+                </xs:sequence>
             </xs:complexType>
             <xs:complexType name="cargarDesdeBd">
                 <xs:sequence/>
@@ -205,6 +235,16 @@
                     <xs:element minOccurs="0" name="nombre" type="xs:string"/>
                 </xs:sequence>
             </xs:complexType>
+            <xs:complexType name="obtenerCantidadSeguidos">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerCantidadSeguidosResponse">
+                <xs:sequence>
+                    <xs:element name="cantidadSeguidos" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
             <xs:complexType name="ping">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="nombre" type="xs:string"/>
@@ -249,6 +289,16 @@
                     <xs:element minOccurs="0" name="nombre" type="xs:string"/>
                 </xs:sequence>
             </xs:complexType>
+            <xs:complexType name="puedeFinalizarRuta">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="puedeFinalizarRutaResponse">
+                <xs:sequence>
+                    <xs:element name="codigo" type="xs:int"/>
+                </xs:sequence>
+            </xs:complexType>
             <xs:complexType name="listarAerolineas">
                 <xs:sequence/>
             </xs:complexType>
@@ -278,6 +328,16 @@
                     <xs:element maxOccurs="unbounded" minOccurs="0" name="reservas" type="tns:dtReserva"/>
                 </xs:sequence>
             </xs:complexType>
+            <xs:complexType name="listarRutasFinalizables">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreAerolinea" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="listarRutasFinalizablesResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="rutasFinalizables" type="tns:dtRutaVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
             <xs:complexType name="obtenerVuelo">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
@@ -286,6 +346,16 @@
             <xs:complexType name="obtenerVueloResponse">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="vuelo" type="tns:dtVuelo"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerHoraRutaPorReserva">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="idReserva" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerHoraRutaPorReservaResponse">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="return" type="xs:string"/>
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="obtenerTopRutasMasVisitadas">
@@ -297,6 +367,25 @@
                 <xs:sequence>
                     <xs:element maxOccurs="unbounded" minOccurs="0" name="topRutas" type="tns:dtRutaVuelo"/>
                 </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="verificarSeguimiento">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="seguidorId" type="xs:string"/>
+                    <xs:element minOccurs="0" name="seguidoId" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="verificarSeguimientoResponse">
+                <xs:sequence>
+                    <xs:element name="siguiendo" type="xs:boolean"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="finalizarRutaVuelo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="nombreRuta" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="finalizarRutaVueloResponse">
+                <xs:sequence/>
             </xs:complexType>
             <xs:complexType name="altaRutaVuelo">
                 <xs:sequence>
@@ -337,6 +426,15 @@
                     <xs:element minOccurs="0" name="aerolinea" type="tns:dtAerolinea"/>
                 </xs:sequence>
             </xs:complexType>
+            <xs:complexType name="unfollowUsuario">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="followerNickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="targetNickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="unfollowUsuarioResponse">
+                <xs:sequence/>
+            </xs:complexType>
             <xs:complexType name="altaVuelo">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="nombreVuelo" type="xs:string"/>
@@ -351,6 +449,15 @@
                 </xs:sequence>
             </xs:complexType>
             <xs:complexType name="altaVueloResponse">
+                <xs:sequence/>
+            </xs:complexType>
+            <xs:complexType name="followUsuario">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="followerNickname" type="xs:string"/>
+                    <xs:element minOccurs="0" name="targetNickname" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="followUsuarioResponse">
                 <xs:sequence/>
             </xs:complexType>
             <xs:complexType name="consultarCheckinReserva">
@@ -534,6 +641,16 @@
                     <xs:element minOccurs="0" name="pasajero" type="tns:dtPasajero"/>
                 </xs:sequence>
             </xs:complexType>
+            <xs:complexType name="obtenerAsientosDisponiblesVuelo">
+                <xs:sequence>
+                    <xs:element minOccurs="0" name="reservaId" type="xs:long"/>
+                </xs:sequence>
+            </xs:complexType>
+            <xs:complexType name="obtenerAsientosDisponiblesVueloResponse">
+                <xs:sequence>
+                    <xs:element maxOccurs="unbounded" minOccurs="0" name="return" type="xs:string"/>
+                </xs:sequence>
+            </xs:complexType>
             <xs:complexType name="modificarDatosAerolineaCompleto">
                 <xs:sequence>
                     <xs:element minOccurs="0" name="nickname" type="xs:string"/>
@@ -594,6 +711,9 @@
     <wsdl:message name="listarCiudades">
         <wsdl:part element="tns:listarCiudades" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="obtenerCantidadSeguidores">
+        <wsdl:part element="tns:obtenerCantidadSeguidores" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="modificarDatosClienteCompletoResponse">
         <wsdl:part element="tns:modificarDatosClienteCompletoResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
@@ -612,8 +732,14 @@
     <wsdl:message name="listarRutasPorAerolinea">
         <wsdl:part element="tns:listarRutasPorAerolinea" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="obtenerCantidadSeguidos">
+        <wsdl:part element="tns:obtenerCantidadSeguidos" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="ping">
         <wsdl:part element="tns:ping" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="puedeFinalizarRuta">
+        <wsdl:part element="tns:puedeFinalizarRuta" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="listarAerolineas">
         <wsdl:part element="tns:listarAerolineas" name="parameters"> </wsdl:part>
@@ -624,14 +750,23 @@
     <wsdl:message name="obtenerVuelo">
         <wsdl:part element="tns:obtenerVuelo" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="obtenerAsientosDisponiblesVueloResponse">
+        <wsdl:part element="tns:obtenerAsientosDisponiblesVueloResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="listarCategoriasResponse">
         <wsdl:part element="tns:listarCategoriasResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="finalizarRutaVuelo">
+        <wsdl:part element="tns:finalizarRutaVuelo" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="listarRutasConfirmadasResponse">
         <wsdl:part element="tns:listarRutasConfirmadasResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="crearYRegistrarReservaResponse">
         <wsdl:part element="tns:crearYRegistrarReservaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="followUsuario">
+        <wsdl:part element="tns:followUsuario" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="obtenerClienteResponse">
         <wsdl:part element="tns:obtenerClienteResponse" name="parameters"> </wsdl:part>
@@ -657,6 +792,18 @@
     <wsdl:message name="pingResponse">
         <wsdl:part element="tns:pingResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="finalizarRutaVueloResponse">
+        <wsdl:part element="tns:finalizarRutaVueloResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerCantidadSeguidosResponse">
+        <wsdl:part element="tns:obtenerCantidadSeguidosResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="followUsuarioResponse">
+        <wsdl:part element="tns:followUsuarioResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarRutasFinalizablesResponse">
+        <wsdl:part element="tns:listarRutasFinalizablesResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="altaCliente">
         <wsdl:part element="tns:altaCliente" name="parameters"> </wsdl:part>
     </wsdl:message>
@@ -681,6 +828,9 @@
     <wsdl:message name="crearPasajero">
         <wsdl:part element="tns:crearPasajero" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="obtenerAsientosDisponiblesVuelo">
+        <wsdl:part element="tns:obtenerAsientosDisponiblesVuelo" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="getDtItemRutasPaqueteResponse">
         <wsdl:part element="tns:getDtItemRutasPaqueteResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
@@ -702,14 +852,26 @@
     <wsdl:message name="listarCategorias">
         <wsdl:part element="tns:listarCategorias" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="verificarSeguimientoResponse">
+        <wsdl:part element="tns:verificarSeguimientoResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="obtenerCliente">
         <wsdl:part element="tns:obtenerCliente" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="listarRutasFinalizables">
+        <wsdl:part element="tns:listarRutasFinalizables" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="verInfoVueloDtResponse">
         <wsdl:part element="tns:verInfoVueloDtResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="obtenerHoraRutaPorReserva">
+        <wsdl:part element="tns:obtenerHoraRutaPorReserva" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="obtenerTopRutasMasVisitadas">
         <wsdl:part element="tns:obtenerTopRutasMasVisitadas" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="verificarSeguimiento">
+        <wsdl:part element="tns:verificarSeguimiento" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="altaRutaVuelo">
         <wsdl:part element="tns:altaRutaVuelo" name="parameters"> </wsdl:part>
@@ -722,6 +884,9 @@
     </wsdl:message>
     <wsdl:message name="obtenerAerolinea">
         <wsdl:part element="tns:obtenerAerolinea" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="unfollowUsuario">
+        <wsdl:part element="tns:unfollowUsuario" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="crearPasajeroResponse">
         <wsdl:part element="tns:crearPasajeroResponse" name="parameters"> </wsdl:part>
@@ -753,11 +918,17 @@
     <wsdl:message name="compraPaquete">
         <wsdl:part element="tns:compraPaquete" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="unfollowUsuarioResponse">
+        <wsdl:part element="tns:unfollowUsuarioResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="getDtItemRutasPaquete">
         <wsdl:part element="tns:getDtItemRutasPaquete" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="listarClientes">
         <wsdl:part element="tns:listarClientes" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerCantidadSeguidoresResponse">
+        <wsdl:part element="tns:obtenerCantidadSeguidoresResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="consultarCheckinReservaResponse">
         <wsdl:part element="tns:consultarCheckinReservaResponse" name="parameters"> </wsdl:part>
@@ -780,8 +951,14 @@
     <wsdl:message name="obtenerDtPaqueteResponse">
         <wsdl:part element="tns:obtenerDtPaqueteResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
+    <wsdl:message name="puedeFinalizarRutaResponse">
+        <wsdl:part element="tns:puedeFinalizarRutaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
     <wsdl:message name="altaAerolineaResponse">
         <wsdl:part element="tns:altaAerolineaResponse" name="parameters"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="obtenerHoraRutaPorReservaResponse">
+        <wsdl:part element="tns:obtenerHoraRutaPorReservaResponse" name="parameters"> </wsdl:part>
     </wsdl:message>
     <wsdl:message name="getReservasClienteResponse">
         <wsdl:part element="tns:getReservasClienteResponse" name="parameters"> </wsdl:part>
@@ -793,6 +970,10 @@
         <wsdl:operation name="listarCiudades">
             <wsdl:input message="tns:listarCiudades" name="listarCiudades"> </wsdl:input>
             <wsdl:output message="tns:listarCiudadesResponse" name="listarCiudadesResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerCantidadSeguidores">
+            <wsdl:input message="tns:obtenerCantidadSeguidores" name="obtenerCantidadSeguidores"> </wsdl:input>
+            <wsdl:output message="tns:obtenerCantidadSeguidoresResponse" name="obtenerCantidadSeguidoresResponse"> </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="cargarDesdeBd">
             <wsdl:input message="tns:cargarDesdeBd" name="cargarDesdeBd"> </wsdl:input>
@@ -810,6 +991,10 @@
             <wsdl:input message="tns:listarCategorias" name="listarCategorias"> </wsdl:input>
             <wsdl:output message="tns:listarCategoriasResponse" name="listarCategoriasResponse"> </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="obtenerCantidadSeguidos">
+            <wsdl:input message="tns:obtenerCantidadSeguidos" name="obtenerCantidadSeguidos"> </wsdl:input>
+            <wsdl:output message="tns:obtenerCantidadSeguidosResponse" name="obtenerCantidadSeguidosResponse"> </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="ping">
             <wsdl:input message="tns:ping" name="ping"> </wsdl:input>
             <wsdl:output message="tns:pingResponse" name="pingResponse"> </wsdl:output>
@@ -817,6 +1002,10 @@
         <wsdl:operation name="obtenerCliente">
             <wsdl:input message="tns:obtenerCliente" name="obtenerCliente"> </wsdl:input>
             <wsdl:output message="tns:obtenerClienteResponse" name="obtenerClienteResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="puedeFinalizarRuta">
+            <wsdl:input message="tns:puedeFinalizarRuta" name="puedeFinalizarRuta"> </wsdl:input>
+            <wsdl:output message="tns:puedeFinalizarRutaResponse" name="puedeFinalizarRutaResponse"> </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="listarAerolineas">
             <wsdl:input message="tns:listarAerolineas" name="listarAerolineas"> </wsdl:input>
@@ -826,13 +1015,29 @@
             <wsdl:input message="tns:getReservasCliente" name="getReservasCliente"> </wsdl:input>
             <wsdl:output message="tns:getReservasClienteResponse" name="getReservasClienteResponse"> </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="listarRutasFinalizables">
+            <wsdl:input message="tns:listarRutasFinalizables" name="listarRutasFinalizables"> </wsdl:input>
+            <wsdl:output message="tns:listarRutasFinalizablesResponse" name="listarRutasFinalizablesResponse"> </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="obtenerVuelo">
             <wsdl:input message="tns:obtenerVuelo" name="obtenerVuelo"> </wsdl:input>
             <wsdl:output message="tns:obtenerVueloResponse" name="obtenerVueloResponse"> </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="obtenerHoraRutaPorReserva">
+            <wsdl:input message="tns:obtenerHoraRutaPorReserva" name="obtenerHoraRutaPorReserva"> </wsdl:input>
+            <wsdl:output message="tns:obtenerHoraRutaPorReservaResponse" name="obtenerHoraRutaPorReservaResponse"> </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="obtenerTopRutasMasVisitadas">
             <wsdl:input message="tns:obtenerTopRutasMasVisitadas" name="obtenerTopRutasMasVisitadas"> </wsdl:input>
             <wsdl:output message="tns:obtenerTopRutasMasVisitadasResponse" name="obtenerTopRutasMasVisitadasResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="verificarSeguimiento">
+            <wsdl:input message="tns:verificarSeguimiento" name="verificarSeguimiento"> </wsdl:input>
+            <wsdl:output message="tns:verificarSeguimientoResponse" name="verificarSeguimientoResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="finalizarRutaVuelo">
+            <wsdl:input message="tns:finalizarRutaVuelo" name="finalizarRutaVuelo"> </wsdl:input>
+            <wsdl:output message="tns:finalizarRutaVueloResponse" name="finalizarRutaVueloResponse"> </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="altaRutaVuelo">
             <wsdl:input message="tns:altaRutaVuelo" name="altaRutaVuelo"> </wsdl:input>
@@ -846,9 +1051,17 @@
             <wsdl:input message="tns:obtenerAerolinea" name="obtenerAerolinea"> </wsdl:input>
             <wsdl:output message="tns:obtenerAerolineaResponse" name="obtenerAerolineaResponse"> </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="unfollowUsuario">
+            <wsdl:input message="tns:unfollowUsuario" name="unfollowUsuario"> </wsdl:input>
+            <wsdl:output message="tns:unfollowUsuarioResponse" name="unfollowUsuarioResponse"> </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="altaVuelo">
             <wsdl:input message="tns:altaVuelo" name="altaVuelo"> </wsdl:input>
             <wsdl:output message="tns:altaVueloResponse" name="altaVueloResponse"> </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="followUsuario">
+            <wsdl:input message="tns:followUsuario" name="followUsuario"> </wsdl:input>
+            <wsdl:output message="tns:followUsuarioResponse" name="followUsuarioResponse"> </wsdl:output>
         </wsdl:operation>
         <wsdl:operation name="consultarCheckinReserva">
             <wsdl:input message="tns:consultarCheckinReserva" name="consultarCheckinReserva"> </wsdl:input>
@@ -914,6 +1127,10 @@
             <wsdl:input message="tns:crearPasajero" name="crearPasajero"> </wsdl:input>
             <wsdl:output message="tns:crearPasajeroResponse" name="crearPasajeroResponse"> </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="obtenerAsientosDisponiblesVuelo">
+            <wsdl:input message="tns:obtenerAsientosDisponiblesVuelo" name="obtenerAsientosDisponiblesVuelo"> </wsdl:input>
+            <wsdl:output message="tns:obtenerAsientosDisponiblesVueloResponse" name="obtenerAsientosDisponiblesVueloResponse"> </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="modificarDatosAerolineaCompleto">
             <wsdl:input message="tns:modificarDatosAerolineaCompleto" name="modificarDatosAerolineaCompleto"> </wsdl:input>
             <wsdl:output message="tns:modificarDatosAerolineaCompletoResponse" name="modificarDatosAerolineaCompletoResponse"> </wsdl:output>
@@ -925,6 +1142,15 @@
     </wsdl:portType>
     <wsdl:binding name="WebServicesServiceSoapBinding" type="tns:JuanViajesWS">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="obtenerCantidadSeguidores">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerCantidadSeguidores">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerCantidadSeguidoresResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="listarCiudades">
             <soap:operation soapAction="" style="document"/>
             <wsdl:input name="listarCiudades">
@@ -970,6 +1196,15 @@
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="obtenerCantidadSeguidos">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerCantidadSeguidos">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerCantidadSeguidosResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="ping">
             <soap:operation soapAction="" style="document"/>
             <wsdl:input name="ping">
@@ -985,6 +1220,15 @@
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="obtenerClienteResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="puedeFinalizarRuta">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="puedeFinalizarRuta">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="puedeFinalizarRutaResponse">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
@@ -1006,6 +1250,15 @@
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="listarRutasFinalizables">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="listarRutasFinalizables">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="listarRutasFinalizablesResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="obtenerVuelo">
             <soap:operation soapAction="" style="document"/>
             <wsdl:input name="obtenerVuelo">
@@ -1015,12 +1268,39 @@
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="obtenerHoraRutaPorReserva">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerHoraRutaPorReserva">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerHoraRutaPorReservaResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="obtenerTopRutasMasVisitadas">
             <soap:operation soapAction="" style="document"/>
             <wsdl:input name="obtenerTopRutasMasVisitadas">
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="obtenerTopRutasMasVisitadasResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="verificarSeguimiento">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="verificarSeguimiento">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="verificarSeguimientoResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="finalizarRutaVuelo">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="finalizarRutaVuelo">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="finalizarRutaVueloResponse">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
@@ -1051,12 +1331,30 @@
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
+        <wsdl:operation name="unfollowUsuario">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="unfollowUsuario">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="unfollowUsuarioResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
         <wsdl:operation name="altaVuelo">
             <soap:operation soapAction="" style="document"/>
             <wsdl:input name="altaVuelo">
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="altaVueloResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="followUsuario">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="followUsuario">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="followUsuarioResponse">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>
@@ -1201,6 +1499,15 @@
                 <soap:body use="literal"/>
             </wsdl:input>
             <wsdl:output name="crearPasajeroResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="obtenerAsientosDisponiblesVuelo">
+            <soap:operation soapAction="" style="document"/>
+            <wsdl:input name="obtenerAsientosDisponiblesVuelo">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="obtenerAsientosDisponiblesVueloResponse">
                 <soap:body use="literal"/>
             </wsdl:output>
         </wsdl:operation>

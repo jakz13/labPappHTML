@@ -62,6 +62,9 @@
                             <button class="btn btn-outline-secondary" id="btnLimpiar">
                                 <i class="bi bi-arrow-clockwise"></i> Limpiar
                             </button>
+                            <button class="btn btn-outline-info" id="btnActualizar" title="Forzar actualización de datos">
+                                <i class="bi bi-arrow-repeat"></i> Actualizar Datos
+                            </button>
                         </div>
                     </div>
 

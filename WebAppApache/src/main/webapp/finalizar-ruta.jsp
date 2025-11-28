@@ -126,15 +126,16 @@
             </div>
             <div class="modal-body">
                 <p>¿Está seguro de que desea finalizar la ruta <strong id="rutaNombreModal"></strong>?</p>
-                <p class="text-muted small">
+                <div class="text-muted small">
                     <i class="bi bi-info-circle me-1"></i>
                     <strong>Esta acción no se puede deshacer.</strong> La ruta cambiará a estado "Finalizada" y:
+                </div>
                 <ul class="small">
                     <li>No aparecerá en los listados/búsquedas del sistema</li>
                     <li>No se podrán dar de alta nuevos vuelos para esta ruta</li>
                     <li>No se podrá incluir en paquetes turísticos</li>
                 </ul>
-                </p>
+
                 <input type="hidden" id="rutaIdModal">
             </div>
             <div class="modal-footer">
@@ -191,7 +192,7 @@
 
     function cargarRutasFinalizables() {
         const aerolinea = '<%= usuarioSession %>';
-        console.log('Cargando rutas para aerolínea:', aerolinea);
+        console.log('Cargando rutas para aerolinea:', aerolinea);
 
         if (!aerolinea) {
             mostrarError('No se pudo identificar la aerolínea. Por favor, inicie sesión.');
@@ -256,6 +257,12 @@
         let html = '<div class="row g-3">'; // Reducido el gap entre cards
         rutas.forEach(function(ruta) {
             var idRuta = ruta.id || ruta.idRuta;
+            // Asegurar que no se propague el literal 'undefined'
+            if (idRuta === undefined || idRuta === null || String(idRuta).toLowerCase() === 'undefined') {
+                idRuta = ruta.nombre || '';
+            }
+            // Guardar versión "raw" del nombre para enviar al servidor (no escapada), codificada en URI
+            var nombreRaw = ruta.nombre || '';
             var nombre = escapeHtml(ruta.nombre || 'Sin nombre');
             var descripcion = escapeHtml(ruta.descripcion || 'Sin descripción');
             var origen = escapeHtml(ruta.origen || 'N/A');
@@ -312,7 +319,8 @@
                 + (esFinalizable
                         ? '<button class="btn btn-success btn-compact btn-finalizar" '
                         + 'data-id="' + idRuta + '" '
-                        + 'data-nombre="' + nombre + '">'
+                        + 'data-nombre="' + nombre + '" '
+                        + 'data-nombre-raw="' + encodeURIComponent(nombreRaw) + '">'
                         + '<i class="bi bi-flag-checkered me-1"></i>Finalizar'
                         + '</button>'
                         : '<button class="btn btn-outline-secondary btn-compact" disabled title="Solo rutas con estado \'Confirmada\' pueden finalizarse">'
@@ -331,9 +339,12 @@
         // Agregar listeners a botones creados dinámicamente
         container.querySelectorAll('.btn-finalizar').forEach(function(btn) {
             btn.addEventListener('click', function() {
-                const id = this.getAttribute('data-id') || '';
-                const nombre = this.getAttribute('data-nombre') || '';
-                solicitarFinalizarRuta(id, nombre);
+                const id = (this.getAttribute('data-id') || '').trim();
+                // Preferir el nombre sin escapar si está disponible
+                const nombreRawAttr = this.getAttribute('data-nombre-raw');
+                const nombre = (nombreRawAttr ? decodeURIComponent(nombreRawAttr) : (this.getAttribute('data-nombre') || '')).trim();
+                const finalId = (id && id.toLowerCase() !== 'undefined') ? id : (nombre || '');
+                solicitarFinalizarRuta(finalId, nombre);
             });
         });
     }
@@ -373,9 +384,11 @@
     }
 
     function solicitarFinalizarRuta(id, nombre) {
-        rutaSeleccionada = nombre;
-        rutaIdSeleccionada = id;
-        console.log('Solicitando finalizar ruta:', { id: id, nombre: nombre });
+        // Normalizar valores y evitar 'undefined'
+        const finalId = (id && id.toLowerCase && id.toLowerCase() !== 'undefined') ? id : (nombre || '');
+        rutaSeleccionada = nombre || finalId;
+        rutaIdSeleccionada = finalId;
+        console.log('Solicitando finalizar ruta:', { id: rutaIdSeleccionada, nombre: rutaSeleccionada });
 
         var rutaModal = document.getElementById('rutaNombreModal');
         if (rutaModal) rutaModal.textContent = nombre;
@@ -388,7 +401,7 @@
     }
 
     function finalizarRutaConfirmada() {
-        if (!rutaIdSeleccionada) {
+        if (!rutaIdSeleccionada && !rutaSeleccionada) {
             mostrarMensaje('danger', 'Error: No se ha seleccionado una ruta válida.');
             return;
         }
@@ -405,7 +418,20 @@
         }
 
         const params = new URLSearchParams();
+        // Enviar ambos parámetros; el servlet actual utiliza `nombreRuta`.
         params.append('nombreRuta', rutaSeleccionada);
+        if (rutaIdSeleccionada) params.append('id', rutaIdSeleccionada);
+
+        // -- DEBUG: si la página se carga con ?debugFinalizar=1 enviaremos debug=1 al servlet
+        try {
+            const urlParams = new URLSearchParams(window.location.search);
+            if (urlParams.get('debugFinalizar') === '1') {
+                console.log('Enviando parametro debug=1 para obtener detalle desde el servlet (modo depuración)');
+                params.append('debug', '1');
+            }
+        } catch (e) {
+            // no crítico
+        }
 
         const apiBase = window.CONTEXT_PATH;
         const fetchUrl = apiBase + '/api/finalizar-ruta';
@@ -420,6 +446,8 @@
         })
             .then(response => {
                 return response.text().then(text => {
+                    // Log completo de la respuesta para facilitar copia/pegado
+                    console.log('Respuesta raw de /api/finalizar-ruta ->', text, ' (status:', response.status, ')');
                     let data = null;
                     try {
                         data = text ? JSON.parse(text) : null;
@@ -428,12 +456,13 @@
                     }
 
                     if (!response.ok) {
-                        // Si el servlet envió JSON con \`error\`, lo usamos
-                        const msg =
-                            data && data.error
-                                ? data.error
-                                : ('Error al finalizar la ruta: ' + response.status);
-                        throw new Error(msg);
+                        // Si el servlet envió JSON con `error`, lo usamos
+                        const msg = data && data.error
+                            ? data.error
+                            : ('Error al finalizar la ruta: ' + response.status);
+                        // Si hay detalle, incluyelo en el error para que el catch lo reciba
+                        const detalle = data && data.detail ? '\n\nDetalle:\n' + data.detail : '';
+                        throw new Error(msg + detalle);
                     }
                     // OK: devolvemos el JSON parseado
                     return data;
@@ -523,3 +552,4 @@
 </script>
 </body>
 </html>
+

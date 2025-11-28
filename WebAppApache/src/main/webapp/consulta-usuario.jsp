@@ -39,6 +39,12 @@
                         <div class="card border-success">
                             <div class="card-header bg-success text-white">
                                 <h5 class="mb-0">Perfil del Usuario</h5>
+                                <!-- Botón de Seguir/Dejar de seguir -->
+                                <div id="followSection" style="display: none;">
+                                    <button id="followBtn" class="btn btn-light follow-btn" onclick="toggleFollow()">
+                                        <i class="bi bi-person-plus me-1"></i>Seguir
+                                    </button>
+                                </div>
                             </div>
                             <div class="card-body">
                                 <div class="row">
@@ -50,6 +56,20 @@
                                         <p class="mb-1 text-light"><strong>Tipo:</strong> <span id="tipoUsuario" class="badge bg-primary"></span></p>
                                         <p class="mb-1 text-light"><strong>Correo:</strong> <span id="correoUsuario" class="text-light"></span></p>
                                         <p class="mb-0 text-light"><strong>Fecha registro:</strong> <span id="fechaRegistro" class="text-light"></span></p>
+
+                                        <!-- Estadísticas de Seguidores/Seguidos MEJORADAS -->
+                                        <div class="follow-stats mt-3">
+                                            <div class="row text-center">
+                                                <div class="col-6">
+                                                    <h5 id="seguidoresCount" class="mb-0">0</h5>
+                                                    <small>Seguidores</small>
+                                                </div>
+                                                <div class="col-6">
+                                                    <h5 id="seguidosCount" class="mb-0">0</h5>
+                                                    <small>Seguidos</small>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
 
                                     <!-- Información detallada -->
@@ -162,16 +182,19 @@
 <script>
     // Variable global para almacenar el usuario actual
     let usuarioActualId = null;
+    let usuarioConsultadoId = null;
+    let esMiUsuario = false;
+    let siguiendoUsuario = false;
 
     // Función para cargar vuelos de aerolínea
     async function cargarVuelosAerolinea() {
-        if (!usuarioActualId) return;
+        if (!usuarioConsultadoId) return;
 
         const vuelosContainer = document.getElementById('vuelosAerolinea');
         vuelosContainer.innerHTML = '<div class="col-12 text-center"><div class="spinner-border text-primary" role="status"><span class="visually-hidden">Cargando vuelos...</span></div><p class="text-muted mt-2">Cargando vuelos...</p></div>';
 
         try {
-            const response = await fetch('consulta-usuario?action=obtener-vuelos-aerolinea&usuario=' + encodeURIComponent(usuarioActualId));
+            const response = await fetch('consulta-usuario?action=obtener-vuelos-aerolinea&usuario=' + encodeURIComponent(usuarioConsultadoId));
 
             if (!response.ok) {
                 throw new Error('Error al cargar vuelos');
@@ -182,7 +205,7 @@
 
         } catch (error) {
             console.error('Error cargando vuelos:', error);
-            vuelosContainer.innerHTML = '<div class="col-12"><div class="alert alert-danger">Error al cargar los vuelos: ' + error.message + '</div></div>';
+            vuelosContainer.innerHTML = '<div class="col-12"><div class="alert alert-danger">Error al cargar los vuelos</div></div>';
         }
     }
 
@@ -253,7 +276,7 @@
 
         } catch (error) {
             console.error('Error consultando vuelo:', error);
-            alert('Error al cargar los detalles del vuelo: ' + error.message);
+            alert('Error al cargar los detalles del vuelo');
         }
     }
 
@@ -354,6 +377,123 @@
         modal.show();
     }
 
+    // Función para alternar entre seguir y dejar de seguir
+    async function toggleFollow() {
+        const action = siguiendoUsuario ? 'dejar-de-seguir' : 'seguir';
+
+        const response = await fetch(`consulta-usuario?action=${action}&usuario=${usuarioConsultadoId}`);
+
+        if (response.ok) {
+            siguiendoUsuario = !siguiendoUsuario;
+            actualizarBotonSeguir();
+
+            // ✅ FORZAR recarga sin cache
+            const timestamp = new Date().getTime();
+            await fetch(`consulta-usuario?action=obtener-estadisticas-seguimiento&usuario=${usuarioConsultadoId}&forzarRecarga=true&_=${timestamp}`)
+                .then(res => res.json())
+                .then(stats => {
+                    document.getElementById('seguidoresCount').textContent = stats.seguidores;
+                    document.getElementById('seguidosCount').textContent = stats.seguidos;
+                });
+        }
+    }
+
+    // Función para actualizar el botón de seguir/dejar de seguir
+    function actualizarBotonSeguir() {
+        const followBtn = document.getElementById('followBtn');
+
+        if (siguiendoUsuario) {
+            followBtn.innerHTML = '<i class="bi bi-person-dash me-1"></i>Dejar de seguir';
+            followBtn.classList.add('following');
+        } else {
+            followBtn.innerHTML = '<i class="bi bi-person-plus me-1"></i>Seguir';
+            followBtn.classList.remove('following');
+        }
+    }
+
+    // Función para cargar estadísticas de seguidores/seguidos
+    async function cargarEstadisticasSeguimiento() {
+        if (!usuarioConsultadoId) return;
+
+        try {
+            const response = await fetch('consulta-usuario?action=obtener-estadisticas-seguimiento&usuario=' + encodeURIComponent(usuarioConsultadoId));
+
+            if (!response.ok) {
+                throw new Error('Error al cargar estadísticas');
+            }
+
+            const estadisticas = await response.json();
+
+            document.getElementById('seguidoresCount').textContent = estadisticas.seguidores || 0;
+            document.getElementById('seguidosCount').textContent = estadisticas.seguidos || 0;
+
+        } catch (error) {
+            document.getElementById('seguidoresCount').textContent = '0';
+            document.getElementById('seguidosCount').textContent = '0';
+        }
+    }
+
+    // Función para verificar si el usuario actual sigue al usuario consultado
+    async function verificarEstadoSeguimiento() {
+        if (!usuarioConsultadoId || esMiUsuario) return;
+
+        try {
+            const response = await fetch('consulta-usuario?action=verificar-seguimiento&usuario=' + encodeURIComponent(usuarioConsultadoId));
+
+            if (!response.ok) {
+                throw new Error('Error al verificar estado');
+            }
+
+            const resultado = await response.json();
+            siguiendoUsuario = resultado.siguiendo || false;
+            actualizarBotonSeguir();
+
+        } catch (error) {
+            siguiendoUsuario = false;
+            actualizarBotonSeguir();
+        }
+    }
+
+    // Función para mostrar mensaje de éxito
+    function mostrarMensajeExito(mensaje) {
+        const alertasAnteriores = document.querySelectorAll('.alert');
+        alertasAnteriores.forEach(alerta => alerta.remove());
+
+        const alertHTML = '<div class="alert alert-success alert-dismissible fade show" role="alert">' +
+            '<i class="bi bi-check-circle me-2"></i>' +
+            mensaje +
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+            '</div>';
+        document.querySelector('.card-body').insertAdjacentHTML('afterbegin', alertHTML);
+
+        setTimeout(() => {
+            const alerta = document.querySelector('.alert-success');
+            if (alerta) {
+                alerta.remove();
+            }
+        }, 5000);
+    }
+
+    // Función para mostrar mensaje de error
+    function mostrarMensajeError(mensaje) {
+        const alertasAnteriores = document.querySelectorAll('.alert');
+        alertasAnteriores.forEach(alerta => alerta.remove());
+
+        const alertHTML = '<div class="alert alert-danger alert-dismissible fade show" role="alert">' +
+            '<i class="bi bi-exclamation-triangle me-2"></i>' +
+            mensaje +
+            '<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>' +
+            '</div>';
+        document.querySelector('.card-body').insertAdjacentHTML('afterbegin', alertHTML);
+
+        setTimeout(() => {
+            const alerta = document.querySelector('.alert-danger');
+            if (alerta) {
+                alerta.remove();
+            }
+        }, 5000);
+    }
+
     // Configurar event listener para el select de usuarios
     document.addEventListener('DOMContentLoaded', function() {
         const usuarioSelect = document.getElementById('usuarioSelect');
@@ -361,7 +501,24 @@
         usuarioSelect.addEventListener('change', function() {
             const usuarioId = this.value;
             if (usuarioId) {
-                usuarioActualId = usuarioId;
+                usuarioConsultadoId = usuarioId;
+
+                // Obtener el ID del usuario actual desde la sesión
+                const usuarioActual = obtenerUsuarioActual();
+                esMiUsuario = (usuarioActual && usuarioActual.id === usuarioConsultadoId);
+
+                // Mostrar/ocultar sección de seguir
+                const followSection = document.getElementById('followSection');
+                if (esMiUsuario) {
+                    followSection.style.display = 'none';
+                } else {
+                    followSection.style.display = 'block';
+                    verificarEstadoSeguimiento();
+                }
+
+                // Cargar estadísticas de seguimiento
+                cargarEstadisticasSeguimiento();
+
                 // La función cargarUsuarioSeleccionado está en consulta-usuario.js
                 if (typeof cargarUsuarioSeleccionado === 'function') {
                     cargarUsuarioSeleccionado(usuarioId);
@@ -383,6 +540,35 @@
         if (typeof cargarRutasAerolineaInterfaz === 'function') {
             cargarRutasAerolineaInterfaz(filtro);
         }
+    }
+
+    // Función auxiliar para obtener el usuario actual desde session-manager.js
+    function obtenerUsuarioActual() {
+        // Método 1: Desde window.CURRENT_SESSION (que usa tu session-manager.js)
+        if (typeof window.CURRENT_SESSION !== 'undefined' && window.CURRENT_SESSION.authenticated) {
+            return {
+                id: window.CURRENT_SESSION.nickname,
+                nickname: window.CURRENT_SESSION.nickname,
+                tipo: window.CURRENT_SESSION.tipo
+            };
+        }
+
+        // Método 2: Desde localStorage (fallback de tu session-manager)
+        try {
+            const nickname = localStorage.getItem('session_nickname');
+            const tipo = localStorage.getItem('session_tipo');
+            if (nickname) {
+                return {
+                    id: nickname,
+                    nickname: nickname,
+                    tipo: tipo
+                };
+            }
+        } catch (e) {
+            console.warn('Error accediendo localStorage');
+        }
+
+        return null;
     }
 </script>
 </body>

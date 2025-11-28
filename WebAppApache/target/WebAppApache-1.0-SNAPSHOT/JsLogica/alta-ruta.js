@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Cargar categorías (manejando lista de strings o lista de objetos {nombre:...})
-    fetch('listarCategorias')
+    fetch((window.CONTEXT_PATH || '') + '/listarCategorias')
         .then(res => {
             if (!res.ok) throw new Error('HTTP ' + res.status);
             return res.json();
@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
 
     // Cargar ciudades desde el backend y poblar selects origen/destino
-    fetch('listarCiudades')
+    fetch((window.CONTEXT_PATH || '') + '/listarCiudades')
         .then(res => {
             if (!res.ok) throw new Error('HTTP ' + res.status);
             return res.json();

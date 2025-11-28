@@ -2,183 +2,236 @@
 let rutaSeleccionada = null;
 let vueloSeleccionado = null;
 let usuarioInfo = null;
-let rutasCargadas = []; // <--- guarda las rutas reales de la aerolínea
+let rutasCargadas = [];
 
-// Función para restaurar estado al recargar
-function restaurarEstado() {
-    const aerolineaGuardada = sessionStorage.getItem('consultaRuta_aerolinea');
-    const categoriaGuardada = sessionStorage.getItem('consultaRuta_categoria');
-    const rutaSeleccionadaGuardada = sessionStorage.getItem('consultaRuta_rutaSeleccionada');
-
-    if (aerolineaGuardada) {
-        // Establecer el valor primero
-        document.getElementById('aerolinea').value = aerolineaGuardada;
-
-        // Esperar a que el DOM se actualice y luego cargar rutas
-        setTimeout(() => {
-            // Disparar el cambio para cargar rutas
-            const event = new Event('change');
-            document.getElementById('aerolinea').dispatchEvent(event);
-
-            // Esperar a que las rutas se carguen antes de restaurar selecciones
-            const checkRutasCargadas = setInterval(() => {
-                if (rutasCargadas.length > 0) {
-                    clearInterval(checkRutasCargadas);
-
-                    // Restaurar categoría
-                    if (categoriaGuardada) {
-                        document.getElementById('categoria').value = categoriaGuardada;
-                        // Aplicar filtros si hay categoría
-                        setTimeout(() => aplicarFiltros(), 100);
-                    }
-
-                    // Restaurar ruta seleccionada
-                    if (rutaSeleccionadaGuardada) {
-                        const ruta = rutasCargadas.find(r => r.nombre === rutaSeleccionadaGuardada);
-                        if (ruta) {
-                            // Esperar un poco más para asegurar que la UI esté lista
-                            setTimeout(() => {
-                                seleccionarRuta(rutaSeleccionadaGuardada);
-                            }, 300);
-                        }
-                    }
-                }
-            }, 100);
-
-            // Timeout de seguridad
-            setTimeout(() => clearInterval(checkRutasCargadas), 3000);
-        }, 200);
+// Función para construir URLs a la API
+function api(path) {
+    if (window.SESSION_API_BASE && window.SESSION_API_BASE.length) return window.SESSION_API_BASE + path;
+    try {
+        const origin = window.location.origin || (window.location.protocol + '//' + window.location.host);
+        const contextPath = window.location.pathname.replace(/\/[^/]*$/, '');
+        return origin + contextPath + path;
+    } catch (e) {
+        return path.startsWith('/') ? path : ('/' + path);
     }
 }
 
-// Inicialización CORREGIDA
+// Inicialización
 document.addEventListener('DOMContentLoaded', function() {
+    console.log('🚀 Inicializando consulta-ruta.js');
     cargarAerolineas();
     cargarCategorias();
     configurarEventListeners();
-
-    // Restaurar estado después de que todo esté configurado
-    setTimeout(restaurarEstado, 500);
 });
 
 // Cargar aerolíneas desde backend
 function cargarAerolineas() {
-    fetch((window.CONTEXT_PATH || '') + '/api/aerolineas')
-        .then(res => res.json())
+    const timestamp = new Date().getTime();
+    const url = api('/api/aerolineas?_=' + timestamp);
+    console.log('cargarAerolineas -> fetch URL (sin cache):', url);
+
+    fetch(url, {
+        credentials: 'include',
+        headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    })
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const ct = res.headers.get('content-type') || '';
+            if (!ct.includes('application/json')) throw new Error('Respuesta no JSON: ' + ct);
+            return res.json();
+        })
         .then(data => {
+            console.log('cargarAerolineas -> datos recibidos:', data);
             const select = document.getElementById('aerolinea');
+            if (!select) {
+                console.warn("Elemento select #aerolinea no encontrado en la página");
+                return;
+            }
             select.innerHTML = '<option value="">Seleccione aerolínea...</option>';
+            if (!Array.isArray(data) || data.length === 0) {
+                select.innerHTML = '<option value="">No hay aerolíneas disponibles</option>';
+                select.disabled = true;
+                return;
+            }
             data.forEach(a => {
                 select.innerHTML += `<option value="${a.nickname}">${a.nombre}</option>`;
             });
+            select.disabled = false;
+
+            // RESTAURACIÓN
+            const saved = sessionStorage.getItem('consultaRuta_aerolinea');
+            if (saved) {
+                const opt = Array.from(select.options).find(o => o.value === saved);
+                if (opt) {
+                    select.value = saved;
+                    console.log('cargarAerolineas: restaurada aerolínea desde sessionStorage ->', saved);
+                    setTimeout(() => {
+                        select.dispatchEvent(new Event('change'));
+                    }, 100);
+                } else {
+                    console.warn('cargarAerolineas: valor guardado en sessionStorage no encontrado:', saved);
+                    sessionStorage.removeItem('consultaRuta_aerolinea');
+                }
+            }
         })
         .catch(err => {
             console.error("Error al cargar aerolíneas:", err);
+            const select = document.getElementById('aerolinea');
+            if (select) {
+                select.innerHTML = '<option value="">Error al cargar aerolíneas</option>';
+                select.disabled = true;
+            }
         });
 }
 
-// Nueva función: cargar categorías desde el servlet ListarCategoriasServlet (ruta: /listarCategorias)
+// Cargar categorías
 function cargarCategorias() {
-    fetch('listarCategorias')
-        .then(res => res.json())
+    const timestamp = new Date().getTime();
+    const url = api('/listarCategorias?_=' + timestamp);
+
+    fetch(url, { credentials: 'include' })
+        .then(res => {
+            if (!res.ok) throw new Error('HTTP ' + res.status);
+            const ct = res.headers.get('content-type') || '';
+            if (!ct.includes('application/json')) throw new Error('Respuesta no JSON: ' + ct);
+            return res.json();
+        })
         .then(data => {
             const select = document.getElementById('categoria');
-            // Si no existe el select, evitamos errores
             if (!select) return;
             select.innerHTML = '<option value="">Todas las categorías</option>';
+            if (!Array.isArray(data) || data.length === 0) return;
             data.forEach(c => {
-                // c.nombre según lo que devuelve tu servlet
                 select.innerHTML += `<option value="${c.nombre}">${c.nombre}</option>`;
             });
+
+            // Restaurar categoría si existe
+            const categoriaGuardada = sessionStorage.getItem('consultaRuta_categoria');
+            if (categoriaGuardada) {
+                select.value = categoriaGuardada;
+            }
         })
         .catch(err => {
-            console.error("Error al cargar categorías:", err);
+            console.error('Error al cargar categorías:', err);
         });
 }
 
 function configurarEventListeners() {
-    // ========== GUARDAR EN SESSIONSTORAGE ==========
-    document.getElementById('aerolinea').addEventListener('change', function() {
+    const aerolineaSelect = document.getElementById('aerolinea');
+    const categoriaSelect = document.getElementById('categoria');
+
+    // Guardar en sessionStorage
+    aerolineaSelect.addEventListener('change', function() {
         sessionStorage.setItem('consultaRuta_aerolinea', this.value);
-        sessionStorage.removeItem('consultaRuta_rutaSeleccionada'); // Limpiar ruta al cambiar aerolínea
+        sessionStorage.removeItem('consultaRuta_rutaSeleccionada');
     });
 
-    document.getElementById('categoria').addEventListener('change', function() {
+    categoriaSelect.addEventListener('change', function() {
         sessionStorage.setItem('consultaRuta_categoria', this.value);
     });
-    // ========== FIN GUARDAR EN SESSIONSTORAGE ==========
 
     // Aerolínea -> rutas
-    document.getElementById('aerolinea').addEventListener('change', function() {
+    aerolineaSelect.addEventListener('change', function() {
         const aerolinea = this.value;
-        const rutasList = document.getElementById('listaRutas');
-        const vuelosList = document.getElementById('vuelosAsociados');
-
-        rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Cargando rutas...</p></div>';
-        vuelosList.innerHTML = '';
-        document.getElementById('infoRuta').style.display = 'none';
-        document.getElementById('infoVuelo').style.display = 'none';
-        rutaSeleccionada = null;
-        vueloSeleccionado = null;
-
-        if (aerolinea) {
-            fetch((window.CONTEXT_PATH || '') + '/api/rutas?aerolinea=' + encodeURIComponent(aerolinea))
-                .then(res => res.json())
-                .then(data => {
-                    rutasCargadas = data; // <--- guardar todas las rutas cargadas
-                    aplicarFiltros(); // aplicar filtro de categoría localmente (si hay)
-                })
-                .catch(err => {
-                    console.error("Error al cargar rutas:", err);
-                    rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Error al cargar rutas</p></div>';
-                });
-        } else {
-            rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
-            rutasCargadas = [];
-        }
+        cargarRutasPorAerolinea(aerolinea);
     });
 
     // Botón aplicar filtros
     const btnAplicar = document.getElementById('btnAplicarFiltros');
-    if (btnAplicar) btnAplicar.addEventListener('click', function() {
-        aplicarFiltros();
-    });
+    if (btnAplicar) {
+        btnAplicar.addEventListener('click', function() {
+            aplicarFiltros();
+        });
+    }
 
-    // Botón limpiar - CORREGIDO
+    // Botón limpiar
     const btnLimpiar = document.getElementById('btnLimpiar');
-    if (btnLimpiar) btnLimpiar.addEventListener('click', function() {
-        limpiarFiltros();
-    });
+    if (btnLimpiar) {
+        btnLimpiar.addEventListener('click', function() {
+            limpiarFiltros();
+        });
+    }
 
-    // Aplicar filtro cuando se cambia la categoría (UX: filtrado instantáneo)
-    const selectCategoria = document.getElementById('categoria');
-    if (selectCategoria) {
-        selectCategoria.addEventListener('change', function() {
+    // Botón actualizar datos
+    const btnActualizar = document.getElementById('btnActualizar');
+    if (btnActualizar) {
+        btnActualizar.addEventListener('click', function() {
+            console.log('🔄 Forzando actualización de datos...');
+            const aerolineaActual = document.getElementById('aerolinea').value;
+            if (aerolineaActual) {
+                // Limpiar cache y recargar
+                rutasCargadas = [];
+                cargarRutasPorAerolinea(aerolineaActual);
+                mostrarMensajeExito('Datos actualizados correctamente');
+            } else {
+                mostrarMensajeError('Seleccione una aerolínea primero');
+            }
+        });
+    }
+
+    // Aplicar filtro cuando se cambia la categoría
+    if (categoriaSelect) {
+        categoriaSelect.addEventListener('change', function() {
             aplicarFiltros();
         });
     }
 }
 
-// Función limpiarFiltros COMPLETA - AÑADIR ESTA FUNCIÓN
-function limpiarFiltros() {
-    // Limpiar sessionStorage
-    sessionStorage.removeItem('consultaRuta_aerolinea');
-    sessionStorage.removeItem('consultaRuta_categoria');
-    sessionStorage.removeItem('consultaRuta_rutaSeleccionada');
+// Función específica para cargar rutas por aerolínea
+function cargarRutasPorAerolinea(aerolinea) {
+    const rutasList = document.getElementById('listaRutas');
+    const vuelosList = document.getElementById('vuelosAsociados');
 
-    // Limpiar UI
-    document.getElementById('aerolinea').value = '';
-    document.getElementById('categoria').value = '';
-    rutasCargadas = [];
-    document.getElementById('listaRutas').innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
-    document.getElementById('vuelosAsociados').innerHTML = '';
+    rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Cargando rutas...</p></div>';
+    vuelosList.innerHTML = '';
     document.getElementById('infoRuta').style.display = 'none';
     document.getElementById('infoVuelo').style.display = 'none';
     rutaSeleccionada = null;
     vueloSeleccionado = null;
-}
 
-// [El resto de tus funciones permanecen igual: cargarRutas, seleccionarRuta, mostrarDetallesRuta, etc.]
+    if (aerolinea) {
+        // AGREGAR TIMESTAMP PARA EVITAR CACHE
+        const timestamp = new Date().getTime();
+        const url = api('/api/rutas?aerolinea=' + encodeURIComponent(aerolinea) + '&_=' + timestamp);
+
+        console.log('🔄 Cargando rutas (sin cache):', url);
+
+        fetch(url, {
+            credentials: 'include',
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
+            }
+        })
+            .then(res => {
+                if (!res.ok) throw new Error('HTTP ' + res.status);
+                return res.json();
+            })
+            .then(data => {
+                rutasCargadas = data;
+                console.log('✅ Rutas cargadas (actualizadas):', data);
+                aplicarFiltros();
+
+                // Restaurar ruta seleccionada si existe
+                const rutaGuardada = sessionStorage.getItem('consultaRuta_rutaSeleccionada');
+                if (rutaGuardada && data.some(r => r.nombre === rutaGuardada)) {
+                    setTimeout(() => {
+                        seleccionarRuta(rutaGuardada);
+                    }, 200);
+                }
+            })
+            .catch(err => {
+                console.error('Error al cargar rutas:', err);
+                rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Error al cargar rutas</p></div>';
+            });
+    } else {
+        rutasList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
+        rutasCargadas = [];
+    }
+}
 
 function cargarRutas(rutas) {
     const container = document.getElementById('listaRutas');
@@ -215,8 +268,19 @@ function seleccionarRuta(nombreRuta) {
     console.log('🔍 Seleccionando ruta:', nombreRuta);
     sessionStorage.setItem('consultaRuta_rutaSeleccionada', nombreRuta);
 
-    // ✅ UNA SOLA LLAMADA: Obtener detalles Y contar visita
-    fetch(`${CONTEXT_PATH}/consultaRuta?nombreRuta=${encodeURIComponent(nombreRuta)}`)
+    // AGREGAR TIMESTAMP PARA EVITAR CACHE
+    const timestamp = new Date().getTime();
+    const url = api('/consultaRuta?nombreRuta=' + encodeURIComponent(nombreRuta) + '&_=' + timestamp);
+
+    console.log('🔄 Cargando detalles de ruta (sin cache):', url);
+
+    fetch(url, {
+        credentials: 'include',
+        headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    })
         .then(response => {
             if (!response.ok) throw new Error(`HTTP ${response.status}`);
             return response.json();
@@ -226,8 +290,7 @@ function seleccionarRuta(nombreRuta) {
                 throw new Error(rutaDetallada.error);
             }
 
-            console.log('✅ Detalles de ruta obtenidos (visita contada):', rutaDetallada);
-
+            console.log('✅ Detalles de ruta obtenidos (actualizados):', rutaDetallada);
             rutaSeleccionada = rutaDetallada;
             mostrarDetallesRuta(rutaDetallada);
             cargarVuelosRuta(nombreRuta);
@@ -249,7 +312,6 @@ function seleccionarRuta(nombreRuta) {
         })
         .catch(error => {
             console.error('❌ Error consultando ruta:', error);
-            // Fallback a datos locales
             const rutaLocal = rutasCargadas.find(r => r.nombre === nombreRuta);
             if (rutaLocal) {
                 rutaSeleccionada = rutaLocal;
@@ -261,25 +323,14 @@ function seleccionarRuta(nombreRuta) {
         });
 }
 
-// [Mantén el resto de tus funciones como están...]
-
 function mostrarDetallesRuta(ruta) {
-    // Actualizar información de la ruta con datos reales
-    console.log("Datos de la ruta recibidos:", ruta);
-    console.log("Video URL:", ruta.videoUrl);
-    console.log("Imagen URL:", ruta.imagenUrl);
-    // PRUEBA: Mostrar TODOS los campos de la ruta en la consola
-    console.log("=== TODOS LOS CAMPOS DE LA RUTA ===");
-    for (let key in ruta) {
-        console.log(`📌 ${key}:`, ruta[key]);
-    }
-    console.log("===================================");
     document.getElementById('rutaNombre').textContent = ruta.nombre || '-';
     document.getElementById('rutaDescripcion').textContent = ruta.descripcion || 'Sin descripción';
-    // si el select de aerolinea no tiene texto (por ejemplo value ''), poner '-'
+
     const aerSelect = document.getElementById('aerolinea');
     const aerText = (aerSelect && aerSelect.options[aerSelect.selectedIndex]) ? aerSelect.options[aerSelect.selectedIndex].text : '-';
     document.getElementById('rutaAerolinea').textContent = aerText;
+
     document.getElementById('rutaOrigen').textContent = ruta.origen || '-';
     document.getElementById('rutaDestino').textContent = ruta.destino || '-';
     document.getElementById('rutaEstado').textContent = ruta.estado || 'Confirmada';
@@ -288,8 +339,7 @@ function mostrarDetallesRuta(ruta) {
     document.getElementById('costoEjecutivo').textContent = ruta.costoEjecutivo !== undefined ? `$${ruta.costoEjecutivo}` : 'N/A';
     document.getElementById('costoEquipaje').textContent = ruta.costoEquipaje !== undefined ? `$${ruta.costoEquipaje}` : 'N/A';
 
-    // ---------- Imagen de la ruta (nuevo) ----------
-    // Crear o reutilizar un contenedor para la imagen dentro de #infoRuta
+    // Manejo de imagen
     const infoRutaEl = document.getElementById('infoRuta');
     if (infoRutaEl) {
         let imgContainer = document.getElementById('rutaImagenContainer');
@@ -297,11 +347,9 @@ function mostrarDetallesRuta(ruta) {
             imgContainer = document.createElement('div');
             imgContainer.id = 'rutaImagenContainer';
             imgContainer.className = 'mb-3';
-            // Insertarlo al principio de infoRuta
             infoRutaEl.insertAdjacentElement('afterbegin', imgContainer);
         }
 
-        // Crear o reutilizar la etiqueta img
         let imgEl = document.getElementById('imagenRutaDetalle');
         if (!imgEl) {
             imgEl = document.createElement('img');
@@ -312,72 +360,16 @@ function mostrarDetallesRuta(ruta) {
             imgContainer.appendChild(imgEl);
         }
 
-        // Obtener posible valor de imagen desde el objeto ruta (varias claves posibles)
         const imageValue = ruta.imagen || ruta.imagenUrl || ruta.imagenURL || ruta.image || ruta.foto || ruta.url || '';
-
-        // Helper: convertir un valor devuelto por el backend en una URL pública de imagen
-        function toPublicImageUrl(value) {
-            if (!value) return '';
-            const v = String(value).trim();
-            if (v.length === 0) return '';
-            try {
-                // Si es data URL, devolver tal cual
-                if (/^data:/i.test(v)) return v;
-                // Si es URL absoluta, analizarla para decidir si normalizar
-                if (/^https?:\/\//i.test(v)) {
-                    try {
-                        const parsed = new URL(v);
-                        const origin = window.location.origin || (window.location.protocol + '//' + window.location.host);
-                        // Si la URL absoluta apunta al mismo origen del navegador, extraer filename y construir con contextPath
-                        if (parsed.origin === origin || parsed.pathname.indexOf('/Images/') >= 0 || parsed.pathname.split('/').length <= 2) {
-                            // extraer filename
-                            const path = parsed.pathname || '';
-                            const parts = path.split('/').filter(Boolean);
-                            const filename = parts.length > 0 ? parts[parts.length - 1] : '';
-                            if (filename) {
-                                const ctx = (typeof window !== 'undefined' && window.CONTEXT_PATH) ? window.CONTEXT_PATH : window.location.pathname.replace(/\/[^/]*$/, '');
-                                const prefix = (ctx.endsWith('/')) ? ctx.slice(0, -1) : ctx;
-                                return prefix + '/Images/' + filename;
-                            }
-                        }
-                        // si no coincide con el origen o no contiene un filename, devolver la URL tal cual
-                        return v;
-                    } catch (e) {
-                        return v;
-                    }
-                }
-                // si ya tiene un slash al inicio (ruta absoluta dentro del host), intentar extraer filename si contiene Images/
-                if (v.startsWith('/')) {
-                    if (v.indexOf('/Images/') >= 0) {
-                        const parts = v.split('/').filter(Boolean);
-                        const filename = parts.length > 0 ? parts[parts.length - 1] : '';
-                        if (filename) {
-                            const ctx = (typeof window !== 'undefined' && window.CONTEXT_PATH) ? window.CONTEXT_PATH : window.location.pathname.replace(/\/[^/]*$/, '');
-                            const prefix = (ctx.endsWith('/')) ? ctx.slice(0, -1) : ctx;
-                            return prefix + '/Images/' + filename;
-                        }
-                    }
-                    // si no contiene Images/, devolver como filename simple
-                    return v;
-                }
-                // para cualquier otro caso, devolver como filename simple
-                return v;
-            } catch (e) {
-                return '';
-            }
-        }
-
-        // Lógica principal: asignar imagen según valor
         if (imageValue) {
             const raw = String(imageValue).trim();
-            // Resolver a URL pública usando helper (si es filename o URL absoluta local)
             const resolved = toPublicImageUrl(raw);
-            console.log('Imagen de ruta: asignando URL resuelta ->', resolved, ' (raw:', raw, ')');
+            console.log('Imagen de ruta:', resolved);
             imgEl.src = resolved;
             imgEl.style.display = 'block';
             imgEl.style.objectFit = 'cover';
             imgEl.onerror = function() {
-                console.warn('La imagen de ruta falló al cargar, ocultando elemento:', resolved);
+                console.warn('La imagen de ruta falló al cargar:', resolved);
                 imgEl.style.display = 'none';
             };
         } else {
@@ -385,38 +377,12 @@ function mostrarDetallesRuta(ruta) {
         }
     }
 
-    // ---------- Video de la ruta (nuevo) ----------
-    // Usar videoUrl directamente desde el objeto ruta
+    // Manejo de video
     const videoUrl = ruta.videoUrl || ruta.video || '';
     const videoUrlContainer = document.getElementById('videoUrlContainer');
     const videoContainer = document.getElementById('videoContainer');
 
-    // helpers para detectar YouTube/Vimeo/MP4
-    function getYouTubeEmbed(url) {
-        // soporta https://www.youtube.com/watch?v=ID y https://youtu.be/ID
-        try {
-            const u = new URL(url);
-            if (u.hostname.indexOf('youtube.com') >= 0) {
-                return u.searchParams.get('v');
-            }
-            if (u.hostname.indexOf('youtu.be') >= 0) {
-                return u.pathname.split('/').filter(Boolean)[0];
-            }
-        } catch (e) { }
-        return null;
-    }
-    function getVimeoEmbed(url) {
-        try {
-            const u = new URL(url);
-            if (u.hostname.indexOf('vimeo.com') >= 0) {
-                return u.pathname.split('/').filter(Boolean)[0];
-            }
-        } catch (e) { }
-        return null;
-    }
-
     if (videoUrl) {
-        // mostrar enlace
         if (videoUrlContainer) {
             videoUrlContainer.style.display = 'block';
             const linkEl = document.getElementById('videoUrlLink');
@@ -456,8 +422,6 @@ function mostrarDetallesRuta(ruta) {
                 src.type = 'video/mp4';
                 videoEl.appendChild(src);
                 videoContainer.appendChild(videoEl);
-            } else {
-                // si no se puede embeber, dejamos solo el enlace (ya puesto arriba)
             }
         }
     } else {
@@ -465,59 +429,68 @@ function mostrarDetallesRuta(ruta) {
         if (videoContainer) videoContainer.innerHTML = '';
     }
 
-    // Asegurarse de mostrar el panel de detalles
     try {
         document.getElementById('infoRuta').style.display = 'block';
-    } catch (e) {
-        // si no existe, no hacemos nada
-    }
+    } catch (e) {}
 }
 
-// Filtrar rutas por categoría (localmente, en el cliente)
+// Filtrar rutas por categoría
 function aplicarFiltros() {
     const categoriaSeleccionada = document.getElementById('categoria').value;
 
-    // Si no hay rutas cargadas, no hacer nada
     if (!rutasCargadas || rutasCargadas.length === 0) return;
 
-    // Si no se seleccionó ninguna categoría (valor vacío), mostrar todas las rutas
     if (!categoriaSeleccionada || categoriaSeleccionada.trim() === '') {
         cargarRutas(rutasCargadas);
         return;
     }
 
-    // Filtrar rutas por categoría seleccionada
     const rutasFiltradas = rutasCargadas.filter(ruta => {
-        if (!ruta.categorias || ruta.categorias.length === 0) return false; // Sin categoría definida no coincide
+        if (!ruta.categorias || ruta.categorias.length === 0) return false;
         return ruta.categorias.some(cat => cat.toString().toLowerCase() === categoriaSeleccionada.toString().toLowerCase());
     });
 
     cargarRutas(rutasFiltradas);
 }
 
-// Limpiar filtros y recargar todas las rutas
 function limpiarFiltros() {
+    sessionStorage.removeItem('consultaRuta_aerolinea');
+    sessionStorage.removeItem('consultaRuta_categoria');
+    sessionStorage.removeItem('consultaRuta_rutaSeleccionada');
+
+    document.getElementById('aerolinea').value = '';
     document.getElementById('categoria').value = '';
-    aplicarFiltros();
+    rutasCargadas = [];
+    document.getElementById('listaRutas').innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Seleccione una aerolínea para ver las rutas</p></div>';
+    document.getElementById('vuelosAsociados').innerHTML = '';
+    document.getElementById('infoRuta').style.display = 'none';
+    document.getElementById('infoVuelo').style.display = 'none';
+    rutaSeleccionada = null;
+    vueloSeleccionado = null;
 }
 
-// Cargar vuelos asociados a una ruta
 function cargarVuelosRuta(nombreRuta) {
     const vuelosList = document.getElementById('vuelosAsociados');
     vuelosList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">Cargando vuelos...</p></div>';
 
-    fetch((window.CONTEXT_PATH || '') + '/api/vuelos?ruta=' + encodeURIComponent(nombreRuta))
+    const timestamp = new Date().getTime();
+    const url = api('/api/vuelos?ruta=' + encodeURIComponent(nombreRuta) + '&_=' + timestamp);
+
+    fetch(url, {
+        credentials: 'include',
+        headers: {
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        }
+    })
         .then(res => res.json())
         .then(data => {
-            // Si no hay vuelos, mostrar mensaje
             if (!data || data.length === 0) {
                 vuelosList.innerHTML = '<div class="col-12 text-center py-4"><p class="text-muted">No hay vuelos asociados a esta ruta.</p></div>';
                 return;
             }
 
-            // Limpiar lista de vuelos
             vuelosList.innerHTML = '';
-
             data.forEach(vuelo => {
                 const vueloHTML = `
                     <div class="col-md-6 mb-3">
@@ -529,13 +502,119 @@ function cargarVuelosRuta(nombreRuta) {
                             </div>
                         </div>
                     </div>`;
-
                 vuelosList.innerHTML += vueloHTML;
-             });
-
+            });
         })
         .catch(err => {
             console.error("Error cargando vuelos:", err);
             vuelosList.innerHTML = '<div class="col-12 text-center py-2"><p class="text-muted">Error al cargar vuelos</p></div>';
         });
+}
+
+// Helper functions
+function toPublicImageUrl(value) {
+    if (!value) return '';
+    const v = String(value).trim();
+    if (v.length === 0) return '';
+    if (/^(data:|https?:)?\/\//i.test(v)) return v;
+    if (v.startsWith('/')) return v;
+    if (v.startsWith('Images/')) {
+        const ctx = window.CONTEXT_PATH || window.location.pathname.replace(/\/[^/]*$/, '');
+        return (ctx.endsWith('/') ? ctx.slice(0, -1) : ctx) + '/' + v;
+    }
+    if (v.indexOf('/') < 0) {
+        const ctx = window.CONTEXT_PATH || window.location.pathname.replace(/\/[^/]*$/, '');
+        const prefix = (ctx.endsWith('/')) ? ctx.slice(0, -1) : ctx;
+        return prefix + '/Images/' + v;
+    }
+    try {
+        const origin = window.location.origin || (window.location.protocol + '//' + window.location.host);
+        const contextPath = window.CONTEXT_PATH || window.location.pathname.replace(/\/[^/]*$/, '');
+        return new URL(v, origin + contextPath + '/').href;
+    } catch (e) {
+        return v;
+    }
+}
+
+function getYouTubeEmbed(url) {
+    try {
+        const u = new URL(url);
+        if (u.hostname.indexOf('youtube.com') >= 0) {
+            return u.searchParams.get('v');
+        }
+        if (u.hostname.indexOf('youtu.be') >= 0) {
+            return u.pathname.split('/').filter(Boolean)[0];
+        }
+    } catch (e) { }
+    return null;
+}
+
+function getVimeoEmbed(url) {
+    try {
+        const u = new URL(url);
+        if (u.hostname.indexOf('vimeo.com') >= 0) {
+            return u.pathname.split('/').filter(Boolean)[0];
+        }
+    } catch (e) { }
+    return null;
+}
+
+function mostrarMensajeError(mensaje) {
+    const toastHTML = `
+        <div class="toast align-items-center text-bg-danger border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-exclamation-triangle-fill me-2"></i>${mensaje}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+    const toastContainer = document.getElementById('toastContainer') || (() => {
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed top-0 end-0 p-3';
+        container.style.zIndex = '1060';
+        document.body.appendChild(container);
+        return container;
+    })();
+
+    toastContainer.innerHTML = toastHTML;
+    const toastElement = toastContainer.querySelector('.toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}
+
+function mostrarMensajeExito(mensaje) {
+    const toastHTML = `
+        <div class="toast align-items-center text-bg-success border-0" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div class="toast-body">
+                    <i class="bi bi-check-circle-fill me-2"></i>${mensaje}
+                </div>
+                <button type="button" class="btn-close btn-close-white me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    `;
+
+    const toastContainer = document.getElementById('toastContainer') || (() => {
+        const container = document.createElement('div');
+        container.id = 'toastContainer';
+        container.className = 'toast-container position-fixed top-0 end-0 p-3';
+        container.style.zIndex = '1060';
+        document.body.appendChild(container);
+        return container;
+    })();
+
+    toastContainer.innerHTML = toastHTML;
+    const toastElement = toastContainer.querySelector('.toast');
+    const toast = new bootstrap.Toast(toastElement);
+    toast.show();
+}
+
+// Función placeholder para seleccionarVuelo
+function seleccionarVuelo(nombreVuelo) {
+    console.log('Vuelo seleccionado:', nombreVuelo);
+    mostrarMensajeError('Función de selección de vuelo no implementada');
 }
