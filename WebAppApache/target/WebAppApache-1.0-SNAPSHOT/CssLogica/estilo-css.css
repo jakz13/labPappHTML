@@ -2077,3 +2077,661 @@ button, .btn, .dropdown-item, .ruta-item, .paquete-card,
     border-color: #dc3545;
     background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 12 12' width='12' height='12' fill='none' stroke='%23dc3545'%3e%3ccircle cx='6' cy='6' r='4.5'/%3e%3cpath d='m5.8 3.6.4.4.4-.4'/%3e%3cpath d='M6 7v2.5'/%3e%3c/svg%3e");
 }
+
+/* ===== ESTILOS ESPECÍFICOS PARA CONSULTA DE CHECK-IN ===== */
+
+/* Steps para check-in */
+.step-checkin {
+    text-align: center;
+    flex: 1;
+    position: relative;
+    z-index: 2;
+}
+
+.step-number-checkin {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: var(--color-medium-gray);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto 8px;
+    font-weight: bold;
+    border: 2px solid var(--color-medium-gray);
+    font-size: 0.8rem;
+    color: var(--color-text-light);
+    transition: var(--transition);
+}
+
+.step-checkin.active .step-number-checkin {
+    background-color: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+.step-checkin.completed .step-number-checkin {
+    background-color: var(--color-success);
+    color: white;
+    border-color: var(--color-success);
+}
+
+.step-label-checkin {
+    color: var(--color-text-light);
+    font-size: 0.8rem;
+    font-weight: 500;
+}
+
+.step-checkin.active .step-label-checkin {
+    color: var(--color-success);
+}
+
+.step-checkin.completed .step-label-checkin {
+    color: var(--color-success);
+}
+
+/* Secciones del formulario de check-in */
+.form-section-checkin {
+    display: none;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.form-section-checkin.active {
+    display: block;
+    opacity: 1;
+    animation: fadeIn 0.5s ease;
+}
+
+/* Tarjetas de reserva con check-in */
+.reserva-checkin-card {
+    border: 2px solid transparent;
+    border-radius: var(--border-radius);
+    transition: var(--transition);
+    cursor: pointer;
+    height: 100%;
+}
+
+.reserva-checkin-card:hover {
+    border-color: var(--color-accent);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+}
+
+.reserva-checkin-card.border-primary {
+    border-color: var(--color-accent) !important;
+    background-color: rgba(220, 38, 38, 0.05) !important;
+}
+
+/* Badges específicos para check-in */
+.badge-checkin-realizado {
+    background: linear-gradient(135deg, var(--color-success), #15803d);
+    color: white;
+    font-size: 0.7rem;
+    padding: 0.25rem 0.5rem;
+}
+
+/* Grupo de badges para asientos */
+.badge-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+}
+
+/* Detalles del check-in */
+.checkin-detalle-item {
+    background-color: var(--color-medium-gray);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-left: 4px solid var(--color-success);
+}
+
+.checkin-pasajero-item {
+    background-color: var(--color-dark-gray);
+    border: 1px solid var(--color-medium-gray);
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    margin-bottom: 0.5rem;
+}
+
+/* Información destacada del check-in */
+.checkin-info-destacada {
+    background: linear-gradient(135deg, var(--color-success), #15803d);
+    color: white;
+    border-radius: var(--border-radius);
+    padding: 1rem;
+    text-align: center;
+}
+
+.checkin-info-destacada h5 {
+    margin: 0;
+    font-weight: 600;
+}
+
+/* Botones específicos para check-in */
+.btn-checkin {
+    background: linear-gradient(135deg, var(--color-success), #15803d);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-checkin:hover {
+    background: linear-gradient(135deg, var(--color-success-light), var(--color-success));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: white;
+}
+
+.btn-tarjeta-embarque {
+    background: linear-gradient(135deg, var(--color-info), #1d4ed8);
+    border: none;
+    color: white;
+    padding: 0.75rem 1.5rem;
+    border-radius: var(--border-radius);
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.btn-tarjeta-embarque:hover {
+    background: linear-gradient(135deg, #60a5fa, var(--color-info));
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-md);
+    color: white;
+}
+
+/* Estados de los steps para check-in */
+.step-indicator-checkin {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30px;
+    position: relative;
+}
+
+.step-indicator-checkin::before {
+    content: '';
+    position: absolute;
+    top: 17px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: var(--color-medium-gray);
+    z-index: 1;
+}
+
+/* Responsive para check-in */
+@media (max-width: 768px) {
+    .step-indicator-checkin {
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .step-indicator-checkin::before {
+        display: none;
+    }
+
+    .step-checkin {
+        display: flex;
+        align-items: center;
+        text-align: left;
+        gap: 10px;
+    }
+
+    .step-number-checkin {
+        margin: 0;
+    }
+
+    .reserva-checkin-card .card-body {
+        padding: 1rem;
+    }
+}
+
+/* Animaciones específicas para check-in */
+@keyframes pulseCheckin {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.reserva-checkin-card:hover {
+    animation: pulseCheckin 0.5s ease;
+}
+
+/* Mejoras visuales para la información de check-in */
+.checkin-hora-emergente {
+    position: relative;
+}
+
+.checkin-hora-emergente:hover::after {
+    content: 'Hora de inicio de embarque';
+    position: absolute;
+    bottom: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--color-dark);
+    color: var(--color-text);
+    padding: 0.5rem;
+    border-radius: var(--border-radius);
+    font-size: 0.8rem;
+    white-space: nowrap;
+    z-index: 1000;
+    border: 1px solid var(--color-accent);
+}
+
+/* ===== ESTILOS ESPECÍFICOS PARA RESULTADOS DE BÚSQUEDA ===== */
+
+.search-header {
+    background: linear-gradient(135deg, var(--color-dark) 0%, var(--color-dark-gray) 100%);
+    color: var(--color-text);
+    padding: 3rem 0;
+    margin-bottom: 2rem;
+    border-bottom: 1px solid var(--color-medium-gray);
+    position: relative;
+    overflow: hidden;
+}
+
+.search-header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 100" fill="%23dc2626" opacity="0.03"><polygon points="0,0 1000,50 1000,100 0,100"/></svg>') no-repeat center bottom;
+    background-size: cover;
+}
+
+/* Cards de resultados */
+.result-card {
+    background-color: var(--color-dark-gray);
+    border: 1px solid var(--color-medium-gray);
+    border-radius: var(--border-radius-lg);
+    box-shadow: var(--shadow-sm);
+    transition: var(--transition);
+    margin-bottom: 1.5rem;
+    overflow: hidden;
+    position: relative;
+    z-index: 1;
+}
+
+.result-card:hover {
+    transform: translateY(-5px);
+    box-shadow: var(--shadow-lg);
+    border-color: var(--color-accent);
+}
+
+.ruta-card {
+    border-left: 4px solid var(--color-accent);
+}
+
+.paquete-card {
+    border-left: 4px solid var(--color-success);
+}
+
+.badge-ruta {
+    background: linear-gradient(135deg, var(--color-accent), #b91c1c);
+    color: white;
+    border: none;
+}
+
+.badge-paquete {
+    background: linear-gradient(135deg, var(--color-success), #15803d);
+    color: white;
+    border: none;
+}
+
+/* Estados vacíos */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: var(--color-text-light);
+}
+
+.empty-state i {
+    font-size: 4rem;
+    margin-bottom: 1rem;
+    opacity: 0.5;
+    color: var(--color-text-light);
+}
+
+/* Sección de filtros */
+.filter-section {
+    background-color: var(--color-dark-gray);
+    border: 1px solid var(--color-medium-gray);
+    border-radius: var(--border-radius-lg);
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+}
+
+.result-count {
+    font-size: 0.9rem;
+    color: var(--color-text-light);
+}
+
+/* Resaltado de texto */
+.highlight {
+    background-color: rgba(220, 38, 38, 0.2);
+    padding: 0.1rem 0.2rem;
+    border-radius: 0.2rem;
+    color: var(--color-accent-light);
+}
+
+/* Badges y etiquetas específicas para resultados */
+.category-badge {
+    font-size: 0.75rem;
+    margin-right: 0.3rem;
+    margin-bottom: 0.3rem;
+    background-color: var(--color-medium-gray);
+    color: var(--color-text);
+    border: 1px solid var(--color-light-gray);
+}
+
+.stats-badge {
+    font-size: 0.7rem;
+    background-color: var(--color-medium-gray);
+    color: var(--color-text-light);
+    border: 1px solid var(--color-light-gray);
+}
+
+/* Botones de acción específicos */
+.action-btn {
+    border-radius: 25px;
+    padding: 0.5rem 1.5rem;
+    font-weight: 500;
+    transition: var(--transition);
+}
+
+/* Responsive para resultados */
+@media (max-width: 768px) {
+    .search-header {
+        padding: 2rem 0;
+    }
+
+    .search-header .display-5 {
+        font-size: 1.8rem;
+    }
+
+    .result-card .row {
+        flex-direction: column;
+    }
+
+    .ruta-image {
+        height: 150px;
+        border-radius: var(--border-radius) var(--border-radius) 0 0 !important;
+    }
+}
+
+/* ESTILOS PARA NAVBAR Y BÚSQUEDA */
+.navbar-search {
+    position: relative;
+    margin-left: 1rem;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    position: relative;
+}
+
+.search-icon {
+    padding: 0.375rem 0.75rem;
+    border-radius: 0.375rem;
+    transition: all 0.3s ease;
+    z-index: 1001;
+    position: relative;
+}
+
+.search-icon.hidden {
+    opacity: 0;
+    visibility: hidden;
+    width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+.search-expandable {
+    position: absolute;
+    top: 110%;
+    right: 0;
+    width: 0;
+    opacity: 0;
+    visibility: hidden;
+    transition: all 0.3s ease;
+    z-index: 1000;
+    overflow: hidden;
+    border-radius: 0.375rem;
+}
+
+.search-expandable.expanded {
+    width: 350px;
+    opacity: 1;
+    visibility: visible;
+    padding: 0.5rem 0;
+}
+
+/* Ocultar otros elementos del navbar cuando la búsqueda está activa */
+#navbarNav.search-active .navbar-nav,
+#navbarNav.search-active .user-actions {
+    opacity: 0.3;
+    pointer-events: none;
+    transition: opacity 0.3s ease;
+}
+
+.search-suggestions {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    z-index: 1002;
+    max-height: 300px;
+    overflow-y: auto;
+    background: white;
+    border: 1px solid #dee2e6;
+    border-radius: 0.375rem;
+    box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.15);
+    display: none;
+    margin-top: 0.5rem;
+}
+
+.suggestions-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    color: #495057;
+}
+
+.suggestions-list {
+    padding: 0;
+    margin: 0;
+    list-style: none;
+}
+
+.suggestion-item {
+    display: block;
+    padding: 0.75rem 1rem;
+    color: #212529;
+    text-decoration: none;
+    border-bottom: 1px solid #f8f9fa;
+    transition: all 0.15s ease-in-out;
+    cursor: pointer;
+}
+
+.suggestion-item:hover {
+    background-color: #e9ecef;
+    text-decoration: none;
+    color: #212529;
+}
+
+.suggestion-item:last-child {
+    border-bottom: none;
+}
+
+.suggestion-item .fw-semibold {
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+}
+
+.suggestion-item .text-muted {
+    font-size: 0.875rem;
+    line-height: 1.4;
+}
+
+.badge-sm {
+    font-size: 0.7em;
+    padding: 0.3em 0.6em;
+}
+
+/* Mejorar la visibilidad del input de búsqueda */
+.search-expandable .form-control {
+    border: 1px solid #ced4da;
+    background: white;
+    color: #212529;
+}
+
+.search-expandable .form-control:focus {
+    border-color: #86b7fe;
+    box-shadow: 0 0 0 0.25rem rgba(13, 110, 253, 0.25);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .search-expandable.expanded {
+        width: 280px;
+        right: -50px;
+    }
+
+    .navbar-search {
+        margin-left: 0.5rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .search-expandable.expanded {
+        width: 220px;
+        right: -80px;
+    }
+
+    .navbar-search {
+        margin: 0.5rem 0;
+    }
+}
+
+/* Toast notifications */
+.toast-container {
+    z-index: 9999;
+}
+
+
+/* Ultima implementacion para la barra de busqueda: */
+
+/* Estilos para el buscador en tiempo real */
+.buscador-container {
+    position: relative;
+    width: 100%;
+}
+
+.resultados-busqueda {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    max-height: 300px;
+    overflow-y: auto;
+    z-index: 1000;
+    display: none;
+}
+
+.sugerencia-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.sugerencia-item:hover {
+    background-color: #f8f9fa;
+}
+
+.sugerencia-item:last-child {
+    border-bottom: none;
+}
+
+.sugerencia-icono {
+    margin-right: 12px;
+    color: #6c757d;
+    font-size: 1.2em;
+}
+
+.sugerencia-contenido {
+    flex: 1;
+}
+
+.sugerencia-titulo {
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 4px;
+}
+
+.sugerencia-descripcion {
+    font-size: 0.9em;
+    color: #6c757d;
+    line-height: 1.4;
+}
+
+.sugerencia-badge {
+    background: #e9ecef;
+    color: #495057;
+    padding: 4px 8px;
+    border-radius: 12px;
+    font-size: 0.8em;
+    font-weight: 500;
+}
+
+/* Animaciones */
+.sugerencia-item {
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Estilos para sugerencias inteligentes */
+.highlight-suggestion {
+    background-color: #ffeb3b;
+    padding: 0.1em 0.2em;
+    border-radius: 0.25em;
+    font-weight: bold;
+}
+
+.suggestion-item .text-warning {
+    color: #ffc107 !important;
+}
+
+.suggestion-item .text-info {
+    font-size: 0.75em;
+    opacity: 0.8;
+}
+
+/* Badges según relevancia */
+.badge.bg-warning {
+    animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}

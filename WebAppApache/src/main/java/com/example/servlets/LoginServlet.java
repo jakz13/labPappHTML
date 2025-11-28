@@ -94,6 +94,7 @@ public class LoginServlet extends HttpServlet {
 
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
         PrintWriter out = response.getWriter();
@@ -110,23 +111,23 @@ public class LoginServlet extends HttpServlet {
         try {
             JuanViajesWS port = getPort(request);
 
-            // Primero, intentamos autenticar como cliente:
-            List<DtCliente> clientes = null;
-            DtCliente clienteEncontrado = null;
+            DtCliente cliente = null;
+            DtAerolinea aerolinea = null;
+
+            // Buscar cliente - con manejo robusto de errores
             try {
-                clientes = port.listarClientes(); // llamada remota
-            } catch (Exception ex) {
-                // si falla la llamada remota, lanzamos para entrar en el catch exterior
-                throw ex;
-            }
-            if (clientes != null) {
+                List<DtCliente> clientes = sistema.listarClientes();
+                System.out.println("Clientes encontrados: " + clientes.size());
+
                 for (DtCliente c : clientes) {
-                    if (c == null) continue;
-                    String nick = c.getNickname();
-                    String mail = c.getEmail();
-                    boolean match = (nick != null && nick.equalsIgnoreCase(user))
-                            || (mail != null && mail.equalsIgnoreCase(user));
-                    if (!match) continue;
+                    try {
+                        String nick = c.getNickname();
+                        String mail = c.getEmail();
+
+                        boolean match = (nick != null && nick.equalsIgnoreCase(user)) ||
+                                (mail != null && mail.equalsIgnoreCase(user));
+
+                        if (!match) continue;
 
                     // verificarLogin espera email y password según tu SEI; si usas nickname, ajusta
                     boolean ok;
@@ -137,6 +138,8 @@ public class LoginServlet extends HttpServlet {
                     clienteEncontrado = port.obtenerCliente(nick);
                     break;
                 }
+            } catch (Exception e) {
+                System.err.println("Error listando clientes: " + e.getMessage());
             }
 
             if (clienteEncontrado != null) {

@@ -26,6 +26,8 @@
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-vuelo.jsp"><i class="bi bi-search"></i> Consulta de Vuelo</a></li>
                         <li data-visible-for="cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-reserva.jsp"><i class="bi bi-ticket-perforated"></i> Consulta de Reserva</a></li>
                         <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/reserva-vuelo.jsp"><i class="bi bi-calendar-check"></i> Reserva de Vuelo</a></li>
+                        <!--Consulta de Check-in -->
+                        <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-checkin.jsp"><i class="bi bi-check-circle"></i> Consulta de Check-in</a></li>
                         <li data-visible-for="aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/alta-vuelo.jsp"><i class="bi bi-plus-circle"></i> Alta de Vuelo</a></li>
                     </ul>
                 </li>
@@ -38,7 +40,6 @@
                     <ul class="dropdown-menu" aria-labelledby="paquetesDropdown">
                         <li data-visible-for="invitado,cliente,aerolinea"><a class="dropdown-item" href="${pageContext.request.contextPath}/consulta-paquete.jsp"><i class="bi bi-box-seam"></i> Consulta de Paquete</a></li>
                         <li data-visible-for="cliente"><a class="dropdown-item" href="${pageContext.request.contextPath}/compra-paquete.jsp"><i class="bi bi-cart-check"></i> Compra de Paquete</a></li>
-                        <!-- Alta de Paquete eliminada: antes visible solo para aerolínea -->
                     </ul>
                 </li>
 
@@ -68,6 +69,37 @@
                     </ul>
                 </li>
             </ul>
+
+            <!-- BARRA DE BÚSQUEDA CON ICONO EXPANDIBLE - ESTRUCTURA CORREGIDA -->
+            <div class="navbar-search me-3">
+                <div class="search-container position-relative">
+                    <form action="${pageContext.request.contextPath}/ResultadosBusqueda"
+                          method="get"
+                          class="d-flex"
+                          style="min-width: 300px;">
+                        <div class="input-group">
+                            <input type="text"
+                                   class="form-control"
+                                   name="q"
+                                   placeholder="Buscar rutas y paquetes..."
+                                   aria-label="Buscar">
+                            <button class="btn btn-primary" type="submit">
+                                <i class="bi bi-search"></i> Buscar
+                            </button>
+                        </div>
+                    </form>
+
+                    <!-- SUGERENCIAS EN TIEMPO REAL -->
+                    <div id="searchSuggestions" class="search-suggestions">
+                        <div class="suggestions-header">
+                            <small class="text-muted">Sugerencias</small>
+                        </div>
+                        <div id="suggestionsList" class="suggestions-list">
+                            <!-- Las sugerencias se cargan aquí dinámicamente -->
+                        </div>
+                    </div>
+                </div>
+            </div>
 
             <!-- Acciones de usuario -->
             <div class="user-actions">
@@ -108,3 +140,6 @@
         </div>
     </div>
 </div>
+
+<!-- Incluir el JavaScript del navbar -->
+<script src="${pageContext.request.contextPath}/JsLogica/navbar.js"></script>
