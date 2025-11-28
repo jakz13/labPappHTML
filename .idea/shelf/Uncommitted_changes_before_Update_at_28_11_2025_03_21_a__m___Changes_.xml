@@ -1,0 +1,40 @@
+<changelist name="Uncommitted_changes_before_Update_at_28_11_2025_03_21_a_ m__[Changes]" date="1764310866898" recycled="false" toDelete="true">
+  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_11_2025_03_21_a_ m__[Changes]/shelved.patch" />
+  <option name="DESCRIPTION" value="Uncommitted changes before Update at 28/11/2025 03:21 a. m. [Changes]" />
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT.war" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_11_2025_03_21_a_ m__[Changes]/ListarRutasPorAerolineaServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ObtenerUsuarioServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/ObtenerUsuarioServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_11_2025_03_21_a_ m__[Changes]/ObtenerUsuarioServlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ConsultaUsuarioServerlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_11_2025_03_21_a_ m__[Changes]/ConsultaUsuarioServerlet.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/classes/com/example/servlets/ListarRutasPorAerolineaServlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_11_2025_03_21_a_ m__[Changes]/ListarRutasPorAerolineaServlet1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/Images/6e34a625-4a3b-4ae5-b98e-b1abe1e48191.png" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class" />
+    <option name="AFTER_PATH" value="WebAppApache/target/classes/com/example/servlets/ConsultaUsuarioServerlet.class" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_11_2025_03_21_a_ m__[Changes]/ConsultaUsuarioServerlet1.class" />
+  </binary>
+  <binary>
+    <option name="BEFORE_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" />
+    <option name="AFTER_PATH" value="WebAppApache/target/WebAppApache-1.0-SNAPSHOT/WEB-INF/lib/MiProyectoSwing-1.0-SNAPSHOT.jar" />
+    <option name="SHELVED_PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_28_11_2025_03_21_a_ m__[Changes]/MiProyectoSwing-1.0-SNAPSHOT.jar" />
+  </binary>
+</changelist>

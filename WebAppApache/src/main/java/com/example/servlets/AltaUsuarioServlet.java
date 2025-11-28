@@ -8,6 +8,7 @@ import java.nio.file.*;
 import java.time.LocalDate;
 import java.time.format.DateTimeParseException;
 import java.util.Base64;
+import java.util.List;
 
 import serviciosweb.JuanViajesWS;
 import serviciosweb.DtCliente;
@@ -206,6 +207,140 @@ public class AltaUsuarioServlet extends HttpServlet {
             e.printStackTrace();
             out.print("{\"success\": false, \"error\": \"Error interno del servidor\"}");
         }
+    }
+
+    // En AltaUsuarioServlet.java - método doGet MEJORADO
+    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        PrintWriter out = response.getWriter();
+
+        String action = request.getParameter("action");
+
+        try {
+            JuanViajesWS port = PortUtils.getPort(request);
+
+            if ("checkNickname".equals(action)) {
+                String nickname = request.getParameter("nickname");
+                if (nickname == null || nickname.trim().isEmpty()) {
+                    out.print("{\"available\": false, \"message\": \"Nickname vacío\"}");
+                    return;
+                }
+
+                if (nickname.length() < 3) {
+                    out.print("{\"available\": false, \"message\": \"Mínimo 3 caracteres\"}");
+                    return;
+                }
+
+                // VERIFICACIÓN REAL del nickname - CORREGIDA
+                boolean available = true;
+                String message = "✓ Nickname disponible";
+
+                try {
+                    // Intentar obtener cliente
+                    DtCliente cliente = port.obtenerCliente(nickname);
+                    // Si llegamos aquí sin excepción, verificar si realmente existe
+                    if (cliente != null && cliente.getNickname() != null) {
+                        available = false;
+                        message = "✗ Este nickname ya está en uso";
+                    }
+                } catch (Exception e) {
+                    // Cliente no existe, continuar verificando aerolínea
+                    System.out.println("Cliente no encontrado: " + nickname);
+                }
+
+                // Solo verificar aerolínea si todavía está disponible
+                if (available) {
+                    try {
+                        DtAerolinea aerolinea = port.obtenerAerolinea(nickname);
+                        // Si llegamos aquí sin excepción, verificar si realmente existe
+                        if (aerolinea != null && aerolinea.getNickname() != null) {
+                            available = false;
+                            message = "✗ Este nickname ya está en uso";
+                        }
+                    } catch (Exception ex) {
+                        // Aerolínea no existe - nickname disponible
+                        System.out.println("Aerolínea no encontrada: " + nickname);
+                    }
+                }
+
+                System.out.println("Verificación nickname '" + nickname + "': available=" + available);
+                out.print("{\"available\": " + available + ", \"message\": \"" + message + "\"}");
+
+            } else if ("checkEmail".equals(action)) {
+                String email = request.getParameter("email");
+                if (email == null || email.trim().isEmpty()) {
+                    out.print("{\"available\": false, \"message\": \"Email vacío\"}");
+                    return;
+                }
+
+                if (!validateEmail(email)) {
+                    out.print("{\"available\": false, \"message\": \"Formato de email inválido\"}");
+                    return;
+                }
+
+                // VERIFICACIÓN REAL del email
+                boolean available = checkEmailAvailability(port, email);
+                String message = available ? "✓ Email disponible" : "✗ Este email ya está registrado";
+
+                System.out.println("Verificación email '" + email + "': available=" + available);
+                out.print("{\"available\": " + available + ", \"message\": \"" + message + "\"}");
+
+            } else {
+                out.print("{\"error\": \"Acción no válida\"}");
+            }
+
+        } catch (Exception e) {
+            System.err.println("Error en doGet de AltaUsuarioServlet: " + e.getMessage());
+            e.printStackTrace();
+            // En caso de error general, asumimos que está disponible para no bloquear al usuario
+            out.print("{\"available\": true, \"message\": \"✓ Disponible (verificación temporal)\"}");
+        }
+    }
+
+    // Método auxiliar para verificar disponibilidad de email - MEJORADO
+    private boolean checkEmailAvailability(JuanViajesWS port, String email) {
+        try {
+            // Verificar en clientes
+            List<DtCliente> clientes = port.listarClientes();
+            if (clientes != null) {
+                for (DtCliente cliente : clientes) {
+                    if (cliente.getEmail() != null &&
+                            cliente.getEmail().trim().equalsIgnoreCase(email.trim())) {
+                        System.out.println("Email " + email + " encontrado en cliente: " + cliente.getNickname());
+                        return false;
+                    }
+                }
+            }
+
+            // Verificar en aerolíneas
+            List<DtAerolinea> aerolineas = port.listarAerolineas();
+            if (aerolineas != null) {
+                for (DtAerolinea aerolinea : aerolineas) {
+                    if (aerolinea.getEmail() != null &&
+                            aerolinea.getEmail().trim().equalsIgnoreCase(email.trim())) {
+                        System.out.println("Email " + email + " encontrado en aerolínea: " + aerolinea.getNickname());
+                        return false;
+                    }
+                }
+            }
+
+            System.out.println("Email " + email + " disponible");
+            return true;
+
+        } catch (Exception e) {
+            System.err.println("Error verificando email: " + e.getMessage());
+            e.printStackTrace();
+            // En caso de error, asumimos que está disponible para no bloquear al usuario
+            return true;
+        }
+    }
+
+    private boolean validateEmail(String email) {
+        String emailRegex = "^[a-zA-Z0-9_+&*-]+(?:\\.[a-zA-Z0-9_+&*-]+)*@(?:[a-zA-Z0-9-]+\\.)+[a-zA-Z]{2,7}$";
+        return email != null && email.matches(emailRegex);
     }
 
     // Helpers adaptados desde ActualizarUsuarioServlet para mantener la misma convención de guardado

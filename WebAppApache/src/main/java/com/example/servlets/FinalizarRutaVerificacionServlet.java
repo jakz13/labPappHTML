@@ -118,14 +118,14 @@ public class FinalizarRutaVerificacionServlet extends HttpServlet {
             ISistema sistema = Fabrica.getInstance().getISistema();
             cargarSistemaUnaVez(sistema);
 
-            int resultado = sistema.puedeFinalizarRuta(nombreRuta);
+            //int resultado = sistema.puedeFinalizarRuta(nombreRuta);
 
             // Crear respuesta SOAP
             SOAPElement responseElement = body.addChildElement(
                     "puedeFinalizarRutaResponse", "tns");
 
             SOAPElement codigoElement = responseElement.addChildElement("codigo");
-            codigoElement.addTextNode(String.valueOf(resultado));
+            //codigoElement.addTextNode(String.valueOf(resultado));
 
             return response;
 
